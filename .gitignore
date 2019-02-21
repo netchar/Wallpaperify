@@ -11,3 +11,11 @@
 /build
 /captures
 .externalNativeBuild
+
+# Signing files
+.signing/
+
+# Keystore files
+# Uncomment the following lines if you do not want to check your keystore files in.
+#*.jks
+#*.keystore
