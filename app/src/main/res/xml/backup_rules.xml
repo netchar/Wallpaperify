@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <!--Example:
+        <exclude domain= ["file" | "database" | "sharedpref"| "external" | "root"] path="string”>-->
+
+    <include domain="sharedpref" path="."/>
+
+</full-backup-content>

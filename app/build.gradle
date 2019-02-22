@@ -31,6 +31,8 @@ dependencies {
     implementation deps.support.appcompat
     implementation deps.support.constraint
     implementation deps.support.design
+    implementation deps.timber
+
     testImplementation deps.testing.junit
     androidTestImplementation deps.testing.runner
     androidTestImplementation deps.testing.espresso

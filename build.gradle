@@ -23,7 +23,8 @@ buildscript {
                         junit   : '4.12',
                         runner  : '1.0.2',
                         espresso: '3.0.2'
-                ]
+                ],
+                timber : '4.7.1'
         ]
 
         deps = [
@@ -37,7 +38,8 @@ buildscript {
                         junit   : "junit:junit:$versions.testing.junit",
                         runner  : "com.android.support.test:runner:$versions.testing.runner",
                         espresso: "com.android.support.test.espresso:espresso-core:$versions.testing.espresso"
-                ]
+                ],
+                timber : "com.jakewharton.timber:timber:$versions.timber"
         ]
 
         classpath = [
