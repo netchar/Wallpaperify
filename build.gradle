@@ -22,8 +22,7 @@ buildscript {
         ]
 
         deps = [
-                gradle : "com.android.tools.build:gradle:$versions.gradle",
-                kotlin : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
+                kotlin : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}",
                 support: [
                         appcompat : "com.android.support:appcompat-v7:$versions.support.appcompat",
                         constraint: "com.android.support.constraint:constraint-layout:$versions.support.constraint",
@@ -35,17 +34,21 @@ buildscript {
                         espresso: "com.android.support.test.espresso:espresso-core:$versions.testing.espresso"
                 ]
         ]
+
+        classpath = [
+                gradle : "com.android.tools.build:gradle:$versions.gradle",
+                kotlin : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
+        ]
     }
 
     repositories {
         google()
         jcenter()
-
     }
 
     dependencies {
-        classpath deps.gradle
-        classpath deps.kotlin
+        classpath classpath.gradle
+        classpath classpath.kotlin
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
