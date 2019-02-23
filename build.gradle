@@ -32,7 +32,10 @@ buildscript {
         ]
 
         deps = [
-                kotlin  : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}",
+                kotlin  : [
+                        stdlib : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin",
+                        reflect: "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin"
+                ],
                 support : [
                         appcompat : "com.android.support:appcompat-v7:$versions.support.appcompat",
                         constraint: "com.android.support.constraint:constraint-layout:$versions.support.constraint",

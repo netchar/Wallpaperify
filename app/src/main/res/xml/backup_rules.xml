@@ -4,5 +4,4 @@
         <exclude domain= ["file" | "database" | "sharedpref"| "external" | "root"] path="string”>-->
 
     <include domain="sharedpref" path="."/>
-
 </full-backup-content>

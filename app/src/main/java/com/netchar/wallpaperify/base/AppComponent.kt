@@ -6,20 +6,18 @@ import javax.inject.Singleton
 import dagger.BindsInstance
 
 
-
 @Singleton
 @Component(
-    modules = arrayOf(AppModule::class)
+    modules = [AppModule::class]
 )
 interface AppComponent {
+    @Component.Builder
+    interface Builder {
+        @BindsInstance
+        fun application(app: Application): Builder
 
-//    @Component.Builder
-//    interface Builder {
-//        @BindsInstance
-//        fun application(application: App): Builder
-//
-//        fun build(): AppComponent
-//    }
+        fun build(): AppComponent
+    }
 
     fun inject(app: Application)
 }

@@ -6,11 +6,9 @@ import com.netchar.wallpaperify.BuildConfig
 
 class MainApp : Application() {
 
-    @Suppress("DEPRECATION")
     private val component: AppComponent by lazy {
-        DaggerAppComponent
-            .builder()
-            .appModule(AppModule(this))
+        DaggerAppComponent.builder()
+            .application(this)
             .build()
     }
 
