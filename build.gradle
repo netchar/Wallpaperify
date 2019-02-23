@@ -6,40 +6,63 @@ buildscript {
         }
 
         versions = [
-                kotlin : '1.3.21',
-                gradle : '3.3.1',
-                sdk    : [
+                kotlin  : '1.3.21',
+                gradle  : '3.3.1',
+                sdk     : [
                         compile   : 28,
                         target    : 28,
                         min       : 19,
                         buildtools: '28.0.3'
                 ],
-                support: [
+                support : [
                         appcompat : '28.0.0',
                         constraint: '1.1.3',
                         design    : '28.0.0'
                 ],
-                testing: [
+                testing : [
                         junit   : '4.12',
                         runner  : '1.0.2',
                         espresso: '3.0.2'
                 ],
-                timber : '4.7.1'
+                timber  : '4.7.1',
+                ktx     : '1.0.0',
+                dagger  : '2.21',
+                retrofit: '2.5.0',
+                moshi   : '1.8.0',
+                kotshi  : '1.0.6'
         ]
 
         deps = [
-                kotlin : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}",
-                support: [
+                kotlin  : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}",
+                support : [
                         appcompat : "com.android.support:appcompat-v7:$versions.support.appcompat",
                         constraint: "com.android.support.constraint:constraint-layout:$versions.support.constraint",
                         design    : "com.android.support:design:$versions.support.design"
                 ],
-                testing: [
+                testing : [
                         junit   : "junit:junit:$versions.testing.junit",
                         runner  : "com.android.support.test:runner:$versions.testing.runner",
                         espresso: "com.android.support.test.espresso:espresso-core:$versions.testing.espresso"
                 ],
-                timber : "com.jakewharton.timber:timber:$versions.timber"
+                timber  : "com.jakewharton.timber:timber:$versions.timber",
+                ktx     : [
+                        core: "androidx.core:core-ktx:$versions.ktx"
+                ],
+                dagger  : [
+                        core     : "com.google.dagger:dagger:$versions.dagger",
+                        support  : "com.google.dagger:dagger-android-support:$versions.dagger",
+                        processor: "com.google.dagger:dagger-android-processor:$versions.dagger",
+                        compiler : "com.google.dagger:dagger-compiler:$versions.dagger"
+                ],
+                retrofit: [
+                        core: "com.squareup.retrofit2:retrofit:$versions.retrofit"
+                ],
+                moshi   : "com.squareup.moshi:moshi-kotlin:$versions.moshi",
+                kotshi  : [
+                        api     : "se.ansman.kotshi:api:$versions.kotshi",
+                        compiler: "se.ansman.kotshi:compiler:$versions.kotshi"
+                ]
+
         ]
 
         classpath = [

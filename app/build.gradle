@@ -32,6 +32,15 @@ dependencies {
     implementation deps.support.constraint
     implementation deps.support.design
     implementation deps.timber
+    implementation deps.ktx.core
+    implementation deps.dagger.core
+    implementation deps.dagger.support
+    annotationProcessor deps.dagger.processor
+    annotationProcessor deps.dagger.compiler
+    implementation deps.retrofit.core
+    implementation deps.moshi
+    implementation deps.kotshi.api
+    annotationProcessor deps.kotshi.compiler
 
     testImplementation deps.testing.junit
     androidTestImplementation deps.testing.runner
