@@ -3,7 +3,7 @@
           package="com.netchar.wallpaperify">
 
     <application
-            android:name=".base.ApplicationX"
+            android:name=".base.MainApp"
             android:allowBackup="true"
             android:fullBackupContent="@xml/backup_rules"
             android:icon="@mipmap/ic_launcher"
