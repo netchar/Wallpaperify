@@ -16,6 +16,11 @@ buildscript {
     versions.retrofit = "2.5.0"
     versions.moshi = "1.8.0"
     versions.kotshi = "1.0.6"
+    versions.converterMoshi = "2.3.0"
+    versions.archExtensions = "1.1.1"
+    versions.treeTen = "1.2.0"
+    versions.okHttp = "3.12.1"
+    versions.okHttpLoggingInterceptor = "3.10.0"
 
     ext {
         extractVersionCode = { versionName ->
