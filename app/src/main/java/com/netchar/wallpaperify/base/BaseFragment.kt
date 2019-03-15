@@ -1,6 +1,7 @@
 package com.netchar.wallpaperify.base
 
 import android.content.Context
+import android.support.annotation.CheckResult
 import android.support.v4.app.Fragment
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -20,4 +21,8 @@ abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> = childFragmentInjector
 
+    @CheckResult
+    open fun onBackPressed(): Boolean {
+        return false
+    }
 }

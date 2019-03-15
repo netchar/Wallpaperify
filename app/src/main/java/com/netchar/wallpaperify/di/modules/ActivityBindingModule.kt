@@ -8,8 +8,7 @@ import dagger.android.support.AndroidSupportInjectionModule
 
 @Module(
     includes = [
-        AndroidSupportInjectionModule::class,
-        ViewModelModule::class]
+        AndroidSupportInjectionModule::class]
 )
 abstract class ActivityBindingModule {
 
