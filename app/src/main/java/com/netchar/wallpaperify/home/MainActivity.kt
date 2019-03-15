@@ -10,11 +10,11 @@ import com.netchar.wallpaperify.di.factories.ViewModelFactory
 import com.netchar.wallpaperify.infrastructure.extensions.injectViewModel
 import javax.inject.Inject
 
+
 class MainActivity : BaseActivity() {
 
     companion object {
         const val DOUBLE_TAP_TIMEOUT = 1000L
-        private val backPressConfirmationHandler = Handler()
     }
 
     @Inject
@@ -22,7 +22,6 @@ class MainActivity : BaseActivity() {
 
     lateinit var viewModel: MainViewModel
 
-    private var isDoubleTapConfirmed = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,12 +55,15 @@ class MainActivity : BaseActivity() {
     }
 
     private inline fun runByConfirm(runAction: () -> Unit) {
-        if (isDoubleTapConfirmed) {
+        val backPressElapsed = System.currentTimeMillis() - lastPressedTime
+        if (backPressElapsed in 0..DOUBLE_TAP_TIMEOUT) {
             runAction()
         } else {
-            Toast.makeText(this, "Are you sure you want to exit?", Toast.LENGTH_SHORT).show()
-            isDoubleTapConfirmed = true
-            backPressConfirmationHandler.postDelayed({ isDoubleTapConfirmed = false }, DOUBLE_TAP_TIMEOUT)
+            Toast.makeText(this, "Press 'back' again to ", Toast.LENGTH_SHORT).show()
+            lastPressedTime = System.currentTimeMillis()
         }
     }
+
+    private var lastPressedTime: Long = 0
+
 }
