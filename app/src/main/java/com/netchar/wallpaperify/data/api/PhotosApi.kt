@@ -1,7 +1,7 @@
 package com.netchar.wallpaperify.data.api
 
 import android.support.annotation.StringDef
-import com.netchar.wallpaperify.data.models.Photo
+import com.netchar.wallpaperify.data.models.dto.Photo
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query

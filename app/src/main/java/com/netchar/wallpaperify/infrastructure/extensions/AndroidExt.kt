@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v7.app.AppCompatActivity
+import java.io.File
 
 
 inline fun <reified TViewModel : ViewModel> AppCompatActivity.injectViewModel(factory: ViewModelProvider.Factory): TViewModel {
@@ -24,4 +25,4 @@ inline fun <reified TViewModel : ViewModel> injectViewModelOf(context: Fragment,
     return ViewModelProviders.of(context, factory)[TViewModel::class.java]
 }
 
-
+fun File.notExist() = !this.exists()

@@ -3,10 +3,8 @@ package com.netchar.wallpaperify.home
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import android.support.annotation.IntDef
-import android.support.annotation.StringDef
 import com.netchar.wallpaperify.data.api.PhotosApi
-import com.netchar.wallpaperify.data.models.Photo
+import com.netchar.wallpaperify.data.models.dto.Photo
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
