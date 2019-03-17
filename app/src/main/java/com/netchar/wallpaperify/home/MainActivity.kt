@@ -1,20 +1,24 @@
 package com.netchar.wallpaperify.home
 
+import android.content.res.Configuration
 import android.os.Bundle
-import android.os.Handler
+import android.support.design.widget.NavigationView
+import android.support.v4.view.GravityCompat
+import android.support.v7.app.ActionBarDrawerToggle
+import android.view.MenuItem
 import android.widget.Toast
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.base.BaseActivity
-import com.netchar.wallpaperify.base.BaseFragment
 import com.netchar.wallpaperify.di.factories.ViewModelFactory
+import com.netchar.wallpaperify.infrastructure.extensions.canPopFragment
+import com.netchar.wallpaperify.infrastructure.extensions.getCurrentFragment
 import com.netchar.wallpaperify.infrastructure.extensions.injectViewModel
+import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
-
-class MainActivity : BaseActivity() {
-
+class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
     companion object {
-        const val DOUBLE_TAP_TIMEOUT = 1000L
+        const val BACK_DOUBLE_TAP_TIMEOUT = 1000L
     }
 
     @Inject
@@ -22,11 +26,16 @@ class MainActivity : BaseActivity() {
 
     lateinit var viewModel: MainViewModel
 
+    private lateinit var toggle: ActionBarDrawerToggle
+
+    override val layoutResId = R.layout.activity_main
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+
         viewModel = injectViewModel(factory)
+
+        setupNavigationDrawer()
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
@@ -36,34 +45,88 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    private fun setupNavigationDrawer() {
+        toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        drawer_layout.addDrawerListener(toggle)
+        nav_view.setNavigationItemSelectedListener(this)
+    }
+
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        toggle.syncState()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        toggle.onConfigurationChanged(newConfig)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (toggle.onOptionsItemSelected(item)) {
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        // Handle navigation view item clicks here.
+        when (item.itemId) {
+            R.id.nav_camera -> {
+                // Handle the camera action
+            }
+            R.id.nav_gallery -> {
+
+            }
+            R.id.nav_slideshow -> {
+
+            }
+            R.id.nav_manage -> {
+
+            }
+            R.id.nav_share -> {
+
+            }
+            R.id.nav_send -> {
+
+            }
+        }
+
+        drawer_layout.closeDrawer(GravityCompat.START)
+        return true
+    }
+
     override fun onBackPressed() {
-        if (isBackPerformedFromFragment()) {
+
+        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
+            drawer_layout.closeDrawer(GravityCompat.START)
             return
         }
 
-        val canGoBack = supportFragmentManager.backStackEntryCount > 0
-        if (canGoBack) {
+        if (isBackPressedFromFragment()) {
+            return
+        }
+
+        if (supportFragmentManager.canPopFragment()) {
             super.onBackPressed()
         } else {
-            runByConfirm { this.finishAffinity() }
+            runByDoubleBack { this.finishAffinity() }
         }
     }
 
-    private fun isBackPerformedFromFragment(): Boolean {
-        val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container) as? BaseFragment
+    private fun isBackPressedFromFragment(): Boolean {
+        val currentFragment = supportFragmentManager.getCurrentFragment()
         return currentFragment != null && currentFragment.onBackPressed()
     }
 
-    private inline fun runByConfirm(runAction: () -> Unit) {
+    private inline fun runByDoubleBack(runAction: () -> Unit) {
         val backPressElapsed = System.currentTimeMillis() - lastPressedTime
-        if (backPressElapsed in 0..DOUBLE_TAP_TIMEOUT) {
+        if (backPressElapsed in 0..BACK_DOUBLE_TAP_TIMEOUT) {
             runAction()
         } else {
-            Toast.makeText(this, "Press 'back' again to ", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.main_toast_confirm_back), Toast.LENGTH_SHORT).show()
             lastPressedTime = System.currentTimeMillis()
         }
     }
 
     private var lastPressedTime: Long = 0
-
 }

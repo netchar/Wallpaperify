@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
 import android.support.v7.app.AppCompatActivity
 
 
@@ -22,3 +23,5 @@ inline fun <reified TViewModel : ViewModel> injectViewModelOf(context: AppCompat
 inline fun <reified TViewModel : ViewModel> injectViewModelOf(context: Fragment, factory: ViewModelProvider.Factory): TViewModel {
     return ViewModelProviders.of(context, factory)[TViewModel::class.java]
 }
+
+
