@@ -1,4 +1,4 @@
-package com.netchar.wallpaperify.utils
+package com.netchar.wallpaperify.infrastructure.utils
 
 import android.content.Context
 import android.content.pm.ApplicationInfo.FLAG_LARGE_HEAP

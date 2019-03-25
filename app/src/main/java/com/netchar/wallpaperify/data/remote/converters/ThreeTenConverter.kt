@@ -1,4 +1,4 @@
-package com.netchar.wallpaperify.data.converters
+package com.netchar.wallpaperify.data.remote.converters
 
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.ToJson
@@ -12,10 +12,6 @@ import org.threeten.bp.format.DateTimeFormatter.ISO_INSTANT
  * e.glushankov@gmail.com
  */
 class ThreeTenConverter {
-    companion object {
-        val instance = ThreeTenConverter()
-    }
-
     @ToJson
     fun toJson(time: Instant): String = ISO_INSTANT.format(time)
 

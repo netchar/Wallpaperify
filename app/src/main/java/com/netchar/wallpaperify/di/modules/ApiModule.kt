@@ -1,27 +1,24 @@
 package com.netchar.wallpaperify.di.modules
 
-import android.content.SharedPreferences
-import com.netchar.wallpaperify.data.api.PhotosApi
-import com.netchar.wallpaperify.data.services.oauth.OAuthService
-import com.netchar.wallpaperify.di.AuthPrefs
+import com.netchar.wallpaperify.data.remote.api.PhotosApi
+import com.netchar.wallpaperify.data.repositories.IPhotosRepository
+import com.netchar.wallpaperify.data.repositories.PhotosRepository
+import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
 import javax.inject.Singleton
 
 @Module
-abstract class ApiModule {
-    @Module
-    companion object {
+object ApiModule {
 
-        @JvmStatic
-        @Provides
-        @Singleton
-        fun providesPhotoApi(retrofit: Retrofit): PhotosApi = retrofit.create(PhotosApi::class.java)
+    @JvmStatic
+    @Provides
+    @Singleton
+    fun providesPhotoApi(retrofit: Retrofit): PhotosApi = retrofit.create(PhotosApi::class.java)
 
-        @JvmStatic
-        @Provides
-        @Singleton
-        fun bindOauthService(@AuthPrefs preferences: SharedPreferences) = OAuthService(preferences)
-    }
+    @JvmStatic
+    @Provides
+    @Singleton
+    fun photosRepo(api: PhotosApi): IPhotosRepository = PhotosRepository(api)
 }

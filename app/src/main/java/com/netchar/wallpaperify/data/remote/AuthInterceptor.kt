@@ -1,5 +1,6 @@
-package com.netchar.wallpaperify.data.services.oauth
+package com.netchar.wallpaperify.data.remote
 
+import com.netchar.wallpaperify.data.services.oauth.OAuthService
 import com.netchar.wallpaperify.infrastructure.BuildPreferences
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -17,7 +18,7 @@ class AuthInterceptor @Inject constructor(private val oAuthService: OAuthService
         return chain.proceed(request)
     }
 
-    private fun getRequestHeader() = if (oAuthService.isAuthorized) {
+    private fun getRequestHeader() = if (!oAuthService.isAuthorized) {
         "Bearer ${oAuthService.userApiAccessToken}"
     } else {
         "Client-ID ${BuildPreferences.getApiAccessKey()}"

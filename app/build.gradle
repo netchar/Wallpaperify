@@ -53,6 +53,8 @@ android {
 }
 
 dependencies {
+    def kotlinCoroutineVersion = "1.1.1"
+
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
@@ -72,18 +74,22 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:$versions.dagger"
 
     implementation "com.squareup.retrofit2:retrofit:$versions.retrofit"
+    implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2"
+    implementation "com.squareup.retrofit2:converter-moshi:$versions.converterMoshi"
 
     implementation "android.arch.lifecycle:extensions:$versions.archExtensions"
 
     implementation "com.jakewharton.threetenabp:threetenabp:$versions.treeTen"
 
     implementation "com.squareup.moshi:moshi:$versions.moshi"
-    implementation "com.squareup.retrofit2:converter-moshi:$versions.converterMoshi"
     implementation "se.ansman.kotshi:api:$versions.kotshi"
     kapt "se.ansman.kotshi:compiler:$versions.kotshi"
 
     implementation "com.squareup.okhttp3:okhttp:$versions.okHttp"
     implementation "com.squareup.okhttp3:logging-interceptor:$versions.okHttpLoggingInterceptor"
+
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinCoroutineVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutineVersion"
 
     testImplementation "junit:junit:$versions.junit"
     androidTestImplementation "com.android.support.test:runner:$versions.runner"

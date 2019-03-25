@@ -1,8 +1,9 @@
-package com.netchar.wallpaperify
+package com.netchar.wallpaperify.ui
 
 import android.app.Activity
 import android.app.Application
 import com.jakewharton.threetenabp.AndroidThreeTen
+import com.netchar.wallpaperify.BuildConfig
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
@@ -15,7 +16,7 @@ class App : Application(), HasActivityInjector {
     lateinit var activityInjector: DispatchingAndroidInjector<Activity>
 
     private val component: AndroidInjector<App> by lazy {
-        DaggerAppComponent.builder().create(this)
+        DaggerAppComponent.builder().context(this).create(this)
     }
 
     override fun onCreate() {

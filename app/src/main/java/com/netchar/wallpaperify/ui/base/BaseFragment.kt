@@ -1,4 +1,4 @@
-package com.netchar.wallpaperify.base
+package com.netchar.wallpaperify.ui.base
 
 import android.content.Context
 import android.os.Bundle

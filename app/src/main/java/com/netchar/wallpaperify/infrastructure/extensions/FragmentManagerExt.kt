@@ -3,7 +3,7 @@ package com.netchar.wallpaperify.infrastructure.extensions
 import android.support.annotation.IdRes
 import android.support.v4.app.FragmentManager
 import com.netchar.wallpaperify.R
-import com.netchar.wallpaperify.base.BaseFragment
+import com.netchar.wallpaperify.ui.base.BaseFragment
 
 
 /**

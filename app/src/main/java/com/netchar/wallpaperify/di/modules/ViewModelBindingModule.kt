@@ -4,7 +4,7 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import com.netchar.wallpaperify.di.ViewModelKey
 import com.netchar.wallpaperify.di.factories.ViewModelFactory
-import com.netchar.wallpaperify.home.MainViewModel
+import com.netchar.wallpaperify.ui.home.MainViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

@@ -1,4 +1,4 @@
-package com.netchar.wallpaperify.home
+package com.netchar.wallpaperify.ui.home
 
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -8,4 +8,6 @@ abstract class MainActivityModule {
 
     @ContributesAndroidInjector
     abstract fun contributeMainFragment(): MainFragment
+
+
 }
