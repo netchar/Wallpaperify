@@ -1,4 +1,4 @@
-package com.netchar.wallpaperify.data.models.dto
+package com.netchar.wallpaperify.data.remote.dto
 
 import com.squareup.moshi.Json
 

@@ -3,6 +3,7 @@ package com.netchar.wallpaperify.di.modules
 import com.netchar.wallpaperify.data.remote.api.PhotosApi
 import com.netchar.wallpaperify.data.repositories.IPhotosRepository
 import com.netchar.wallpaperify.data.repositories.PhotosRepository
+import com.netchar.wallpaperify.infrastructure.CoroutineDispatchers
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
@@ -20,5 +21,5 @@ object ApiModule {
     @JvmStatic
     @Provides
     @Singleton
-    fun photosRepo(api: PhotosApi): IPhotosRepository = PhotosRepository(api)
+    fun photosRepo(api: PhotosApi, dispatchers: CoroutineDispatchers): IPhotosRepository = PhotosRepository(api, dispatchers)
 }

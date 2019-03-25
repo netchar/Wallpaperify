@@ -2,14 +2,12 @@ package com.netchar.wallpaperify.di.modules
 
 import android.content.Context
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
-import com.netchar.wallpaperify.data.models.dto.UnsplashError
 import com.netchar.wallpaperify.data.remote.converters.ThreeTenConverter
 import com.netchar.wallpaperify.data.remote.AuthInterceptor
 import com.netchar.wallpaperify.data.services.oauth.OAuthService
 import com.netchar.wallpaperify.di.factories.ApplicationJsonAdapterFactory
 import com.netchar.wallpaperify.infrastructure.extensions.notExist
 import com.netchar.wallpaperify.infrastructure.utils.Memory
-import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides

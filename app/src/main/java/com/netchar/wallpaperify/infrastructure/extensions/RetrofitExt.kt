@@ -1,6 +1,6 @@
 package com.netchar.wallpaperify.infrastructure.extensions
 
-import com.netchar.wallpaperify.data.models.HttpResult
+import com.netchar.wallpaperify.data.remote.HttpResult
 import com.netchar.wallpaperify.data.remote.HttpStatusCode
 import kotlinx.coroutines.Deferred
 import retrofit2.Response

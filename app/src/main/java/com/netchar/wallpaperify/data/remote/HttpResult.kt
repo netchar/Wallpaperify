@@ -1,7 +1,6 @@
-package com.netchar.wallpaperify.data.models
+package com.netchar.wallpaperify.data.remote
 
-import com.netchar.wallpaperify.data.models.dto.UnsplashError
-import com.netchar.wallpaperify.data.remote.HttpStatusCode
+import com.netchar.wallpaperify.data.remote.dto.UnsplashError
 import com.squareup.moshi.Moshi
 import okhttp3.ResponseBody
 import retrofit2.Response

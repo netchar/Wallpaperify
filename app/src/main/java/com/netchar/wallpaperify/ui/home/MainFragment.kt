@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.netchar.wallpaperify.R
+import com.netchar.wallpaperify.data.models.Resource
 import com.netchar.wallpaperify.ui.base.BaseFragment
 import com.netchar.wallpaperify.di.factories.ViewModelFactory
 import com.netchar.wallpaperify.infrastructure.extensions.injectViewModel
@@ -39,18 +40,22 @@ class MainFragment : BaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = injectViewModel(viewModelFactory)
-        viewModel.getPhotos().observe { photos ->
-            photos?.let {
-                // adapter.updateData(it)
-                Toast.makeText(this.context, photos.toString(), Toast.LENGTH_LONG).show()
+
+        viewModel.photos.observe { response ->
+            when (response) {
+                is Resource.Success -> {
+                    Toast.makeText(this.context, response.data?.joinToString { it.toString() }, Toast.LENGTH_LONG).show()
+                }
+                is Resource.Loading -> {
+                    Toast.makeText(this.context, response.isLoading.toString(), Toast.LENGTH_LONG).show()
+                }
+                is Resource.Error -> {
+                    Toast.makeText(this.context, response.message, Toast.LENGTH_LONG).show()
+                }
             }
+            // adapter.updateData(it)
         }
-
-        viewModel.onError.observe { error -> Toast.makeText(this.context, error, Toast.LENGTH_LONG).show()}
-        viewModel.onLoading.observe { loading -> Toast.makeText(this.context, "LOADING", Toast.LENGTH_LONG).show()}
     }
-
-    //fun <T> LiveData<T>.observe(function: (T) -> Unit) = this.observe(viewLifecycleOwner, Observer { data -> data?.let { function(it) } })
 
     private fun <T> LiveData<T>.observe(observe: (T?) -> Unit) = observe(viewLifecycleOwner, Observer { observe(it) })
 }
