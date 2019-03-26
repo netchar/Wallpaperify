@@ -32,8 +32,8 @@ abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDi
     private fun writeInStorageOnSuccess(resource: Resource<TResult>) {
         if (resource is Resource.Success) {
             saveRemoteDataInStorage(resource.data)
-            result.value = resource
         }
+        result.value = resource
     }
 
     final override fun cancelJob() {

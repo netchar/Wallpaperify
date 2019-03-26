@@ -3,9 +3,12 @@ package com.netchar.wallpaperify.ui.base
 import android.content.Context
 import android.os.Bundle
 import android.support.annotation.CheckResult
+import android.support.annotation.LayoutRes
 import android.support.v4.app.Fragment
 import android.support.v7.widget.Toolbar
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import com.netchar.wallpaperify.R
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -17,6 +20,9 @@ abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
 
     @Inject
     lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
+
+    @get:LayoutRes
+    abstract val layoutResId: Int
 
     private val baseActivity by lazy {
         activity as BaseActivity
@@ -31,8 +37,11 @@ abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
 
     protected var toolbar: Toolbar? = null
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = inflater.inflate(layoutResId, container, false)
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
         setupToolbar(view)
     }
 

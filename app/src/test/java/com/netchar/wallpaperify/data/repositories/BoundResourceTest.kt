@@ -1,15 +1,17 @@
 package com.netchar.wallpaperify.data.repositories
 
-import android.arch.lifecycle.LiveData
-import com.netchar.wallpaperify.data.models.Resource
 import com.netchar.wallpaperify.data.remote.api.PhotosApi
 import com.netchar.wallpaperify.infrastructure.CoroutineDispatchers
 import io.mockk.clearMocks
 import io.mockk.mockk
 import kotlinx.coroutines.Deferred
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import retrofit2.Response
+import org.hamcrest.MatcherAssert.*
+import org.hamcrest.CoreMatchers.*
 
 class BoundResourceTest {
 
@@ -41,9 +43,9 @@ class BoundResourceTest {
     }
 
     @Test
-    fun `getLiveData should return LiveData()`() {
-        val resultValue = boundResource.getLiveData()
-        assert(true)
+    @DisplayName("getLiveData should return not nul LiveData()")
+    fun getLiveData() {
+        Assertions.assertNotNull(boundResource.getLiveData())
     }
 
     @Test

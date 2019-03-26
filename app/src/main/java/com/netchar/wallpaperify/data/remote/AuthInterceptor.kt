@@ -18,7 +18,7 @@ class AuthInterceptor @Inject constructor(private val oAuthService: OAuthService
         return chain.proceed(request)
     }
 
-    private fun getRequestHeader() = if (!oAuthService.isAuthorized) {
+    private fun getRequestHeader() = if (oAuthService.isAuthorized) {
         "Bearer ${oAuthService.userApiAccessToken}"
     } else {
         "Client-ID ${BuildPreferences.getApiAccessKey()}"
