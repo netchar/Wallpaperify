@@ -1,5 +1,6 @@
 package com.netchar.wallpaperify.data.repositories
 
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.netchar.wallpaperify.data.models.Cause
 import com.netchar.wallpaperify.data.remote.HttpResult
@@ -14,7 +15,7 @@ abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDi
 
     private lateinit var job: Job
 
-    final override fun getLiveData() = result
+    final override fun getLiveData() : LiveData<Resource<TResult>> = result
 
     fun launchIn(scope: CoroutineScope): IBoundResource<TResult> {
         job = scope.launch(dispatchers.main) {
