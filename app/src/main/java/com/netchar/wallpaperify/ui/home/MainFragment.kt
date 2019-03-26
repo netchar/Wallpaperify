@@ -41,7 +41,7 @@ class MainFragment : BaseFragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = injectViewModel(viewModelFactory)
 
-        viewModel.photos.observe { response ->
+        viewModel.photos.observe(viewLifecycleOwner, Observer { response ->
             when (response) {
                 is Resource.Success -> {
                     Toast.makeText(this.context, response.data?.joinToString { it.toString() }, Toast.LENGTH_LONG).show()
@@ -54,8 +54,6 @@ class MainFragment : BaseFragment() {
                 }
             }
             // adapter.updateData(it)
-        }
+        })
     }
-
-    private fun <T> LiveData<T>.observe(observe: (T?) -> Unit) = observe(viewLifecycleOwner, Observer { observe(it) })
 }

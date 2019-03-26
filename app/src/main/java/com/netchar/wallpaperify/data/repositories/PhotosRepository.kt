@@ -1,7 +1,5 @@
 package com.netchar.wallpaperify.data.repositories
 
-import android.arch.lifecycle.LiveData
-import com.netchar.wallpaperify.data.models.Resource
 import com.netchar.wallpaperify.data.remote.api.PhotosApi
 import com.netchar.wallpaperify.data.remote.dto.Photo
 import com.netchar.wallpaperify.infrastructure.CoroutineDispatchers
@@ -18,7 +16,7 @@ class PhotosRepository @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : IPhotosRepository {
 
-    override fun getPhotosAsync(page: Int, perPage: Int, orderBy: String, scope: CoroutineScope): LiveData<Resource<List<Photo>>> {
+    override fun getPhotos(page: Int, perPage: Int, orderBy: String, scope: CoroutineScope): IBoundResource<List<Photo>> {
         return object : BoundResource<List<Photo>>(dispatchers) {
 
             override suspend fun apiRequestAsync() = api.getPhotosAsync(page, perPage, orderBy)

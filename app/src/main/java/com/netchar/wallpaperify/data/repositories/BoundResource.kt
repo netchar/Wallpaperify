@@ -1,7 +1,6 @@
 package com.netchar.wallpaperify.data.repositories
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MediatorLiveData
+import android.arch.lifecycle.MutableLiveData
 import com.netchar.wallpaperify.data.models.Cause
 import com.netchar.wallpaperify.data.remote.HttpResult
 import com.netchar.wallpaperify.data.models.Resource
@@ -10,12 +9,15 @@ import com.netchar.wallpaperify.infrastructure.extensions.awaitSafe
 import kotlinx.coroutines.*
 import retrofit2.Response
 
-abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDispatchers) {
+abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDispatchers) : IBoundResource<TResult> {
+    private val result = MutableLiveData<Resource<TResult>>()
 
-    private val result = MediatorLiveData<Resource<TResult>>()
+    private lateinit var job: Job
 
-    fun launchIn(scope: CoroutineScope): LiveData<Resource<TResult>> {
-        scope.launch {
+    final override fun getLiveData() = result
+
+    fun launchIn(scope: CoroutineScope): IBoundResource<TResult> {
+        job = scope.launch(dispatchers.main) {
             val databaseData = fetchFromDatabaseAsync()
             if (shouldRefresh(databaseData)) {
                 val resource = fetchFromNetworkAsync()
@@ -27,7 +29,13 @@ abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDi
                 result.value = Resource.Success(databaseData)
             }
         }
-        return result
+        return this
+    }
+
+    final override fun cancelJob() {
+        if (job.isActive) {
+            job.cancel()
+        }
     }
 
     abstract fun saveRemoteDataInStorage(data: TResult?)
@@ -41,7 +49,7 @@ abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDi
 
     private suspend fun fetchFromNetworkAsync(): Resource<TResult> {
         result.value = Resource.Loading(true)
-        val apiResponse = apiRequestAsync().awaitSafe()
+        val apiResponse = withContext(dispatchers.network) { apiRequestAsync().awaitSafe() }
         result.value = Resource.Loading(false)
         return when (apiResponse) {
             is HttpResult.Success -> {
