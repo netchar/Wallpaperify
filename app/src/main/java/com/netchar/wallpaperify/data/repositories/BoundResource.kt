@@ -45,10 +45,10 @@ abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDi
 
     // todo: make suspend call
     private suspend fun fetchFromDatabaseAsync(): TResult? = withContext(dispatchers.database) {
-        getDatabaseData()
+        getStorageData()
     }
 
-    abstract fun getDatabaseData(): TResult?
+    abstract fun getStorageData(): TResult?
 
     abstract fun shouldRefresh(localData: TResult?): Boolean
 

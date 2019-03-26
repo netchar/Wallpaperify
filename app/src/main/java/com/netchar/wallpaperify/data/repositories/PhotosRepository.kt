@@ -12,12 +12,13 @@ import javax.inject.Inject
  */
 
 class PhotosRepository @Inject constructor(
-    private val api: PhotosApi,
-    private val dispatchers: CoroutineDispatchers
+        private val api: PhotosApi,
+        private val dispatchers: CoroutineDispatchers
 ) : IPhotosRepository {
 
     override fun getPhotos(page: Int, perPage: Int, orderBy: String, scope: CoroutineScope): IBoundResource<List<Photo>> {
         return object : BoundResource<List<Photo>>(dispatchers) {
+            override fun getStorageData(): List<Photo>? = emptyList()
 
             override suspend fun apiRequestAsync() = api.getPhotosAsync(page, perPage, orderBy)
 
