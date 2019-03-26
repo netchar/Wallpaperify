@@ -20,16 +20,19 @@ abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDi
         job = scope.launch(dispatchers.main) {
             val databaseData = fetchFromDatabaseAsync()
             if (shouldRefresh(databaseData)) {
-                val resource = fetchFromNetworkAsync()
-                if (resource is Resource.Success) {
-                    saveRemoteDataInStorage(resource.data)
-                }
-                result.value = resource
+                fetchFromNetworkAsync().also { writeInStorageOnSuccess(it) }
             } else {
                 result.value = Resource.Success(databaseData)
             }
         }
         return this
+    }
+
+    private fun writeInStorageOnSuccess(resource: Resource<TResult>) {
+        if (resource is Resource.Success) {
+            saveRemoteDataInStorage(resource.data)
+            result.value = resource
+        }
     }
 
     final override fun cancelJob() {
@@ -42,8 +45,10 @@ abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDi
 
     // todo: make suspend call
     private suspend fun fetchFromDatabaseAsync(): TResult? = withContext(dispatchers.database) {
-        null
+        getDatabaseData()
     }
+
+    abstract fun getDatabaseData(): TResult?
 
     abstract fun shouldRefresh(localData: TResult?): Boolean
 
@@ -52,15 +57,18 @@ abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDi
         val apiResponse = withContext(dispatchers.network) { apiRequestAsync().awaitSafe() }
         result.value = Resource.Loading(false)
         return when (apiResponse) {
-            is HttpResult.Success -> {
-                if (apiResponse.data == null) {
-                    Resource.Error(Cause.UNEXPECTED, "Error during fetching data from server.")
-                }
-                Resource.Success(apiResponse.data)
-            }
+            is HttpResult.Success -> prepareResourceFor(apiResponse)
             is HttpResult.Error -> Resource.Error.parse(apiResponse)
             is HttpResult.Exception -> Resource.Error(Cause.UNEXPECTED, message = apiResponse.exception.localizedMessage)
             else -> Resource.Error(Cause.UNEXPECTED, "Unable to fetch data from network.")
+        }
+    }
+
+    private fun prepareResourceFor(apiResponse: HttpResult.Success<TResult>): Resource<TResult> {
+        return if (apiResponse.data == null) {
+            Resource.Error(Cause.UNEXPECTED, "Error during fetching data from server.")
+        } else {
+            Resource.Success(apiResponse.data)
         }
     }
 
