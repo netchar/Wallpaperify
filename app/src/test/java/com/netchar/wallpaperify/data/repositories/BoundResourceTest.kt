@@ -26,7 +26,7 @@ class BoundResourceTest {
             TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
 
-        override fun shouldRefresh(localData: List<String>?): Boolean {
+        override fun isNeedRefresh(localData: List<String>): Boolean {
             TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
 

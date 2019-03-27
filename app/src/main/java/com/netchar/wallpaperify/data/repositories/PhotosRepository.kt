@@ -26,7 +26,7 @@ class PhotosRepository @Inject constructor(
                 /*todo: saving*/
             }
 
-            override fun shouldRefresh(localData: List<Photo>?) = localData.isNullOrEmpty()
+            override fun isNeedRefresh(localData: List<Photo>) = localData.isNullOrEmpty()
         }.launchIn(scope)
     }
 }

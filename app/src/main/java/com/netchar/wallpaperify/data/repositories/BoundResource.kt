@@ -19,21 +19,24 @@ abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDi
 
     fun launchIn(scope: CoroutineScope): IBoundResource<TResult> {
         job = scope.launch(dispatchers.main) {
-            val databaseData = fetchFromDatabaseAsync()
-            if (shouldRefresh(databaseData)) {
-                val networkResponse = fetchFromNetworkAsync()
-                writeInStorageOnSuccess(networkResponse)
-                result.value = networkResponse
+            val databaseData = fetchDataFromDatabaseAsync()
+
+            result.value = if (databaseData == null || isNeedRefresh(databaseData)) {
+                fetchFromNetworkAsync().also {
+                    writeInStorageOnSuccessAsync(it)
+                }
             } else {
-                result.value = Resource.Success(databaseData)
+                Resource.Success(databaseData)
             }
         }
         return this
     }
 
-    private fun writeInStorageOnSuccess(resource: Resource<TResult>) {
+    private suspend fun writeInStorageOnSuccessAsync(resource: Resource<TResult>) {
         if (resource is Resource.Success) {
-            saveRemoteDataInStorage(resource.data)
+            withContext(dispatchers.database) {
+                saveRemoteDataInStorage(resource.data)
+            }
         }
     }
 
@@ -45,18 +48,17 @@ abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDi
 
     abstract fun saveRemoteDataInStorage(data: TResult?)
 
-    // todo: make suspend call
-    private suspend fun fetchFromDatabaseAsync(): TResult? = withContext(dispatchers.database) {
+    private suspend fun fetchDataFromDatabaseAsync(): TResult? = withContext(dispatchers.database) {
         getStorageData()
     }
 
     abstract fun getStorageData(): TResult?
 
-    abstract fun shouldRefresh(localData: TResult?): Boolean
+    abstract fun isNeedRefresh(localData: TResult): Boolean
 
     private suspend fun fetchFromNetworkAsync(): Resource<TResult> {
         result.value = Resource.Loading(true)
-        val apiResponse = withContext(dispatchers.network) { apiRequestAsync().awaitSafe() }
+        val apiResponse = apiRequestAsync().awaitSafe()
         result.value = Resource.Loading(false)
         return when (apiResponse) {
             is HttpResult.Success -> prepareResourceFor(apiResponse)

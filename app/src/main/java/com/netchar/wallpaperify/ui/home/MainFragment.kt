@@ -48,7 +48,7 @@ class MainFragment : BaseFragment() {
         viewModel.photos.observe(viewLifecycleOwner, Observer { response ->
             when (response) {
                 is Resource.Success -> {
-                    adapter.setItems(response.data!!)
+                    adapter.setItems(response.data)
                 }
                 is Resource.Loading -> {
                     Toast.makeText(this.context, response.isLoading.toString(), Toast.LENGTH_LONG).show()

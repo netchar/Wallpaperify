@@ -9,24 +9,20 @@ import java.io.IOException
 suspend fun <T : Any> Deferred<Response<T>>.awaitSafe(): HttpResult<T> {
     return try {
         val response = this.await()
-
         if (response.isSuccessful) {
-            val body = response.body()
-
-            if (isInvalidResponse(body, response)) {
-                HttpResult.Exception(NullPointerException("Body is empty with ${response.raw().code()} status code."))
-            } else {
-                HttpResult.Success(body)
+            when {
+                response.valid() -> HttpResult.Success(response.body())
+                response.noContent() -> HttpResult.Empty()
+                else -> HttpResult.Exception(IllegalStateException("Body is empty with ${response.raw().code()} status code."))
             }
-
         } else {
             HttpResult.Error.parse(response)
         }
-
     } catch (e: IOException) {
         HttpResult.Exception(e)
     }
 }
 
-private fun <T : Any> isInvalidResponse(body: T?, response: Response<T>) = body == null && response.code().toHttpCode() != HttpStatusCode.NO_CONTENT
+private fun <T : Any> Response<T>.valid() = body() != null
+private fun <T : Any> Response<T>.noContent() = body() == null && code().toHttpCode() == HttpStatusCode.NO_CONTENT
 private fun Int.toHttpCode() = HttpStatusCode.getByCode(this)
