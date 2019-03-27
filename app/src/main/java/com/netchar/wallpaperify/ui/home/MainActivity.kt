@@ -2,7 +2,6 @@ package com.netchar.wallpaperify.ui.home
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.MenuItem
@@ -16,7 +15,7 @@ import com.netchar.wallpaperify.infrastructure.extensions.injectViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
-class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : BaseActivity() {
     companion object {
         const val BACK_DOUBLE_TAP_TIMEOUT = 1000L
     }
@@ -36,39 +35,43 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         viewModel = injectViewModel(factory)
 
         setupNavigationDrawer()
+        setupBottomNavigationView()
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .addToBackStack(null)
-                .replace(R.id.fragment_container, MainFragment.newInstance())
-                .commit()
+                    .addToBackStack(null)
+                    .replace(R.id.fragment_container, MainFragment.newInstance())
+                    .commit()
         }
+    }
+
+    private fun setupBottomNavigationView() {
+        bottom_navigation_view.setOnNavigationItemSelectedListener(::onBottomNavigationItemSelected)
+    }
+
+    private fun onBottomNavigationItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.bottom_nav_home -> {
+
+            }
+            R.id.bottom_nav_featured -> {
+
+            }
+            R.id.bottom_nav_collections -> {
+
+            }
+        }
+
+        return true
     }
 
     private fun setupNavigationDrawer() {
         toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
-        nav_view.setNavigationItemSelectedListener(this)
+        nav_view.setNavigationItemSelectedListener(::onNavigationItemSelected)
     }
 
-    override fun onPostCreate(savedInstanceState: Bundle?) {
-        super.onPostCreate(savedInstanceState)
-        toggle.syncState()
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration?) {
-        super.onConfigurationChanged(newConfig)
-        toggle.onConfigurationChanged(newConfig)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (toggle.onOptionsItemSelected(item)) {
-            return true
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+    private fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.nav_camera -> {
@@ -93,6 +96,23 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        toggle.syncState()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        toggle.onConfigurationChanged(newConfig)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (toggle.onOptionsItemSelected(item)) {
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onBackPressed() {

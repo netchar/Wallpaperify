@@ -11,4 +11,7 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="main_toast_confirm_back">Press \'back\' again to exit.</string>
+    <string name="bottom_nav_new_title">Latest</string>
+    <string name="bottom_nav_trending_title">Trending</string>
+    <string name="bottom_nav_collections_title">Collections</string>
 </resources>

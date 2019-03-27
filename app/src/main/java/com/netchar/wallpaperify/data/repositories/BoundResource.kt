@@ -15,13 +15,15 @@ abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDi
 
     private lateinit var job: Job
 
-    final override fun getLiveData() : LiveData<Resource<TResult>> = result
+    final override fun getLiveData(): LiveData<Resource<TResult>> = result
 
     fun launchIn(scope: CoroutineScope): IBoundResource<TResult> {
         job = scope.launch(dispatchers.main) {
             val databaseData = fetchFromDatabaseAsync()
             if (shouldRefresh(databaseData)) {
-                fetchFromNetworkAsync().also { writeInStorageOnSuccess(it) }
+                val networkResponse = fetchFromNetworkAsync()
+                writeInStorageOnSuccess(networkResponse)
+                result.value = networkResponse
             } else {
                 result.value = Resource.Success(databaseData)
             }
@@ -33,7 +35,6 @@ abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDi
         if (resource is Resource.Success) {
             saveRemoteDataInStorage(resource.data)
         }
-        result.value = resource
     }
 
     final override fun cancelJob() {
