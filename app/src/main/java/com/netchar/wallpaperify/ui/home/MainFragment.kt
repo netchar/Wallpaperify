@@ -1,14 +1,13 @@
 package com.netchar.wallpaperify.ui.home
 
-import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.v7.widget.RecyclerView
 import android.view.*
 import android.widget.Toast
 import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.bumptech.glide.request.RequestOptions
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.data.models.Resource
 import com.netchar.wallpaperify.data.remote.dto.Photo
@@ -40,7 +39,9 @@ class MainFragment : BaseFragment() {
         main_recycler.adapter = adapter
     }
 
-    val adapter = PhotoAdapter()
+    private val adapter by lazy {
+        PhotoAdapter(Glide.with(this))
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -57,7 +58,6 @@ class MainFragment : BaseFragment() {
                     Toast.makeText(this.context, response.message, Toast.LENGTH_LONG).show()
                 }
             }
-            // adapter.updateData(it)
         })
     }
 
@@ -77,16 +77,20 @@ class MainFragment : BaseFragment() {
         return true
     }
 
-    class PhotoAdapter : GenericAdapter<Photo>() {
+    class PhotoAdapter(private val glide: RequestManager) : GenericAdapter<Photo>() {
         override fun getLayoutId(position: Int, obj: Photo): Int = R.layout.raw_photo
 
-        override fun getViewHolder(view: View, viewType: Int): RecyclerView.ViewHolder = ViewHolder(view)
+        override fun getViewHolder(view: View, viewType: Int): RecyclerView.ViewHolder = ViewHolder(glide, view)
 
-        class ViewHolder(view: View) : RecyclerView.ViewHolder(view), GenericAdapter.Binder<Photo> {
+        class ViewHolder(private val glide: RequestManager, view: View) : RecyclerView.ViewHolder(view), GenericAdapter.Binder<Photo> {
             override fun bind(data: Photo) {
-                Glide.with(itemView).load(data.urls.regular)
-                        .transition(DrawableTransitionOptions.withCrossFade())
-                        .into(itemView.row_photo_iv)
+
+                glide
+                    .load(data.urls.regular)
+                    .centerCrop()
+                    .thumbnail(Glide.with(itemView).load(data.urls.thumb))
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .into(itemView.row_photo_iv)
             }
         }
     }

@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import com.netchar.wallpaperify.R
+import com.netchar.wallpaperify.di.Injector
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -18,7 +19,7 @@ abstract class BaseActivity : AppCompatActivity(), HasSupportFragmentInjector {
     lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidInjection.inject(this)
+        Injector.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(layoutResId)
         setupToolbar()

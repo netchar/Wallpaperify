@@ -12,11 +12,20 @@ import javax.inject.Inject
 
 class App : Application(), HasActivityInjector {
 
+    init {
+        instance = this
+    }
+
+    companion object {
+        private lateinit var instance: App
+        fun get() = instance
+    }
+
     @Inject
     lateinit var activityInjector: DispatchingAndroidInjector<Activity>
 
-    private val component: AndroidInjector<App> by lazy {
-        DaggerAppComponent.builder().context(this).create(this)
+    val component: AppComponent by lazy {
+        DaggerAppComponent.builder().context(this).create(this) as AppComponent
     }
 
     override fun onCreate() {

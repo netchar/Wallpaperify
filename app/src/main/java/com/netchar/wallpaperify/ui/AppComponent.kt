@@ -5,6 +5,7 @@ import com.netchar.wallpaperify.di.modules.ActivityBindingModule
 import com.netchar.wallpaperify.di.modules.ApiModule
 import com.netchar.wallpaperify.di.modules.NetworkModule
 import com.netchar.wallpaperify.di.modules.ViewModelBindingModule
+import com.netchar.wallpaperify.infrastructure.glide.GlideConfigurationModule
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjector
@@ -23,9 +24,12 @@ import javax.inject.Singleton
 )
 interface AppComponent : AndroidInjector<App> {
 
+    fun inject(glideConfig: GlideConfigurationModule)
+
     @Component.Builder
     abstract class Builder : AndroidInjector.Builder<App>(){
         @BindsInstance
         abstract fun context(context: Context): Builder
+
     }
 }

@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import com.netchar.wallpaperify.infrastructure.CoroutineDispatchers
 import com.netchar.wallpaperify.di.AppPrefs
 import com.netchar.wallpaperify.di.AuthPrefs
+import com.netchar.wallpaperify.infrastructure.utils.PerformanceChecker
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -28,5 +29,10 @@ object AppModule {
     @Provides
     @Singleton
     fun provideDispatchers(): CoroutineDispatchers = CoroutineDispatchers()
+
+    @JvmStatic
+    @Provides
+    @Singleton
+    fun providePerformanceChecker(context: Context): PerformanceChecker = PerformanceChecker(context)
 }
 

@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.netchar.wallpaperify.R
+import com.netchar.wallpaperify.di.Injector
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.AndroidSupportInjection
@@ -29,7 +30,7 @@ abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
     }
 
     override fun onAttach(context: Context?) {
-        AndroidSupportInjection.inject(this)
+        Injector.inject(this)
         super.onAttach(context)
     }
 
