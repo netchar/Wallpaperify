@@ -1,4 +1,4 @@
-package com.netchar.wallpaperify.data.repositories
+package com.netchar.wallpaperify.data.repository
 
 import com.netchar.wallpaperify.data.remote.dto.Photo
 import kotlinx.coroutines.CoroutineScope

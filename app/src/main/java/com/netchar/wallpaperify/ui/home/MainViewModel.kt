@@ -4,9 +4,9 @@ import android.arch.lifecycle.*
 import com.netchar.wallpaperify.data.models.PhotosApiRequest
 import com.netchar.wallpaperify.data.remote.api.PhotosApi
 import com.netchar.wallpaperify.data.remote.dto.Photo
-import com.netchar.wallpaperify.data.repositories.IPhotosRepository
+import com.netchar.wallpaperify.data.repository.IPhotosRepository
 import com.netchar.wallpaperify.data.models.Resource
-import com.netchar.wallpaperify.data.repositories.IBoundResource
+import com.netchar.wallpaperify.data.repository.IBoundResource
 import com.netchar.wallpaperify.infrastructure.AbsentLiveData
 import com.netchar.wallpaperify.infrastructure.CoroutineDispatchers
 import kotlinx.coroutines.*

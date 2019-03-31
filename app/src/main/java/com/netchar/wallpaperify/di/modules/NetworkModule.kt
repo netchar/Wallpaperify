@@ -4,7 +4,7 @@ import android.content.Context
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.netchar.wallpaperify.data.remote.converters.ThreeTenConverter
 import com.netchar.wallpaperify.data.remote.AuthInterceptor
-import com.netchar.wallpaperify.data.services.oauth.OAuthService
+import com.netchar.wallpaperify.data.repository.OAuthRepository
 import com.netchar.wallpaperify.di.factories.ApplicationJsonAdapterFactory
 import com.netchar.wallpaperify.infrastructure.extensions.notExist
 import com.netchar.wallpaperify.infrastructure.utils.Memory
@@ -22,7 +22,7 @@ import javax.inject.Singleton
 
 const val BASE_URL = "https://api.unsplash.com/"
 
-@Module(includes = [OAuthServiceModule::class])
+@Module(includes = [OAuthModule::class])
 object NetworkModule {
 
     @JvmStatic
@@ -52,7 +52,7 @@ object NetworkModule {
     @JvmStatic
     @Provides
     @Singleton
-    fun provideOAuthInterceptor(oAuthService: OAuthService): AuthInterceptor = AuthInterceptor(oAuthService)
+    fun provideOAuthInterceptor(oAuthRepository: OAuthRepository): AuthInterceptor = AuthInterceptor(oAuthRepository)
 
     @JvmStatic
     @Provides
@@ -80,10 +80,5 @@ object NetworkModule {
         .addCallAdapterFactory(CoroutineCallAdapterFactory())
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .build()
-//
-//    @JvmStatic
-//    @Provides
-//    @Singleton
-//    fun provideUnsplashErrorConverter(moshi: Moshi): JsonAdapter<UnsplashError> = moshi.adapter(UnsplashError::class.java)
 }
 

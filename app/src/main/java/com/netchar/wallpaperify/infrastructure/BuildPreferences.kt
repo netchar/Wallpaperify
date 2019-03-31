@@ -17,6 +17,7 @@ object BuildPreferences {
         BuildConfig.RELEASE_API_SECRET_KEY
     }
 
+    //todo: move to SystemUtils.kt
 //    fun Context.getVersionCode(): Int {
 //        return try {
 //            val manager = packageManager

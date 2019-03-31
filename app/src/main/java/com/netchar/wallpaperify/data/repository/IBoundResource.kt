@@ -1,4 +1,4 @@
-package com.netchar.wallpaperify.data.repositories
+package com.netchar.wallpaperify.data.repository
 
 import android.arch.lifecycle.LiveData
 import com.netchar.wallpaperify.data.models.Resource

@@ -1,4 +1,4 @@
-package com.netchar.wallpaperify.data.repositories
+package com.netchar.wallpaperify.data.repository
 
 import com.netchar.wallpaperify.data.remote.api.PhotosApi
 import com.netchar.wallpaperify.infrastructure.CoroutineDispatchers
@@ -10,8 +10,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import retrofit2.Response
-import org.hamcrest.MatcherAssert.*
-import org.hamcrest.CoreMatchers.*
 
 class BoundResourceTest {
 

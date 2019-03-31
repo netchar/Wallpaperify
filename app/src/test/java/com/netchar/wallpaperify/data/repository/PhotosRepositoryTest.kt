@@ -1,4 +1,4 @@
-package com.netchar.wallpaperify.data.repositories
+package com.netchar.wallpaperify.data.repository
 
 class PhotosRepositoryTest {
 

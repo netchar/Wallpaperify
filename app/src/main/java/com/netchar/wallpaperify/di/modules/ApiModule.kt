@@ -1,10 +1,9 @@
 package com.netchar.wallpaperify.di.modules
 
 import com.netchar.wallpaperify.data.remote.api.PhotosApi
-import com.netchar.wallpaperify.data.repositories.IPhotosRepository
-import com.netchar.wallpaperify.data.repositories.PhotosRepository
+import com.netchar.wallpaperify.data.repository.IPhotosRepository
+import com.netchar.wallpaperify.data.repository.PhotosRepository
 import com.netchar.wallpaperify.infrastructure.CoroutineDispatchers
-import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
