@@ -2,16 +2,16 @@ package com.netchar.wallpaperify.ui.home
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.support.v4.view.GravityCompat
-import android.support.v7.app.ActionBarDrawerToggle
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.core.view.GravityCompat
 import com.netchar.wallpaperify.R
-import com.netchar.wallpaperify.ui.base.BaseActivity
 import com.netchar.wallpaperify.di.factories.ViewModelFactory
 import com.netchar.wallpaperify.infrastructure.extensions.canPopFragment
 import com.netchar.wallpaperify.infrastructure.extensions.getCurrentFragment
 import com.netchar.wallpaperify.infrastructure.extensions.injectViewModel
+import com.netchar.wallpaperify.ui.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 

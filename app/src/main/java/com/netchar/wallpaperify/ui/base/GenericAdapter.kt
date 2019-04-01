@@ -1,11 +1,10 @@
 package com.netchar.wallpaperify.ui.base
 
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-abstract class GenericAdapter<T> : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+abstract class GenericAdapter<T> : androidx.recyclerview.widget.RecyclerView.Adapter<androidx.recyclerview.widget.RecyclerView.ViewHolder>() {
 
     var listItems: List<T> = emptyList()
 
@@ -14,11 +13,11 @@ abstract class GenericAdapter<T> : RecyclerView.Adapter<RecyclerView.ViewHolder>
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): androidx.recyclerview.widget.RecyclerView.ViewHolder {
         return getViewHolder(LayoutInflater.from(parent.context).inflate(viewType, parent, false), viewType)
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: androidx.recyclerview.widget.RecyclerView.ViewHolder, position: Int) {
         (holder as Binder<T>).bind(listItems[position])
     }
 
@@ -32,7 +31,7 @@ abstract class GenericAdapter<T> : RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     protected abstract fun getLayoutId(position: Int, obj: T): Int
 
-    abstract fun getViewHolder(view: View, viewType: Int): RecyclerView.ViewHolder
+    abstract fun getViewHolder(view: View, viewType: Int): androidx.recyclerview.widget.RecyclerView.ViewHolder
 
     internal interface Binder<T> {
         fun bind(data: T)

@@ -1,6 +1,6 @@
 package com.netchar.wallpaperify.infrastructure
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 
 /*
  * Created by Rifqi Mulya Fahmi on 29/11/18.

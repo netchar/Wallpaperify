@@ -1,10 +1,10 @@
 package com.netchar.wallpaperify.data.repository
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.netchar.wallpaperify.data.models.Cause
-import com.netchar.wallpaperify.data.remote.HttpResult
 import com.netchar.wallpaperify.data.models.Resource
+import com.netchar.wallpaperify.data.remote.HttpResult
 import com.netchar.wallpaperify.infrastructure.CoroutineDispatchers
 import com.netchar.wallpaperify.infrastructure.extensions.awaitSafe
 import kotlinx.coroutines.*
