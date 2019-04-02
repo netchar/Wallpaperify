@@ -2,25 +2,23 @@ package com.netchar.wallpaperify.ui.base
 
 import android.content.Context
 import android.os.Bundle
-import android.support.annotation.CheckResult
-import android.support.annotation.LayoutRes
-import android.support.v4.app.Fragment
-import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.CheckResult
+import androidx.annotation.LayoutRes
+import androidx.appcompat.widget.Toolbar
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.Injector
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.support.AndroidSupportInjection
 import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject
 
-abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
+abstract class BaseFragment : androidx.fragment.app.Fragment(), HasSupportFragmentInjector {
 
     @Inject
-    lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
+    lateinit var childFragmentInjector: DispatchingAndroidInjector<androidx.fragment.app.Fragment>
 
     @get:LayoutRes
     abstract val layoutResId: Int
@@ -34,7 +32,7 @@ abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
         super.onAttach(context)
     }
 
-    override fun supportFragmentInjector(): AndroidInjector<Fragment> = childFragmentInjector
+    override fun supportFragmentInjector(): AndroidInjector<androidx.fragment.app.Fragment> = childFragmentInjector
 
     protected var toolbar: Toolbar? = null
 

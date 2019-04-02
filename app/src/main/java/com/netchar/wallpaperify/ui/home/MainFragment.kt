@@ -1,19 +1,21 @@
 package com.netchar.wallpaperify.ui.home
 
-import android.arch.lifecycle.Observer
 import android.os.Bundle
-import android.support.v7.widget.RecyclerView
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
+import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.data.models.Resource
 import com.netchar.wallpaperify.data.remote.dto.Photo
-import com.netchar.wallpaperify.ui.base.BaseFragment
 import com.netchar.wallpaperify.di.factories.ViewModelFactory
 import com.netchar.wallpaperify.infrastructure.extensions.injectViewModel
+import com.netchar.wallpaperify.ui.base.BaseFragment
 import com.netchar.wallpaperify.ui.base.GenericAdapter
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.android.synthetic.main.raw_photo.view.*
@@ -80,9 +82,9 @@ class MainFragment : BaseFragment() {
     class PhotoAdapter(private val glide: RequestManager) : GenericAdapter<Photo>() {
         override fun getLayoutId(position: Int, obj: Photo): Int = R.layout.raw_photo
 
-        override fun getViewHolder(view: View, viewType: Int): RecyclerView.ViewHolder = ViewHolder(glide, view)
+        override fun getViewHolder(view: View, viewType: Int): androidx.recyclerview.widget.RecyclerView.ViewHolder = ViewHolder(glide, view)
 
-        class ViewHolder(private val glide: RequestManager, view: View) : RecyclerView.ViewHolder(view), GenericAdapter.Binder<Photo> {
+        class ViewHolder(private val glide: RequestManager, view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view), GenericAdapter.Binder<Photo> {
             override fun bind(data: Photo) {
 
                 glide

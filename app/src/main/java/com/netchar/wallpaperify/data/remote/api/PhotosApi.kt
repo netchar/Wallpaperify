@@ -1,6 +1,6 @@
 package com.netchar.wallpaperify.data.remote.api
 
-import android.support.annotation.StringDef
+import androidx.annotation.StringDef
 import com.netchar.wallpaperify.data.remote.dto.Photo
 import kotlinx.coroutines.Deferred
 import retrofit2.Response

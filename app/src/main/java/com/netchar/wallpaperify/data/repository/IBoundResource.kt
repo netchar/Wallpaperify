@@ -1,6 +1,6 @@
 package com.netchar.wallpaperify.data.repository
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import com.netchar.wallpaperify.data.models.Resource
 
 interface IBoundResource<TResult : Any> {

@@ -1,15 +1,20 @@
 package com.netchar.wallpaperify.ui.home
 
-import android.arch.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
 import com.netchar.wallpaperify.data.models.PhotosApiRequest
+import com.netchar.wallpaperify.data.models.Resource
 import com.netchar.wallpaperify.data.remote.api.PhotosApi
 import com.netchar.wallpaperify.data.remote.dto.Photo
-import com.netchar.wallpaperify.data.repository.IPhotosRepository
-import com.netchar.wallpaperify.data.models.Resource
 import com.netchar.wallpaperify.data.repository.IBoundResource
+import com.netchar.wallpaperify.data.repository.IPhotosRepository
 import com.netchar.wallpaperify.infrastructure.AbsentLiveData
 import com.netchar.wallpaperify.infrastructure.CoroutineDispatchers
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import javax.inject.Inject
 
 
