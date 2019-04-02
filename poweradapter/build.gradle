@@ -1,0 +1,50 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion versions.build.sdk.compile
+    buildToolsVersion versions.build.buildTools
+
+    defaultConfig {
+        minSdkVersion versions.build.sdk.min
+        targetSdkVersion versions.build.sdk.target
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
+
+    // Androidx
+    implementation "androidx.appcompat:appcompat:$versions.androidx.appcompat"
+    implementation "androidx.constraintlayout:constraintlayout:$versions.androidx.constraintlayout"
+    implementation "com.google.android.material:material:$versions.androidx.material"
+    implementation "androidx.legacy:legacy-support-v4:$versions.androidx.legacy"
+
+    // Test Runner
+    androidTestImplementation "androidx.test:runner:$versions.test.runner"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$versions.test.espresso"
+
+    // JUnit
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$versions.test.junit"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$versions.test.junit"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:$versions.test.junit"
+    testImplementation "org.junit.vintage:junit-vintage-engine:$versions.test.junit"
+}
+
+repositories {
+    jcenter()
+}

@@ -1,0 +1,11 @@
+package com.netchar.poweradapter.item
+
+/**
+ * Created by Netchar on 02.04.2019.
+ * e.glushankov@gmail.com
+ */
+
+interface IRecyclerItem {
+    val id: Long
+    fun renderKey(): String
+}

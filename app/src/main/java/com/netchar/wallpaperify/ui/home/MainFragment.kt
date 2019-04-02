@@ -88,9 +88,8 @@ class MainFragment : BaseFragment() {
             override fun bind(data: Photo) {
 
                 glide
-                    .load(data.urls.regular)
-                    .centerCrop()
-                    .thumbnail(Glide.with(itemView).load(data.urls.thumb))
+                    .load(data.urls.thumb)
+                    .fitCenter()
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(itemView.row_photo_iv)
             }
