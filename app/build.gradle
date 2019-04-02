@@ -5,8 +5,12 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: "de.mannodermaus.android-junit5"
 
+def secretProperties = new Properties()
+secretProperties.load(project.rootProject.file('secret.properties').newDataInputStream())
+
+def appVersionName = '1.0.0'
+
 android {
-    ext.appVersionName = '1.0.0'
 
     compileSdkVersion versions.compileSdk
     buildToolsVersion versions.buildTools
@@ -23,11 +27,11 @@ android {
         versionName appVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "RELEASE_API_ACCESS_KEY", project.RELEASE_API_ACCESS_KEY)
-        buildConfigField("String", "RELEASE_API_SECRET_KEY", project.RELEASE_API_SECRET_KEY)
-        buildConfigField("String", "DEBUG_API_ACCESS_KEY", project.DEBUG_API_ACCESS_KEY)
-        buildConfigField("String", "DEBUG_API_SECRET_KEY", project.DEBUG_API_SECRET_KEY)
-        buildConfigField("String", "GOOGLE_PLAY_LICENSE_KEY", project.GOOGLE_PLAY_LICENSE_KEY)
+        buildConfigField("String", "RELEASE_API_ACCESS_KEY", secretProperties['RELEASE_API_ACCESS_KEY'])
+        buildConfigField("String", "RELEASE_API_SECRET_KEY", secretProperties['RELEASE_API_SECRET_KEY'])
+        buildConfigField("String", "DEBUG_API_ACCESS_KEY", secretProperties['DEBUG_API_ACCESS_KEY'])
+        buildConfigField("String", "DEBUG_API_SECRET_KEY", secretProperties['DEBUG_API_SECRET_KEY'])
+        buildConfigField("String", "GOOGLE_PLAY_LICENSE_KEY", secretProperties['GOOGLE_PLAY_LICENSE_KEY'])
     }
 
     buildTypes {
