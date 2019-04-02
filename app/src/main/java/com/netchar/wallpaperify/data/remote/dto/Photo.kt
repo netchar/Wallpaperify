@@ -1,6 +1,8 @@
 package com.netchar.wallpaperify.data.remote.dto
 
+import com.netchar.poweradapter.item.IRecyclerItem
 import com.squareup.moshi.Json
+import kotlin.random.Random
 
 data class Photo(
     @Json(name = "color")
@@ -29,4 +31,8 @@ data class Photo(
     val user: User,
     @Json(name = "width")
     val width: Int
-)
+) : IRecyclerItem {
+    override val itemId = Random(1).nextLong()
+
+    override fun renderKey() = "Photo"
+}

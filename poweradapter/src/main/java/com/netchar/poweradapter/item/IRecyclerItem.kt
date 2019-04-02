@@ -6,6 +6,6 @@ package com.netchar.poweradapter.item
  */
 
 interface IRecyclerItem {
-    val id: Long
+    val itemId: Long
     fun renderKey(): String
 }
