@@ -7,5 +7,5 @@ package com.netchar.poweradapter.item
 
 interface IRecyclerItem {
     fun getId(): Long
-    fun renderKey(): String
+    fun getRenderKey(): String
 }

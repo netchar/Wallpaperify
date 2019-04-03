@@ -15,6 +15,7 @@ import com.netchar.poweradapter.item.IRecyclerItem
 import com.netchar.poweradapter.item.ItemRenderer
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.data.models.Resource
+import com.netchar.wallpaperify.data.recyclerItems.NewPhotoRecyclerItem
 import com.netchar.wallpaperify.data.remote.dto.Photo
 import com.netchar.wallpaperify.di.factories.ViewModelFactory
 import com.netchar.wallpaperify.infrastructure.extensions.injectViewModel
@@ -45,7 +46,7 @@ class MainFragment : BaseFragment() {
         main_recycler.adapter = RecyclerAdapter(dataSource)
     }
 
-    val renderers = mapOf<String, ItemRenderer<IRecyclerItem>>("Photo" to PhotosRenderer { model -> Toast.makeText(this.context, "Clicked: ${model.user.name}", Toast.LENGTH_LONG).show() } as ItemRenderer<IRecyclerItem>)
+    val renderers = listOf<ItemRenderer<IRecyclerItem>>(PhotosRenderer { model -> Toast.makeText(this.context, "Clicked: ${model.user.name}", Toast.LENGTH_LONG).show() } as ItemRenderer<IRecyclerItem>)
 
     private val dataSource by lazy {
         RecyclerDataSource(renderers)
@@ -57,7 +58,7 @@ class MainFragment : BaseFragment() {
         viewModel.photos.observe(viewLifecycleOwner, Observer { response ->
             when (response) {
                 is Resource.Success -> {
-                    dataSource.setData(response.data)
+                    dataSource.setData(response.data.map { NewPhotoRecyclerItem(it) })
                 }
                 is Resource.Loading -> {
                     Toast.makeText(this.context, response.isLoading.toString(), Toast.LENGTH_LONG).show()
@@ -69,7 +70,7 @@ class MainFragment : BaseFragment() {
         })
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_main, menu)
     }
 
@@ -85,45 +86,30 @@ class MainFragment : BaseFragment() {
         return true
     }
 
-    class PhotosRenderer(val listener: (Photo) -> Unit) : ItemRenderer<Photo>() {
+    class PhotosRenderer(val listener: (Photo) -> Unit) : ItemRenderer<NewPhotoRecyclerItem>() {
+
+        override val renderKey: String = NewPhotoRecyclerItem::class.java.name
+
+        override fun layoutRes() = R.layout.raw_photo
 
         // todo: refactor model var using
-        private lateinit var model: Photo
+        private lateinit var photo: Photo
 
         override fun onSetListeners(itemView: View) {
             itemView.setOnClickListener {
-                if (::model.isInitialized) {
-                    listener(model)
+                if (::photo.isInitialized) {
+                    listener(photo)
                 }
             }
         }
 
-        override fun onBind(itemView: View, model: Photo) {
-            this.model = model
+        override fun onBind(itemView: View, model: NewPhotoRecyclerItem) {
+            photo = model.data
             Glide.with(itemView.context)
-                .load(model.urls.regular)
+                .load(photo.urls.regular)
                 .fitCenter()
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(itemView.row_photo_iv)
         }
-
-        override fun layoutRes() = R.layout.raw_photo
     }
-
-//    class PhotoAdapter(private val glide: RequestManager) : GenericAdapter<Photo>() {
-//        override fun getLayoutId(position: Int, obj: Photo): Int = R.layout.raw_photo
-//
-//        override fun getViewHolder(view: View, viewType: Int): androidx.recyclerview.widget.RecyclerView.ViewHolder = ViewHolder(glide, view)
-//
-//        class ViewHolder(private val glide: RequestManager, view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view), GenericAdapter.Binder<Photo> {
-//            override fun bind(data: Photo) {
-//
-//                glide
-//                    .load(data.urls.thumb)
-//                    .fitCenter()
-//                    .transition(DrawableTransitionOptions.withCrossFade())
-//                    .into(itemView.row_photo_iv)
-//            }
-//        }
-//    }
 }

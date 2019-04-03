@@ -5,7 +5,6 @@ import androidx.annotation.MainThread
 import androidx.annotation.VisibleForTesting
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.netchar.poweradapter.RecyclerDiffCallback
 import com.netchar.poweradapter.item.IRecyclerItem
 import com.netchar.poweradapter.item.ItemRenderer
 import java.lang.ref.WeakReference
@@ -16,44 +15,35 @@ import java.lang.ref.WeakReference
  * e.glushankov@gmail.com
  */
 
-class RecyclerDataSource(private val renderers: Map<String, ItemRenderer<IRecyclerItem>>) {
-
-    private val viewTypeToRendererKeyMap = hashMapOf<Int, String>()
+class RecyclerDataSource(private val renderers: List<ItemRenderer<IRecyclerItem>>) {
     private val data = arrayListOf<IRecyclerItem>()
     private lateinit var adapterReference: WeakReference<RecyclerView.Adapter<RecyclerViewHolder>>
-
-    init {
-        viewTypeToRendererKeyMap.putAll(renderers.map { it.value.layoutRes() to it.key })
-    }
 
     @MainThread
     fun setData(newData: List<IRecyclerItem>) {
         val diffResult = DiffUtil.calculateDiff(RecyclerDiffCallback(data, newData))
         data.clear()
         data.addAll(newData)
-        adapterReference.get()?.let {
+        val adapter = adapterReference.get()
+        adapter?.let {
             diffResult.dispatchUpdatesTo(it)
         }
     }
 
-    fun rendererForType(viewType: Int): ItemRenderer<IRecyclerItem> {
-        return renderers[viewTypeToRendererKeyMap[viewType]] as ItemRenderer<IRecyclerItem>
+    fun getRendererFor(@LayoutRes layoutId: Int): ItemRenderer<IRecyclerItem> {
+        return renderers.find { it.layoutRes() == layoutId } ?: throw IllegalArgumentException("Unable to find appropriate renderer.")
     }
 
     @LayoutRes
     fun getLayoutResFor(position: Int): Int {
-        val renderKey = data[position].renderKey()
-        val itemRenderer = renderers[renderKey]
-        return itemRenderer?.layoutRes() ?: throw IllegalArgumentException("Layout Resource not bound.")
+        val renderKey = data[position].getRenderKey()
+        val renderer = renderers.find { it.renderKey == renderKey } ?: throw IllegalArgumentException("Unable to find renderer for model.rendererKey: $renderKey")
+        return renderer.layoutRes()
     }
 
-    fun getCount(): Int {
-        return data.size
-    }
+    fun getCount() = data.size
 
-    fun getItem(position: Int): IRecyclerItem {
-        return data[position]
-    }
+    fun getItem(position: Int) = data[position]
 
     fun attach(adapter: RecyclerView.Adapter<RecyclerViewHolder>) {
         adapterReference = WeakReference(adapter)

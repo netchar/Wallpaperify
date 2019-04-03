@@ -1,4 +1,4 @@
-package com.netchar.poweradapter
+package com.netchar.poweradapter.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.netchar.poweradapter.item.IRecyclerItem

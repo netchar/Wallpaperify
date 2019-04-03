@@ -12,7 +12,7 @@ suspend fun <T : Any> Deferred<Response<T>>.awaitSafe(): HttpResult<T> {
         if (response.isSuccessful) {
             when {
                 response.valid() -> HttpResult.Success(response.body())
-                response.noContent() -> HttpResult.Empty()
+                response.noContent() -> HttpResult.Empty
                 else -> HttpResult.Exception(IllegalStateException("Body is empty with ${response.raw().code()} status code."))
             }
         } else {

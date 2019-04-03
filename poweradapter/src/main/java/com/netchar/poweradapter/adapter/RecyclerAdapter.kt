@@ -20,7 +20,7 @@ class RecyclerAdapter(private val dataSource: RecyclerDataSource) : RecyclerView
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : RecyclerViewHolder {
-        return RecyclerViewHolder(parent, dataSource.rendererForType(viewType))
+        return RecyclerViewHolder(parent, dataSource.getRendererFor(viewType))
     }
 
     override fun getItemCount() = dataSource.getCount()

@@ -6,7 +6,7 @@ import okhttp3.ResponseBody
 import retrofit2.Response
 
 sealed class HttpResult<out T> {
-    sealed class Empty : HttpResult<Nothing>()
+    object Empty : HttpResult<Nothing>()
     data class Success<out T>(val data: T?) : HttpResult<T>()
     data class Error(val httpStatusCode: HttpStatusCode, val error: UnsplashError?) : HttpResult<Nothing>() {
         companion object {

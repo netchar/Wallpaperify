@@ -5,17 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 
-//interface IItemRenderer<T : IRecyclerItem> {
-//
-//    @LayoutRes
-//    fun layoutRes(): Int
-//
-//    fun createView(parent: ViewGroup): View
-//
-//    fun render(itemView: View, item: T)
-//}
-
 abstract class ItemRenderer<T : IRecyclerItem> {
+
+    abstract val renderKey: String
+
     @LayoutRes
     abstract fun layoutRes(): Int
 
@@ -26,9 +19,7 @@ abstract class ItemRenderer<T : IRecyclerItem> {
 
     abstract fun onBind(itemView: View, model: T)
 
-    open fun onSetListeners(itemView: View) {
-
-    }
+    open fun onSetListeners(itemView: View) {}
 }
 
 
