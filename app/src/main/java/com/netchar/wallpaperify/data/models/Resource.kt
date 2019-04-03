@@ -3,7 +3,7 @@ package com.netchar.wallpaperify.data.models
 import com.netchar.wallpaperify.data.remote.HttpResult
 import com.netchar.wallpaperify.data.remote.HttpStatusCode
 
-open class Resource<out TValue> {
+sealed class Resource<out TValue> {
     data class Success<out TValue>(val data: TValue) : Resource<TValue>()
     data class Error(val cause: Cause, val message: String) : Resource<Nothing>() {
         companion object {

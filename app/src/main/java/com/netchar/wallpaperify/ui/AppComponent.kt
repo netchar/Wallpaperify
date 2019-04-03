@@ -27,9 +27,9 @@ interface AppComponent : AndroidInjector<App> {
     fun inject(glideConfig: GlideConfigurationModule)
 
     @Component.Builder
-    abstract class Builder : AndroidInjector.Builder<App>(){
+    interface Builder {
         @BindsInstance
-        abstract fun context(context: Context): Builder
-
+        fun context(context: Context): Builder
+        fun build() : AppComponent
     }
 }

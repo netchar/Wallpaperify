@@ -7,19 +7,17 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
-import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestManager
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.netchar.poweradapter.adapter.RecyclerAdapter
+import com.netchar.poweradapter.adapter.RecyclerDataSource
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.data.models.Resource
 import com.netchar.wallpaperify.data.remote.dto.Photo
 import com.netchar.wallpaperify.di.factories.ViewModelFactory
 import com.netchar.wallpaperify.infrastructure.extensions.injectViewModel
 import com.netchar.wallpaperify.ui.base.BaseFragment
-import com.netchar.wallpaperify.ui.base.GenericAdapter
 import kotlinx.android.synthetic.main.fragment_main.*
-import kotlinx.android.synthetic.main.raw_photo.view.*
 import javax.inject.Inject
+
 
 class MainFragment : BaseFragment() {
 
@@ -38,11 +36,15 @@ class MainFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         main_recycler.setHasFixedSize(true)
-        main_recycler.adapter = adapter
+        main_recycler.adapter = RecyclerAdapter(dataSource)
     }
 
-    private val adapter by lazy {
-        PhotoAdapter(Glide.with(this))
+    private val dataSource by lazy {
+        RecyclerDataSource(listOf(PhotosRenderer(::onItemClick)))
+    }
+
+    private fun onItemClick(model: Photo) {
+        Toast.makeText(this.context, "Clicked: ${model.user.name}", Toast.LENGTH_LONG).show()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -51,7 +53,7 @@ class MainFragment : BaseFragment() {
         viewModel.photos.observe(viewLifecycleOwner, Observer { response ->
             when (response) {
                 is Resource.Success -> {
-                    adapter.setItems(response.data)
+                    dataSource.setData(response.data.map { NewPhotoRecyclerItem(it) })
                 }
                 is Resource.Loading -> {
                     Toast.makeText(this.context, response.isLoading.toString(), Toast.LENGTH_LONG).show()
@@ -63,7 +65,7 @@ class MainFragment : BaseFragment() {
         })
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_main, menu)
     }
 
@@ -79,21 +81,5 @@ class MainFragment : BaseFragment() {
         return true
     }
 
-    class PhotoAdapter(private val glide: RequestManager) : GenericAdapter<Photo>() {
-        override fun getLayoutId(position: Int, obj: Photo): Int = R.layout.raw_photo
 
-        override fun getViewHolder(view: View, viewType: Int): androidx.recyclerview.widget.RecyclerView.ViewHolder = ViewHolder(glide, view)
-
-        class ViewHolder(private val glide: RequestManager, view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view), GenericAdapter.Binder<Photo> {
-            override fun bind(data: Photo) {
-
-                glide
-                    .load(data.urls.regular)
-                    .centerCrop()
-                    .thumbnail(Glide.with(itemView).load(data.urls.thumb))
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .into(itemView.row_photo_iv)
-            }
-        }
-    }
 }
