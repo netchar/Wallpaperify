@@ -9,7 +9,6 @@ import com.netchar.poweradapter.item.IRecyclerItem
 import com.netchar.poweradapter.item.ItemRenderer
 import java.lang.ref.WeakReference
 
-
 /**
  * Created by Netchar on 02.04.2019.
  * e.glushankov@gmail.com
@@ -22,8 +21,7 @@ class RecyclerDataSource(private val renderers: List<ItemRenderer<IRecyclerItem>
     @MainThread
     fun setData(newData: List<IRecyclerItem>) {
         val diffResult = DiffUtil.calculateDiff(RecyclerDiffCallback(data, newData))
-        data.clear()
-        data.addAll(newData)
+        seedData(newData)
         val adapter = adapterReference.get()
         adapter?.let {
             diffResult.dispatchUpdatesTo(it)
@@ -37,7 +35,7 @@ class RecyclerDataSource(private val renderers: List<ItemRenderer<IRecyclerItem>
     @LayoutRes
     fun getLayoutResFor(position: Int): Int {
         val renderKey = data[position].getRenderKey()
-        val renderer = renderers.find { it.renderKey == renderKey } ?: throw IllegalArgumentException("Unable to find renderer for model.rendererKey: $renderKey")
+        val renderer = renderers.find { it::class.java.name == renderKey } ?: throw IllegalArgumentException("Unable to find renderer for model.rendererKey: $renderKey")
         return renderer.layoutRes()
     }
 

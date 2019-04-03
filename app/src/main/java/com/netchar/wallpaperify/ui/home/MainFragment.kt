@@ -7,21 +7,17 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.netchar.poweradapter.adapter.RecyclerAdapter
 import com.netchar.poweradapter.adapter.RecyclerDataSource
 import com.netchar.poweradapter.item.IRecyclerItem
 import com.netchar.poweradapter.item.ItemRenderer
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.data.models.Resource
-import com.netchar.wallpaperify.data.recyclerItems.NewPhotoRecyclerItem
 import com.netchar.wallpaperify.data.remote.dto.Photo
 import com.netchar.wallpaperify.di.factories.ViewModelFactory
 import com.netchar.wallpaperify.infrastructure.extensions.injectViewModel
 import com.netchar.wallpaperify.ui.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_main.*
-import kotlinx.android.synthetic.main.raw_photo.view.*
 import javax.inject.Inject
 
 
@@ -41,15 +37,16 @@ class MainFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // todo: speed up optimizations for layout manager
         main_recycler.setHasFixedSize(true)
         main_recycler.adapter = RecyclerAdapter(dataSource)
     }
 
-    val renderers = listOf<ItemRenderer<IRecyclerItem>>(PhotosRenderer { model -> Toast.makeText(this.context, "Clicked: ${model.user.name}", Toast.LENGTH_LONG).show() } as ItemRenderer<IRecyclerItem>)
-
     private val dataSource by lazy {
-        RecyclerDataSource(renderers)
+        RecyclerDataSource(listOf(PhotosRenderer(::onItemClick) as ItemRenderer<IRecyclerItem>))
+    }
+
+    private fun onItemClick(model: Photo) {
+        Toast.makeText(this.context, "Clicked: ${model.user.name}", Toast.LENGTH_LONG).show()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -86,30 +83,5 @@ class MainFragment : BaseFragment() {
         return true
     }
 
-    class PhotosRenderer(val listener: (Photo) -> Unit) : ItemRenderer<NewPhotoRecyclerItem>() {
 
-        override val renderKey: String = NewPhotoRecyclerItem::class.java.name
-
-        override fun layoutRes() = R.layout.raw_photo
-
-        // todo: refactor model var using
-        private lateinit var photo: Photo
-
-        override fun onSetListeners(itemView: View) {
-            itemView.setOnClickListener {
-                if (::photo.isInitialized) {
-                    listener(photo)
-                }
-            }
-        }
-
-        override fun onBind(itemView: View, model: NewPhotoRecyclerItem) {
-            photo = model.data
-            Glide.with(itemView.context)
-                .load(photo.urls.regular)
-                .fitCenter()
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .into(itemView.row_photo_iv)
-        }
-    }
 }
