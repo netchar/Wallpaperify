@@ -43,6 +43,9 @@ dependencies {
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$versions.test.junit"
     testImplementation "org.junit.jupiter:junit-jupiter-params:$versions.test.junit"
     testImplementation "org.junit.vintage:junit-vintage-engine:$versions.test.junit"
+
+    // Mockk
+    testImplementation "io.mockk:mockk:$versions.test.mockk"
 }
 
 repositories {
