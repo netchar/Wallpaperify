@@ -15,17 +15,17 @@ class RecyclerAdapter(private val dataSource: RecyclerDataSource) : RecyclerView
         setHasStableIds(true)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = RecyclerViewHolder(parent, dataSource.rendererForType(viewType))
+    override fun getItemViewType(position: Int) : Int {
+        return dataSource.getLayoutResFor(position)
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : RecyclerViewHolder {
+        return RecyclerViewHolder(parent, dataSource.rendererForType(viewType))
+    }
 
     override fun getItemCount() = dataSource.getCount()
 
-    override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) {
-        holder.bind(dataSource.getItem(position))
-    }
+    override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) = holder.bind(dataSource.getItem(position))
 
-    override fun getItemViewType(position: Int) = dataSource.getLayoutResFor(position)
-
-    // todo: why id is the same?
-    override fun getItemId(position: Int) = position.toLong()
-//    override fun getItemId(position: Int) = dataSource.getItem(position).itemId
+    override fun getItemId(position: Int) = dataSource.getItem(position).getId()
 }

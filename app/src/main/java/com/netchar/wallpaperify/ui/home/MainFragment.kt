@@ -1,8 +1,10 @@
 package com.netchar.wallpaperify.ui.home
 
 import android.os.Bundle
-import android.view.*
-import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
@@ -38,14 +40,12 @@ class MainFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // todo: speed up optimizations for layout manager
         main_recycler.setHasFixedSize(true)
         main_recycler.adapter = RecyclerAdapter(dataSource)
     }
 
-    //    private val adapter by lazy {
-//        PhotoAdapter(Glide.with(this))
-//    }
-    val renderers = mapOf<String, ItemRenderer<IRecyclerItem>>("Photo" to PhotosRenderer() as ItemRenderer<IRecyclerItem>)
+    val renderers = mapOf<String, ItemRenderer<IRecyclerItem>>("Photo" to PhotosRenderer { model -> Toast.makeText(this.context, "Clicked: ${model.user.name}", Toast.LENGTH_LONG).show() } as ItemRenderer<IRecyclerItem>)
 
     private val dataSource by lazy {
         RecyclerDataSource(renderers)
@@ -57,7 +57,6 @@ class MainFragment : BaseFragment() {
         viewModel.photos.observe(viewLifecycleOwner, Observer { response ->
             when (response) {
                 is Resource.Success -> {
-//                    adapter.setItems(response.data)
                     dataSource.setData(response.data)
                 }
                 is Resource.Loading -> {
@@ -86,29 +85,29 @@ class MainFragment : BaseFragment() {
         return true
     }
 
-    class PhotosRenderer : ItemRenderer<Photo> {
-        override fun layoutRes() = R.layout.raw_photo
+    class PhotosRenderer(val listener: (Photo) -> Unit) : ItemRenderer<Photo>() {
 
-        override fun createView(parent: ViewGroup): View {
-            val view = LayoutInflater.from(parent.context).inflate(layoutRes(), parent, false)
-            view.tag = Binder(view)
-            return view
-        }
+        // todo: refactor model var using
+        private lateinit var model: Photo
 
-        override fun render(itemView: View, item: Photo) {
-            (itemView.tag as Binder).bind(item)
-        }
-
-        class Binder(private val view: View) {
-
-            fun bind(photo: Photo) {
-                Glide.with(view.context)
-                    .load(photo.urls.regular)
-                    .fitCenter()
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .into(view.row_photo_iv)
+        override fun onSetListeners(itemView: View) {
+            itemView.setOnClickListener {
+                if (::model.isInitialized) {
+                    listener(model)
+                }
             }
         }
+
+        override fun onBind(itemView: View, model: Photo) {
+            this.model = model
+            Glide.with(itemView.context)
+                .load(model.urls.regular)
+                .fitCenter()
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(itemView.row_photo_iv)
+        }
+
+        override fun layoutRes() = R.layout.raw_photo
     }
 
 //    class PhotoAdapter(private val glide: RequestManager) : GenericAdapter<Photo>() {

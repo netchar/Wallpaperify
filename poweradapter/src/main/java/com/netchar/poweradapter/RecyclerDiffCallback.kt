@@ -17,7 +17,7 @@ class RecyclerDiffCallback internal constructor(
     }
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition].itemId == newList[newItemPosition].itemId
+        return oldList[oldItemPosition].getId() == newList[newItemPosition].getId()
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {

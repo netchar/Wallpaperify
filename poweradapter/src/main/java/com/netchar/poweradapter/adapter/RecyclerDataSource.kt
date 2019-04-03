@@ -31,9 +31,8 @@ class RecyclerDataSource(private val renderers: Map<String, ItemRenderer<IRecycl
         val diffResult = DiffUtil.calculateDiff(RecyclerDiffCallback(data, newData))
         data.clear()
         data.addAll(newData)
-        val adapter = adapterReference.get()
-        if (adapter != null) {
-            diffResult.dispatchUpdatesTo(adapter)
+        adapterReference.get()?.let {
+            diffResult.dispatchUpdatesTo(it)
         }
     }
 
@@ -64,7 +63,7 @@ class RecyclerDataSource(private val renderers: Map<String, ItemRenderer<IRecycl
      * Allows us to set data without invoking DiffUtil which would throw an exception during unit testing.
      */
     @VisibleForTesting
-    fun seedData(data: List<IRecyclerItem>) {
+    internal fun seedData(data: List<IRecyclerItem>) {
         this.data.clear()
         this.data.addAll(data)
     }
