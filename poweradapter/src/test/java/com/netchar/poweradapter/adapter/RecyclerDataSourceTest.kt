@@ -20,7 +20,7 @@ internal class RecyclerDataSourceTest {
         every { getRenderKey() } returns "r2"
     }
 
-    private val renderers: List<ItemRenderer<IRecyclerItem>> = listOf(
+    private val renderers: List<ItemRenderer> = listOf(
         mockk {
             every { renderKey } returns "r1"
             every { layoutRes() } returns 1

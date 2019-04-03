@@ -7,7 +7,7 @@ import com.netchar.poweradapter.item.ItemRenderer
 
 class RecyclerViewHolder(
     parent: ViewGroup,
-    private val renderer: ItemRenderer<IRecyclerItem>
+    private val renderer: ItemRenderer
 ) : RecyclerView.ViewHolder(renderer.createView(parent)) {
 
     init {
@@ -15,6 +15,6 @@ class RecyclerViewHolder(
     }
 
     internal fun bind(item: IRecyclerItem) {
-        renderer.onBind(itemView, item)
+        renderer.bind(itemView, item)
     }
 }

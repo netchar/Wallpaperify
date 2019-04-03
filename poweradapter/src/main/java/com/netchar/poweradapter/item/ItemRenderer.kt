@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 
-abstract class ItemRenderer<T : IRecyclerItem> {
+abstract class ItemRenderer {
 
     abstract val renderKey: String
 
@@ -16,7 +16,7 @@ abstract class ItemRenderer<T : IRecyclerItem> {
         return LayoutInflater.from(parent.context).inflate(layoutRes(), parent, false)
     }
 
-    abstract fun onBind(itemView: View, model: T)
+    abstract fun bind(itemView: View, item: IRecyclerItem)
 
     open fun onSetListeners(itemView: View) {}
 }

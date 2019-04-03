@@ -9,8 +9,6 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.netchar.poweradapter.adapter.RecyclerAdapter
 import com.netchar.poweradapter.adapter.RecyclerDataSource
-import com.netchar.poweradapter.item.IRecyclerItem
-import com.netchar.poweradapter.item.ItemRenderer
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.data.models.Resource
 import com.netchar.wallpaperify.data.remote.dto.Photo
@@ -42,7 +40,7 @@ class MainFragment : BaseFragment() {
     }
 
     private val dataSource by lazy {
-        RecyclerDataSource(listOf(PhotosRenderer(::onItemClick) as ItemRenderer<IRecyclerItem>))
+        RecyclerDataSource(listOf(PhotosRenderer(::onItemClick)))
     }
 
     private fun onItemClick(model: Photo) {

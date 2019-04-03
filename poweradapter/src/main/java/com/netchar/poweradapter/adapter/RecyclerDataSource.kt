@@ -14,7 +14,7 @@ import java.lang.ref.WeakReference
  * e.glushankov@gmail.com
  */
 
-class RecyclerDataSource(private val renderers: List<ItemRenderer<IRecyclerItem>>) {
+class RecyclerDataSource(private val renderers: List<ItemRenderer>) {
     private val data = arrayListOf<IRecyclerItem>()
     private lateinit var adapterReference: WeakReference<RecyclerView.Adapter<RecyclerViewHolder>>
 
@@ -28,14 +28,14 @@ class RecyclerDataSource(private val renderers: List<ItemRenderer<IRecyclerItem>
         }
     }
 
-    fun getRendererFor(@LayoutRes layoutId: Int): ItemRenderer<IRecyclerItem> {
+    fun getRendererFor(@LayoutRes layoutId: Int): ItemRenderer {
         return renderers.find { it.layoutRes() == layoutId } ?: throw IllegalArgumentException("Unable to find appropriate renderer.")
     }
 
     @LayoutRes
     fun getLayoutResFor(position: Int): Int {
         val renderKey = data[position].getRenderKey()
-        val renderer = renderers.find { it::class.java.name == renderKey } ?: throw IllegalArgumentException("Unable to find renderer for model.rendererKey: $renderKey")
+        val renderer = renderers.find { it.renderKey == renderKey } ?: throw IllegalArgumentException("Unable to find renderer for model.rendererKey: $renderKey")
         return renderer.layoutRes()
     }
 
