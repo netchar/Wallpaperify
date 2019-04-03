@@ -25,7 +25,7 @@ class App : Application(), HasActivityInjector {
     lateinit var activityInjector: DispatchingAndroidInjector<Activity>
 
     val component: AppComponent by lazy {
-        DaggerAppComponent.builder().context(this).create(this) as AppComponent
+        DaggerAppComponent.builder().context(this).build()
     }
 
     override fun onCreate() {
