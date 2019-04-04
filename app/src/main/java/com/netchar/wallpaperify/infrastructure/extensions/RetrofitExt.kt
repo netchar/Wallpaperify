@@ -23,6 +23,6 @@ suspend fun <T : Any> Deferred<Response<T>>.awaitSafe(): HttpResult<T> {
     }
 }
 
-private fun <T : Any> Response<T>.valid() = body() != null
-private fun <T : Any> Response<T>.noContent() = body() == null && code().toHttpCode() == HttpStatusCode.NO_CONTENT
+private fun <T : Any> Response<T>.valid() = body() != null && body() != ""
+private fun <T : Any> Response<T>.noContent() = code().toHttpCode() == HttpStatusCode.NO_CONTENT
 private fun Int.toHttpCode() = HttpStatusCode.getByCode(this)
