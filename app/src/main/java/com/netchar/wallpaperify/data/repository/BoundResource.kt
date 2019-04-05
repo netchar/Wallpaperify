@@ -1,5 +1,6 @@
 package com.netchar.wallpaperify.data.repository
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.netchar.wallpaperify.data.models.Cause
@@ -10,10 +11,11 @@ import com.netchar.wallpaperify.infrastructure.extensions.awaitSafe
 import kotlinx.coroutines.*
 import retrofit2.Response
 
-abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDispatchers) : IBoundResource<TResult> {
+abstract class BoundResource<TResult : Any>(val dispatchers: CoroutineDispatchers) : IBoundResource<TResult> {
     private val result = MutableLiveData<Resource<TResult>>()
 
-    private lateinit var job: Job
+    @VisibleForTesting
+    lateinit var job: Job
 
     final override fun getLiveData(): LiveData<Resource<TResult>> = result
 
@@ -21,13 +23,15 @@ abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDi
         job = scope.launch(dispatchers.main) {
             val databaseData = fetchDataFromDatabaseAsync()
 
-            result.value = if (databaseData == null || isNeedRefresh(databaseData)) {
+            val resultData = if (databaseData == null || isNeedRefresh(databaseData)) {
                 fetchFromNetworkAsync().also {
                     writeInStorageOnSuccessAsync(it)
                 }
             } else {
                 Resource.Success(databaseData)
             }
+
+            result.value = resultData
         }
         return this
     }
@@ -55,9 +59,9 @@ abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDi
     abstract fun isNeedRefresh(localData: TResult): Boolean
 
     private suspend fun fetchFromNetworkAsync(): Resource<TResult> {
-        result.value = Resource.Loading(true)
-        val apiResponse = apiRequestAsync().awaitSafe()
-        result.value = Resource.Loading(false)
+//        result.value = Resource.Loading(true)
+        val apiResponse: HttpResult<TResult> = apiRequestAsync().awaitSafe()
+//        result.value = Resource.Loading(false)
         return when (apiResponse) {
             is HttpResult.Success -> prepareResourceFor(apiResponse)
             is HttpResult.Error -> Resource.Error.parse(apiResponse)

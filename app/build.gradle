@@ -122,5 +122,6 @@ dependencies {
 
     // Mockk
     testImplementation "io.mockk:mockk:$versions.test.mockk"
+    testImplementation "android.arch.core:core-testing:1.1.1"
 }
 
