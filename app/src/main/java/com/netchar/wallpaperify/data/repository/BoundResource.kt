@@ -21,19 +21,18 @@ abstract class BoundResource<TResult : Any>(val dispatchers: CoroutineDispatcher
 
     fun launchIn(scope: CoroutineScope): IBoundResource<TResult> {
         job = scope.launch(dispatchers.main) {
-            val databaseData = fetchDataFromDatabaseAsync()
-
-            val resultData = if (databaseData == null || isNeedRefresh(databaseData)) {
-                fetchFromNetworkAsync().also {
-                    writeInStorageOnSuccessAsync(it)
-                }
-            } else {
-                Resource.Success(databaseData)
-            }
-
-            result.value = resultData
+            result.value = getResponse()
         }
         return this
+    }
+
+    private suspend fun getResponse(): Resource<TResult> {
+        val databaseData = fetchFromDatabaseAsync()
+        return if (databaseData.isInvalidated()) {
+            fetchFromNetworkAsync().also { writeInStorageOnSuccessAsync(it) }
+        } else {
+            Resource.Success(databaseData!!)
+        }
     }
 
     private suspend fun writeInStorageOnSuccessAsync(resource: Resource<TResult>) {
@@ -50,7 +49,7 @@ abstract class BoundResource<TResult : Any>(val dispatchers: CoroutineDispatcher
 
     abstract fun saveRemoteDataInStorage(data: TResult?)
 
-    private suspend fun fetchDataFromDatabaseAsync(): TResult? = withContext(dispatchers.database) {
+    private suspend fun fetchFromDatabaseAsync(): TResult? = withContext(dispatchers.database) {
         getStorageData()
     }
 
@@ -59,9 +58,9 @@ abstract class BoundResource<TResult : Any>(val dispatchers: CoroutineDispatcher
     abstract fun isNeedRefresh(localData: TResult): Boolean
 
     private suspend fun fetchFromNetworkAsync(): Resource<TResult> {
-//        result.value = Resource.Loading(true)
+        result.value = Resource.Loading(true)
         val apiResponse: HttpResult<TResult> = apiRequestAsync().awaitSafe()
-//        result.value = Resource.Loading(false)
+        result.value = Resource.Loading(false)
         return when (apiResponse) {
             is HttpResult.Success -> prepareResourceFor(apiResponse)
             is HttpResult.Error -> Resource.Error.parse(apiResponse)
@@ -79,4 +78,6 @@ abstract class BoundResource<TResult : Any>(val dispatchers: CoroutineDispatcher
     }
 
     abstract fun apiRequestAsync(): Deferred<Response<TResult>>
+
+    private fun TResult?.isInvalidated() = this == null || isNeedRefresh(this)
 }
