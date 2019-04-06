@@ -3,7 +3,7 @@ package com.netchar.wallpaperify.data.repository
 import com.netchar.wallpaperify.data.remote.api.PhotosApi
 import com.netchar.wallpaperify.data.remote.dto.Photo
 import com.netchar.wallpaperify.infrastructure.CoroutineDispatchers
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
 import javax.inject.Inject
 
 /**
@@ -20,7 +20,7 @@ class PhotosRepository @Inject constructor(
         return object : BoundResource<List<Photo>>(dispatchers) {
             override fun getStorageData(): List<Photo>? = emptyList()
 
-            override suspend fun apiRequestAsync() = api.getPhotosAsync(page, perPage, orderBy)
+            override fun apiRequestAsync() = api.getPhotosAsync(page, perPage, orderBy)
 
             override fun saveRemoteDataInStorage(data: List<Photo>?) {
                 /*todo: saving*/

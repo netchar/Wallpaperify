@@ -78,5 +78,5 @@ abstract class BoundResource<TResult : Any>(val dispatchers: CoroutineDispatcher
         }
     }
 
-    abstract suspend fun apiRequestAsync(): Deferred<Response<TResult>>
+    abstract fun apiRequestAsync(): Deferred<Response<TResult>>
 }
