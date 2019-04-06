@@ -1,6 +1,5 @@
 package com.netchar.wallpaperify.data.repository
 
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.netchar.wallpaperify.data.models.Cause
@@ -14,8 +13,7 @@ import retrofit2.Response
 abstract class BoundResource<TResult : Any>(val dispatchers: CoroutineDispatchers) : IBoundResource<TResult> {
     private val result = MutableLiveData<Resource<TResult>>()
 
-    @VisibleForTesting
-    lateinit var job: Job
+    private lateinit var job: Job
 
     final override fun getLiveData(): LiveData<Resource<TResult>> = result
 
