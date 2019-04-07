@@ -7,7 +7,7 @@ import retrofit2.Response
 
 sealed class HttpResult<out T> {
     object Empty : HttpResult<Nothing>()
-    data class Success<out T>(val data: T?) : HttpResult<T>()
+    data class Success<out T>(val data: T) : HttpResult<T>()
     data class Error(val httpStatusCode: HttpStatusCode, val error: UnsplashError?, val message: String = "") : HttpResult<Nothing>() {
         companion object {
             private val converter by lazy {

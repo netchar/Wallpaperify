@@ -11,12 +11,17 @@ sealed class Resource<out TValue> {
             fun parse(response: HttpResult.Error): Error {
                 val cause = when (response.httpStatusCode) {
                     HttpStatusCode.UNAUTHORIZED -> Cause.NOT_AUTHENTICATED
+                    HttpStatusCode.NO_INTERNET_CONNECTION -> Cause.NO_INTERNET_CONNECTION
                     else -> Cause.UNEXPECTED
                 }
 
                 val message = response.error?.errors?.joinToString { it } ?: response.httpStatusCode.description
 
-                return Error(cause, message)
+                return Resource.Error(cause, message)
+            }
+
+            fun parse(throwable: Throwable): Error {
+                return Resource.Error(Cause.UNEXPECTED,throwable.localizedMessage)
             }
         }
     }
