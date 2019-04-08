@@ -136,6 +136,8 @@ internal class BoundResourceTest {
                 assertEquals(Resource.Loading(false), responseSet.elementAt(1))
                 assertEquals(Resource.Success("success"), responseSet.elementAt(2))
             })
+
+            verify { testResource.saveRemoteDataInStorage("success") }
         }
     }
 
@@ -164,6 +166,8 @@ internal class BoundResourceTest {
                 assertEquals(Resource.Loading(false), responseSet.elementAt(1))
                 assertEquals(Resource.Success("success"), responseSet.elementAt(2))
             })
+
+            verify { testResource.saveRemoteDataInStorage("success") }
         }
     }
 
