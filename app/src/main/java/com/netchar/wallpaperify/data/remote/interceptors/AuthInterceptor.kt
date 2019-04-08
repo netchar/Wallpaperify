@@ -1,4 +1,4 @@
-package com.netchar.wallpaperify.data.remote
+package com.netchar.wallpaperify.data.remote.interceptors
 
 import com.netchar.wallpaperify.data.repository.OAuthRepository
 import com.netchar.wallpaperify.infrastructure.BuildPreferences

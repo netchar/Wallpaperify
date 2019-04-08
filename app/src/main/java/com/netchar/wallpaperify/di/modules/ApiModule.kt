@@ -1,5 +1,6 @@
 package com.netchar.wallpaperify.di.modules
 
+import android.content.Context
 import com.netchar.wallpaperify.data.remote.api.PhotosApi
 import com.netchar.wallpaperify.data.repository.IPhotosRepository
 import com.netchar.wallpaperify.data.repository.PhotosRepository
@@ -20,5 +21,5 @@ object ApiModule {
     @JvmStatic
     @Provides
     @Singleton
-    fun photosRepo(api: PhotosApi, dispatchers: CoroutineDispatchers): IPhotosRepository = PhotosRepository(api, dispatchers)
+    fun photosRepo(context: Context, api: PhotosApi, dispatchers: CoroutineDispatchers): IPhotosRepository = PhotosRepository(api, dispatchers, context)
 }

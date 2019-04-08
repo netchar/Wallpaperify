@@ -16,7 +16,11 @@ sealed class Resource<out TValue> {
 
                 val message = response.error?.errors?.joinToString { it } ?: response.httpStatusCode.description
 
-                return Error(cause, message)
+                return Resource.Error(cause, message)
+            }
+
+            fun parse(throwable: Throwable): Error {
+                return Resource.Error(Cause.UNEXPECTED,throwable.localizedMessage)
             }
         }
     }

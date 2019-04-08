@@ -4,12 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import com.netchar.wallpaperify.data.models.PhotosApiRequest
 import com.netchar.wallpaperify.data.models.Resource
 import com.netchar.wallpaperify.data.remote.api.PhotosApi
 import com.netchar.wallpaperify.data.remote.dto.Photo
 import com.netchar.wallpaperify.data.repository.IBoundResource
 import com.netchar.wallpaperify.data.repository.IPhotosRepository
+import com.netchar.wallpaperify.data.repository.PhotosRepository
 import com.netchar.wallpaperify.infrastructure.AbsentLiveData
 import com.netchar.wallpaperify.infrastructure.CoroutineDispatchers
 import kotlinx.coroutines.CoroutineScope
@@ -25,22 +25,22 @@ class MainViewModel @Inject constructor(
 
     private val job = Job()
     private val scope = CoroutineScope(job + dispatchers.main)
-    private val photosRequest = MutableLiveData<PhotosApiRequest>().apply { value = PhotosApiRequest() }
+    private val photosRequest = MutableLiveData<PhotosRepository.PhotosApiRequest>().apply { value = PhotosRepository.PhotosApiRequest() }
     private lateinit var photosBoundResult: IBoundResource<List<Photo>>
 
     val photos: LiveData<Resource<List<Photo>>> = Transformations.switchMap(photosRequest) { request ->
         if (request == null) {
             AbsentLiveData.create()
         } else {
-            photosBoundResult = repository.getPhotos(request.page, request.perPage, request.orderBy, scope)
+            photosBoundResult = repository.getPhotos(request, scope)
             photosBoundResult.getLiveData()
         }
     }
 
     fun cancelFetchingPhotos() = photosBoundResult.cancelJob()
 
-    fun requestPhotos(page: Int = 0, perPage: Int = 30, orderBy: String = PhotosApi.LATEST) {
-        photosRequest.value = PhotosApiRequest(page, perPage, orderBy)
+    fun requestPhotos(page: Int = 0, perPage: Int = 30, orderBy: String = PhotosRepository.PhotosApiRequest.LATEST) {
+        photosRequest.value = PhotosRepository.PhotosApiRequest(page, perPage, orderBy)
     }
 
     override fun onCleared() {
