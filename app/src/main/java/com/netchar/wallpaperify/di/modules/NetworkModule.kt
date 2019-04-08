@@ -4,7 +4,6 @@ import android.content.Context
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.netchar.wallpaperify.data.remote.converters.ThreeTenConverter
 import com.netchar.wallpaperify.data.remote.interceptors.AuthInterceptor
-import com.netchar.wallpaperify.data.remote.interceptors.NetworkAvailabilityInterceptor
 import com.netchar.wallpaperify.data.repository.OAuthRepository
 import com.netchar.wallpaperify.di.factories.ApplicationJsonAdapterFactory
 import com.netchar.wallpaperify.infrastructure.extensions.notExist
@@ -29,13 +28,12 @@ object NetworkModule {
     @JvmStatic
     @Provides
     @Singleton
-    fun provideOkHttpClient(authInterceptor: AuthInterceptor, loggingInterceptor: HttpLoggingInterceptor, networkInteceptor: NetworkAvailabilityInterceptor, cache: Cache): OkHttpClient = OkHttpClient.Builder()
+    fun provideOkHttpClient(authInterceptor: AuthInterceptor, loggingInterceptor: HttpLoggingInterceptor, cache: Cache): OkHttpClient = OkHttpClient.Builder()
         .connectTimeout(10L, TimeUnit.SECONDS)
         .writeTimeout(10L, TimeUnit.SECONDS)
         .readTimeout(30L, TimeUnit.SECONDS)
         .addInterceptor(authInterceptor)
         .addInterceptor(loggingInterceptor)
-        .addInterceptor(networkInteceptor)
         .cache(cache)
         .build()
 
@@ -48,11 +46,6 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideLoggingInterceptor(): HttpLoggingInterceptor = HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
-
-    @JvmStatic
-    @Provides
-    @Singleton
-    fun provideNetworkInterceptor(): NetworkAvailabilityInterceptor = NetworkAvailabilityInterceptor()
 
     @JvmStatic
     @Provides

@@ -14,4 +14,5 @@
     <string name="bottom_nav_new_title">Latest</string>
     <string name="bottom_nav_trending_title">Trending</string>
     <string name="bottom_nav_collections_title">Collections</string>
+    <string name="no_internet_connection_message">Please check that you have an Internet connection and try again.</string>
 </resources>

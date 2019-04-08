@@ -22,8 +22,6 @@ suspend fun <T : Any> Deferred<Response<T>>.awaitSafe(): HttpResult<T> {
         }
     } catch (e: IOException) {
         HttpResult.Exception(e)
-    } catch (e: NoNetworkException) {
-        HttpResult.Error(HttpStatusCode.NO_INTERNET_CONNECTION, null, HttpStatusCode.NO_INTERNET_CONNECTION.description)
     }
 }
 

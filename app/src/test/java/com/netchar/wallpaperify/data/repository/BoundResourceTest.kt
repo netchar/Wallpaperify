@@ -1,17 +1,17 @@
 package com.netchar.wallpaperify.data.repository
 
+import android.content.Context
 import androidx.lifecycle.LiveData
+import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.data.models.Cause
 import com.netchar.wallpaperify.data.models.Resource
 import com.netchar.wallpaperify.data.remote.HttpStatusCode
 import com.netchar.wallpaperify.infrastructure.CoroutineDispatchers
-import com.netchar.wallpaperify.infrastructure.exceptions.NoNetworkException
+import com.netchar.wallpaperify.infrastructure.utils.Connectivity
 import com.netchar.wallpaperify.testutils.InstantTaskExecutorExtension
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.spyk
+import io.mockk.*
 import kotlinx.coroutines.*
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertAll
@@ -35,7 +35,9 @@ internal class BoundResourceTest {
         every { network } returns Dispatchers.Unconfined
     }
 
-    private val boundResourceMock = object : BoundResource<String>(mockDispatchers) {
+    private val mockContext = mockk<Context>()
+
+    private val boundResourceMock = object : BoundResource<String>(mockDispatchers, mockContext) {
         override fun saveRemoteDataInStorage(data: String?) {
         }
 
@@ -50,6 +52,13 @@ internal class BoundResourceTest {
         override fun apiRequestAsync(): Deferred<Response<String>> {
             return spyk()
         }
+    }
+
+    @BeforeEach
+    fun setUp() {
+        mockkObject(Connectivity)
+        every { Connectivity.isInternetAvailable(any()) } returns true
+        every { mockContext.getString(R.string.no_internet_connection_message) } returns "Please check that you have an Internet connection and try again."
     }
 
     @Test
@@ -203,7 +212,7 @@ internal class BoundResourceTest {
             val responseSet = LinkedHashSet<Resource<String>>()
             val testResource: BoundResource<String> = spyk(boundResourceMock) {
                 coEvery { apiRequestAsync().await() } coAnswers {
-                    delay(300)
+                    delay(500)
                     Response.success("success")
                 }
                 every { saveRemoteDataInStorage(any()) } throws IOException("Unable to get data")
@@ -232,7 +241,7 @@ internal class BoundResourceTest {
                 every { getStorageData() } returns "invalidated data"
                 every { isNeedRefresh(any()) } returns true
                 coEvery { apiRequestAsync().await() } coAnswers {
-                    delay(300)
+                    delay(500)
                     mockk(relaxed = true) {
                         every { isSuccessful } returns false
                         every { code() } returns HttpStatusCode.INTERNAL_SERVER_ERROR.code
@@ -264,7 +273,7 @@ internal class BoundResourceTest {
                 every { getStorageData() } returns "invalidated data"
                 every { isNeedRefresh(any()) } returns true
                 coEvery { apiRequestAsync().await() } coAnswers {
-                    delay(300)
+                    delay(500)
                     mockk(relaxed = true) {
                         every { isSuccessful } returns false
                         every { code() } returns HttpStatusCode.UNAUTHORIZED.code
@@ -296,7 +305,7 @@ internal class BoundResourceTest {
                 every { getStorageData() } returns "invalidated data"
                 every { isNeedRefresh(any()) } returns true
                 coEvery { apiRequestAsync().await() } coAnswers {
-                    delay(300)
+                    delay(500)
                     Response.success(HttpStatusCode.NO_CONTENT.code, "")
                 }
             }
@@ -317,16 +326,15 @@ internal class BoundResourceTest {
         }
     }
 
-    // todo: fix
     @Test
-    fun `when network throws NoNetworkException return NO_INTERNET_CONNECTION error resource`() {
+    fun `when no network detected return NO_INTERNET_CONNECTION error resource`() {
         runBlocking {
             // arrange
             val responseSet = LinkedHashSet<Resource<String>>()
+            every { Connectivity.isInternetAvailable(any()) } returns false
             val testResource: BoundResource<String> = spyk(boundResourceMock) {
                 every { getStorageData() } returns "invalidated data"
                 every { isNeedRefresh(any()) } returns true
-                coEvery { apiRequestAsync().await() } throws NoNetworkException("Network")
             }
 
             // act
@@ -337,16 +345,10 @@ internal class BoundResourceTest {
             testResource.job.join()
 
             // assert
-            assertAll("LiveData should emit Resource value in strict order", {
-                assertEquals(3, responseSet.size)
-                assertEquals(Resource.Loading(true), responseSet.elementAt(0))
-                assertEquals(Resource.Loading(false), responseSet.elementAt(1))
-                assertEquals(Resource.Error(Cause.NO_INTERNET_CONNECTION, HttpStatusCode.NO_INTERNET_CONNECTION.description), responseSet.elementAt(2))
-            })
+            assertEquals(Resource.Error(Cause.NO_INTERNET_CONNECTION, mockContext.getString(R.string.no_internet_connection_message)), responseSet.elementAt(0))
         }
     }
 
-    // todo: fix
     @Test
     fun `when network throws IO exception return UNEXPECTED error resource`() {
         runBlocking {
@@ -355,7 +357,10 @@ internal class BoundResourceTest {
             val testResource: BoundResource<String> = spyk(boundResourceMock) {
                 every { getStorageData() } returns "invalidated data"
                 every { isNeedRefresh(any()) } returns true
-                coEvery { apiRequestAsync().await() } throws IOException("Parsing exception")
+                coEvery { apiRequestAsync().await() } coAnswers {
+                    delay(500)
+                    throw IOException("Parsing exception")
+                }
             }
 
             // act

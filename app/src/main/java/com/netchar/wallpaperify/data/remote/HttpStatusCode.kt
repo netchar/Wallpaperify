@@ -48,8 +48,6 @@ enum class HttpStatusCode(val code: Int, val codeName: String, val description: 
     GATEWAY_TIMEOUT(504, "Gateway Timeout", "The server, whilst acting as a proxy, did not receive a response from the upstream server in an acceptable time."),
     HTTP_VERSION_NOT_SUPPORTED(505, "HTTP Version Not Supported", "The server does not supported the HTTP protocol version specified in the request"),
 
-    NO_INTERNET_CONNECTION(999, "No internet connection", "Please check that you have an Internet connection and try again."),
-
     UNKNOWN(400, "Unknown HTTP Status Code", "Unknown or unsupported HTTP status code");
 
     companion object {
