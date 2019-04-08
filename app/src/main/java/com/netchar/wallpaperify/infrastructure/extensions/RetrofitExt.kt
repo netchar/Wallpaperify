@@ -5,6 +5,7 @@ import com.netchar.wallpaperify.data.remote.HttpStatusCode
 import com.netchar.wallpaperify.infrastructure.exceptions.NoNetworkException
 import kotlinx.coroutines.Deferred
 import retrofit2.Response
+import timber.log.Timber
 import java.io.IOException
 
 suspend fun <T : Any> Deferred<Response<T>>.awaitSafe(): HttpResult<T> {
@@ -21,6 +22,7 @@ suspend fun <T : Any> Deferred<Response<T>>.awaitSafe(): HttpResult<T> {
             HttpResult.Error.parse(response)
         }
     } catch (e: IOException) {
+        Timber.e(e)
         HttpResult.Exception(e)
     }
 }

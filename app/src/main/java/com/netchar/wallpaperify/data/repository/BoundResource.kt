@@ -13,6 +13,7 @@ import com.netchar.wallpaperify.infrastructure.extensions.awaitSafe
 import com.netchar.wallpaperify.infrastructure.utils.Connectivity
 import kotlinx.coroutines.*
 import retrofit2.Response
+import timber.log.Timber
 import java.io.IOException
 
 abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDispatchers, val context: Context) : IBoundResource<TResult> {
@@ -39,6 +40,7 @@ abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDi
                 Resource.Success(databaseData!!)
             }
         } catch (ex: IOException) {
+            Timber.e(ex)
             Resource.Error.parse(ex)
         }
     }
