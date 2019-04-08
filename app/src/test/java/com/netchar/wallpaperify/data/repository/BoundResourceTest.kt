@@ -26,7 +26,6 @@ import kotlin.test.assertTrue
 
 @ExperimentalCoroutinesApi
 @ExtendWith(InstantTaskExecutorExtension::class)
-@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 internal class BoundResourceTest {
 
     private val mockDispatchers = mockk<CoroutineDispatchers> {
