@@ -41,10 +41,10 @@ enum class HttpStatusCode(val code: Int, val codeName: String, val description: 
     EXPECTATION_FAILED(417, "Expectation Failed", "The expectation supplied in the Expectation header field could not be met by the server."),
     ImATeapot(418, "I'm a teapot", "I'm a teapot"),
 
-    INTERNAL_SERVERERROR(500, "Internal Server Error", "The request was unsuccessful because the server encountered an unexpected error."),
+    INTERNAL_SERVER_ERROR(500, "Internal Server Error", "The request was unsuccessful because the server encountered an unexpected error."),
     NOT_IMPLEMENTED(501, "Not Implemented", "The server does not support the request."),
     BAD_GATEWAY(502, "Bad Gateway", "The server, whilst acting as a proxy, received an invalid response from the server that was fulfilling the request."),
-    SERVICE_UNAVAILABLE(503, "Service Unavailable", "The request was unsuccessful as the server is either down or slash^H^H^H^H^Hdug^H^H^Hreddited."),
+    SERVICE_UNAVAILABLE(503, "Service Unavailable", "The request was unsuccessful as the server is either down or slash."),
     GATEWAY_TIMEOUT(504, "Gateway Timeout", "The server, whilst acting as a proxy, did not receive a response from the upstream server in an acceptable time."),
     HTTP_VERSION_NOT_SUPPORTED(505, "HTTP Version Not Supported", "The server does not supported the HTTP protocol version specified in the request"),
 

@@ -1,35 +1,48 @@
 package com.netchar.wallpaperify.data.repository
 
+import android.content.Context
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.data.models.Cause
 import com.netchar.wallpaperify.data.models.Resource
 import com.netchar.wallpaperify.data.remote.HttpResult
 import com.netchar.wallpaperify.infrastructure.CoroutineDispatchers
 import com.netchar.wallpaperify.infrastructure.extensions.awaitSafe
+import com.netchar.wallpaperify.infrastructure.utils.Connectivity
 import kotlinx.coroutines.*
 import retrofit2.Response
+import timber.log.Timber
+import java.io.IOException
 
-abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDispatchers) : IBoundResource<TResult> {
+abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDispatchers, val context: Context) : IBoundResource<TResult> {
     private val result = MutableLiveData<Resource<TResult>>()
 
-    private lateinit var job: Job
+    @VisibleForTesting
+    lateinit var job: Job
 
     final override fun getLiveData(): LiveData<Resource<TResult>> = result
 
     fun launchIn(scope: CoroutineScope): IBoundResource<TResult> {
         job = scope.launch(dispatchers.main) {
-            val databaseData = fetchDataFromDatabaseAsync()
-
-            result.value = if (databaseData == null || isNeedRefresh(databaseData)) {
-                fetchFromNetworkAsync().also {
-                    writeInStorageOnSuccessAsync(it)
-                }
-            } else {
-                Resource.Success(databaseData)
-            }
+            result.value = tryGetResponse()
         }
         return this
+    }
+
+    private suspend fun tryGetResponse(): Resource<TResult> {
+        return try {
+            val databaseData = fetchFromDatabaseAsync()
+            if (databaseData.isInvalidated()) {
+                fetchFromNetworkAsync().also { writeInStorageOnSuccessAsync(it) }
+            } else {
+                Resource.Success(databaseData!!)
+            }
+        } catch (ex: IOException) {
+            Timber.e(ex)
+            Resource.Error.parse(ex)
+        }
     }
 
     private suspend fun writeInStorageOnSuccessAsync(resource: Resource<TResult>) {
@@ -48,7 +61,7 @@ abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDi
 
     abstract fun saveRemoteDataInStorage(data: TResult?)
 
-    private suspend fun fetchDataFromDatabaseAsync(): TResult? = withContext(dispatchers.database) {
+    private suspend fun fetchFromDatabaseAsync(): TResult? = withContext(dispatchers.database) {
         getStorageData()
     }
 
@@ -57,24 +70,23 @@ abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDi
     abstract fun isNeedRefresh(localData: TResult): Boolean
 
     private suspend fun fetchFromNetworkAsync(): Resource<TResult> {
-        result.value = Resource.Loading(true)
-        val apiResponse = apiRequestAsync().awaitSafe()
-        result.value = Resource.Loading(false)
-        return when (apiResponse) {
-            is HttpResult.Success -> prepareResourceFor(apiResponse)
-            is HttpResult.Error -> Resource.Error.parse(apiResponse)
-            is HttpResult.Exception -> Resource.Error(Cause.UNEXPECTED, message = apiResponse.exception.localizedMessage)
-            else -> Resource.Error(Cause.UNEXPECTED, "Unable to fetch data from network.")
-        }
-    }
+        return if (Connectivity.isInternetAvailable(context)) {
+            result.value = Resource.Loading(true)
+            val apiResponse = apiRequestAsync().awaitSafe()
+            result.value = Resource.Loading(false)
 
-    private fun prepareResourceFor(apiResponse: HttpResult.Success<TResult>): Resource<TResult> {
-        return if (apiResponse.data == null) {
-            Resource.Error(Cause.UNEXPECTED, "Error during fetching data from server.")
+            when (apiResponse) {
+                is HttpResult.Success -> Resource.Success(apiResponse.data)
+                is HttpResult.Empty -> Resource.Error(Cause.UNEXPECTED, "Error during fetching data from server.")
+                is HttpResult.Error -> Resource.Error.parse(apiResponse)
+                is HttpResult.Exception -> Resource.Error(Cause.UNEXPECTED, message = apiResponse.exception.localizedMessage)
+            }
         } else {
-            Resource.Success(apiResponse.data)
+            Resource.Error(Cause.NO_INTERNET_CONNECTION, context.getString(R.string.no_internet_connection_message))
         }
     }
 
-    abstract suspend fun apiRequestAsync(): Deferred<Response<TResult>>
+    abstract fun apiRequestAsync(): Deferred<Response<TResult>>
+
+    private fun TResult?.isInvalidated() = this == null || isNeedRefresh(this)
 }

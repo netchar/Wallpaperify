@@ -114,11 +114,10 @@ dependencies {
 
     // JUnit
     testImplementation "org.junit.jupiter:junit-jupiter-api:$versions.test.junit"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$versions.test.junit"
-    testImplementation "org.junit.jupiter:junit-jupiter-params:$versions.test.junit"
-    testImplementation "org.junit.vintage:junit-vintage-engine:$versions.test.junit"
 
-    // Kotlin Coroutines
+    // Kotlin
+    testImplementation "org.jetbrains.kotlin:kotlin-test:$versions.kotlin"
+    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$versions.kotlin"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.test.coroutines"
 
     // Mockk
