@@ -13,7 +13,6 @@ import io.mockk.*
 import kotlinx.coroutines.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.extension.ExtendWith
 import retrofit2.Response
@@ -24,6 +23,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 
+@Suppress("DeferredResultUnused")
 @ExperimentalCoroutinesApi
 @ExtendWith(InstantTaskExecutorExtension::class)
 internal class BoundResourceTest {
