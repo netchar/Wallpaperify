@@ -52,7 +52,9 @@ abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDi
     }
 
     final override fun cancelJob() {
-        job.cancelChildren()
+        if (job.isActive) {
+            job.cancel()
+        }
     }
 
     abstract fun saveRemoteDataInStorage(data: TResult?)

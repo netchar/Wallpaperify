@@ -19,7 +19,9 @@ import org.junit.jupiter.api.extension.ExtendWith
 import retrofit2.Response
 import java.io.IOException
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 
 @ExperimentalCoroutinesApi
@@ -377,6 +379,92 @@ internal class BoundResourceTest {
                 assertEquals(Resource.Loading(false), responseSet.elementAt(1))
                 assertEquals(Resource.Error(Cause.UNEXPECTED, "Parsing exception"), responseSet.elementAt(2))
             })
+        }
+    }
+
+    @Test
+    fun `when cancel scope skip processing coroutines logic and set state of job to completed`() {
+        runBlocking {
+            // arrange
+            val scope = CoroutineScope(mockDispatchers.main)
+            val responseSet = LinkedHashSet<Resource<String>>()
+            val testResource: BoundResource<String> = spyk(boundResourceMock) {
+                every { getStorageData() } returns "invalidated data"
+                every { isNeedRefresh(any()) } returns true
+                coEvery { apiRequestAsync().await() } coAnswers {
+                    delay(1000)
+                    Response.success("success")
+                }
+            }
+
+
+            val liveData = testResource.launchIn(scope).getLiveData()
+            liveData.observeForever {
+                responseSet.add(it)
+            }
+
+            delay(500)
+
+            assertAll("Before Job cancelled", {
+                assertTrue("Is Job Active") { testResource.job.isActive }
+                assertFalse("Is Job Cancelled") { testResource.job.isCancelled }
+                assertFalse("Is Job Completed") { testResource.job.isCompleted }
+            })
+
+            scope.cancel()
+
+            delay(1000)
+
+            assertAll("After Job cancelled", {
+                assertFalse("Is Job Active") { testResource.job.isActive }
+                assertTrue("Is Job Cancelled") { testResource.job.isCancelled }
+                assertTrue("Is Job Completed") { testResource.job.isCompleted }
+            })
+
+            assertTrue("LiveData shouldn't emit all values after cancel") { responseSet.size < 2 }
+        }
+    }
+
+    @Test
+    fun `when cancel job state of this job became completed`() {
+        runBlocking {
+            // arrange
+            val scope = CoroutineScope(mockDispatchers.main)
+            val responseSet = LinkedHashSet<Resource<String>>()
+            val testResource: BoundResource<String> = spyk(boundResourceMock) {
+                every { getStorageData() } returns "invalidated data"
+                every { isNeedRefresh(any()) } returns true
+                coEvery { apiRequestAsync().await() } coAnswers {
+                    delay(1000)
+                    Response.success("success")
+                }
+            }
+
+
+            val liveData = testResource.launchIn(scope).getLiveData()
+            liveData.observeForever {
+                responseSet.add(it)
+            }
+
+            delay(500)
+
+            assertAll("Before Job cancelled", {
+                assertTrue("Is Job Active") { testResource.job.isActive }
+                assertFalse("Is Job Cancelled") { testResource.job.isCancelled }
+                assertFalse("Is Job Completed") { testResource.job.isCompleted }
+            })
+
+            testResource.cancelJob()
+
+            delay(1000)
+
+            assertAll("After Job cancelled", {
+                assertFalse("Is Job Active") { testResource.job.isActive }
+                assertTrue("Is Job Cancelled") { testResource.job.isCancelled }
+                assertTrue("Is Job Completed") { testResource.job.isCompleted }
+            })
+
+            assertTrue("LiveData shouldn't emit all values after cancel") { responseSet.size < 2 }
         }
     }
 }
