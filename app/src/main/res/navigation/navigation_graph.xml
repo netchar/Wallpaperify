@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/trendingFragment"
+        android:name="com.netchar.wallpaperify.ui.trending.FeaturedFragment"
+        android:label="fragment_featured"
+        tools:layout="@layout/fragment_featured" >
+        <action
+            android:id="@+id/action_featuredFragment_to_photoDetailsFragment"
+            app:destination="@id/photoDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/collectionsFragment"
+        android:name="com.netchar.wallpaperify.ui.collections.CollectionsFragment"
+        android:label="fragment_collections"
+        tools:layout="@layout/fragment_collections" >
+        <action
+            android:id="@+id/action_collectionsFragment_to_collectionDetailsFragment"
+            app:destination="@id/collectionDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.netchar.wallpaperify.ui.settings.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/photoDetailsFragment"
+        android:name="com.netchar.wallpaperify.ui.photosdetails.PhotoDetailsFragment"
+        android:label="fragment_photo_details"
+        tools:layout="@layout/fragment_photo_details" />
+    <fragment
+        android:id="@+id/collectionDetailsFragment"
+        android:name="com.netchar.wallpaperify.ui.collectiondetails.CollectionDetailsFragment"
+        android:label="fragment_collection_details"
+        tools:layout="@layout/fragment_collection_details" >
+        <action
+            android:id="@+id/action_collectionDetailsFragment_to_photoDetailsFragment"
+            app:destination="@id/photoDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.netchar.wallpaperify.ui.home.MainFragment"
+        android:label="MainFragment">
+        <action
+            android:id="@+id/action_mainFragment_to_photoDetailsFragment"
+            app:destination="@id/photoDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.netchar.wallpaperify.ui.about.AboutFragment"
+        android:label="fragment_about"
+        tools:layout="@layout/fragment_about" />
+    <fragment
+        android:id="@+id/supportFragment"
+        android:name="com.netchar.wallpaperify.ui.support.SupportFragment"
+        android:label="fragment_support"
+        tools:layout="@layout/fragment_support" />
+</navigation>

@@ -3,25 +3,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_drawer_view">
 
-    <item
-        android:id="@+id/navigation_drawer_item_settings"
-        android:icon="@drawable/ic_drawer_item_settings"
-        android:title="@string/navigation_drawer_item_settings" />
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/settingsFragment"
+            android:icon="@drawable/ic_drawer_item_settings"
+            android:title="@string/navigation_drawer_item_settings" />
+    </group>
 
     <item android:title="@string/navigation_drawer_title_communicate">
         <menu>
-            <item
-                android:id="@+id/navigation_drawer_item_support"
-                android:icon="@drawable/ic_drawer_item_support_development"
-                android:title="@string/navigation_drawer_item_support" />
-            <item
-                android:id="@+id/navigation_drawer_item_share"
-                android:icon="@drawable/ic_drawer_item_share"
-                android:title="@string/navigation_drawer_item_share" />
-            <item
-                android:id="@+id/navigation_drawer_item_about"
-                android:icon="@drawable/ic_drawer_item_about"
-                android:title="@string/navigation_drawer_item_about" />
+            <group android:checkableBehavior="single">
+                <item
+                    android:checkable="false"
+                    android:id="@+id/navigation_drawer_item_share"
+                    android:icon="@drawable/ic_drawer_item_share"
+                    android:title="@string/navigation_drawer_item_share" />
+                <item
+                    android:id="@+id/supportFragment"
+                    android:icon="@drawable/ic_drawer_item_support_development"
+                    android:title="@string/navigation_drawer_item_support" />
+                <item
+                    android:id="@+id/aboutFragment"
+                    android:icon="@drawable/ic_drawer_item_about"
+                    android:title="@string/navigation_drawer_item_about" />
+
+            </group>
+
         </menu>
     </item>
 

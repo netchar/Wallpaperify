@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: "de.mannodermaus.android-junit5"
+apply plugin: 'androidx.navigation.safeargs'
 
 def secretProperties = new Properties()
 secretProperties.load(project.rootProject.file('secret.properties').newDataInputStream())
@@ -74,6 +75,8 @@ dependencies {
     implementation "com.google.android.material:material:$versions.androidx.material"
     implementation "androidx.legacy:legacy-support-v4:$versions.androidx.legacy"
     implementation "androidx.lifecycle:lifecycle-extensions:$versions.androidx.lifecycle"
+    implementation 'android.arch.navigation:navigation-fragment-ktx:1.0.0'
+    implementation 'android.arch.navigation:navigation-ui-ktx:1.0.0'
 
     // Timber
     implementation "com.jakewharton.timber:timber:$versions.timber"
@@ -124,3 +127,30 @@ dependencies {
     testImplementation "io.mockk:mockk:$versions.test.mockk"
 }
 
+dependencies {
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
+}
+
+dependencies {
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
+}
+
+dependencies {
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
+}
+
+dependencies {
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
+}
+
+dependencies {
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
+}
+
+dependencies {
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
+}
+
+dependencies {
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
+}
