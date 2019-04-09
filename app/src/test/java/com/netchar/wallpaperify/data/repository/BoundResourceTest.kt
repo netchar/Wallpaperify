@@ -59,7 +59,7 @@ internal class BoundResourceTest {
     fun setUp() {
         mockkObject(Connectivity)
         every { Connectivity.isInternetAvailable(any()) } returns true
-        every { mockContext.getString(R.string.no_internet_connection_message) } returns "Please check that you have an Internet connection and try again."
+        every { mockContext.getString(R.string.error_message_no_internet) } returns "Please check that you have an Internet connection and try again."
     }
 
     @Test
@@ -398,7 +398,7 @@ internal class BoundResourceTest {
             testResource.job.join()
 
             // assert
-            assertEquals(Resource.Error(Cause.NO_INTERNET_CONNECTION, mockContext.getString(R.string.no_internet_connection_message)), responseSet.elementAt(0))
+            assertEquals(Resource.Error(Cause.NO_INTERNET_CONNECTION, mockContext.getString(R.string.error_message_no_internet)), responseSet.elementAt(0))
 
             verify { testResource.getStorageData() }
             verify { testResource.isNeedRefresh(mockNetworkResponseData) }

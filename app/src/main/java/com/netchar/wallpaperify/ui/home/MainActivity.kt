@@ -23,7 +23,7 @@ class MainActivity : BaseActivity() {
     @Inject
     lateinit var factory: ViewModelFactory
 
-    lateinit var viewModel: MainViewModel
+    private lateinit var viewModel: MainViewModel
 
     private lateinit var toggle: ActionBarDrawerToggle
 
@@ -39,9 +39,9 @@ class MainActivity : BaseActivity() {
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                    .addToBackStack(null)
-                    .replace(R.id.fragment_container, MainFragment.newInstance())
-                    .commit()
+                .addToBackStack(null)
+                .replace(R.id.fragment_container, MainFragment.newInstance())
+                .commit()
         }
     }
 
@@ -51,14 +51,11 @@ class MainActivity : BaseActivity() {
 
     private fun onBottomNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.bottom_nav_home -> {
-
+            R.id.navigation_bottom_bar_latest -> {
             }
-            R.id.bottom_nav_featured -> {
-
+            R.id.navigation_bottom_bar_trending -> {
             }
-            R.id.bottom_nav_collections -> {
-
+            R.id.navigation_bottom_bar_collections -> {
             }
         }
 
@@ -74,24 +71,6 @@ class MainActivity : BaseActivity() {
     private fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
-            R.id.nav_camera -> {
-                // Handle the camera action
-            }
-            R.id.nav_gallery -> {
-
-            }
-            R.id.nav_slideshow -> {
-
-            }
-            R.id.nav_manage -> {
-
-            }
-            R.id.nav_share -> {
-
-            }
-            R.id.nav_send -> {
-
-            }
         }
 
         drawer_layout.closeDrawer(GravityCompat.START)
@@ -116,7 +95,6 @@ class MainActivity : BaseActivity() {
     }
 
     override fun onBackPressed() {
-
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
             return
