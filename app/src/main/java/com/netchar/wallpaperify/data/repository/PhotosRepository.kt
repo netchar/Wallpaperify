@@ -38,7 +38,7 @@ class PhotosRepository @Inject constructor(
 
             override fun apiRequestAsync() = api.getPhotosAsync(request.page, request.perPage, request.orderBy)
 
-            override fun saveRemoteDataInStorage(data: List<Photo>?) {
+            override fun saveRemoteDataInStorage(data: List<Photo>) {
                 /*todo: saving*/
             }
 

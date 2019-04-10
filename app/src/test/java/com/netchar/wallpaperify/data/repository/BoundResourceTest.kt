@@ -12,7 +12,7 @@ import com.netchar.wallpaperify.infrastructure.utils.Connectivity
 import com.netchar.wallpaperify.testutils.InstantTaskExecutorExtension
 import io.mockk.*
 import kotlinx.coroutines.*
-import org.hamcrest.MatcherAssert.*
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -21,7 +21,6 @@ import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.extension.ExtendWith
 import retrofit2.Response
 import java.io.IOException
-import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
@@ -353,15 +352,16 @@ internal class BoundResourceTest {
     fun `when cancel scope skip processing coroutines logic and set state of job to completed`() {
         runBlocking {
             // arrange
+
             val scope = CoroutineScope(mockDispatchers.main)
             every { boundResource.getStorageData() } returns "invalidated data"
             every { boundResource.isNeedRefresh(any()) } returns true
             coEvery { boundResource.apiRequestAsync().await() } coAnswers {
                 delay(1000)
-                Response.success("success")
+                successApiResponseMock
             }
 
-            launchAndObserve()
+            boundResource.launchIn(scope).getLiveData().observeForever(observer)
 
             delay(500)
 
@@ -394,10 +394,10 @@ internal class BoundResourceTest {
             every { boundResource.isNeedRefresh(any()) } returns true
             coEvery { boundResource.apiRequestAsync().await() } coAnswers {
                 delay(1000)
-                Response.success("success")
+                successApiResponseMock
             }
 
-            launchAndObserve()
+            boundResource.launchIn(scope).getLiveData().observeForever(observer)
 
             delay(500)
 
