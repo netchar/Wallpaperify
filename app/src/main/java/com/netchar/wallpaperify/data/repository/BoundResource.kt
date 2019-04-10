@@ -82,7 +82,7 @@ abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDi
                 is HttpResult.Exception -> Resource.Error(Cause.UNEXPECTED, message = apiResponse.exception.localizedMessage)
             }
         } else {
-            Resource.Error(Cause.NO_INTERNET_CONNECTION, context.getString(R.string.no_internet_connection_message))
+            Resource.Error(Cause.NO_INTERNET_CONNECTION, context.getString(R.string.error_message_no_internet))
         }
     }
 
