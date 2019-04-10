@@ -52,7 +52,7 @@ internal class BoundResourceTest {
     fun setUp() {
         mockkObject(Connectivity)
         every { Connectivity.isInternetAvailable(any()) } returns true
-        every { mockContext.getString(R.string.no_internet_connection_message) } returns "Please check that you have an Internet connection and try again."
+        every { mockContext.getString(R.string.error_message_no_internet) } returns "Please check that you have an Internet connection and try again."
 
         boundResource = spyk(object : BoundResource<String>(mockDispatchers, mockContext) {
             override fun saveRemoteDataInStorage(data: String) {
@@ -76,12 +76,6 @@ internal class BoundResourceTest {
     fun afterEach() {
         clearMocks(boundResource)
         responseSet.clear()
-
-    @BeforeEach
-    fun setUp() {
-        mockkObject(Connectivity)
-        every { Connectivity.isInternetAvailable(any()) } returns true
-        every { mockContext.getString(R.string.error_message_no_internet) } returns "Please check that you have an Internet connection and try again."
     }
 
     @Test
@@ -363,23 +357,13 @@ internal class BoundResourceTest {
             every { boundResource.getStorageData() } returns "invalidated data"
             every { boundResource.isNeedRefresh(any()) } returns true
             coEvery { boundResource.apiRequestAsync().await() } coAnswers {
-                delay(1000)
+                delay(500)
                 successApiResponseMock
             }
 
             boundResource.launchIn(scope).getLiveData().observeForever(observer)
 
-            delay(500)
-
-            assertAll("Before Job cancelled", {
-                assertTrue("Is Job Active") { boundResource.job.isActive }
-                assertFalse("Is Job Cancelled") { boundResource.job.isCancelled }
-                assertFalse("Is Job Completed") { boundResource.job.isCompleted }
-            })
-
             scope.cancel()
-
-            delay(1000)
 
             assertAll("After Job cancelled", {
                 assertFalse("Is Job Active") { boundResource.job.isActive }
@@ -399,23 +383,13 @@ internal class BoundResourceTest {
             every { boundResource.getStorageData() } returns "invalidated data"
             every { boundResource.isNeedRefresh(any()) } returns true
             coEvery { boundResource.apiRequestAsync().await() } coAnswers {
-                delay(1000)
+                delay(500)
                 successApiResponseMock
             }
 
             boundResource.launchIn(scope).getLiveData().observeForever(observer)
 
-            delay(500)
-
-            assertAll("Before Job cancelled", {
-                assertTrue("Is Job Active") { boundResource.job.isActive }
-                assertFalse("Is Job Cancelled") { boundResource.job.isCancelled }
-                assertFalse("Is Job Completed") { boundResource.job.isCompleted }
-            })
-
             boundResource.cancelJob()
-
-            delay(1000)
 
             assertAll("After Job cancelled", {
                 assertFalse("Is Job Active") { boundResource.job.isActive }

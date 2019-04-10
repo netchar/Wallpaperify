@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
-apply plugin: "de.mannodermaus.android-junit5"
 
 def secretProperties = new Properties()
 secretProperties.load(project.rootProject.file('secret.properties').newDataInputStream())
@@ -114,6 +113,7 @@ dependencies {
 
     // JUnit
     testImplementation "org.junit.jupiter:junit-jupiter-api:$versions.test.junit"
+    testImplementation "org.junit.vintage:junit-vintage-engine:$versions.test.junit"
 
     // Kotlin
     testImplementation "org.jetbrains.kotlin:kotlin-test:$versions.kotlin"
