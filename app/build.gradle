@@ -122,5 +122,7 @@ dependencies {
 
     // Mockk
     testImplementation "io.mockk:mockk:$versions.test.mockk"
+
+    testImplementation 'org.hamcrest:hamcrest-library:1.3'
 }
 

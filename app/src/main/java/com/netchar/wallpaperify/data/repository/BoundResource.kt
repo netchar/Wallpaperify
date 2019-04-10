@@ -59,7 +59,7 @@ abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDi
         }
     }
 
-    abstract fun saveRemoteDataInStorage(data: TResult?)
+    abstract fun saveRemoteDataInStorage(data: TResult)
 
     private suspend fun fetchFromDatabaseAsync(): TResult? = withContext(dispatchers.database) {
         getStorageData()

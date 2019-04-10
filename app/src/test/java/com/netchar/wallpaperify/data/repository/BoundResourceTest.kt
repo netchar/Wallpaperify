@@ -2,6 +2,7 @@ package com.netchar.wallpaperify.data.repository
 
 import android.content.Context
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.data.models.Cause
 import com.netchar.wallpaperify.data.models.Resource
@@ -11,9 +12,11 @@ import com.netchar.wallpaperify.infrastructure.utils.Connectivity
 import com.netchar.wallpaperify.testutils.InstantTaskExecutorExtension
 import io.mockk.*
 import kotlinx.coroutines.*
+import org.hamcrest.MatcherAssert.*
+import org.hamcrest.Matchers.*
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.extension.ExtendWith
 import retrofit2.Response
@@ -23,7 +26,9 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
+private const val ASSERT_LIVE_DATA_IN_ORDER = "LiveData should emit Resource value in strict order"
 
+@Suppress("DeferredResultUnused")
 @ExperimentalCoroutinesApi
 @ExtendWith(InstantTaskExecutorExtension::class)
 internal class BoundResourceTest {
@@ -37,179 +42,147 @@ internal class BoundResourceTest {
     }
 
     private val mockContext = mockk<Context>()
-
-    private val boundResourceMock = object : BoundResource<String>(mockDispatchers, mockContext) {
-        override fun saveRemoteDataInStorage(data: String?) {
-        }
-
-        override fun getStorageData(): String? {
-            return null
-        }
-
-        override fun isNeedRefresh(localData: String): Boolean {
-            return true
-        }
-
-        override fun apiRequestAsync(): Deferred<Response<String>> {
-            return spyk()
-        }
-    }
+    private val successApiResponseMock = Response.success("success")
+    private val storageDataMock = "Mock database data"
+    private lateinit var boundResource: BoundResource<String>
+    private val responseSet = LinkedHashSet<Resource<String>>()
+    private val successReferenceResponseSet: LinkedHashSet<Resource<String>> = linkedSetOf(Resource.Loading(true), Resource.Loading(false), Resource.Success(successApiResponseMock.body()!!))
+    private val observer = Observer<Resource<String>> { responseSet.add(it) }
 
     @BeforeEach
     fun setUp() {
         mockkObject(Connectivity)
         every { Connectivity.isInternetAvailable(any()) } returns true
         every { mockContext.getString(R.string.no_internet_connection_message) } returns "Please check that you have an Internet connection and try again."
+
+        boundResource = spyk(object : BoundResource<String>(mockDispatchers, mockContext) {
+            override fun saveRemoteDataInStorage(data: String) {
+            }
+
+            override fun getStorageData(): String? {
+                return null
+            }
+
+            override fun isNeedRefresh(localData: String): Boolean {
+                return true
+            }
+
+            override fun apiRequestAsync(): Deferred<Response<String>> {
+                return spyk()
+            }
+        })
+    }
+
+    @AfterEach
+    fun afterEach() {
+        clearMocks(boundResource)
+        responseSet.clear()
     }
 
     @Test
-    fun `getLiveData() always has instance`() {
+    fun `when getLiveData() return LiveData instance`() {
+        assertNotNull(boundResource.getLiveData())
+    }
+
+    @Test
+    fun `when launchIn return non-null IBoundResource instance`() {
         runBlocking {
-            assertNotNull(boundResourceMock.getLiveData())
+            // arrange
+            every { boundResource.getStorageData() } returns null
+            coEvery { boundResource.apiRequestAsync().await() } returns successApiResponseMock
+
+            // act
+            val boundResponse = boundResource.launchIn(this)
+
+            // assert
+            assertThat(boundResponse.getLiveData().value, notNullValue())
         }
     }
 
     @Test
-    fun `launchIn should always return non-null instances`() {
+    fun `when storage data valid should return database data`() {
         runBlocking {
             // arrange
-            val testResource: BoundResource<String> = spyk(boundResourceMock) {
-                every { getStorageData() } returns null
-                coEvery { apiRequestAsync().await() } returns Response.success("success")
+            val expectedLiveData = mockk<LiveData<Resource<String>>> {
+                every { value } returns Resource.Success(storageDataMock)
+            }
+            every { boundResource.getStorageData() } returns storageDataMock
+            every { boundResource.isNeedRefresh(storageDataMock) } returns false
+
+            // act
+            val boundResponse = boundResource.launchIn(this)
+            boundResource.job.join()
+
+            // assert
+            assertThat(expectedLiveData.value, equalTo(boundResponse.getLiveData().value))
+
+            verify { boundResource.getStorageData() }
+            verify(exactly = 1) { boundResource.getStorageData() }
+            verify(exactly = 1) { boundResource.isNeedRefresh(storageDataMock) }
+        }
+    }
+
+
+    @Test
+    fun `when storage data is null return success resource with network data`() {
+        runBlocking {
+            // arrange
+            every { boundResource.getStorageData() } returns null
+            coEvery { boundResource.apiRequestAsync().await() } coAnswers {
+                delay(50)
+                successApiResponseMock
             }
 
             // act
-            val boundResponse: IBoundResource<String>?
-            boundResponse = testResource.launchIn(this)
+            launchAndObserve()
 
-            // assert
-            assertNotNull(boundResponse)
-            assertNotNull(boundResponse.getLiveData().value)
+            assertThat(ASSERT_LIVE_DATA_IN_ORDER, responseSet, equalTo(successReferenceResponseSet))
 
-            verifyOrder {
-                testResource.getStorageData()
-                testResource.apiRequestAsync()
-                testResource.saveRemoteDataInStorage("success")
-            }
+            verify { boundResource.getStorageData() }
+            verify { boundResource.apiRequestAsync() }
+            verify { boundResource.saveRemoteDataInStorage(successApiResponseMock.body()!!) }
         }
     }
 
     @Test
-    fun `when database data valid should return database data`() {
+    fun `when storage data is not null but invalidated return success resource with network data`() {
         runBlocking {
             // arrange
-            val expectedLiveData = spyk<LiveData<Resource<String>>> {
-                every { value } returns Resource.Success("Mock data")
-            }
-            val databaseDataMock = "Mock data"
-            val testResource: BoundResource<String> = spyk(boundResourceMock) {
-                every { getStorageData() } returns databaseDataMock
-                every { isNeedRefresh(any()) } returns false
+            every { boundResource.getStorageData() } returns storageDataMock
+            every { boundResource.isNeedRefresh(any()) } returns true
+            coEvery { boundResource.apiRequestAsync().await() } coAnswers {
+                delay(50)
+                successApiResponseMock
             }
 
             // act
-            val boundResponse = testResource.launchIn(this)
-            val liveData = boundResponse.getLiveData()
+            launchAndObserve()
 
             // assert
-            assertEquals(expectedLiveData.value, liveData.value)
+            assertThat(ASSERT_LIVE_DATA_IN_ORDER, responseSet, equalTo(successReferenceResponseSet))
 
-            verifyOrder {
-                testResource.getStorageData()
-            }
-
-            verify(exactly = 1) { testResource.getStorageData() }
-            verify(exactly = 1) { testResource.isNeedRefresh(any()) }
+            verify { boundResource.getStorageData() }
+            verify { boundResource.isNeedRefresh(storageDataMock) }
+            verify { boundResource.apiRequestAsync() }
+            verify { boundResource.saveRemoteDataInStorage(successApiResponseMock.body()!!) }
         }
     }
 
     @Test
-    fun `when database data is null return network data`() {
+    fun `when fetching storage data throws an exception return error resource`() {
         runBlocking {
             // arrange
-            val responseSet = LinkedHashSet<Resource<String>>()
-            val mockNetworkResponseData = "success"
-            val testResource: BoundResource<String> = spyk(boundResourceMock) {
-                every { getStorageData() } returns null
-                coEvery { apiRequestAsync().await() } coAnswers {
-                    delay(300)
-                    Response.success(mockNetworkResponseData)
-                }
-            }
+            every { boundResource.getStorageData() } throws IOException("Unable to get data")
+            every { boundResource.isNeedRefresh(any()) } returns true
 
             // act
-            val liveData = testResource.launchIn(this).getLiveData()
-            liveData.observeForever { responseSet.add(it) }
-            testResource.job.join()
+            launchAndObserve()
 
             // assert
-            assertAll("LiveData should emit Resource value in strict order", {
-                assertEquals(Resource.Loading(true), responseSet.elementAt(0))
-                assertEquals(Resource.Loading(false), responseSet.elementAt(1))
-                assertEquals(Resource.Success(mockNetworkResponseData), responseSet.elementAt(2))
-            })
+            assertThat(responseSet, allOf(hasItem(Resource.Error(Cause.UNEXPECTED, "Unable to get data")), hasSize(equalTo(1))))
 
-            verify { testResource.getStorageData() }
-            verify { testResource.apiRequestAsync() }
-            verify { testResource.saveRemoteDataInStorage(eq(mockNetworkResponseData)) }
-        }
-    }
-
-    @Test
-    fun `when database data is not null but data is invalidated return network data`() {
-        runBlocking {
-            // arrange
-            val responseSet = LinkedHashSet<Resource<String>>()
-            val mockStorageData = "invalidated data"
-            val mockNetworkResponseData = "success"
-            val testResource: BoundResource<String> = spyk(boundResourceMock) {
-                every { getStorageData() } returns mockStorageData
-                every { isNeedRefresh(any()) } returns true
-                coEvery { apiRequestAsync().await() } coAnswers {
-                    delay(300)
-                    Response.success(mockNetworkResponseData)
-                }
-            }
-
-            // act
-            val liveData = testResource.launchIn(this).getLiveData()
-            liveData.observeForever { responseSet.add(it) }
-            testResource.job.join()
-
-            // assert
-            assertAll("LiveData should emit Resource value in strict order", {
-                assertEquals(Resource.Loading(true), responseSet.elementAt(0))
-                assertEquals(Resource.Loading(false), responseSet.elementAt(1))
-                assertEquals(Resource.Success(mockNetworkResponseData), responseSet.elementAt(2))
-            })
-
-            verify { testResource.getStorageData() }
-            verify { testResource.isNeedRefresh(eq(mockStorageData)) }
-            verify { testResource.apiRequestAsync() }
-            verify { testResource.saveRemoteDataInStorage(eq(mockNetworkResponseData)) }
-        }
-    }
-
-    @Test
-    fun `when getStorageData throws an exception return error resource`() {
-        runBlocking {
-            // arrange
-            val responseSet = LinkedHashSet<Resource<String>>()
-            val testResource: BoundResource<String> = spyk(boundResourceMock) {
-                every { getStorageData() } throws IOException("Unable to get data")
-                every { isNeedRefresh(any()) } returns true
-            }
-
-            // act
-            val liveData = testResource.launchIn(this).getLiveData()
-            liveData.observeForever { responseSet.add(it) }
-            testResource.job.join()
-
-            // assert
-            assertEquals(Resource.Error(Cause.UNEXPECTED, "Unable to get data"), responseSet.elementAt(0))
-
-            verify { testResource.getStorageData() }
-            verify(exactly = 0) { testResource.saveRemoteDataInStorage(any()) }
+            verify { boundResource.getStorageData() }
+            verify(exactly = 0) { boundResource.saveRemoteDataInStorage(any()) }
         }
     }
 
@@ -217,22 +190,17 @@ internal class BoundResourceTest {
     fun `when isNeedRefresh throws an exception return error resource`() {
         runBlocking {
             // arrange
-            val responseSet = LinkedHashSet<Resource<String>>()
-            val testResource: BoundResource<String> = spyk(boundResourceMock) {
-                every { getStorageData() } returns ""
-                every { isNeedRefresh(any()) } throws IOException("Unable to get data")
-            }
+            every { boundResource.getStorageData() } returns storageDataMock
+            every { boundResource.isNeedRefresh(any()) } throws IOException("Unable to get data")
 
             // act
-            val liveData = testResource.launchIn(this).getLiveData()
-            liveData.observeForever { responseSet.add(it) }
-            testResource.job.join()
+            launchAndObserve()
 
             // assert
-            assertEquals(Resource.Error(Cause.UNEXPECTED, "Unable to get data"), responseSet.elementAt(0))
+            assertThat(responseSet, allOf(hasItem(Resource.Error(Cause.UNEXPECTED, "Unable to get data")), hasSize(equalTo(1))))
 
-            verify { testResource.getStorageData() }
-            verify { testResource.isNeedRefresh(any()) }
+            verify { boundResource.getStorageData() }
+            verify { boundResource.isNeedRefresh(any()) }
         }
     }
 
@@ -240,29 +208,21 @@ internal class BoundResourceTest {
     fun `when saveRemoteDataInStorage throws an exception return error resource`() {
         runBlocking {
             // arrange
-            val responseSet = LinkedHashSet<Resource<String>>()
-            val testResource: BoundResource<String> = spyk(boundResourceMock) {
-                coEvery { apiRequestAsync().await() } coAnswers {
-                    delay(500)
-                    Response.success("success")
-                }
-                every { saveRemoteDataInStorage(any()) } throws IOException("Unable to store")
+            val referenceSet = linkedSetOf<Resource<String>>(Resource.Loading(true), Resource.Loading(false), Resource.Error(Cause.UNEXPECTED, "Unable to store"))
+            every { boundResource.saveRemoteDataInStorage(any()) } throws IOException("Unable to store")
+            coEvery { boundResource.apiRequestAsync().await() } coAnswers {
+                delay(50)
+                successApiResponseMock
             }
 
             // act
-            val liveData = testResource.launchIn(this).getLiveData()
-            liveData.observeForever { responseSet.add(it) }
-            testResource.job.join()
+            launchAndObserve()
 
             // assert
-            assertAll("LiveData should emit Resource value in strict order", {
-                assertEquals(Resource.Loading(true), responseSet.elementAt(0))
-                assertEquals(Resource.Loading(false), responseSet.elementAt(1))
-                assertEquals(Resource.Error(Cause.UNEXPECTED, "Unable to store"), responseSet.elementAt(2))
-            })
+            assertThat(ASSERT_LIVE_DATA_IN_ORDER, responseSet, equalTo(referenceSet))
 
-            verify { testResource.getStorageData() }
-            verify { testResource.saveRemoteDataInStorage("success") }
+            verify { boundResource.getStorageData() }
+            verify { boundResource.saveRemoteDataInStorage(successApiResponseMock.body()!!) }
         }
     }
 
@@ -270,75 +230,50 @@ internal class BoundResourceTest {
     fun `when network response error return UNEXPECTED error resource`() {
         runBlocking {
             // arrange
-            val responseSet = LinkedHashSet<Resource<String>>()
-            val mockStorageData = "invalidated data"
-            val testResource: BoundResource<String> = spyk(boundResourceMock) {
-                every { getStorageData() } returns mockStorageData
-                every { isNeedRefresh(mockStorageData) } returns true
-                coEvery { apiRequestAsync().await() } coAnswers {
-                    delay(500)
-                    mockk(relaxed = true) {
-                        every { isSuccessful } returns false
-                        every { code() } returns HttpStatusCode.INTERNAL_SERVER_ERROR.code
-                        every { errorBody() } returns null
-                    }
-                }
+            val referenceSet = linkedSetOf<Resource<String>>(Resource.Loading(true), Resource.Loading(false), Resource.Error(Cause.UNEXPECTED, HttpStatusCode.INTERNAL_SERVER_ERROR.description))
+            every { boundResource.getStorageData() } returns storageDataMock
+            every { boundResource.isNeedRefresh(storageDataMock) } returns true
+            coEvery { boundResource.apiRequestAsync().await() } coAnswers {
+                delay(50)
+                getMockErrorResponse(HttpStatusCode.INTERNAL_SERVER_ERROR)
             }
 
             // act
-            val liveData = testResource.launchIn(this).getLiveData()
-            liveData.observeForever { responseSet.add(it) }
-            testResource.job.join()
+            launchAndObserve()
 
             // assert
-            assertAll("LiveData should emit Resource value in strict order", {
-                assertEquals(Resource.Loading(true), responseSet.elementAt(0))
-                assertEquals(Resource.Loading(false), responseSet.elementAt(1))
-                assertEquals(Resource.Error(Cause.UNEXPECTED, HttpStatusCode.INTERNAL_SERVER_ERROR.description), responseSet.elementAt(2))
-            })
+            assertThat(ASSERT_LIVE_DATA_IN_ORDER, responseSet, equalTo(referenceSet))
 
-            verify { testResource.getStorageData() }
-            verify { testResource.isNeedRefresh(mockStorageData) }
-            verify { testResource.apiRequestAsync() }
-            verify(exactly = 0) { testResource.saveRemoteDataInStorage(eq(mockStorageData)) }
+            verify { boundResource.getStorageData() }
+            verify { boundResource.isNeedRefresh(storageDataMock) }
+            verify { boundResource.apiRequestAsync() }
+            verify(exactly = 0) { boundResource.saveRemoteDataInStorage(eq(storageDataMock)) }
         }
     }
+
 
     @Test
     fun `when network response UNAUTHORIZED return NOT_AUTHENTICATED error resource`() {
         runBlocking {
             // arrange
-            val responseSet = LinkedHashSet<Resource<String>>()
-            val mockNetworkResponseData = "invalidated data"
-            val testResource: BoundResource<String> = spyk(boundResourceMock) {
-                every { getStorageData() } returns mockNetworkResponseData
-                every { isNeedRefresh(any()) } returns true
-                coEvery { apiRequestAsync().await() } coAnswers {
-                    delay(500)
-                    mockk(relaxed = true) {
-                        every { isSuccessful } returns false
-                        every { code() } returns HttpStatusCode.UNAUTHORIZED.code
-                        every { errorBody() } returns null
-                    }
-                }
+            val referenceSet = linkedSetOf<Resource<String>>(Resource.Loading(true), Resource.Loading(false), Resource.Error(Cause.NOT_AUTHENTICATED, HttpStatusCode.UNAUTHORIZED.description))
+            every { boundResource.getStorageData() } returns storageDataMock
+            every { boundResource.isNeedRefresh(any()) } returns true
+            coEvery { boundResource.apiRequestAsync().await() } coAnswers {
+                delay(50)
+                getMockErrorResponse(HttpStatusCode.UNAUTHORIZED)
             }
 
             // act
-            val liveData = testResource.launchIn(this).getLiveData()
-            liveData.observeForever { responseSet.add(it) }
-            testResource.job.join()
+            launchAndObserve()
 
             // assert
-            assertAll("LiveData should emit Resource value in strict order", {
-                assertEquals(Resource.Loading(true), responseSet.elementAt(0))
-                assertEquals(Resource.Loading(false), responseSet.elementAt(1))
-                assertEquals(Resource.Error(Cause.NOT_AUTHENTICATED, HttpStatusCode.UNAUTHORIZED.description), responseSet.elementAt(2))
-            })
+            assertThat(ASSERT_LIVE_DATA_IN_ORDER, responseSet, equalTo(referenceSet))
 
-            verify { testResource.getStorageData() }
-            verify { testResource.isNeedRefresh(any()) }
-            verify { testResource.apiRequestAsync() }
-            verify(exactly = 0) { testResource.saveRemoteDataInStorage(mockNetworkResponseData) }
+            verify { boundResource.getStorageData() }
+            verify { boundResource.isNeedRefresh(any()) }
+            verify { boundResource.apiRequestAsync() }
+            verify(exactly = 0) { boundResource.saveRemoteDataInStorage(any()) }
         }
     }
 
@@ -346,63 +281,45 @@ internal class BoundResourceTest {
     fun `when body is empty return UNEXPECTED error resource`() {
         runBlocking {
             // arrange
-            val responseSet = LinkedHashSet<Resource<String>>()
-            val mockNetworkResponseData = "invalidated data"
-            val testResource: BoundResource<String> = spyk(boundResourceMock) {
-                every { getStorageData() } returns mockNetworkResponseData
-                every { isNeedRefresh(any()) } returns true
-                coEvery { apiRequestAsync().await() } coAnswers {
-                    delay(500)
-                    Response.success(HttpStatusCode.NO_CONTENT.code, "")
-                }
+            val referenceSet = linkedSetOf<Resource<String>>(Resource.Loading(true), Resource.Loading(false), Resource.Error(Cause.UNEXPECTED, "Error during fetching data from server."))
+            every { boundResource.getStorageData() } returns storageDataMock
+            every { boundResource.isNeedRefresh(any()) } returns true
+            coEvery { boundResource.apiRequestAsync().await() } coAnswers {
+                delay(50)
+                Response.success(HttpStatusCode.NO_CONTENT.code, "")
             }
 
             // act
-            val liveData = testResource.launchIn(this).getLiveData()
-            liveData.observeForever {
-                responseSet.add(it)
-            }
-            testResource.job.join()
+            launchAndObserve()
 
             // assert
-            assertAll("LiveData should emit Resource value in strict order", {
-                assertEquals(Resource.Loading(true), responseSet.elementAt(0))
-                assertEquals(Resource.Loading(false), responseSet.elementAt(1))
-                assertEquals(Resource.Error(Cause.UNEXPECTED, "Error during fetching data from server."), responseSet.elementAt(2))
-            })
+            assertThat(ASSERT_LIVE_DATA_IN_ORDER, responseSet, equalTo(referenceSet))
 
-            verify { testResource.getStorageData() }
-            verify { testResource.isNeedRefresh(any()) }
-            coVerify { testResource.apiRequestAsync() }
-            verify(exactly = 0) { testResource.saveRemoteDataInStorage(mockNetworkResponseData) }
+            verify { boundResource.getStorageData() }
+            verify { boundResource.isNeedRefresh(any()) }
+            coVerify { boundResource.apiRequestAsync() }
+            verify(exactly = 0) { boundResource.saveRemoteDataInStorage(storageDataMock) }
         }
     }
+
 
     @Test
     fun `when no network detected return NO_INTERNET_CONNECTION error resource`() {
         runBlocking {
             // arrange
-            val responseSet = LinkedHashSet<Resource<String>>()
             every { Connectivity.isInternetAvailable(any()) } returns false
-            val mockNetworkResponseData = "invalidated data"
-            val testResource: BoundResource<String> = spyk(boundResourceMock) {
-                every { getStorageData() } returns mockNetworkResponseData
-                every { isNeedRefresh(any()) } returns true
-            }
+            every { boundResource.getStorageData() } returns storageDataMock
+            every { boundResource.isNeedRefresh(any()) } returns true
 
             // act
-            val liveData = testResource.launchIn(this).getLiveData()
-            liveData.observeForever {
-                responseSet.add(it)
-            }
-            testResource.job.join()
+            launchAndObserve()
 
             // assert
-            assertEquals(Resource.Error(Cause.NO_INTERNET_CONNECTION, mockContext.getString(R.string.no_internet_connection_message)), responseSet.elementAt(0))
+            assertThat(responseSet, allOf(hasItem(Resource.Error(Cause.NO_INTERNET_CONNECTION, mockContext.getString(R.string.no_internet_connection_message))), hasSize(equalTo(1))))
 
-            verify { testResource.getStorageData() }
-            verify { testResource.isNeedRefresh(mockNetworkResponseData) }
-            verify(exactly = 0) { testResource.apiRequestAsync() }
+            verify { boundResource.getStorageData() }
+            verify { boundResource.isNeedRefresh(storageDataMock) }
+            verify(exactly = 0) { boundResource.apiRequestAsync() }
         }
     }
 
@@ -410,35 +327,25 @@ internal class BoundResourceTest {
     fun `when network throws IO exception return UNEXPECTED error resource`() {
         runBlocking {
             // arrange
-            val responseSet = LinkedHashSet<Resource<String>>()
-            val testResource: BoundResource<String> = spyk(boundResourceMock) {
-                every { getStorageData() } returns "invalidated data"
-                every { isNeedRefresh(any()) } returns true
-                coEvery { apiRequestAsync().await() } coAnswers {
-                    delay(500)
-                    throw IOException("Parsing exception")
-                }
+            val referenceSet = linkedSetOf<Resource<String>>(Resource.Loading(true), Resource.Loading(false), Resource.Error(Cause.UNEXPECTED, "Parsing exception"))
+            every { boundResource.getStorageData() } returns storageDataMock
+            every { boundResource.isNeedRefresh(any()) } returns true
+            coEvery { boundResource.apiRequestAsync().await() } coAnswers {
+                delay(50)
+                throw IOException("Parsing exception")
             }
 
             // act
-            val liveData = testResource.launchIn(this).getLiveData()
-            liveData.observeForever {
-                responseSet.add(it)
-            }
-            testResource.job.join()
+            launchAndObserve()
 
             // assert
-            assertAll("LiveData should emit Resource value in strict order", {
-                assertEquals(3, responseSet.size)
-                assertEquals(Resource.Loading(true), responseSet.elementAt(0))
-                assertEquals(Resource.Loading(false), responseSet.elementAt(1))
-                assertEquals(Resource.Error(Cause.UNEXPECTED, "Parsing exception"), responseSet.elementAt(2))
-            })
 
-            verify { testResource.getStorageData() }
-            verify { testResource.isNeedRefresh(any()) }
-            verify { testResource.apiRequestAsync() }
-            verify(exactly = 0) { testResource.saveRemoteDataInStorage(any()) }
+            assertThat(ASSERT_LIVE_DATA_IN_ORDER, responseSet, equalTo(referenceSet))
+
+            verify { boundResource.getStorageData() }
+            verify { boundResource.isNeedRefresh(any()) }
+            verify { boundResource.apiRequestAsync() }
+            verify(exactly = 0) { boundResource.saveRemoteDataInStorage(any()) }
         }
     }
 
@@ -447,27 +354,21 @@ internal class BoundResourceTest {
         runBlocking {
             // arrange
             val scope = CoroutineScope(mockDispatchers.main)
-            val responseSet = LinkedHashSet<Resource<String>>()
-            val testResource: BoundResource<String> = spyk(boundResourceMock) {
-                every { getStorageData() } returns "invalidated data"
-                every { isNeedRefresh(any()) } returns true
-                coEvery { apiRequestAsync().await() } coAnswers {
-                    delay(1000)
-                    Response.success("success")
-                }
+            every { boundResource.getStorageData() } returns "invalidated data"
+            every { boundResource.isNeedRefresh(any()) } returns true
+            coEvery { boundResource.apiRequestAsync().await() } coAnswers {
+                delay(1000)
+                Response.success("success")
             }
 
-            val liveData = testResource.launchIn(scope).getLiveData()
-            liveData.observeForever {
-                responseSet.add(it)
-            }
+            launchAndObserve()
 
             delay(500)
 
             assertAll("Before Job cancelled", {
-                assertTrue("Is Job Active") { testResource.job.isActive }
-                assertFalse("Is Job Cancelled") { testResource.job.isCancelled }
-                assertFalse("Is Job Completed") { testResource.job.isCompleted }
+                assertTrue("Is Job Active") { boundResource.job.isActive }
+                assertFalse("Is Job Cancelled") { boundResource.job.isCancelled }
+                assertFalse("Is Job Completed") { boundResource.job.isCompleted }
             })
 
             scope.cancel()
@@ -475,9 +376,9 @@ internal class BoundResourceTest {
             delay(1000)
 
             assertAll("After Job cancelled", {
-                assertFalse("Is Job Active") { testResource.job.isActive }
-                assertTrue("Is Job Cancelled") { testResource.job.isCancelled }
-                assertTrue("Is Job Completed") { testResource.job.isCompleted }
+                assertFalse("Is Job Active") { boundResource.job.isActive }
+                assertTrue("Is Job Cancelled") { boundResource.job.isCancelled }
+                assertTrue("Is Job Completed") { boundResource.job.isCompleted }
             })
 
             assertTrue("LiveData shouldn't emit all values after cancel") { responseSet.size < 2 }
@@ -489,40 +390,47 @@ internal class BoundResourceTest {
         runBlocking {
             // arrange
             val scope = CoroutineScope(mockDispatchers.main)
-            val responseSet = LinkedHashSet<Resource<String>>()
-            val testResource: BoundResource<String> = spyk(boundResourceMock) {
-                every { getStorageData() } returns "invalidated data"
-                every { isNeedRefresh(any()) } returns true
-                coEvery { apiRequestAsync().await() } coAnswers {
-                    delay(1000)
-                    Response.success("success")
-                }
+            every { boundResource.getStorageData() } returns "invalidated data"
+            every { boundResource.isNeedRefresh(any()) } returns true
+            coEvery { boundResource.apiRequestAsync().await() } coAnswers {
+                delay(1000)
+                Response.success("success")
             }
 
-            val liveData = testResource.launchIn(scope).getLiveData()
-            liveData.observeForever {
-                responseSet.add(it)
-            }
+            launchAndObserve()
 
             delay(500)
 
             assertAll("Before Job cancelled", {
-                assertTrue("Is Job Active") { testResource.job.isActive }
-                assertFalse("Is Job Cancelled") { testResource.job.isCancelled }
-                assertFalse("Is Job Completed") { testResource.job.isCompleted }
+                assertTrue("Is Job Active") { boundResource.job.isActive }
+                assertFalse("Is Job Cancelled") { boundResource.job.isCancelled }
+                assertFalse("Is Job Completed") { boundResource.job.isCompleted }
             })
 
-            testResource.cancelJob()
+            boundResource.cancelJob()
 
             delay(1000)
 
             assertAll("After Job cancelled", {
-                assertFalse("Is Job Active") { testResource.job.isActive }
-                assertTrue("Is Job Cancelled") { testResource.job.isCancelled }
-                assertTrue("Is Job Completed") { testResource.job.isCompleted }
+                assertFalse("Is Job Active") { boundResource.job.isActive }
+                assertTrue("Is Job Cancelled") { boundResource.job.isCancelled }
+                assertTrue("Is Job Completed") { boundResource.job.isCompleted }
             })
 
             assertTrue("LiveData shouldn't emit all values after cancel") { responseSet.size < 2 }
+        }
+    }
+
+    private suspend fun CoroutineScope.launchAndObserve() {
+        boundResource.launchIn(this).getLiveData().observeForever(observer)
+        boundResource.job.join()
+    }
+
+    private fun getMockErrorResponse(status: HttpStatusCode): Response<String> {
+        return mockk(relaxed = true) {
+            every { isSuccessful } returns false
+            every { code() } returns status.code
+            every { errorBody() } returns null
         }
     }
 }
