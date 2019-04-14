@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_graph"
-    app:startDestination="@id/mainFragment">
+    app:startDestination="@id/homeFragment">
 
     <fragment
         android:id="@+id/trendingFragment"
@@ -43,7 +43,7 @@
     </fragment>
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.netchar.wallpaperify.ui.home.MainFragment"
+        android:name="com.netchar.wallpaperify.ui.latest.LatestFragment"
         android:label="MainFragment">
         <action
             android:id="@+id/action_mainFragment_to_photoDetailsFragment"
@@ -59,4 +59,9 @@
         android:name="com.netchar.wallpaperify.ui.support.SupportFragment"
         android:label="fragment_support"
         tools:layout="@layout/fragment_support" />
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.netchar.wallpaperify.ui.home.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" />
 </navigation>

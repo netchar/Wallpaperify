@@ -1,4 +1,4 @@
-package com.netchar.wallpaperify.ui.home
+package com.netchar.wallpaperify.ui.latest
 
 import android.os.Bundle
 import android.view.Menu
@@ -13,15 +13,16 @@ import com.netchar.wallpaperify.data.remote.dto.Photo
 import com.netchar.wallpaperify.di.factories.ViewModelFactory
 import com.netchar.wallpaperify.infrastructure.extensions.injectViewModel
 import com.netchar.wallpaperify.ui.base.BaseFragment
+import com.netchar.wallpaperify.ui.home.MainViewModel
 import kotlinx.android.synthetic.main.fragment_main.*
 import javax.inject.Inject
 
 
-class MainFragment : BaseFragment() {
+class LatestFragment : BaseFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance() = MainFragment()
+        fun newInstance() = LatestFragment()
     }
 
     @Inject
@@ -38,7 +39,7 @@ class MainFragment : BaseFragment() {
     }
 
     private val dataSource by lazy {
-        RecyclerDataSource(listOf(PhotosRenderer(::onItemClick)))
+        RecyclerDataSource(listOf(LatestPhotosRenderer(::onItemClick)))
     }
 
     private fun onItemClick(model: Photo) {
@@ -51,7 +52,7 @@ class MainFragment : BaseFragment() {
 //        viewModel.photos.observe(viewLifecycleOwner, Observer { response ->
 //            when (response) {
 //                is Resource.Success -> {
-//                    dataSource.setData(response.data.map { NewPhotoRecyclerItem(it) })
+//                    dataSource.setData(response.data.map { LatestPhotoRecyclerItem(it) })
 //                }
 //                is Resource.Loading -> {
 //                    Toast.makeText(this.context, response.isLoading.toString(), Toast.LENGTH_LONG).show()

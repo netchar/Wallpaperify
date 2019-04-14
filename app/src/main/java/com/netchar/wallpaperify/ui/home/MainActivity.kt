@@ -3,8 +3,13 @@ package com.netchar.wallpaperify.ui.home
 import android.content.res.Configuration
 import android.os.Bundle
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.factories.ViewModelFactory
@@ -16,6 +21,10 @@ import javax.inject.Inject
 class MainActivity : BaseActivity() {
     companion object {
         const val BACK_DOUBLE_TAP_TIMEOUT = 1000L
+    }
+
+    private val navigationController: NavController by lazy(LazyThreadSafetyMode.NONE) {
+        findNavController(R.id.main_navigation_fragment)
     }
 
     @Inject
@@ -31,29 +40,32 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         viewModel = injectViewModel(factory)
-
-        setupNavigationDrawer()
-        setupNavigation()
+//
+//        setupNavigationDrawer()
+//        setupNavigation()
 
 //        setupNavigationDrawer()
 //        setupBottomNavigationView()
-
-//        if (savedInstanceState == null) {
-//            supportFragmentManager.beginTransaction()
-//                .addToBackStack(null)
-//                .replace(R.id.fragment_container, MainFragment.newInstance())
-//                .commit()
-//        }
     }
 
-    private fun setupNavigation() {
-        val navigationController = findNavController(R.id.main_navigation_fragment)
+
+//    private fun setupNavigation() {
+//        drawer_navigation_view.setupWithNavController(navigationController)
+//        setupActionBarWithNavController(navigationController, drawer_layout)
+////        bottom_navigation_view.setupWithNavController(navigationController)
+//    }
+
+    fun setupNavigation() {
         drawer_navigation_view.setupWithNavController(navigationController)
-        bottom_navigation_view.setupWithNavController(navigationController)
+        setupActionBarWithNavController(navigationController, drawer_layout)
+
+        if (!::toggle.isInitialized) {
+            setupNavigationDrawer(findViewById(R.id.toolbar), drawer_layout)
+        }
     }
 
-    override fun onSupportNavigateUp() =
-        findNavController(R.id.main_navigation_fragment).navigateUp()
+    //    override fun onSupportNavigateUp() = NavigationUI.navigateUp(navigationController, drawer_layout)
+    override fun onSupportNavigateUp() = NavigationUI.navigateUp(navigationController, drawer_layout)
 
 
 //    private fun setupBottomNavigationView() {
@@ -73,8 +85,8 @@ class MainActivity : BaseActivity() {
 //        return true
 //    }
 
-    private fun setupNavigationDrawer() {
-        toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+    private fun setupNavigationDrawer(toolbar: Toolbar, drawerLayout: DrawerLayout) {
+        toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
 //        nav_view.setNavigationItemSelectedListener(::onNavigationItemSelected)
     }
@@ -90,6 +102,8 @@ class MainActivity : BaseActivity() {
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
+//        setupNavigation(findViewById(R.id.toolbar))
+        setupNavigation()
         toggle.syncState()
     }
 
@@ -99,10 +113,10 @@ class MainActivity : BaseActivity() {
     }
 
 //    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-////        if (toggle.onOptionsItemSelected(item)) {
-////            return true
-////        }
-//        NavigationUI.onNavDestinationSelected(item, navigationControler)
+//        if (toggle.onOptionsItemSelected(item)) {
+//            return true
+//        }
+////        NavigationUI.onNavDestinationSelected(item, navigationControler)
 //        return super.onOptionsItemSelected(item)
 //    }
 
@@ -111,6 +125,8 @@ class MainActivity : BaseActivity() {
             drawer_layout.closeDrawer(GravityCompat.START)
             return
         }
+
+        super.onBackPressed()
 
 //        if (isBackPressedFromFragment()) {
 //            return
@@ -127,7 +143,7 @@ class MainActivity : BaseActivity() {
 //        val currentFragment = supportFragmentManager.getCurrentFragment()
 //        return currentFragment != null && currentFragment.onBackPressed()
 //    }
-//
+
 //    private inline fun runByDoubleBack(runAction: () -> Unit) {
 //        val backPressElapsed = System.currentTimeMillis() - lastPressedTime
 //        if (backPressElapsed in 0..BACK_DOUBLE_TAP_TIMEOUT) {

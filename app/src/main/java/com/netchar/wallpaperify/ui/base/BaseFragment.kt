@@ -10,6 +10,7 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.Toolbar
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.Injector
+import com.netchar.wallpaperify.ui.home.MainActivity
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
@@ -23,36 +24,43 @@ abstract class BaseFragment : androidx.fragment.app.Fragment(), HasSupportFragme
     @get:LayoutRes
     abstract val layoutResId: Int
 
-    private val baseActivity by lazy {
-        activity as BaseActivity
-    }
+    protected lateinit var baseActivity: MainActivity
 
-    override fun onAttach(context: Context?) {
+    protected var toolbar: Toolbar? = null
+
+    override fun onAttach(context: Context) {
         Injector.inject(this)
         super.onAttach(context)
+        baseActivity = context as MainActivity
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
     }
 
     override fun supportFragmentInjector(): AndroidInjector<androidx.fragment.app.Fragment> = childFragmentInjector
-
-    protected var toolbar: Toolbar? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = inflater.inflate(layoutResId, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setHasOptionsMenu(true)
         setupToolbar(view)
     }
 
     private fun setupToolbar(view: View) {
-        toolbar = view.findViewById(R.id.toolbar)
+        val toolbar: Toolbar? = view.findViewById(R.id.toolbar)
         if (toolbar != null) {
-            baseActivity.setSupportActionBar(toolbar)
-            baseActivity.supportActionBar?.let {
-                it.setHomeButtonEnabled(true)
-                it.setDisplayHomeAsUpEnabled(true)
+            with(baseActivity) {
+                setSupportActionBar(toolbar)
+                supportActionBar?.let {
+                    it.setHomeButtonEnabled(true)
+                    it.setDisplayHomeAsUpEnabled(true)
+                }
+                setupNavigation()
             }
         }
+        this.toolbar = toolbar
     }
 
     @CheckResult
