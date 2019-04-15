@@ -2,6 +2,7 @@ package com.netchar.wallpaperify.ui.home
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
@@ -15,10 +16,11 @@ import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.factories.ViewModelFactory
 import com.netchar.wallpaperify.infrastructure.extensions.injectViewModel
 import com.netchar.wallpaperify.ui.base.BaseActivity
+import com.netchar.wallpaperify.ui.base.BaseFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
-class MainActivity : BaseActivity() {
+class MainActivity : BaseActivity(), IDrawerActivity {
     companion object {
         const val BACK_DOUBLE_TAP_TIMEOUT = 1000L
     }
@@ -40,76 +42,30 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         viewModel = injectViewModel(factory)
-//
-//        setupNavigationDrawer()
-//        setupNavigation()
-
-//        setupNavigationDrawer()
-//        setupBottomNavigationView()
     }
 
-
-//    private fun setupNavigation() {
-//        drawer_navigation_view.setupWithNavController(navigationController)
-//        setupActionBarWithNavController(navigationController, drawer_layout)
-////        bottom_navigation_view.setupWithNavController(navigationController)
-//    }
-
-    fun setupNavigation() {
+    fun setupNavigation(toolbar: Toolbar) {
         drawer_navigation_view.setupWithNavController(navigationController)
         setupActionBarWithNavController(navigationController, drawer_layout)
-
-        if (!::toggle.isInitialized) {
-            setupNavigationDrawer(findViewById(R.id.toolbar), drawer_layout)
-        }
+//        setupNavigationDrawer(toolbar, drawer_layout)
     }
 
-    //    override fun onSupportNavigateUp() = NavigationUI.navigateUp(navigationController, drawer_layout)
     override fun onSupportNavigateUp() = NavigationUI.navigateUp(navigationController, drawer_layout)
-
-
-//    private fun setupBottomNavigationView() {
-//        bottom_navigation_view.setOnNavigationItemSelectedListener(::onBottomNavigationItemSelected)
-//    }
-
-//    private fun onBottomNavigationItemSelected(item: MenuItem): Boolean {
-//        when (item.itemId) {
-//            R.id.navigation_bottom_bar_latest -> {
-//            }
-//            R.id.navigation_bottom_bar_trending -> {
-//            }
-//            R.id.navigation_bottom_bar_collections -> {
-//            }
-//        }
-//
-//        return true
-//    }
 
     private fun setupNavigationDrawer(toolbar: Toolbar, drawerLayout: DrawerLayout) {
         toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        drawer_layout.removeDrawerListener(toggle)
         drawer_layout.addDrawerListener(toggle)
-//        nav_view.setNavigationItemSelectedListener(::onNavigationItemSelected)
     }
-
-//    private fun onNavigationItemSelected(item: MenuItem): Boolean {
-//        // Handle navigation view item clicks here.
-//        when (item.itemId) {
-//        }
-//
-//        drawer_layout.closeDrawer(GravityCompat.START)
-//        return true
-//    }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
-//        setupNavigation(findViewById(R.id.toolbar))
-        setupNavigation()
-        toggle.syncState()
+//        toggle.syncState()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
-        toggle.onConfigurationChanged(newConfig)
+//        toggle.onConfigurationChanged(newConfig)
     }
 
 //    override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -126,33 +82,33 @@ class MainActivity : BaseActivity() {
             return
         }
 
-        super.onBackPressed()
+        if (isBackPressedFromFragment()) {
+            return
+        }
 
-//        if (isBackPressedFromFragment()) {
-//            return
-//        }
-//
-//        if (supportFragmentManager.canPopFragment()) {
-//            super.onBackPressed()
-//        } else {
-//            runByDoubleBack { this.finishAffinity() }
-//        }
+        if (navigationController.navigateUp()) {
+            return
+        }
+
+        runByDoubleBack {
+            this.finishAffinity()
+        }
     }
 
-//    private fun isBackPressedFromFragment(): Boolean {
-//        val currentFragment = supportFragmentManager.getCurrentFragment()
-//        return currentFragment != null && currentFragment.onBackPressed()
-//    }
+    private fun isBackPressedFromFragment(): Boolean {
+        val currentFragment = main_navigation_fragment.childFragmentManager.primaryNavigationFragment
+        return currentFragment != null && currentFragment is BaseFragment && currentFragment.onBackPressed()
+    }
 
-//    private inline fun runByDoubleBack(runAction: () -> Unit) {
-//        val backPressElapsed = System.currentTimeMillis() - lastPressedTime
-//        if (backPressElapsed in 0..BACK_DOUBLE_TAP_TIMEOUT) {
-//            runAction()
-//        } else {
-//            Toast.makeText(this, getString(R.string.main_toast_confirm_back), Toast.LENGTH_SHORT).show()
-//            lastPressedTime = System.currentTimeMillis()
-//        }
-//    }
-//
-//    private var lastPressedTime: Long = 0
+    private inline fun runByDoubleBack(runAction: () -> Unit) {
+        val backPressElapsed = System.currentTimeMillis() - lastPressedTime
+        if (backPressElapsed in 0..BACK_DOUBLE_TAP_TIMEOUT) {
+            runAction()
+        } else {
+            Toast.makeText(this, getString(R.string.main_toast_confirm_back), Toast.LENGTH_SHORT).show()
+            lastPressedTime = System.currentTimeMillis()
+        }
+    }
+
+    private var lastPressedTime: Long = 0
 }

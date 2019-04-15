@@ -53,11 +53,11 @@ abstract class BaseFragment : androidx.fragment.app.Fragment(), HasSupportFragme
         if (toolbar != null) {
             with(baseActivity) {
                 setSupportActionBar(toolbar)
-                supportActionBar?.let {
-                    it.setHomeButtonEnabled(true)
-                    it.setDisplayHomeAsUpEnabled(true)
-                }
-                setupNavigation()
+//                supportActionBar?.let {
+//                    it.setHomeButtonEnabled(true)
+//                    it.setDisplayHomeAsUpEnabled(true)
+//                }
+//                setupNavigation(toolbar)
             }
         }
         this.toolbar = toolbar

@@ -62,6 +62,5 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.netchar.wallpaperify.ui.home.HomeFragment"
-        android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        android:label="fragment_home" />
 </navigation>
