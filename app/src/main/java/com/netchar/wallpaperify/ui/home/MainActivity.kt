@@ -8,7 +8,9 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
@@ -29,6 +31,7 @@ class MainActivity : BaseActivity(), IDrawerActivity {
         findNavController(R.id.main_navigation_fragment)
     }
 
+
     @Inject
     lateinit var factory: ViewModelFactory
 
@@ -42,39 +45,90 @@ class MainActivity : BaseActivity(), IDrawerActivity {
         super.onCreate(savedInstanceState)
 
         viewModel = injectViewModel(factory)
+        setupNavigation(toolbar!!)
     }
 
     fun setupNavigation(toolbar: Toolbar) {
         drawer_navigation_view.setupWithNavController(navigationController)
-        setupActionBarWithNavController(navigationController, drawer_layout)
-//        setupNavigationDrawer(toolbar, drawer_layout)
+
+//        val appBarConfiguration = AppBarConfiguration.Builder(setOf(R.id.homeFragment, R.id.settingsFragment))
+//            .setDrawerLayout(drawer_layout)
+//            .build()
+
+        setupActionBarWithNavController(navigationController, appBarConfiguration)
+        setupNavigationDrawer(toolbar, drawer_layout)
     }
 
-    override fun onSupportNavigateUp() = NavigationUI.navigateUp(navigationController, drawer_layout)
+    val appBarConfiguration by lazy {
+        AppBarConfiguration.Builder(setOf(R.id.homeFragment, R.id.settingsFragment))
+            .setDrawerLayout(drawer_layout)
+            .build()
+    }
+
+//    override fun onSupportNavigateUp(): Boolean {
+//        return  NavigationUI.navigateUp(navigationController, drawer_layout)
+//    }
+
+    override fun onSupportNavigateUp(): Boolean {
+//
+//        val sadas = NavigationUI.navigateUp(navigationController, drawer_layout)
+//
+//        val drawerLayout = drawer_layout
+//        val currentDestination = navigationController.getCurrentDestination()
+//        val topLevelDestinations = setOf(R.id.homeFragment, R.id.settingsFragment)
+//        val isIt = drawerLayout != null && currentDestination != null && matchDestinations(currentDestination!!, topLevelDestinations)
+//        if (isIt) {
+////            drawerLayout!!.openDrawer(1)
+//            val rasas = 0
+//        }
+
+        return NavigationUI.navigateUp(navigationController, appBarConfiguration)
+    }
+
+
+    internal fun matchDestinations(destination: NavDestination, destinationIds: Set<Int>): Boolean {
+        var currentDestination: Any? = destination
+
+        while (!destinationIds.contains((currentDestination as NavDestination).id)) {
+            currentDestination = currentDestination.parent
+            if (currentDestination == null) {
+                return false
+            }
+        }
+
+        return true
+    }
+
+//    } NavigationUI.navigateUp(navigationController, drawer_layout)
 
     private fun setupNavigationDrawer(toolbar: Toolbar, drawerLayout: DrawerLayout) {
-        toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        drawer_layout.removeDrawerListener(toggle)
+        toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
-//        toggle.syncState()
+        toggle.syncState()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
-//        toggle.onConfigurationChanged(newConfig)
+        toggle.onConfigurationChanged(newConfig)
     }
 
 //    override fun onOptionsItemSelected(item: MenuItem): Boolean {
 //        if (toggle.onOptionsItemSelected(item)) {
 //            return true
 //        }
-////        NavigationUI.onNavDestinationSelected(item, navigationControler)
 //        return super.onOptionsItemSelected(item)
 //    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (isFinishing) {
+            drawer_layout.removeDrawerListener(toggle)
+        }
+    }
 
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {

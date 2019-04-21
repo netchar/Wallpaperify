@@ -1,42 +1,28 @@
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tabGravity="fill"
+        app:tabMode="fixed" />
 
-        <include layout="@layout/view_toolbar_default" />
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tabs">
 
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabGravity="fill"
-            app:tabMode="fixed">
 
-            <com.google.android.material.tabs.TabItem
-                android:icon="@drawable/ic_bottom_bar_item_latest"
-                android:text="@string/navigation_bottom_bar_title_latest"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
+    </androidx.viewpager.widget.ViewPager>
 
-            <com.google.android.material.tabs.TabItem
-                android:icon="@drawable/ic_bottom_bar_item_trending"
-                android:text="@string/navigation_bottom_bar_title_trending"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
-
-            <com.google.android.material.tabs.TabItem
-                android:icon="@drawable/ic_bottom_bar_item_collections"
-                android:text="@string/navigation_bottom_bar_title_collections"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
-
-        </com.google.android.material.tabs.TabLayout>
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

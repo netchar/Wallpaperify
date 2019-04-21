@@ -45,7 +45,7 @@ abstract class BaseFragment : androidx.fragment.app.Fragment(), HasSupportFragme
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupToolbar(view)
+//        setupToolbar(view)
     }
 
     private fun setupToolbar(view: View) {

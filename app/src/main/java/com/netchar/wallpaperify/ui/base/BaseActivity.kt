@@ -3,6 +3,8 @@ package com.netchar.wallpaperify.ui.base
 import android.os.Bundle
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.Injector
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -18,24 +20,24 @@ abstract class BaseActivity : AppCompatActivity(), HasSupportFragmentInjector {
         Injector.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(layoutResId)
-//        setupToolbar()
+        setupToolbar()
     }
 
     @get:LayoutRes
     abstract val layoutResId: Int
 
-//    protected var toolbar: Toolbar? = null
-//
-//    protected fun setupToolbar() {
-//        toolbar = findViewById(R.id.toolbar)
-//        if (toolbar != null) {
-//            setSupportActionBar(toolbar)
-////            supportActionBar?.let {
-////                it.setHomeButtonEnabled(true)
-////                it.setDisplayHomeAsUpEnabled(true)
-////            }
-//        }
-//    }
+    protected var toolbar: Toolbar? = null
+
+    protected fun setupToolbar() {
+        toolbar = findViewById(R.id.toolbar)
+        if (toolbar != null) {
+            setSupportActionBar(toolbar)
+            supportActionBar?.let {
+                it.setHomeButtonEnabled(true)
+                it.setDisplayHomeAsUpEnabled(true)
+            }
+        }
+    }
 
     override fun supportFragmentInjector(): AndroidInjector<androidx.fragment.app.Fragment> = fragmentInjector
 }
