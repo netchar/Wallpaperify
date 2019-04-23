@@ -4,16 +4,15 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
+import androidx.core.view.ViewCompat
 import androidx.navigation.NavController
-import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.appbar.AppBarLayout
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.factories.ViewModelFactory
 import com.netchar.wallpaperify.infrastructure.extensions.injectViewModel
@@ -24,13 +23,9 @@ import javax.inject.Inject
 
 class MainActivity : BaseActivity(), IDrawerActivity {
     companion object {
-        const val BACK_DOUBLE_TAP_TIMEOUT = 1000L
+        private const val BACK_DOUBLE_TAP_TIMEOUT = 1000L
+        private val topLevelFragmentsIds = setOf(R.id.homeFragment, R.id.settingsFragment)
     }
-
-    private val navigationController: NavController by lazy(LazyThreadSafetyMode.NONE) {
-        findNavController(R.id.main_navigation_fragment)
-    }
-
 
     @Inject
     lateinit var factory: ViewModelFactory
@@ -41,69 +36,36 @@ class MainActivity : BaseActivity(), IDrawerActivity {
 
     override val layoutResId = R.layout.activity_main
 
+    private val navigationController: NavController by lazy(LazyThreadSafetyMode.NONE) {
+        findNavController(R.id.main_navigation_fragment)
+    }
+
+    private val appBarConfiguration by lazy(LazyThreadSafetyMode.NONE) {
+        AppBarConfiguration.Builder(topLevelFragmentsIds)
+                .setDrawerLayout(drawer_layout)
+                .build()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         viewModel = injectViewModel(factory)
-        setupNavigation(toolbar!!)
+        setupNavigation()
+        setupNavigationDrawer()
     }
 
-    fun setupNavigation(toolbar: Toolbar) {
+    private fun setupNavigation() {
         drawer_navigation_view.setupWithNavController(navigationController)
-
-//        val appBarConfiguration = AppBarConfiguration.Builder(setOf(R.id.homeFragment, R.id.settingsFragment))
-//            .setDrawerLayout(drawer_layout)
-//            .build()
-
         setupActionBarWithNavController(navigationController, appBarConfiguration)
-        setupNavigationDrawer(toolbar, drawer_layout)
     }
 
-    val appBarConfiguration by lazy {
-        AppBarConfiguration.Builder(setOf(R.id.homeFragment, R.id.settingsFragment))
-            .setDrawerLayout(drawer_layout)
-            .build()
+    private fun setupNavigationDrawer() {
+        toggle = ActionBarDrawerToggle(this, drawer_layout, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        drawer_layout.addDrawerListener(toggle)
     }
-
-//    override fun onSupportNavigateUp(): Boolean {
-//        return  NavigationUI.navigateUp(navigationController, drawer_layout)
-//    }
 
     override fun onSupportNavigateUp(): Boolean {
-//
-//        val sadas = NavigationUI.navigateUp(navigationController, drawer_layout)
-//
-//        val drawerLayout = drawer_layout
-//        val currentDestination = navigationController.getCurrentDestination()
-//        val topLevelDestinations = setOf(R.id.homeFragment, R.id.settingsFragment)
-//        val isIt = drawerLayout != null && currentDestination != null && matchDestinations(currentDestination!!, topLevelDestinations)
-//        if (isIt) {
-////            drawerLayout!!.openDrawer(1)
-//            val rasas = 0
-//        }
-
         return NavigationUI.navigateUp(navigationController, appBarConfiguration)
-    }
-
-
-    internal fun matchDestinations(destination: NavDestination, destinationIds: Set<Int>): Boolean {
-        var currentDestination: Any? = destination
-
-        while (!destinationIds.contains((currentDestination as NavDestination).id)) {
-            currentDestination = currentDestination.parent
-            if (currentDestination == null) {
-                return false
-            }
-        }
-
-        return true
-    }
-
-//    } NavigationUI.navigateUp(navigationController, drawer_layout)
-
-    private fun setupNavigationDrawer(toolbar: Toolbar, drawerLayout: DrawerLayout) {
-        toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        drawer_layout.addDrawerListener(toggle)
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -115,13 +77,6 @@ class MainActivity : BaseActivity(), IDrawerActivity {
         super.onConfigurationChanged(newConfig)
         toggle.onConfigurationChanged(newConfig)
     }
-
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        if (toggle.onOptionsItemSelected(item)) {
-//            return true
-//        }
-//        return super.onOptionsItemSelected(item)
-//    }
 
     override fun onDestroy() {
         super.onDestroy()

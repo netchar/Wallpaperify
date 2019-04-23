@@ -50,19 +50,19 @@ class LatestFragment : BaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = injectViewModel(viewModelFactory)
-        viewModel.photos.observe(viewLifecycleOwner, Observer { response ->
-            when (response) {
-                is Resource.Success -> {
-                    dataSource.setData(response.data.map { LatestPhotoRecyclerItem(it) })
-                }
-                is Resource.Loading -> {
-                    Toast.makeText(this.context, response.isLoading.toString(), Toast.LENGTH_LONG).show()
-                }
-                is Resource.Error -> {
-                    Toast.makeText(this.context, response.message, Toast.LENGTH_LONG).show()
-                }
-            }
-        })
+//        viewModel.photos.observe(viewLifecycleOwner, Observer { response ->
+//            when (response) {
+//                is Resource.Success -> {
+//                    dataSource.setData(response.data.map { LatestPhotoRecyclerItem(it) })
+//                }
+//                is Resource.Loading -> {
+//                    Toast.makeText(this.context, response.isLoading.toString(), Toast.LENGTH_LONG).show()
+//                }
+//                is Resource.Error -> {
+//                    Toast.makeText(this.context, response.message, Toast.LENGTH_LONG).show()
+//                }
+//            }
+//        })
     }
 
 //    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
