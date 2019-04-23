@@ -4,6 +4,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: "de.mannodermaus.android-junit5"
 apply plugin: 'androidx.navigation.safeargs'
+apply from: '../dependencies.gradle'
 
 def secretProperties = new Properties()
 secretProperties.load(project.rootProject.file('secret.properties').newDataInputStream())
@@ -65,65 +66,62 @@ dependencies {
     implementation project(':poweradapter')
 
     // Kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.coroutines"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.coroutines"
+    implementation deps.kotlin.stdlib
+    implementation deps.kotlin.coroutines.android
+    implementation deps.kotlin.coroutines.core
 
     // Androidx
-    implementation "androidx.appcompat:appcompat:$versions.androidx.appcompat"
-    implementation "androidx.constraintlayout:constraintlayout:$versions.androidx.constraintlayout"
-    implementation "com.google.android.material:material:$versions.androidx.material"
-    implementation "androidx.legacy:legacy-support-v4:$versions.androidx.legacy"
-    implementation "androidx.lifecycle:lifecycle-extensions:$versions.androidx.lifecycle"
-    implementation 'android.arch.navigation:navigation-fragment-ktx:1.0.0'
-    implementation 'android.arch.navigation:navigation-ui-ktx:1.0.0'
-    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation deps.androidx.appcompat
+    implementation deps.androidx.constraintlayout
+    implementation deps.androidx.material
+    implementation deps.androidx.legacy
+    implementation deps.androidx.lifecycle
+    implementation deps.androidx.navigation.fragment
+    implementation deps.androidx.navigation.ui
+    implementation deps.androidx.recyclerview
 
     // Timber
-    implementation "com.jakewharton.timber:timber:$versions.timber"
+    implementation deps.timber
 
     // Dagger
-    implementation "com.google.dagger:dagger:$versions.dagger"
-    implementation "com.google.dagger:dagger-android-support:$versions.dagger"
-    kapt "com.google.dagger:dagger-android-processor:$versions.dagger"
-    kapt "com.google.dagger:dagger-compiler:$versions.dagger"
+    implementation deps.dagger.dagger
+    implementation deps.dagger.android
+    kapt deps.dagger.processor
+    kapt deps.dagger.compiler
 
     // Retrofit
-    implementation "com.squareup.retrofit2:retrofit:$versions.retrofit"
-    implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:$versions.kotlinCoroutinesAdapter"
-    implementation "com.squareup.retrofit2:converter-moshi:$versions.converterMoshi"
+    implementation deps.retrofit.retrofit
+    implementation deps.retrofit.adapter
+    implementation deps.retrofit.converter
 
     // OkHttp
-    implementation "com.squareup.okhttp3:okhttp:$versions.okhttp"
-    implementation "com.squareup.okhttp3:logging-interceptor:$versions.okhttp"
+    implementation deps.okhttp.okhttp
+    implementation deps.okhttp.interceptor
 
     // ThreeTen
-    implementation "com.jakewharton.threetenabp:threetenabp:$versions.threetenabp"
+    implementation deps.threetenabp
 
     // Moshi + Kotshi
-    implementation "com.squareup.moshi:moshi:$versions.moshi"
-    implementation "se.ansman.kotshi:api:$versions.kotshi"
-    kapt "se.ansman.kotshi:compiler:$versions.kotshi"
+    implementation deps.moshi
+    implementation deps.kotshi.api
+    kapt deps.kotshi.compiler
 
     // Glide
-    implementation "com.github.bumptech.glide:glide:$versions.glide"
-    implementation "com.github.bumptech.glide:okhttp3-integration:$versions.glide"
-    kapt "com.github.bumptech.glide:compiler:$versions.glide"
+    implementation deps.glide.glide
+    implementation deps.glide.okhttp3
+    kapt deps.glide.compiler
 }
 
 dependencies {
-    // Test Runner
-    androidTestImplementation "androidx.test:runner:$versions.test.runner"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$versions.test.espresso"
+    androidTestImplementation deps.test.runner
+    androidTestImplementation deps.test.espresso
 
-    // JUnit
-    testImplementation "org.junit.jupiter:junit-jupiter-api:$versions.test.junit"
+    testImplementation deps.test.junit.api
+    testRuntimeOnly deps.test.junit.engine
+    testImplementation deps.test.junit.params
+    testImplementation deps.test.junit.engine
 
-    // Kotlin
-    testImplementation "org.jetbrains.kotlin:kotlin-test:$versions.kotlin"
-    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$versions.kotlin"
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.test.coroutines"
-
-    // Mockk
-    testImplementation "io.mockk:mockk:$versions.test.mockk"
+    testImplementation deps.test.kotlin.test
+    testImplementation deps.test.kotlin.junit
+    testImplementation deps.test.mockk
 }

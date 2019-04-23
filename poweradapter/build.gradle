@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply from: '../dependencies.gradle'
 
 android {
     compileSdkVersion versions.build.sdk.compile
@@ -26,26 +27,24 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
+    // Kotlin
+    implementation deps.kotlin.stdlib
 
     // Androidx
-    implementation "androidx.appcompat:appcompat:$versions.androidx.appcompat"
-    implementation "androidx.constraintlayout:constraintlayout:$versions.androidx.constraintlayout"
-    implementation "com.google.android.material:material:$versions.androidx.material"
-    implementation "androidx.legacy:legacy-support-v4:$versions.androidx.legacy"
+    implementation deps.androidx.appcompat
+    implementation deps.androidx.constraintlayout
+    implementation deps.androidx.material
+    implementation deps.androidx.legacy
+}
 
-    // Test Runner
-    androidTestImplementation "androidx.test:runner:$versions.test.runner"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$versions.test.espresso"
-
-    // JUnit
-    testImplementation "org.junit.jupiter:junit-jupiter-api:$versions.test.junit"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$versions.test.junit"
-    testImplementation "org.junit.jupiter:junit-jupiter-params:$versions.test.junit"
-    testImplementation "org.junit.vintage:junit-vintage-engine:$versions.test.junit"
-
-    // Mockk
-    testImplementation "io.mockk:mockk:$versions.test.mockk"
+dependencies {
+    testImplementation deps.test.runner
+    testImplementation deps.test.espresso
+    testImplementation deps.test.junit.api
+    testRuntimeOnly deps.test.junit.engine
+    testImplementation deps.test.junit.params
+    testImplementation deps.test.junit.engine
+    testImplementation deps.test.mockk
 }
 
 repositories {
