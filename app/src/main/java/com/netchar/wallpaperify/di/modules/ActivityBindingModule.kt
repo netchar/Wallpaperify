@@ -1,7 +1,6 @@
 package com.netchar.wallpaperify.di.modules
 
 import com.netchar.wallpaperify.ui.home.MainActivity
-import com.netchar.wallpaperify.ui.home.MainActivityModule
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule

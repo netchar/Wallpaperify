@@ -7,6 +7,9 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.setupWithNavController
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
 import com.netchar.wallpaperify.R
@@ -19,8 +22,6 @@ import kotlinx.android.synthetic.main.fragment_home.*
 
 class HomeFragment : BaseFragment() {
 
-    private var activityAppBarElevation: Float = 0f
-
     override val layoutResId: Int = R.layout.fragment_home
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -32,13 +33,6 @@ class HomeFragment : BaseFragment() {
             it.addFragment(CollectionsFragment(), "Collections")
         }
         tabs.setupWithViewPager(viewpager)
-//        activityAppBarElevation = ViewCompat.getElevation(baseActivity.main_appbar)
-//        ViewCompat.setElevation(baseActivity.main_appbar, 0f)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-//        ViewCompat.setElevation(baseActivity.main_appbar, activityAppBarElevation)
     }
 
     class MyFragmentPagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {

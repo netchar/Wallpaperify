@@ -44,42 +44,23 @@ class LatestFragment : BaseFragment() {
 
     private fun onItemClick(model: Photo) {
         findNavController().navigate(R.id.photoDetailsFragment)
-//        Toast.makeText(this.context, "Clicked: ${model.user.name}", Toast.LENGTH_LONG).show()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = injectViewModel(viewModelFactory)
-//        viewModel.photos.observe(viewLifecycleOwner, Observer { response ->
-//            when (response) {
-//                is Resource.Success -> {
-//                    dataSource.setData(response.data.map { LatestPhotoRecyclerItem(it) })
-//                }
-//                is Resource.Loading -> {
-//                    Toast.makeText(this.context, response.isLoading.toString(), Toast.LENGTH_LONG).show()
-//                }
-//                is Resource.Error -> {
-//                    Toast.makeText(this.context, response.message, Toast.LENGTH_LONG).show()
-//                }
-//            }
-//        })
+        viewModel.photos.observe(viewLifecycleOwner, Observer { response ->
+            when (response) {
+                is Resource.Success -> {
+                    dataSource.setData(response.data.map { LatestPhotoRecyclerItem(it) })
+                }
+                is Resource.Loading -> {
+                    Toast.makeText(this.context, response.isLoading.toString(), Toast.LENGTH_LONG).show()
+                }
+                is Resource.Error -> {
+                    Toast.makeText(this.context, response.message, Toast.LENGTH_LONG).show()
+                }
+            }
+        })
     }
-
-//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-//        inflater.inflate(R.menu.menu_main, menu)
-//    }
-//
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        if (item.itemId == R.id.menu_main_refresh) {
-//            viewModel.requestPhotos()
-//        }
-//        return super.onOptionsItemSelected(item)
-//    }
-
-//    override fun onBackPressed(): Boolean {
-//        viewModel.cancelFetchingPhotos()
-//        return true
-//    }
-
-
 }

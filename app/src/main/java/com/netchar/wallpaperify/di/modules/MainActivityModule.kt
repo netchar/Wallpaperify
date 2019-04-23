@@ -1,5 +1,7 @@
-package com.netchar.wallpaperify.ui.home
+package com.netchar.wallpaperify.di.modules
 
+import com.netchar.wallpaperify.ui.about.AboutFragment
+import com.netchar.wallpaperify.ui.home.HomeFragment
 import com.netchar.wallpaperify.ui.latest.LatestFragment
 import com.netchar.wallpaperify.ui.photosdetails.PhotoDetailsFragment
 import com.netchar.wallpaperify.ui.settings.SettingsFragment
@@ -20,5 +22,8 @@ abstract class MainActivityModule {
 
     @ContributesAndroidInjector
     abstract fun contributePhotoDetailsFragment(): PhotoDetailsFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeAboutFragment(): AboutFragment
 
 }

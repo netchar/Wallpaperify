@@ -12,23 +12,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/main_appbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:elevation="4dp"
-            android:theme="@style/AppTheme.AppBarOverlay">
+        <!--<com.google.android.material.appbar.AppBarLayout-->
+            <!--android:id="@+id/main_appbar"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:elevation="4dp"-->
+            <!--android:theme="@style/AppTheme.AppBarOverlay">-->
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                app:layout_scrollFlags="scroll|enterAlways"
+            <!--<androidx.appcompat.widget.Toolbar-->
+                <!--android:id="@+id/toolbar"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="?attr/actionBarSize"-->
+                <!--android:background="?attr/colorPrimary"-->
+                <!--app:layout_scrollFlags="scroll|enterAlways"-->
 
-                app:popupTheme="@style/AppTheme.PopupOverlay" />
+                <!--app:popupTheme="@style/AppTheme.PopupOverlay" />-->
 
-        </com.google.android.material.appbar.AppBarLayout>
+        <!--</com.google.android.material.appbar.AppBarLayout>-->
 
         <fragment
             android:id="@+id/main_navigation_fragment"
@@ -36,7 +36,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:defaultNavHost="true"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:navGraph="@navigation/navigation_graph" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
