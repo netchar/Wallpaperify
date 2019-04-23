@@ -6,8 +6,8 @@
 
     <fragment
         android:id="@+id/trendingFragment"
-        android:name="com.netchar.wallpaperify.ui.trending.FeaturedFragment"
-        android:label="fragment_featured"
+        android:name="com.netchar.wallpaperify.ui.trending.TrendingFragment"
+        android:label="@string/title_fragment_trending"
         tools:layout="@layout/fragment_featured" >
         <action
             android:id="@+id/action_featuredFragment_to_photoDetailsFragment"
@@ -25,7 +25,7 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.netchar.wallpaperify.ui.settings.SettingsFragment"
-        android:label="fragment_settings"
+        android:label="Settings"
         tools:layout="@layout/fragment_settings" />
     <fragment
         android:id="@+id/photoDetailsFragment"

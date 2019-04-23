@@ -3,21 +3,15 @@ package com.netchar.wallpaperify.ui.home
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.setupWithNavController
 import androidx.viewpager.widget.ViewPager
-import com.google.android.material.appbar.AppBarLayout
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.ui.base.BaseFragment
 import com.netchar.wallpaperify.ui.collections.CollectionsFragment
 import com.netchar.wallpaperify.ui.latest.LatestFragment
-import com.netchar.wallpaperify.ui.trending.TrandingFragment
-import kotlinx.android.synthetic.main.activity_main.*
+import com.netchar.wallpaperify.ui.trending.TrendingFragment
 import kotlinx.android.synthetic.main.fragment_home.*
 
 class HomeFragment : BaseFragment() {
@@ -29,7 +23,7 @@ class HomeFragment : BaseFragment() {
         val viewpager = view.findViewById<ViewPager>(R.id.pager)
         viewpager.adapter = MyFragmentPagerAdapter(childFragmentManager).also {
             it.addFragment(LatestFragment.newInstance(), "Latest")
-            it.addFragment(TrandingFragment(), "Tranding")
+            it.addFragment(TrendingFragment(), "Tranding")
             it.addFragment(CollectionsFragment(), "Collections")
         }
         tabs.setupWithViewPager(viewpager)
