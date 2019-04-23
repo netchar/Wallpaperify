@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_graph"
     app:startDestination="@id/homeFragment">
@@ -7,8 +8,8 @@
     <fragment
         android:id="@+id/trendingFragment"
         android:name="com.netchar.wallpaperify.ui.trending.TrendingFragment"
-        android:label="@string/title_fragment_trending"
-        tools:layout="@layout/fragment_featured" >
+        android:label="@string/trending_fragment_title"
+        tools:layout="@layout/fragment_featured">
         <action
             android:id="@+id/action_featuredFragment_to_photoDetailsFragment"
             app:destination="@id/photoDetailsFragment" />
@@ -16,8 +17,8 @@
     <fragment
         android:id="@+id/collectionsFragment"
         android:name="com.netchar.wallpaperify.ui.collections.CollectionsFragment"
-        android:label="fragment_collections"
-        tools:layout="@layout/fragment_collections" >
+        android:label="@string/collections_fragment_title"
+        tools:layout="@layout/fragment_collections">
         <action
             android:id="@+id/action_collectionsFragment_to_collectionDetailsFragment"
             app:destination="@id/collectionDetailsFragment" />
@@ -25,42 +26,38 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.netchar.wallpaperify.ui.settings.SettingsFragment"
-        android:label="Settings"
+        android:label="@string/settings_fragment_title"
         tools:layout="@layout/fragment_settings" />
     <fragment
         android:id="@+id/photoDetailsFragment"
         android:name="com.netchar.wallpaperify.ui.photosdetails.PhotoDetailsFragment"
-        android:label="fragment_photo_details"
+        android:label="@string/photo_details_fragment_title"
         tools:layout="@layout/fragment_photo_details" />
     <fragment
         android:id="@+id/collectionDetailsFragment"
         android:name="com.netchar.wallpaperify.ui.collectiondetails.CollectionDetailsFragment"
-        android:label="fragment_collection_details"
-        tools:layout="@layout/fragment_collection_details" >
+        android:label="@string/collection_details_fragment_title"
+        tools:layout="@layout/fragment_collection_details">
         <action
             android:id="@+id/action_collectionDetailsFragment_to_photoDetailsFragment"
             app:destination="@id/photoDetailsFragment" />
     </fragment>
     <fragment
-        android:id="@+id/mainFragment"
+        android:id="@+id/latestFragment"
         android:name="com.netchar.wallpaperify.ui.latest.LatestFragment"
-        android:label="MainFragment">
-        <action
-            android:id="@+id/action_mainFragment_to_photoDetailsFragment"
-            app:destination="@id/photoDetailsFragment" />
-    </fragment>
+        android:label="@string/latest_fragment_title" />
     <fragment
         android:id="@+id/aboutFragment"
         android:name="com.netchar.wallpaperify.ui.about.AboutFragment"
-        android:label="fragment_about"
+        android:label="@string/about_fragment_title"
         tools:layout="@layout/fragment_about" />
     <fragment
         android:id="@+id/supportFragment"
         android:name="com.netchar.wallpaperify.ui.support.SupportFragment"
-        android:label="fragment_support"
+        android:label="@string/support_development_fragment_title"
         tools:layout="@layout/fragment_support" />
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.netchar.wallpaperify.ui.home.HomeFragment"
-        android:label="fragment_home" />
+        android:label="@string/home_fragment_title" />
 </navigation>
