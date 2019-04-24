@@ -122,5 +122,5 @@ dependencies {
     testImplementation deps.test.kotlin.test
     testImplementation deps.test.kotlin.junit
     testImplementation deps.test.mockk
-    testImplementation 'org.hamcrest:hamcrest-library:1.3'
+    testImplementation deps.test.hamcrest
 }

@@ -38,6 +38,7 @@ ext {
     versions.moshi = "1.8.0"
     versions.kotshi = "1.0.6"
     versions.glide = "4.9.0"
+    versions.hamcrest = "1.3"
 
     /*********************** DEPENDENCIES ***********************/
 
@@ -111,6 +112,7 @@ ext {
                     test : "org.jetbrains.kotlin:kotlin-test:$versions.kotlin",
                     junit: "org.jetbrains.kotlin:kotlin-test-junit:$versions.kotlin",
             ],
-            mockk   : "io.mockk:mockk:$versions.test.mockk"
+            mockk   : "io.mockk:mockk:$versions.test.mockk",
+            hamcrest: "org.hamcrest:hamcrest-library:$versions.hamcrest"
     ]
 }
