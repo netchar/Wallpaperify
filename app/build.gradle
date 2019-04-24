@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
-apply plugin: "de.mannodermaus.android-junit5"
 apply plugin: 'androidx.navigation.safeargs'
 apply from: '../dependencies.gradle'
 
@@ -117,11 +116,11 @@ dependencies {
     androidTestImplementation deps.test.espresso
 
     testImplementation deps.test.junit.api
-    testRuntimeOnly deps.test.junit.engine
     testImplementation deps.test.junit.params
     testImplementation deps.test.junit.engine
 
     testImplementation deps.test.kotlin.test
     testImplementation deps.test.kotlin.junit
     testImplementation deps.test.mockk
+    testImplementation 'org.hamcrest:hamcrest-library:1.3'
 }
