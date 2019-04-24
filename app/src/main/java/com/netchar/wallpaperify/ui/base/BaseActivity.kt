@@ -28,7 +28,7 @@ abstract class BaseActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     protected var toolbar: Toolbar? = null
 
-    private fun setupToolbar() {
+    protected fun setupToolbar() {
         toolbar = findViewById(R.id.toolbar)
         if (toolbar != null) {
             setSupportActionBar(toolbar)

@@ -5,9 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.CallSuper
 import androidx.annotation.CheckResult
 import androidx.annotation.LayoutRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.setupWithNavController
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.Injector
 import dagger.android.AndroidInjector
@@ -23,36 +27,41 @@ abstract class BaseFragment : androidx.fragment.app.Fragment(), HasSupportFragme
     @get:LayoutRes
     abstract val layoutResId: Int
 
-    private val baseActivity by lazy {
-        activity as BaseActivity
-    }
+    protected val drawerActivity: IDrawerActivity? get() = activity as? IDrawerActivity
 
-    override fun onAttach(context: Context?) {
+    protected var toolbar: Toolbar? = null
+
+    override fun onAttach(context: Context) {
         Injector.inject(this)
         super.onAttach(context)
     }
 
     override fun supportFragmentInjector(): AndroidInjector<androidx.fragment.app.Fragment> = childFragmentInjector
 
-    protected var toolbar: Toolbar? = null
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = inflater.inflate(layoutResId, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setHasOptionsMenu(true)
         setupToolbar(view)
     }
 
-    private fun setupToolbar(view: View) {
-        toolbar = view.findViewById(R.id.toolbar)
+    @CallSuper
+    protected open fun setupToolbar(view: View) {
+        val toolbar: Toolbar? = view.findViewById(R.id.toolbar)
+
         if (toolbar != null) {
-            baseActivity.setSupportActionBar(toolbar)
-            baseActivity.supportActionBar?.let {
-                it.setHomeButtonEnabled(true)
-                it.setDisplayHomeAsUpEnabled(true)
+            val drawerAct = drawerActivity
+
+            if (drawerAct != null) {
+                toolbar.setupWithNavController(findNavController(), drawerAct.appBarConfiguration)
+            } else {
+                toolbar.setupWithNavController(findNavController())
             }
+
+            val currentActivity = activity as AppCompatActivity
+            currentActivity.setSupportActionBar(toolbar)
         }
+        this.toolbar = toolbar
     }
 
     @CheckResult

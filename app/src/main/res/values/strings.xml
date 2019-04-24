@@ -30,4 +30,17 @@
     <!--Error messages-->
     <string name="error_message_no_internet">Please check that you have an Internet connection and try again.</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_fragment_trending">Trending</string>
+    <string name="trending_fragment_title">Trending</string>
+    <string name="collections_fragment_title">Collections</string>
+    <string name="settings_fragment_title">Settings</string>
+    <string name="photo_details_fragment_title">Photo Details</string>
+    <string name="collection_details_fragment_title">Collection Details</string>
+    <string name="latest_fragment_title">Latest</string>
+    <string name="about_fragment_title">About</string>
+    <string name="support_development_fragment_title">Support Development</string>
+    <string name="home_fragment_title">Wallpaperify</string>
+
 </resources>

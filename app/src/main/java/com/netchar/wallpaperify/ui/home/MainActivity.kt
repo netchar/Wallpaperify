@@ -1,23 +1,26 @@
 package com.netchar.wallpaperify.ui.home
 
-import android.content.res.Configuration
 import android.os.Bundle
-import android.view.MenuItem
 import android.widget.Toast
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.setupWithNavController
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.factories.ViewModelFactory
-import com.netchar.wallpaperify.infrastructure.extensions.canPopFragment
-import com.netchar.wallpaperify.infrastructure.extensions.getCurrentFragment
 import com.netchar.wallpaperify.infrastructure.extensions.injectViewModel
 import com.netchar.wallpaperify.ui.base.BaseActivity
+import com.netchar.wallpaperify.ui.base.BaseFragment
+import com.netchar.wallpaperify.ui.base.IDrawerActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
-class MainActivity : BaseActivity() {
+class MainActivity : BaseActivity(), IDrawerActivity {
     companion object {
-        const val BACK_DOUBLE_TAP_TIMEOUT = 1000L
+        private const val BACK_DOUBLE_TAP_TIMEOUT = 1000L
+        private val topLevelFragmentsIds = setOf(R.id.homeFragment)
     }
 
     @Inject
@@ -25,73 +28,26 @@ class MainActivity : BaseActivity() {
 
     private lateinit var viewModel: MainViewModel
 
-    private lateinit var toggle: ActionBarDrawerToggle
-
     override val layoutResId = R.layout.activity_main
+
+    private val navigationController: NavController by lazy(LazyThreadSafetyMode.NONE) {
+        findNavController(R.id.main_navigation_fragment)
+    }
+
+    override val appBarConfiguration: AppBarConfiguration by lazy(LazyThreadSafetyMode.NONE) {
+        AppBarConfiguration.Builder(topLevelFragmentsIds)
+                .setDrawerLayout(drawer_layout)
+                .build()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         viewModel = injectViewModel(factory)
-
-        setupNavigationDrawer()
-        setupBottomNavigationView()
-
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .addToBackStack(null)
-                .replace(R.id.fragment_container, MainFragment.newInstance())
-                .commit()
-        }
+        drawer_navigation_view.setupWithNavController(navigationController)
     }
 
-    private fun setupBottomNavigationView() {
-        bottom_navigation_view.setOnNavigationItemSelectedListener(::onBottomNavigationItemSelected)
-    }
-
-    private fun onBottomNavigationItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.navigation_bottom_bar_latest -> {
-            }
-            R.id.navigation_bottom_bar_trending -> {
-            }
-            R.id.navigation_bottom_bar_collections -> {
-            }
-        }
-
-        return true
-    }
-
-    private fun setupNavigationDrawer() {
-        toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        drawer_layout.addDrawerListener(toggle)
-        nav_view.setNavigationItemSelectedListener(::onNavigationItemSelected)
-    }
-
-    private fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
-        when (item.itemId) {
-        }
-
-        drawer_layout.closeDrawer(GravityCompat.START)
-        return true
-    }
-
-    override fun onPostCreate(savedInstanceState: Bundle?) {
-        super.onPostCreate(savedInstanceState)
-        toggle.syncState()
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration?) {
-        super.onConfigurationChanged(newConfig)
-        toggle.onConfigurationChanged(newConfig)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (toggle.onOptionsItemSelected(item)) {
-            return true
-        }
-        return super.onOptionsItemSelected(item)
+    override fun onSupportNavigateUp(): Boolean {
+        return NavigationUI.navigateUp(navigationController, appBarConfiguration)
     }
 
     override fun onBackPressed() {
@@ -104,16 +60,18 @@ class MainActivity : BaseActivity() {
             return
         }
 
-        if (supportFragmentManager.canPopFragment()) {
-            super.onBackPressed()
-        } else {
-            runByDoubleBack { this.finishAffinity() }
+        if (navigationController.navigateUp()) {
+            return
+        }
+
+        runByDoubleBack {
+            this.finishAffinity()
         }
     }
 
     private fun isBackPressedFromFragment(): Boolean {
-        val currentFragment = supportFragmentManager.getCurrentFragment()
-        return currentFragment != null && currentFragment.onBackPressed()
+        val currentFragment = main_navigation_fragment.childFragmentManager.primaryNavigationFragment
+        return currentFragment != null && currentFragment is BaseFragment && currentFragment.onBackPressed()
     }
 
     private inline fun runByDoubleBack(runAction: () -> Unit) {

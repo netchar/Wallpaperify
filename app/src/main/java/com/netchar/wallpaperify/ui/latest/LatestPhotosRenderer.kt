@@ -1,4 +1,4 @@
-package com.netchar.wallpaperify.ui.home
+package com.netchar.wallpaperify.ui.latest
 
 import android.view.View
 import android.widget.ImageView
@@ -11,13 +11,13 @@ import com.netchar.wallpaperify.data.remote.dto.Photo
 import kotlinx.android.synthetic.main.raw_photo.view.*
 
 
-class PhotosRenderer(val listener: (Photo) -> Unit) : ItemRenderer() {
+class LatestPhotosRenderer(val listener: (Photo) -> Unit) : ItemRenderer() {
 
     override val renderKey: String = this::class.java.name
 
     override fun layoutRes() = R.layout.raw_photo
 
-    private lateinit var photo: NewPhotoRecyclerItem
+    private lateinit var photo: LatestPhotoRecyclerItem
 
     override fun onSetListeners(itemView: View) {
         itemView.setOnClickListener {
@@ -28,7 +28,7 @@ class PhotosRenderer(val listener: (Photo) -> Unit) : ItemRenderer() {
     }
 
     override fun bind(itemView: View, item: IRecyclerItem) {
-        photo = item as NewPhotoRecyclerItem
+        photo = item as LatestPhotoRecyclerItem
 
         itemView.row_photo_iv.fitWidth(photo.data.width, photo.data.height)
 

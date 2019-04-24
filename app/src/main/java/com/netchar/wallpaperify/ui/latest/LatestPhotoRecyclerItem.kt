@@ -1,4 +1,4 @@
-package com.netchar.wallpaperify.ui.home
+package com.netchar.wallpaperify.ui.latest
 
 import com.netchar.poweradapter.item.IRecyclerItem
 import com.netchar.wallpaperify.data.remote.dto.Photo
@@ -9,9 +9,9 @@ import com.netchar.wallpaperify.data.remote.dto.Photo
  * e.glushankov@gmail.com
  */
 
-data class NewPhotoRecyclerItem(val data: Photo) : IRecyclerItem {
+data class LatestPhotoRecyclerItem(val data: Photo) : IRecyclerItem {
 
     override fun getId(): Long = data.hashCode().toLong()
 
-    override fun getRenderKey(): String = PhotosRenderer::class.java.name
+    override fun getRenderKey(): String = LatestPhotosRenderer::class.java.name
 }
