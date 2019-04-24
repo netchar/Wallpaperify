@@ -1,6 +1,5 @@
 package com.netchar.remote.api
 
-import com.netchar.remote.dto.Photo
 import kotlinx.coroutines.Deferred
 import retrofit2.Response
 import retrofit2.http.GET
@@ -13,5 +12,5 @@ interface PhotosApi {
         @Query("page") page: Int,
         @Query("per_page") per_page: Int,
         @Query("order_by") order_by: String = ""
-    ): Deferred<Response<List<Photo>>>
+    ): Deferred<Response<List<com.netchar.models.Photo>>>
 }

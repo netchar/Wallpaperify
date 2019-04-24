@@ -5,8 +5,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.netchar.poweradapter.adapter.RecyclerAdapter
-import com.netchar.poweradapter.adapter.RecyclerDataSource
+import com.netchar.common.poweradapter.adapter.RecyclerAdapter
 import com.netchar.remote.Resource
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.factories.ViewModelFactory
@@ -38,10 +37,10 @@ class LatestFragment : BaseFragment() {
     }
 
     private val dataSource by lazy {
-        RecyclerDataSource(listOf(LatestPhotosRenderer(::onItemClick)))
+        com.netchar.common.poweradapter.adapter.RecyclerDataSource(listOf(LatestPhotosRenderer(::onItemClick)))
     }
 
-    private fun onItemClick(model: com.netchar.remote.dto.Photo) {
+    private fun onItemClick(model: com.netchar.models.Photo) {
         findNavController().navigate(R.id.photoDetailsFragment)
     }
 

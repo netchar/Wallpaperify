@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-kapt'
 apply from: '../../commons-android.gradle'
 
 android {
@@ -16,6 +15,10 @@ android {
 }
 
 dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(project_modules.models)
+    implementation project(project_modules.test)
+
     // Kotlin
     implementation deps.kotlin.stdlib
     implementation deps.kotlin.coroutines.android
@@ -43,15 +46,21 @@ dependencies {
     implementation deps.dagger.android
     kapt deps.dagger.processor
     kapt deps.dagger.compiler
+
+    // Timber
+    implementation deps.timber
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
     androidTestImplementation deps.test.runner
     androidTestImplementation deps.test.espresso
 
     testImplementation deps.test.junit.api
     testImplementation deps.test.junit.params
     testImplementation deps.test.junit.engine
+
+    testImplementation deps.test.kotlin.test
+    testImplementation deps.test.kotlin.junit
+    testImplementation deps.test.mockk
+    testImplementation deps.test.hamcrest
 }

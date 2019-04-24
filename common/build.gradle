@@ -1,0 +1,36 @@
+apply plugin: 'com.android.library'
+apply from: '../commons-android.gradle'
+
+android {
+    defaultConfig {
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    // Kotlin
+    implementation deps.kotlin.stdlib
+
+    // Androidx
+    implementation deps.androidx.appcompat
+    implementation deps.androidx.constraintlayout
+    implementation deps.androidx.material
+    implementation deps.androidx.legacy
+}
+
+dependencies {
+    testImplementation deps.test.runner
+    testImplementation deps.test.espresso
+    testImplementation deps.test.junit.api
+    testRuntimeOnly deps.test.junit.engine
+    testImplementation deps.test.junit.params
+    testImplementation deps.test.junit.engine
+    testImplementation deps.test.mockk
+}

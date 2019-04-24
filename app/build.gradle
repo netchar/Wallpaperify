@@ -1,9 +1,6 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'androidx.navigation.safeargs'
 apply from: '../commons-android.gradle'
+apply plugin: 'androidx.navigation.safeargs'
 
 def secretProperties = new Properties()
 secretProperties.load(project.rootProject.file('secret.properties').newDataInputStream())
@@ -30,7 +27,7 @@ android {
         debug {
             minifyEnabled false
             applicationIdSuffix '.debug'
-            versionNameSuffix '-DEBUG'
+            versionNameSuffix '-debug'
         }
 
         release {
@@ -53,8 +50,11 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation project(project_modules.poweradapter)
+
+    // Modules
     implementation project(project_modules.remote)
+    implementation project(project_modules.common)
+    implementation project(project_modules.models)
 
     // Kotlin
     implementation deps.kotlin.stdlib

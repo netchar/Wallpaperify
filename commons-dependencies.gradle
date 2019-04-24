@@ -124,7 +124,8 @@ ext {
     project_modules.remote = ":data:remote"
     project_modules.local = ":data:local"
     project_modules.repository = ":data:repository"
-    project_modules.poweradapter = ":poweradapter"
-
+    project_modules.models = ":data:models"
+    project_modules.test = ":test"
+    project_modules.common = ":common"
 
 }

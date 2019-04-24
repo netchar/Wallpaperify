@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.netchar.remote.Resource
-import com.netchar.remote.dto.Photo
 import com.netchar.wallpaperify.data.repository.IBoundResource
 import com.netchar.wallpaperify.data.repository.IPhotosRepository
 import com.netchar.wallpaperify.data.repository.PhotosRepository
@@ -25,9 +24,9 @@ class MainViewModel @Inject constructor(
     private val job = Job()
     private val scope = CoroutineScope(job + dispatchers.main)
     private val photosRequest = MutableLiveData<PhotosRepository.PhotosApiRequest>().apply { value = PhotosRepository.PhotosApiRequest() }
-    private lateinit var photosBoundResult: IBoundResource<List<com.netchar.remote.dto.Photo>>
+    private lateinit var photosBoundResult: IBoundResource<List<com.netchar.models.Photo>>
 
-    val photos: LiveData<Resource<List<Photo>>> = Transformations.switchMap(photosRequest) { request ->
+    val photos: LiveData<Resource<List<com.netchar.models.Photo>>> = Transformations.switchMap(photosRequest) { request ->
         if (request == null) {
             AbsentLiveData.create()
         } else {

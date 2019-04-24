@@ -6,9 +6,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.netchar.remote.Resource
 import com.netchar.remote.enums.Cause
+import com.netchar.remote.extensions.awaitSafe
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.infrastructure.CoroutineDispatchers
-import com.netchar.wallpaperify.infrastructure.extensions.awaitSafe
 import com.netchar.wallpaperify.infrastructure.utils.Connectivity
 import kotlinx.coroutines.*
 import retrofit2.Response

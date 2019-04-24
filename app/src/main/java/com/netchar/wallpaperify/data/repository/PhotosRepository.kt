@@ -30,17 +30,17 @@ class PhotosRepository @Inject constructor(
         annotation class OrderBy
     }
 
-    override fun getPhotos(request: PhotosApiRequest, scope: CoroutineScope): IBoundResource<List<com.netchar.remote.dto.Photo>> {
-        return object : BoundResource<List<com.netchar.remote.dto.Photo>>(dispatchers, context) {
-            override fun getStorageData(): List<com.netchar.remote.dto.Photo>? = emptyList()
+    override fun getPhotos(request: PhotosApiRequest, scope: CoroutineScope): IBoundResource<List<com.netchar.models.Photo>> {
+        return object : BoundResource<List<com.netchar.models.Photo>>(dispatchers, context) {
+            override fun getStorageData(): List<com.netchar.models.Photo>? = emptyList()
 
             override fun apiRequestAsync() = api.getPhotosAsync(request.page, request.perPage, request.orderBy)
 
-            override fun saveRemoteDataInStorage(data: List<com.netchar.remote.dto.Photo>) {
+            override fun saveRemoteDataInStorage(data: List<com.netchar.models.Photo>) {
                 /*todo: saving*/
             }
 
-            override fun isNeedRefresh(localData: List<com.netchar.remote.dto.Photo>) = localData.isNullOrEmpty()
+            override fun isNeedRefresh(localData: List<com.netchar.models.Photo>) = localData.isNullOrEmpty()
         }.launchIn(scope)
     }
 }

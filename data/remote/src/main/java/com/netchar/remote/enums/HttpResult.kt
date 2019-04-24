@@ -1,6 +1,6 @@
 package com.netchar.remote.enums
 
-import com.netchar.remote.dto.UnsplashError
+import com.netchar.models.UnsplashError
 import com.squareup.moshi.Moshi
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -19,7 +19,7 @@ sealed class HttpResult<out T> {
                 return Error(statusCode, response.errorBody().toUnsplashError(), statusCode.description)
             }
 
-            private fun ResponseBody?.toUnsplashError(): UnsplashError? = this?.let { com.netchar.remote.enums.HttpResult.Error.Companion.converter.fromJson(it.source()) }
+            private fun ResponseBody?.toUnsplashError(): UnsplashError? = this?.let { com.netchar.remote.enums.HttpResult.Error.converter.fromJson(it.source()) }
         }
     }
 

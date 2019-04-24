@@ -4,13 +4,11 @@ import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.netchar.poweradapter.item.IRecyclerItem
-import com.netchar.poweradapter.item.ItemRenderer
 import com.netchar.wallpaperify.R
 import kotlinx.android.synthetic.main.raw_photo.view.*
 
 
-class LatestPhotosRenderer(val listener: (com.netchar.remote.dto.Photo) -> Unit) : ItemRenderer() {
+class LatestPhotosRenderer(val listener: (com.netchar.models.Photo) -> Unit) : com.netchar.common.poweradapter.item.ItemRenderer() {
 
     override val renderKey: String = this::class.java.name
 
@@ -26,7 +24,7 @@ class LatestPhotosRenderer(val listener: (com.netchar.remote.dto.Photo) -> Unit)
         }
     }
 
-    override fun bind(itemView: View, item: IRecyclerItem) {
+    override fun bind(itemView: View, item: com.netchar.common.poweradapter.item.IRecyclerItem) {
         photo = item as LatestPhotoRecyclerItem
 
         itemView.row_photo_iv.fitWidth(photo.data.width, photo.data.height)
