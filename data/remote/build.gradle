@@ -1,0 +1,57 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-kapt'
+apply from: '../../commons-android.gradle'
+
+android {
+    defaultConfig {
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    // Kotlin
+    implementation deps.kotlin.stdlib
+    implementation deps.kotlin.coroutines.android
+    implementation deps.kotlin.coroutines.core
+
+    // Retrofit
+    implementation deps.retrofit.retrofit
+    implementation deps.retrofit.adapter
+    implementation deps.retrofit.converter
+
+    // OkHttp
+    implementation deps.okhttp.okhttp
+    implementation deps.okhttp.interceptor
+
+    // ThreeTen
+    implementation deps.threetenabp
+
+    // Moshi + Kotshi
+    implementation deps.moshi
+    implementation deps.kotshi.api
+    kapt deps.kotshi.compiler
+
+    // Dagger
+    implementation deps.dagger.dagger
+    implementation deps.dagger.android
+    kapt deps.dagger.processor
+    kapt deps.dagger.compiler
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    androidTestImplementation deps.test.runner
+    androidTestImplementation deps.test.espresso
+
+    testImplementation deps.test.junit.api
+    testImplementation deps.test.junit.params
+    testImplementation deps.test.junit.engine
+}

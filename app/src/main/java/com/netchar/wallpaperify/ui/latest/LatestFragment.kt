@@ -7,9 +7,8 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.netchar.poweradapter.adapter.RecyclerAdapter
 import com.netchar.poweradapter.adapter.RecyclerDataSource
+import com.netchar.remote.Resource
 import com.netchar.wallpaperify.R
-import com.netchar.wallpaperify.data.models.Resource
-import com.netchar.wallpaperify.data.remote.dto.Photo
 import com.netchar.wallpaperify.di.factories.ViewModelFactory
 import com.netchar.wallpaperify.infrastructure.extensions.injectViewModel
 import com.netchar.wallpaperify.ui.base.BaseFragment
@@ -42,7 +41,7 @@ class LatestFragment : BaseFragment() {
         RecyclerDataSource(listOf(LatestPhotosRenderer(::onItemClick)))
     }
 
-    private fun onItemClick(model: Photo) {
+    private fun onItemClick(model: com.netchar.remote.dto.Photo) {
         findNavController().navigate(R.id.photoDetailsFragment)
     }
 

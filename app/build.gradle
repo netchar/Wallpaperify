@@ -3,23 +3,14 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'androidx.navigation.safeargs'
-apply from: '../dependencies.gradle'
+apply from: '../commons-android.gradle'
 
 def secretProperties = new Properties()
 secretProperties.load(project.rootProject.file('secret.properties').newDataInputStream())
 
-def appVersionName = '1.0.0'
-
 android {
-    compileSdkVersion versions.build.sdk.compile
-    buildToolsVersion versions.build.buildTools
-
     defaultConfig {
         applicationId "com.netchar.wallpaperify"
-        minSdkVersion versions.build.sdk.min
-        targetSdkVersion versions.build.sdk.target
-        versionCode rootProject.extractVersionCode(appVersionName)
-        versionName appVersionName
 
         vectorDrawables {
             useSupportLibrary true
@@ -62,7 +53,8 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation project(':poweradapter')
+    implementation project(project_modules.poweradapter)
+    implementation project(project_modules.remote)
 
     // Kotlin
     implementation deps.kotlin.stdlib

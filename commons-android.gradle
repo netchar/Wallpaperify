@@ -1,0 +1,32 @@
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply from: "$rootProject.projectDir/commons-dependencies.gradle"
+
+def appVersionName = '1.0.0'
+
+ext {
+    extractVersionCode = { versionName ->
+        def (major, minor, patch) = versionName.toLowerCase().tokenize('.')
+        return (major.toInteger() * 10000) + (minor.toInteger() * 100) + patch.toInteger()
+    }
+}
+
+android {
+    compileSdkVersion versions.build.sdk.compile
+    buildToolsVersion versions.build.buildTools
+
+    defaultConfig {
+        minSdkVersion 25
+        versionCode extractVersionCode(appVersionName)
+        versionName appVersionName
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+        }
+    }
+}
+
+dependencies {
+
+}

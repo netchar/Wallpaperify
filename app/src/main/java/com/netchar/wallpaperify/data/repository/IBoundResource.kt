@@ -1,7 +1,7 @@
 package com.netchar.wallpaperify.data.repository
 
 import androidx.lifecycle.LiveData
-import com.netchar.wallpaperify.data.models.Resource
+import com.netchar.remote.Resource
 
 interface IBoundResource<TResult : Any> {
     fun cancelJob()

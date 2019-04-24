@@ -1,7 +1,6 @@
 package com.netchar.wallpaperify.infrastructure.extensions
 
-import com.netchar.wallpaperify.data.remote.HttpResult
-import com.netchar.wallpaperify.data.remote.HttpStatusCode
+import com.netchar.remote.enums.HttpStatusCode
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -33,16 +32,16 @@ internal class RetrofitExtKtTest {
         coEvery { mockResponse.await() } returns Response.success("Some body")
         runBlocking {
             val response = mockResponse.awaitSafe()
-            assertTrue { response is HttpResult.Success && response.data == "Some body" }
+            assertTrue { response is com.netchar.remote.enums.HttpResult.Success && response.data == "Some body" }
         }
     }
 
     @Test
     fun `Response with empty body and NoContent status code should return empty HttpResult`() {
-        coEvery { mockResponse.await() } returns Response.success(HttpStatusCode.NO_CONTENT.code, "")
+        coEvery { mockResponse.await() } returns Response.success(com.netchar.remote.enums.HttpStatusCode.NO_CONTENT.code, "")
         runBlocking {
             val response = mockResponse.awaitSafe()
-            assertTrue { response is HttpResult.Empty }
+            assertTrue { response is com.netchar.remote.enums.HttpResult.Empty }
         }
     }
 
@@ -51,7 +50,7 @@ internal class RetrofitExtKtTest {
         coEvery { mockResponse.await() } returns Response.success("")
         runBlocking {
             val response = mockResponse.awaitSafe()
-            assertTrue { response is HttpResult.Exception }
+            assertTrue { response is com.netchar.remote.enums.HttpResult.Exception }
         }
     }
 
@@ -60,7 +59,7 @@ internal class RetrofitExtKtTest {
         coEvery { mockResponse.await() } returns Response.success(null)
         runBlocking {
             val response = mockResponse.awaitSafe()
-            assertTrue { response is HttpResult.Exception }
+            assertTrue { response is com.netchar.remote.enums.HttpResult.Exception }
         }
     }
 
@@ -68,12 +67,12 @@ internal class RetrofitExtKtTest {
     fun `Invalid Response should return error HttpResult`() {
         coEvery { mockResponse.await() } returns mockk(relaxed = true) {
             every { isSuccessful } returns false
-            every { code() } returns HttpStatusCode.INTERNAL_SERVER_ERROR.code
+            every { code() } returns com.netchar.remote.enums.HttpStatusCode.INTERNAL_SERVER_ERROR.code
             every { errorBody() } returns null
         }
         runBlocking {
             val response = mockResponse.awaitSafe()
-            assertTrue { response is HttpResult.Error && response.message == HttpStatusCode.INTERNAL_SERVER_ERROR.description }
+            assertTrue { response is com.netchar.remote.enums.HttpResult.Error && response.message == com.netchar.remote.enums.HttpStatusCode.INTERNAL_SERVER_ERROR.description }
         }
     }
 
@@ -82,7 +81,7 @@ internal class RetrofitExtKtTest {
         coEvery { mockResponse.await() } throws IOException("Some IO exception")
         runBlocking {
             val response = mockResponse.awaitSafe()
-            assertTrue { response is HttpResult.Exception && response.exception.message == "Some IO exception" }
+            assertTrue { response is com.netchar.remote.enums.HttpResult.Exception && response.exception.message == "Some IO exception" }
         }
     }
 }

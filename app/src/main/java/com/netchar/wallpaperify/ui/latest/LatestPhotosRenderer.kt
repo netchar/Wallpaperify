@@ -7,11 +7,10 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.netchar.poweradapter.item.IRecyclerItem
 import com.netchar.poweradapter.item.ItemRenderer
 import com.netchar.wallpaperify.R
-import com.netchar.wallpaperify.data.remote.dto.Photo
 import kotlinx.android.synthetic.main.raw_photo.view.*
 
 
-class LatestPhotosRenderer(val listener: (Photo) -> Unit) : ItemRenderer() {
+class LatestPhotosRenderer(val listener: (com.netchar.remote.dto.Photo) -> Unit) : ItemRenderer() {
 
     override val renderKey: String = this::class.java.name
 

@@ -2,8 +2,6 @@ package com.netchar.wallpaperify.data.repository
 
 import android.content.Context
 import androidx.annotation.StringDef
-import com.netchar.wallpaperify.data.remote.api.PhotosApi
-import com.netchar.wallpaperify.data.remote.dto.Photo
 import com.netchar.wallpaperify.infrastructure.CoroutineDispatchers
 import kotlinx.coroutines.CoroutineScope
 import javax.inject.Inject
@@ -14,9 +12,9 @@ import javax.inject.Inject
  */
 
 class PhotosRepository @Inject constructor(
-        private val api: PhotosApi,
-        private val dispatchers: CoroutineDispatchers,
-        private val context: Context
+    private val api: com.netchar.remote.api.PhotosApi,
+    private val dispatchers: CoroutineDispatchers,
+    private val context: Context
 ) : IPhotosRepository {
 
     data class PhotosApiRequest(val page: Int = 0, val perPage: Int = 30, @OrderBy val orderBy: String = LATEST) {
@@ -32,17 +30,17 @@ class PhotosRepository @Inject constructor(
         annotation class OrderBy
     }
 
-    override fun getPhotos(request: PhotosApiRequest, scope: CoroutineScope): IBoundResource<List<Photo>> {
-        return object : BoundResource<List<Photo>>(dispatchers, context) {
-            override fun getStorageData(): List<Photo>? = emptyList()
+    override fun getPhotos(request: PhotosApiRequest, scope: CoroutineScope): IBoundResource<List<com.netchar.remote.dto.Photo>> {
+        return object : BoundResource<List<com.netchar.remote.dto.Photo>>(dispatchers, context) {
+            override fun getStorageData(): List<com.netchar.remote.dto.Photo>? = emptyList()
 
             override fun apiRequestAsync() = api.getPhotosAsync(request.page, request.perPage, request.orderBy)
 
-            override fun saveRemoteDataInStorage(data: List<Photo>) {
+            override fun saveRemoteDataInStorage(data: List<com.netchar.remote.dto.Photo>) {
                 /*todo: saving*/
             }
 
-            override fun isNeedRefresh(localData: List<Photo>) = localData.isNullOrEmpty()
+            override fun isNeedRefresh(localData: List<com.netchar.remote.dto.Photo>) = localData.isNullOrEmpty()
         }.launchIn(scope)
     }
 }

@@ -1,17 +1,10 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply from: '../dependencies.gradle'
+apply from: '../commons-android.gradle'
 
 android {
-    compileSdkVersion versions.build.sdk.compile
-    buildToolsVersion versions.build.buildTools
-
     defaultConfig {
-        minSdkVersion versions.build.sdk.min
-        targetSdkVersion versions.build.sdk.target
-        versionCode 1
-        versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -45,8 +38,4 @@ dependencies {
     testImplementation deps.test.junit.params
     testImplementation deps.test.junit.engine
     testImplementation deps.test.mockk
-}
-
-repositories {
-    jcenter()
 }

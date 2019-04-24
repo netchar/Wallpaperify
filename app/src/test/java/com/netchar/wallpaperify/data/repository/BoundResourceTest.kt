@@ -3,10 +3,9 @@ package com.netchar.wallpaperify.data.repository
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import com.netchar.remote.Resource
+import com.netchar.remote.enums.Cause
 import com.netchar.wallpaperify.R
-import com.netchar.wallpaperify.data.models.Cause
-import com.netchar.wallpaperify.data.models.Resource
-import com.netchar.wallpaperify.data.remote.HttpStatusCode
 import com.netchar.wallpaperify.infrastructure.CoroutineDispatchers
 import com.netchar.wallpaperify.infrastructure.utils.Connectivity
 import com.netchar.wallpaperify.testutils.InstantTaskExecutorExtension
@@ -229,12 +228,12 @@ internal class BoundResourceTest {
     fun `when network response error return UNEXPECTED error resource`() {
         runBlocking {
             // arrange
-            val referenceSet = linkedSetOf<Resource<String>>(Resource.Loading(true), Resource.Loading(false), Resource.Error(Cause.UNEXPECTED, HttpStatusCode.INTERNAL_SERVER_ERROR.description))
+            val referenceSet = linkedSetOf<Resource<String>>(Resource.Loading(true), Resource.Loading(false), Resource.Error(Cause.UNEXPECTED, com.netchar.remote.enums.HttpStatusCode.INTERNAL_SERVER_ERROR.description))
             every { boundResource.getStorageData() } returns storageDataMock
             every { boundResource.isNeedRefresh(storageDataMock) } returns true
             coEvery { boundResource.apiRequestAsync().await() } coAnswers {
                 delay(50)
-                getMockErrorResponse(HttpStatusCode.INTERNAL_SERVER_ERROR)
+                getMockErrorResponse(com.netchar.remote.enums.HttpStatusCode.INTERNAL_SERVER_ERROR)
             }
 
             // act
@@ -255,12 +254,12 @@ internal class BoundResourceTest {
     fun `when network response UNAUTHORIZED return NOT_AUTHENTICATED error resource`() {
         runBlocking {
             // arrange
-            val referenceSet = linkedSetOf<Resource<String>>(Resource.Loading(true), Resource.Loading(false), Resource.Error(Cause.NOT_AUTHENTICATED, HttpStatusCode.UNAUTHORIZED.description))
+            val referenceSet = linkedSetOf<Resource<String>>(Resource.Loading(true), Resource.Loading(false), Resource.Error(Cause.NOT_AUTHENTICATED, com.netchar.remote.enums.HttpStatusCode.UNAUTHORIZED.description))
             every { boundResource.getStorageData() } returns storageDataMock
             every { boundResource.isNeedRefresh(any()) } returns true
             coEvery { boundResource.apiRequestAsync().await() } coAnswers {
                 delay(50)
-                getMockErrorResponse(HttpStatusCode.UNAUTHORIZED)
+                getMockErrorResponse(com.netchar.remote.enums.HttpStatusCode.UNAUTHORIZED)
             }
 
             // act
@@ -285,7 +284,7 @@ internal class BoundResourceTest {
             every { boundResource.isNeedRefresh(any()) } returns true
             coEvery { boundResource.apiRequestAsync().await() } coAnswers {
                 delay(50)
-                Response.success(HttpStatusCode.NO_CONTENT.code, "")
+                Response.success(com.netchar.remote.enums.HttpStatusCode.NO_CONTENT.code, "")
             }
 
             // act
@@ -406,7 +405,7 @@ internal class BoundResourceTest {
         boundResource.job.join()
     }
 
-    private fun getMockErrorResponse(status: HttpStatusCode): Response<String> {
+    private fun getMockErrorResponse(status: com.netchar.remote.enums.HttpStatusCode): Response<String> {
         return mockk(relaxed = true) {
             every { isSuccessful } returns false
             every { code() } returns status.code

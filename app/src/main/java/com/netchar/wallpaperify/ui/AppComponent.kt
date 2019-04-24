@@ -1,9 +1,9 @@
 package com.netchar.wallpaperify.ui
 
 import android.content.Context
+import com.netchar.wallpaperify.di.ApiModule
+import com.netchar.wallpaperify.di.NetworkModule
 import com.netchar.wallpaperify.di.modules.ActivityBindingModule
-import com.netchar.wallpaperify.di.modules.ApiModule
-import com.netchar.wallpaperify.di.modules.NetworkModule
 import com.netchar.wallpaperify.di.modules.ViewModelBindingModule
 import com.netchar.wallpaperify.infrastructure.glide.GlideConfigurationModule
 import dagger.BindsInstance

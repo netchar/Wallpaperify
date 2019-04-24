@@ -4,10 +4,9 @@ import android.content.Context
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.netchar.remote.Resource
+import com.netchar.remote.enums.Cause
 import com.netchar.wallpaperify.R
-import com.netchar.wallpaperify.data.models.Cause
-import com.netchar.wallpaperify.data.models.Resource
-import com.netchar.wallpaperify.data.remote.HttpResult
 import com.netchar.wallpaperify.infrastructure.CoroutineDispatchers
 import com.netchar.wallpaperify.infrastructure.extensions.awaitSafe
 import com.netchar.wallpaperify.infrastructure.utils.Connectivity
@@ -76,10 +75,10 @@ abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDi
             result.value = Resource.Loading(false)
 
             when (apiResponse) {
-                is HttpResult.Success -> Resource.Success(apiResponse.data)
-                is HttpResult.Empty -> Resource.Error(Cause.UNEXPECTED, "Error during fetching data from server.")
-                is HttpResult.Error -> Resource.Error.parse(apiResponse)
-                is HttpResult.Exception -> Resource.Error(Cause.UNEXPECTED, message = apiResponse.exception.localizedMessage)
+                is com.netchar.remote.enums.HttpResult.Success -> Resource.Success(apiResponse.data)
+                is com.netchar.remote.enums.HttpResult.Empty -> Resource.Error(Cause.UNEXPECTED, "Error during fetching data from server.")
+                is com.netchar.remote.enums.HttpResult.Error -> Resource.Error.parse(apiResponse)
+                is com.netchar.remote.enums.HttpResult.Exception -> Resource.Error(Cause.UNEXPECTED, message = apiResponse.exception.localizedMessage)
             }
         } else {
             Resource.Error(Cause.NO_INTERNET_CONNECTION, context.getString(R.string.error_message_no_internet))

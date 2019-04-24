@@ -1,1 +1,1 @@
-include ':app', ':poweradapter'
+include ':app', ':poweradapter', 'data:remote'
