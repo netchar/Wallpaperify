@@ -1,4 +1,4 @@
-package com.netchar.wallpaperify.di.factories
+package com.netchar.wallpaperify.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

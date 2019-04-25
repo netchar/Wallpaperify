@@ -8,7 +8,7 @@ import androidx.navigation.fragment.findNavController
 import com.netchar.common.poweradapter.adapter.RecyclerAdapter
 import com.netchar.remote.Resource
 import com.netchar.wallpaperify.R
-import com.netchar.wallpaperify.di.factories.ViewModelFactory
+import com.netchar.wallpaperify.di.ViewModelFactory
 import com.netchar.common.extensions.injectViewModel
 import com.netchar.common.base.BaseFragment
 import com.netchar.wallpaperify.ui.home.MainViewModel

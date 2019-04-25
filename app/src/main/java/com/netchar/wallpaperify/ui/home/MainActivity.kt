@@ -9,7 +9,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.netchar.wallpaperify.R
-import com.netchar.wallpaperify.di.factories.ViewModelFactory
+import com.netchar.wallpaperify.di.ViewModelFactory
 import com.netchar.common.extensions.injectViewModel
 import com.netchar.common.base.BaseActivity
 import com.netchar.common.base.BaseFragment

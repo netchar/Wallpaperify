@@ -1,12 +1,10 @@
-package com.netchar.wallpaperify.data.repository
+package netchar.com.auth
 
 import android.content.SharedPreferences
 import com.netchar.common.di.AuthPrefs
 import javax.inject.Inject
 
-class OAuthRepository @Inject constructor(
-    @AuthPrefs private val oauthPrefs: SharedPreferences
-) : IOAuthService {
+class OAuthService(private val oauthPrefs: SharedPreferences) : IOAuthService {
 
     private var isAuthorized = false
 
@@ -14,5 +12,4 @@ class OAuthRepository @Inject constructor(
 
     override fun isAuthorized() = isAuthorized
     override fun getUserApiAccessTokenKey() = userApiAccessToken
-
 }

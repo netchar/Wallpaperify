@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.netchar.wallpaperify.BuildConfig
+import com.netchar.wallpaperify.infrastructure.BuildPreferences
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
@@ -25,7 +26,10 @@ class App : Application(), HasActivityInjector {
     lateinit var activityInjector: DispatchingAndroidInjector<Activity>
 
     val component: AppComponent by lazy {
-        DaggerAppComponent.builder().context(this).build()
+        DaggerAppComponent.builder()
+                .context(this)
+                .buildPrefs(BuildPreferences())
+                .build()
     }
 
     override fun onCreate() {

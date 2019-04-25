@@ -1,0 +1,23 @@
+apply plugin: 'com.android.library'
+apply from: '../../commons-android.gradle'
+
+dependencies {
+    implementation project(project_modules.remote)
+    implementation project(project_modules.local)
+    implementation project(project_modules.common)
+
+    // Kotlin
+    implementation deps.kotlin.stdlib
+    implementation deps.kotlin.coroutines.core
+
+    // Timber
+    implementation deps.timber
+
+    // Dagger
+    implementation deps.dagger.dagger
+    implementation deps.dagger.android
+    kapt deps.dagger.processor
+    kapt deps.dagger.compiler
+
+    implementation deps.okhttp.interceptor
+}

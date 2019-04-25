@@ -4,6 +4,7 @@ apply from: '../../commons-android.gradle'
 dependencies {
     implementation project(project_modules.models)
     implementation project(project_modules.test)
+    implementation project(project_modules.common)
 
     // Kotlin
     implementation deps.kotlin.stdlib

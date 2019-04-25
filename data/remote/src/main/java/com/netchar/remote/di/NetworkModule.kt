@@ -1,15 +1,16 @@
-package com.netchar.wallpaperify.di
+package com.netchar.remote.di
 
 import android.content.Context
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
+import com.netchar.common.di.OAuthInterceptor
 import com.netchar.remote.ApplicationJsonAdapterFactory
-import com.netchar.wallpaperify.data.repository.OAuthRepository
 import com.netchar.common.extensions.notExist
 import com.netchar.common.utils.Memory
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
 import okhttp3.Cache
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -20,13 +21,13 @@ import javax.inject.Singleton
 
 const val BASE_URL = "https://api.unsplash.com/"
 
-@Module(includes = [OAuthModule::class])
+@Module
 object NetworkModule {
 
     @JvmStatic
     @Provides
     @Singleton
-    fun provideOkHttpClient(authInterceptor: com.netchar.remote.api.interceptors.AuthInterceptor, loggingInterceptor: HttpLoggingInterceptor, cache: Cache): OkHttpClient = OkHttpClient.Builder()
+    fun provideOkHttpClient(@OAuthInterceptor authInterceptor: Interceptor, loggingInterceptor: HttpLoggingInterceptor, cache: Cache): OkHttpClient = OkHttpClient.Builder()
         .connectTimeout(10L, TimeUnit.SECONDS)
         .writeTimeout(10L, TimeUnit.SECONDS)
         .readTimeout(30L, TimeUnit.SECONDS)
@@ -44,11 +45,6 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideLoggingInterceptor(): HttpLoggingInterceptor = HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.HEADERS }
-
-    @JvmStatic
-    @Provides
-    @Singleton
-    fun provideOAuthInterceptor(oAuthRepository: OAuthRepository): com.netchar.remote.api.interceptors.AuthInterceptor = com.netchar.remote.api.interceptors.AuthInterceptor(oAuthRepository)
 
     @JvmStatic
     @Provides

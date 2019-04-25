@@ -1,4 +1,4 @@
-package com.netchar.wallpaperify.data.repository
+package netchar.com.auth
 
 
 /**

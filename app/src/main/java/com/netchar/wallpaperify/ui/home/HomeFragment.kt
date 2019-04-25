@@ -23,7 +23,7 @@ class HomeFragment : BaseFragment() {
         val viewpager = view.findViewById<ViewPager>(R.id.pager)
         viewpager.adapter = MyFragmentPagerAdapter(childFragmentManager).also {
             it.addFragment(LatestFragment.newInstance(), "Latest")
-            it.addFragment(TrendingFragment(), "Tranding")
+            it.addFragment(TrendingFragment(), "Trending")
             it.addFragment(CollectionsFragment(), "Collections")
         }
         tabs.setupWithViewPager(viewpager)

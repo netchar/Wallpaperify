@@ -10,3 +10,7 @@ annotation class AuthPrefs
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
 annotation class AppPrefs
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class OAuthInterceptor

@@ -3,7 +3,7 @@ package com.netchar.wallpaperify.di.modules
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.netchar.common.di.ViewModelKey
-import com.netchar.wallpaperify.di.factories.ViewModelFactory
+import com.netchar.wallpaperify.di.ViewModelFactory
 import com.netchar.wallpaperify.ui.home.MainViewModel
 import dagger.Binds
 import dagger.Module

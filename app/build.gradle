@@ -57,6 +57,7 @@ dependencies {
     implementation project(project_modules.local)
     implementation project(project_modules.repository)
     implementation project(project_modules.common)
+    implementation project(project_modules.auth)
 
     // Kotlin
     implementation deps.kotlin.stdlib
@@ -108,13 +109,4 @@ dependencies {
 dependencies {
     androidTestImplementation deps.test.runner
     androidTestImplementation deps.test.espresso
-}
-buildscript {
-    ext.kotlin_version = '1.3.30'
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
 }
