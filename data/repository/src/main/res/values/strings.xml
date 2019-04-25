@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">repository</string>
+    <!--Error messages-->
+    <string name="error_message_no_internet">Please check that you have an Internet connection and try again.</string>
 </resources>

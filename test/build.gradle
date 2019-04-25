@@ -2,6 +2,9 @@ apply plugin: 'com.android.library'
 apply from: '../commons-android.gradle'
 
 dependencies {
+    // Androidx
+    implementation deps.androidx.lifecycle
+
     androidTestImplementation deps.test.runner
     androidTestImplementation deps.test.espresso
 }

@@ -1,4 +1,4 @@
-package com.netchar.wallpaperify.testutils
+package com.netchar.repository
 
 import androidx.arch.core.executor.ArchTaskExecutor
 import androidx.arch.core.executor.TaskExecutor

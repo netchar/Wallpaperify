@@ -1,4 +1,4 @@
-package com.netchar.wallpaperify.data.repository
+package com.netchar.repository
 
 import android.content.Context
 import androidx.annotation.VisibleForTesting
@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import com.netchar.remote.Resource
 import com.netchar.remote.enums.Cause
 import com.netchar.remote.extensions.awaitSafe
-import com.netchar.wallpaperify.R
 import com.netchar.common.utils.CoroutineDispatchers
 import com.netchar.common.utils.Connectivity
 import kotlinx.coroutines.*

@@ -1,8 +1,8 @@
 package com.netchar.wallpaperify.di
 
 import android.content.Context
-import com.netchar.wallpaperify.data.repository.IPhotosRepository
-import com.netchar.wallpaperify.data.repository.PhotosRepository
+import com.netchar.repository.IPhotosRepository
+import com.netchar.repository.PhotosRepository
 import com.netchar.common.utils.CoroutineDispatchers
 import dagger.Module
 import dagger.Provides

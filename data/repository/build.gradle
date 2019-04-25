@@ -1,2 +1,34 @@
 apply plugin: 'com.android.library'
 apply from: '../../commons-android.gradle'
+
+dependencies {
+    implementation project(project_modules.test)
+    implementation project(project_modules.models)
+    implementation project(project_modules.remote)
+    implementation project(project_modules.local)
+    implementation project(project_modules.common)
+
+    // Androidx
+    implementation deps.androidx.lifecycle
+
+    // Timber
+    implementation deps.timber
+
+    // Dagger
+    implementation deps.dagger.dagger
+    implementation deps.dagger.android
+    kapt deps.dagger.processor
+    kapt deps.dagger.compiler
+
+    // Retrofit
+    implementation deps.retrofit.retrofit
+    implementation deps.retrofit.adapter
+    implementation deps.retrofit.converter
+
+    // OkHttp
+    implementation deps.okhttp.okhttp
+    implementation deps.okhttp.interceptor
+
+    // ThreeTen
+    implementation deps.threetenabp
+}

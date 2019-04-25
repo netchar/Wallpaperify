@@ -1,8 +1,9 @@
-package com.netchar.wallpaperify.data.repository
+package com.netchar.repository
 
 import android.content.Context
 import androidx.annotation.StringDef
 import com.netchar.common.utils.CoroutineDispatchers
+import com.netchar.models.Photo
 import kotlinx.coroutines.CoroutineScope
 import javax.inject.Inject
 
@@ -30,17 +31,17 @@ class PhotosRepository @Inject constructor(
         annotation class OrderBy
     }
 
-    override fun getPhotos(request: PhotosApiRequest, scope: CoroutineScope): IBoundResource<List<com.netchar.models.Photo>> {
-        return object : BoundResource<List<com.netchar.models.Photo>>(dispatchers, context) {
-            override fun getStorageData(): List<com.netchar.models.Photo>? = emptyList()
+    override fun getPhotos(request: PhotosApiRequest, scope: CoroutineScope): IBoundResource<List<Photo>> {
+        return object : BoundResource<List<Photo>>(dispatchers, context) {
+            override fun getStorageData(): List<Photo>? = emptyList()
 
             override fun apiRequestAsync() = api.getPhotosAsync(request.page, request.perPage, request.orderBy)
 
-            override fun saveRemoteDataInStorage(data: List<com.netchar.models.Photo>) {
+            override fun saveRemoteDataInStorage(data: List<Photo>) {
                 /*todo: saving*/
             }
 
-            override fun isNeedRefresh(localData: List<com.netchar.models.Photo>) = localData.isNullOrEmpty()
+            override fun isNeedRefresh(localData: List<Photo>) = localData.isNullOrEmpty()
         }.launchIn(scope)
     }
 }

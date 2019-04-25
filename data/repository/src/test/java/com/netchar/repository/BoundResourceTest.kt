@@ -1,27 +1,27 @@
-package com.netchar.wallpaperify.data.repository
+package com.netchar.repository
 
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import com.netchar.common.utils.Connectivity
+import com.netchar.common.utils.CoroutineDispatchers
 import com.netchar.remote.Resource
 import com.netchar.remote.enums.Cause
-import com.netchar.wallpaperify.R
-import com.netchar.common.utils.CoroutineDispatchers
-import com.netchar.common.utils.Connectivity
-import com.netchar.wallpaperify.testutils.InstantTaskExecutorExtension
 import io.mockk.*
 import kotlinx.coroutines.*
+import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.*
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
-import org.junit.jupiter.api.extension.ExtendWith
 import retrofit2.Response
+import org.junit.jupiter.api.extension.ExtendWith
 import java.io.IOException
 import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 private const val ASSERT_LIVE_DATA_IN_ORDER = "LiveData should emit Resource value in strict order"
