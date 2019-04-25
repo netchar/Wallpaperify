@@ -2,6 +2,8 @@ apply plugin: 'com.github.ben-manes.versions'
 
 buildscript {
     ext {
+        appVersionName = '1.0.0'
+
         extractVersionCode = { versionName ->
             def (major, minor, patch) = versionName.toLowerCase().tokenize('.')
             return (major.toInteger() * 10000) + (minor.toInteger() * 100) + patch.toInteger()

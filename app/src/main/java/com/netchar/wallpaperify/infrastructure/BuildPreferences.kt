@@ -1,17 +1,17 @@
 package com.netchar.wallpaperify.infrastructure
 
-import android.content.Context
+import com.netchar.common.utils.IBuildPreferences
 import com.netchar.wallpaperify.BuildConfig
 
-object BuildPreferences {
+class BuildPreferences : IBuildPreferences {
 
-    fun getApiAccessKey() = if (BuildConfig.DEBUG) {
+    override fun getApiAccessKey() = if (BuildConfig.DEBUG) {
         BuildConfig.DEBUG_API_ACCESS_KEY
     } else {
         BuildConfig.RELEASE_API_ACCESS_KEY
     }
 
-    fun getApiSecretKey() = if (BuildConfig.DEBUG) {
+    override fun getApiSecretKey() = if (BuildConfig.DEBUG) {
         BuildConfig.DEBUG_API_SECRET_KEY
     } else {
         BuildConfig.RELEASE_API_SECRET_KEY

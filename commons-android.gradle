@@ -1,0 +1,25 @@
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply from: "$rootProject.projectDir/commons-dependencies.gradle"
+apply from: "$rootProject.projectDir/commons-dependencies-utest.gradle"
+
+android {
+    compileSdkVersion versions.build.sdk.compile
+    buildToolsVersion versions.build.buildTools
+
+    defaultConfig {
+        minSdkVersion versions.build.sdk.min
+        versionCode extractVersionCode(appVersionName)
+        versionName appVersionName
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}

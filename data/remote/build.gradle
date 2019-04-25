@@ -1,0 +1,39 @@
+apply plugin: 'com.android.library'
+apply from: '../../commons-android.gradle'
+
+dependencies {
+    implementation project(project_modules.models)
+    implementation project(project_modules.test)
+    implementation project(project_modules.common)
+
+    // Kotlin
+    implementation deps.kotlin.stdlib
+    implementation deps.kotlin.coroutines.android
+    implementation deps.kotlin.coroutines.core
+
+    // Retrofit
+    implementation deps.retrofit.retrofit
+    implementation deps.retrofit.adapter
+    implementation deps.retrofit.converter
+
+    // OkHttp
+    implementation deps.okhttp.okhttp
+    implementation deps.okhttp.interceptor
+
+    // ThreeTen
+    implementation deps.threetenabp
+
+    // Moshi + Kotshi
+    implementation deps.moshi
+    implementation deps.kotshi.api
+    kapt deps.kotshi.compiler
+
+    // Dagger
+    implementation deps.dagger.dagger
+    implementation deps.dagger.android
+    kapt deps.dagger.processor
+    kapt deps.dagger.compiler
+
+    // Timber
+    implementation deps.timber
+}

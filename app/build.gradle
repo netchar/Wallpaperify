@@ -1,25 +1,13 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-kapt'
+apply from: '../commons-android.gradle'
 apply plugin: 'androidx.navigation.safeargs'
-apply from: '../dependencies.gradle'
 
 def secretProperties = new Properties()
 secretProperties.load(project.rootProject.file('secret.properties').newDataInputStream())
 
-def appVersionName = '1.0.0'
-
 android {
-    compileSdkVersion versions.build.sdk.compile
-    buildToolsVersion versions.build.buildTools
-
     defaultConfig {
         applicationId "com.netchar.wallpaperify"
-        minSdkVersion versions.build.sdk.min
-        targetSdkVersion versions.build.sdk.target
-        versionCode rootProject.extractVersionCode(appVersionName)
-        versionName appVersionName
 
         vectorDrawables {
             useSupportLibrary true
@@ -39,7 +27,7 @@ android {
         debug {
             minifyEnabled false
             applicationIdSuffix '.debug'
-            versionNameSuffix '-DEBUG'
+            versionNameSuffix '-debug'
         }
 
         release {
@@ -62,7 +50,14 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation project(':poweradapter')
+
+    // Modules
+    implementation project(project_modules.models)
+    implementation project(project_modules.remote)
+    implementation project(project_modules.local)
+    implementation project(project_modules.repository)
+    implementation project(project_modules.common)
+    implementation project(project_modules.auth)
 
     // Kotlin
     implementation deps.kotlin.stdlib
@@ -114,13 +109,4 @@ dependencies {
 dependencies {
     androidTestImplementation deps.test.runner
     androidTestImplementation deps.test.espresso
-
-    testImplementation deps.test.junit.api
-    testImplementation deps.test.junit.params
-    testImplementation deps.test.junit.engine
-
-    testImplementation deps.test.kotlin.test
-    testImplementation deps.test.kotlin.junit
-    testImplementation deps.test.mockk
-    testImplementation deps.test.hamcrest
 }

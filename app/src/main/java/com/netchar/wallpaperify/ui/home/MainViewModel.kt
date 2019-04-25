@@ -4,14 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import com.netchar.wallpaperify.data.models.Resource
-import com.netchar.wallpaperify.data.remote.api.PhotosApi
-import com.netchar.wallpaperify.data.remote.dto.Photo
-import com.netchar.wallpaperify.data.repository.IBoundResource
-import com.netchar.wallpaperify.data.repository.IPhotosRepository
-import com.netchar.wallpaperify.data.repository.PhotosRepository
-import com.netchar.wallpaperify.infrastructure.AbsentLiveData
-import com.netchar.wallpaperify.infrastructure.CoroutineDispatchers
+import com.netchar.remote.Resource
+import com.netchar.repository.IBoundResource
+import com.netchar.repository.IPhotosRepository
+import com.netchar.repository.PhotosRepository
+import com.netchar.common.utils.AbsentLiveData
+import com.netchar.common.utils.CoroutineDispatchers
+import com.netchar.models.Photo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
@@ -28,7 +27,7 @@ class MainViewModel @Inject constructor(
     private val photosRequest = MutableLiveData<PhotosRepository.PhotosApiRequest>().apply { value = PhotosRepository.PhotosApiRequest() }
     private lateinit var photosBoundResult: IBoundResource<List<Photo>>
 
-    val photos: LiveData<Resource<List<Photo>>> = Transformations.switchMap(photosRequest) { request ->
+    val photos: LiveData<Resource<List<com.netchar.models.Photo>>> = Transformations.switchMap(photosRequest) { request ->
         if (request == null) {
             AbsentLiveData.create()
         } else {

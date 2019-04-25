@@ -1,0 +1,7 @@
+apply plugin: 'kotlin'
+apply from: '../../commons-dependencies.gradle'
+
+dependencies {
+    implementation deps.moshi
+    implementation deps.kotshi.api
+}

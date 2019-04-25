@@ -1,26 +1,32 @@
 package com.netchar.wallpaperify.ui
 
 import android.content.Context
+import com.netchar.common.di.CommonModule
+import com.netchar.common.utils.IBuildPreferences
+import com.netchar.local.di.PreferencesModule
+import com.netchar.repository.di.RepositoryModule
+import com.netchar.remote.di.NetworkModule
 import com.netchar.wallpaperify.di.modules.ActivityBindingModule
-import com.netchar.wallpaperify.di.modules.ApiModule
-import com.netchar.wallpaperify.di.modules.NetworkModule
 import com.netchar.wallpaperify.di.modules.ViewModelBindingModule
-import com.netchar.wallpaperify.infrastructure.glide.GlideConfigurationModule
+import com.netchar.wallpaperify.di.modules.GlideConfigurationModule
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjector
+import netchar.com.auth.di.OAuthModule
 import javax.inject.Singleton
 
 
 @Singleton
 @Component(
-    modules = [
-        AppModule::class,
-        NetworkModule::class,
-        ApiModule::class,
-        ActivityBindingModule::class,
-        ViewModelBindingModule::class
-    ]
+        modules = [
+            CommonModule::class,
+            PreferencesModule::class,
+            OAuthModule::class,
+            NetworkModule::class,
+            RepositoryModule::class,
+            ActivityBindingModule::class,
+            ViewModelBindingModule::class
+        ]
 )
 interface AppComponent : AndroidInjector<App> {
 
@@ -30,6 +36,10 @@ interface AppComponent : AndroidInjector<App> {
     interface Builder {
         @BindsInstance
         fun context(context: Context): Builder
-        fun build() : AppComponent
+
+        @BindsInstance
+        fun buildPrefs(prefs: IBuildPreferences): Builder
+
+        fun build(): AppComponent
     }
 }
