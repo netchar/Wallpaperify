@@ -106,13 +106,4 @@ dependencies {
 dependencies {
     androidTestImplementation deps.test.runner
     androidTestImplementation deps.test.espresso
-
-    testImplementation deps.test.junit.api
-    testImplementation deps.test.junit.params
-    testImplementation deps.test.junit.engine
-
-    testImplementation deps.test.kotlin.test
-    testImplementation deps.test.kotlin.junit
-    testImplementation deps.test.mockk
-    testImplementation deps.test.hamcrest
 }

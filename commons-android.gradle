@@ -2,32 +2,24 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply from: "$rootProject.projectDir/commons-dependencies.gradle"
-
-def appVersionName = '1.0.0'
-
-ext {
-    extractVersionCode = { versionName ->
-        def (major, minor, patch) = versionName.toLowerCase().tokenize('.')
-        return (major.toInteger() * 10000) + (minor.toInteger() * 100) + patch.toInteger()
-    }
-}
+apply from: "$rootProject.projectDir/commons-dependencies-utest.gradle"
 
 android {
     compileSdkVersion versions.build.sdk.compile
     buildToolsVersion versions.build.buildTools
 
     defaultConfig {
-        minSdkVersion 25
+        minSdkVersion versions.build.sdk.min
         versionCode extractVersionCode(appVersionName)
         versionName appVersionName
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-}
-
-dependencies {
-
 }

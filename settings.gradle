@@ -1,1 +1,1 @@
-include ':app', ':poweradapter', ':common', ':data:models', ':test', ':data:remote', ':local', ':repository'
+include ':app', ':common', ':data:models', ':test', ':data:remote', ':data:local', ':data:repository'
