@@ -1,7 +1,10 @@
 package com.netchar.wallpaperify.ui
 
 import android.content.Context
-import com.netchar.wallpaperify.di.ApiModule
+import com.netchar.common.di.CommonModule
+import com.netchar.local.di.PreferencesModule
+import com.netchar.remote.di.ApiModule
+import com.netchar.repository.di.RepositoryModule
 import com.netchar.wallpaperify.di.NetworkModule
 import com.netchar.wallpaperify.di.modules.ActivityBindingModule
 import com.netchar.wallpaperify.di.modules.ViewModelBindingModule
@@ -14,13 +17,14 @@ import javax.inject.Singleton
 
 @Singleton
 @Component(
-    modules = [
-        AppModule::class,
-        NetworkModule::class,
-        ApiModule::class,
-        ActivityBindingModule::class,
-        ViewModelBindingModule::class
-    ]
+        modules = [
+            CommonModule::class,
+            PreferencesModule::class,
+            NetworkModule::class,
+            RepositoryModule::class,
+            ActivityBindingModule::class,
+            ViewModelBindingModule::class
+        ]
 )
 interface AppComponent : AndroidInjector<App> {
 
@@ -30,6 +34,7 @@ interface AppComponent : AndroidInjector<App> {
     interface Builder {
         @BindsInstance
         fun context(context: Context): Builder
-        fun build() : AppComponent
+
+        fun build(): AppComponent
     }
 }
