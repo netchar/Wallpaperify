@@ -1,4 +1,4 @@
-package com.netchar.wallpaperify.infrastructure
+package com.netchar.common.utils
 
 import android.animation.ValueAnimator
 import android.content.Context

@@ -1,4 +1,4 @@
-package com.netchar.wallpaperify.ui.base
+package com.netchar.common.base
 
 import android.view.View
 import androidx.drawerlayout.widget.DrawerLayout

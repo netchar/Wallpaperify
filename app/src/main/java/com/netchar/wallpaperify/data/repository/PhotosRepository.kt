@@ -2,7 +2,7 @@ package com.netchar.wallpaperify.data.repository
 
 import android.content.Context
 import androidx.annotation.StringDef
-import com.netchar.wallpaperify.infrastructure.CoroutineDispatchers
+import com.netchar.common.utils.CoroutineDispatchers
 import kotlinx.coroutines.CoroutineScope
 import javax.inject.Inject
 
@@ -12,9 +12,9 @@ import javax.inject.Inject
  */
 
 class PhotosRepository @Inject constructor(
-    private val api: com.netchar.remote.api.PhotosApi,
-    private val dispatchers: CoroutineDispatchers,
-    private val context: Context
+        private val api: com.netchar.remote.api.PhotosApi,
+        private val dispatchers: CoroutineDispatchers,
+        private val context: Context
 ) : IPhotosRepository {
 
     data class PhotosApiRequest(val page: Int = 0, val perPage: Int = 30, @OrderBy val orderBy: String = LATEST) {

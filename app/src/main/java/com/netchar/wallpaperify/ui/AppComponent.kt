@@ -5,7 +5,7 @@ import com.netchar.wallpaperify.di.ApiModule
 import com.netchar.wallpaperify.di.NetworkModule
 import com.netchar.wallpaperify.di.modules.ActivityBindingModule
 import com.netchar.wallpaperify.di.modules.ViewModelBindingModule
-import com.netchar.wallpaperify.infrastructure.glide.GlideConfigurationModule
+import com.netchar.wallpaperify.di.modules.GlideConfigurationModule
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjector

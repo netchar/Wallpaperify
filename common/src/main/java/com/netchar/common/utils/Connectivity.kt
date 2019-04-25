@@ -1,7 +1,7 @@
-package com.netchar.wallpaperify.infrastructure.utils
+package com.netchar.common.utils
 
 import android.content.Context
-import com.netchar.wallpaperify.infrastructure.extensions.getConnectivityManager
+import com.netchar.common.extensions.getConnectivityManager
 
 
 /**

@@ -10,10 +10,10 @@ import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.factories.ViewModelFactory
-import com.netchar.wallpaperify.infrastructure.extensions.injectViewModel
-import com.netchar.wallpaperify.ui.base.BaseActivity
-import com.netchar.wallpaperify.ui.base.BaseFragment
-import com.netchar.wallpaperify.ui.base.IDrawerActivity
+import com.netchar.common.extensions.injectViewModel
+import com.netchar.common.base.BaseActivity
+import com.netchar.common.base.BaseFragment
+import com.netchar.common.base.IDrawerActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 

@@ -1,8 +1,8 @@
-package com.netchar.wallpaperify.infrastructure.utils
+package com.netchar.common.utils
 
 import android.content.Context
 import android.content.pm.ApplicationInfo.FLAG_LARGE_HEAP
-import com.netchar.wallpaperify.infrastructure.extensions.getActivityManager
+import com.netchar.common.extensions.getActivityManager
 
 object Memory {
 

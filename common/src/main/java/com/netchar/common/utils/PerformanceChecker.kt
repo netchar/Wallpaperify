@@ -1,16 +1,16 @@
-package com.netchar.wallpaperify.infrastructure.utils
+package com.netchar.common.utils
 
 import android.content.Context
-import com.netchar.wallpaperify.infrastructure.extensions.getActivityManager
+import com.netchar.common.extensions.getActivityManager
 import javax.inject.Inject
 
 private const val OPTIMUM_CORE = 4
 private const val OPTIMUM_MEMORY_MB = 124
 
-class PerformanceChecker  @Inject constructor(context: Context) {
+object PerformanceChecker {
 
-    val isHighPerformingDevice by lazy {
-        isHighRamDevice(context) && isOptimumCoreProcessor() && isOptimumMemory(context)
+    fun isHighPerformingDevice(context: Context): Boolean {
+        return isHighRamDevice(context) && isOptimumCoreProcessor() && isOptimumMemory(context)
     }
 
     private fun isOptimumMemory(context: Context) = context.getActivityManager().memoryClass >= OPTIMUM_MEMORY_MB

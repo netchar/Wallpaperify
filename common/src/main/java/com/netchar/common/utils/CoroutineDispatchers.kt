@@ -1,4 +1,4 @@
-package com.netchar.wallpaperify.infrastructure
+package com.netchar.common.utils
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers

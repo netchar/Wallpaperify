@@ -1,6 +1,6 @@
 package com.netchar.wallpaperify.di
 
-import com.netchar.wallpaperify.data.repository.IOAuthRepository
+import com.netchar.wallpaperify.data.repository.IOAuthService
 import com.netchar.wallpaperify.data.repository.OAuthRepository
 import dagger.Binds
 import dagger.Module
@@ -17,5 +17,5 @@ abstract class OAuthModule {
 
     @Binds
     @Singleton
-    abstract fun bindOauthRepo(repo: OAuthRepository): IOAuthRepository
+    abstract fun bindOauthRepo(repo: OAuthRepository): IOAuthService
 }

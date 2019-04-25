@@ -4,12 +4,29 @@ apply from: '../commons-android.gradle'
 dependencies {
     // Kotlin
     implementation deps.kotlin.stdlib
+    implementation deps.kotlin.coroutines.android
+    implementation deps.kotlin.coroutines.core
 
     // Androidx
     implementation deps.androidx.appcompat
     implementation deps.androidx.constraintlayout
     implementation deps.androidx.material
     implementation deps.androidx.legacy
+    implementation deps.androidx.lifecycle
+    implementation deps.androidx.navigation.fragment
+    implementation deps.androidx.navigation.ui
+    implementation deps.androidx.recyclerview
+
+    // Dagger
+    implementation deps.dagger.dagger
+    implementation deps.dagger.android
+    kapt deps.dagger.processor
+    kapt deps.dagger.compiler
+
+    // Glide
+    implementation deps.glide.glide
+    implementation deps.glide.okhttp3
+    kapt deps.glide.compiler
 }
 
 dependencies {

@@ -8,8 +8,8 @@ import com.netchar.remote.Resource
 import com.netchar.wallpaperify.data.repository.IBoundResource
 import com.netchar.wallpaperify.data.repository.IPhotosRepository
 import com.netchar.wallpaperify.data.repository.PhotosRepository
-import com.netchar.wallpaperify.infrastructure.AbsentLiveData
-import com.netchar.wallpaperify.infrastructure.CoroutineDispatchers
+import com.netchar.common.utils.AbsentLiveData
+import com.netchar.common.utils.CoroutineDispatchers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel

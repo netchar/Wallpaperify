@@ -1,6 +1,7 @@
-package com.netchar.wallpaperify.infrastructure.extensions
+package com.netchar.common.extensions
 
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -11,7 +12,7 @@ inline fun <reified TViewModel : ViewModel> AppCompatActivity.injectViewModel(fa
     return ViewModelProviders.of(this, factory)[TViewModel::class.java]
 }
 
-inline fun <reified TViewModel : ViewModel> androidx.fragment.app.Fragment.injectViewModel(factory: ViewModelProvider.Factory): TViewModel {
+inline fun <reified TViewModel : ViewModel> Fragment.injectViewModel(factory: ViewModelProvider.Factory): TViewModel {
     return ViewModelProviders.of(this, factory)[TViewModel::class.java]
 }
 
@@ -19,7 +20,7 @@ inline fun <reified TViewModel : ViewModel> injectViewModelOf(context: AppCompat
     return ViewModelProviders.of(context, factory)[TViewModel::class.java]
 }
 
-inline fun <reified TViewModel : ViewModel> injectViewModelOf(context: androidx.fragment.app.Fragment, factory: ViewModelProvider.Factory): TViewModel {
+inline fun <reified TViewModel : ViewModel> injectViewModelOf(context: Fragment, factory: ViewModelProvider.Factory): TViewModel {
     return ViewModelProviders.of(context, factory)[TViewModel::class.java]
 }
 

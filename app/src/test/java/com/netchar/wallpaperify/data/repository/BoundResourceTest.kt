@@ -6,8 +6,8 @@ import androidx.lifecycle.Observer
 import com.netchar.remote.Resource
 import com.netchar.remote.enums.Cause
 import com.netchar.wallpaperify.R
-import com.netchar.wallpaperify.infrastructure.CoroutineDispatchers
-import com.netchar.wallpaperify.infrastructure.utils.Connectivity
+import com.netchar.common.utils.CoroutineDispatchers
+import com.netchar.common.utils.Connectivity
 import com.netchar.wallpaperify.testutils.InstantTaskExecutorExtension
 import io.mockk.*
 import kotlinx.coroutines.*

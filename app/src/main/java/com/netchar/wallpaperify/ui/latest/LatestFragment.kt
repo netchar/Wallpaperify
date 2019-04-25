@@ -9,8 +9,8 @@ import com.netchar.common.poweradapter.adapter.RecyclerAdapter
 import com.netchar.remote.Resource
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.factories.ViewModelFactory
-import com.netchar.wallpaperify.infrastructure.extensions.injectViewModel
-import com.netchar.wallpaperify.ui.base.BaseFragment
+import com.netchar.common.extensions.injectViewModel
+import com.netchar.common.base.BaseFragment
 import com.netchar.wallpaperify.ui.home.MainViewModel
 import kotlinx.android.synthetic.main.fragment_latest.*
 import javax.inject.Inject

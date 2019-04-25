@@ -4,8 +4,8 @@ import android.content.Context
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.netchar.remote.ApplicationJsonAdapterFactory
 import com.netchar.wallpaperify.data.repository.OAuthRepository
-import com.netchar.wallpaperify.infrastructure.extensions.notExist
-import com.netchar.wallpaperify.infrastructure.utils.Memory
+import com.netchar.common.extensions.notExist
+import com.netchar.common.utils.Memory
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides

@@ -1,4 +1,4 @@
-package com.netchar.wallpaperify.infrastructure.glide
+package com.netchar.wallpaperify.di.modules
 
 import android.content.Context
 import com.bumptech.glide.Glide
@@ -11,8 +11,8 @@ import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.module.AppGlideModule
 import com.bumptech.glide.request.RequestOptions
-import com.netchar.wallpaperify.di.Injector
-import com.netchar.wallpaperify.infrastructure.utils.PerformanceChecker
+import com.netchar.common.utils.PerformanceChecker
+import com.netchar.wallpaperify.di.AppInjector
 import okhttp3.OkHttpClient
 import java.io.InputStream
 import javax.inject.Inject
@@ -26,11 +26,8 @@ import javax.inject.Inject
 class GlideConfigurationModule : AppGlideModule() {
 
     init {
-        Injector.inject(this)
+        AppInjector.inject(this)
     }
-
-    @Inject
-    lateinit var performanceChecker: PerformanceChecker
 
     @Inject
     lateinit var httpClient: OkHttpClient
@@ -39,7 +36,7 @@ class GlideConfigurationModule : AppGlideModule() {
 
     override fun applyOptions(context: Context, builder: GlideBuilder) {
         val requestOptions = RequestOptions()
-        if (performanceChecker.isHighPerformingDevice) {
+        if (PerformanceChecker.isHighPerformingDevice(context)) {
             builder.setDefaultRequestOptions(requestOptions.format(DecodeFormat.PREFER_ARGB_8888))
         } else {
             builder.setDefaultRequestOptions(requestOptions.format(DecodeFormat.PREFER_RGB_565))
@@ -51,7 +48,7 @@ class GlideConfigurationModule : AppGlideModule() {
     override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
         registry.replace(GlideUrl::class.java, InputStream::class.java, OkHttpUrlLoader.Factory(httpClient))
 
-        if (performanceChecker.isHighPerformingDevice) {
+        if (PerformanceChecker.isHighPerformingDevice(context)) {
             glide.setMemoryCategory(MemoryCategory.NORMAL)
         } else {
             glide.setMemoryCategory(MemoryCategory.LOW)

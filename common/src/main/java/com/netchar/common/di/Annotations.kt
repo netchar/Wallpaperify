@@ -1,4 +1,4 @@
-package com.netchar.wallpaperify.di
+package com.netchar.common.di
 
 import androidx.lifecycle.ViewModel
 import dagger.MapKey

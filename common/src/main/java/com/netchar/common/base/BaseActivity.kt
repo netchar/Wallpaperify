@@ -1,11 +1,11 @@
-package com.netchar.wallpaperify.ui.base
+package com.netchar.common.base
 
 import android.os.Bundle
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.netchar.wallpaperify.R
-import com.netchar.wallpaperify.di.Injector
+import com.netchar.common.R
+import com.netchar.common.utils.Injector
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector

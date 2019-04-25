@@ -8,8 +8,8 @@ import com.netchar.remote.Resource
 import com.netchar.remote.enums.Cause
 import com.netchar.remote.extensions.awaitSafe
 import com.netchar.wallpaperify.R
-import com.netchar.wallpaperify.infrastructure.CoroutineDispatchers
-import com.netchar.wallpaperify.infrastructure.utils.Connectivity
+import com.netchar.common.utils.CoroutineDispatchers
+import com.netchar.common.utils.Connectivity
 import kotlinx.coroutines.*
 import retrofit2.Response
 import timber.log.Timber

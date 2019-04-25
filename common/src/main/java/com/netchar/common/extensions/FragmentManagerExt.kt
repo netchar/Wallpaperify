@@ -1,4 +1,4 @@
-package com.netchar.wallpaperify.infrastructure.extensions
+package com.netchar.common.extensions
 
 
 /**

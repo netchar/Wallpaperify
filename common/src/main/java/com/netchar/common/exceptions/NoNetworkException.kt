@@ -1,4 +1,4 @@
-package com.netchar.wallpaperify.infrastructure.exceptions
+package com.netchar.common.exceptions
 
 
 /**

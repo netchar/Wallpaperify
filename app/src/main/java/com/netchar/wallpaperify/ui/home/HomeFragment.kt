@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.netchar.wallpaperify.R
-import com.netchar.wallpaperify.ui.base.BaseFragment
+import com.netchar.common.base.BaseFragment
 import com.netchar.wallpaperify.ui.collections.CollectionsFragment
 import com.netchar.wallpaperify.ui.latest.LatestFragment
 import com.netchar.wallpaperify.ui.trending.TrendingFragment

@@ -52,9 +52,11 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     // Modules
-    implementation project(project_modules.remote)
-    implementation project(project_modules.common)
     implementation project(project_modules.models)
+    implementation project(project_modules.remote)
+    implementation project(project_modules.local)
+    implementation project(project_modules.repository)
+    implementation project(project_modules.common)
 
     // Kotlin
     implementation deps.kotlin.stdlib
