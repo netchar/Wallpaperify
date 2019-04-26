@@ -8,25 +8,17 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
-import com.netchar.wallpaperify.R
-import com.netchar.wallpaperify.di.ViewModelFactory
-import com.netchar.common.extensions.injectViewModel
 import com.netchar.common.base.BaseActivity
 import com.netchar.common.base.BaseFragment
 import com.netchar.common.base.IDrawerActivity
+import com.netchar.wallpaperify.R
 import kotlinx.android.synthetic.main.activity_main.*
-import javax.inject.Inject
 
 class MainActivity : BaseActivity(), IDrawerActivity {
     companion object {
         private const val BACK_DOUBLE_TAP_TIMEOUT = 1000L
         private val topLevelFragmentsIds = setOf(R.id.homeFragment)
     }
-
-    @Inject
-    lateinit var factory: ViewModelFactory
-
-    private lateinit var viewModel: MainViewModel
 
     override val layoutResId = R.layout.activity_main
 
@@ -42,7 +34,6 @@ class MainActivity : BaseActivity(), IDrawerActivity {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = injectViewModel(factory)
         drawer_navigation_view.setupWithNavController(navigationController)
     }
 

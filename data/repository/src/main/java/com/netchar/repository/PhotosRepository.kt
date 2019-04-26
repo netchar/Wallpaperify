@@ -1,7 +1,6 @@
 package com.netchar.repository
 
 import android.content.Context
-import androidx.annotation.StringDef
 import com.netchar.common.utils.CoroutineDispatchers
 import com.netchar.local.dao.PhotoDao
 import com.netchar.models.Photo
@@ -14,38 +13,26 @@ import javax.inject.Inject
  */
 
 class PhotosRepository @Inject constructor(
-        private val api: com.netchar.remote.api.PhotosApi,
-        private val dao: PhotoDao,
-        private val dispatchers: CoroutineDispatchers,
-        private val context: Context
+    private val api: com.netchar.remote.api.PhotosApi,
+    private val dao: PhotoDao,
+    private val dispatchers: CoroutineDispatchers,
+    private val context: Context
 ) : IPhotosRepository {
 
-    data class PhotosApiRequest(val page: Int = 0, val perPage: Int = 30, @OrderBy val orderBy: String = LATEST) {
-        companion object {
-            const val LATEST = "latest"
-            const val OLDEST = "oldest"
-            const val POPULAR = "popular"
-        }
-
-        @StringDef(LATEST, OLDEST, POPULAR)
-        @Target(AnnotationTarget.VALUE_PARAMETER)
-        @Retention(AnnotationRetention.SOURCE)
-        annotation class OrderBy
-    }
-
-    override fun getPhotos(request: PhotosApiRequest, scope: CoroutineScope): IBoundResource<List<Photo>> {
+    override fun getPhotos(request: IPhotosRepository.PhotosApiRequest, scope: CoroutineScope): IBoundResource<List<Photo>> {
         return object : BoundResource<List<Photo>>(dispatchers, context) {
             override fun getStorageData(): List<Photo>? {
-                return dao.getAll()
+//                return dao.getAll()
+                return emptyList()
             }
 
             override fun apiRequestAsync() = api.getPhotosAsync(request.page, request.perPage, request.orderBy)
 
             override fun saveRemoteDataInStorage(data: List<Photo>) {
-                dao.insert(data)
+//                dao.insert(data)
             }
 
-            override fun isNeedRefresh(localData: List<Photo>) = localData.isNullOrEmpty()
+            override fun isNeedRefresh(localData: List<Photo>) = localData.isNullOrEmpty() || request.forceFetching
         }.launchIn(scope)
     }
 }

@@ -77,6 +77,8 @@ dependencies {
     implementation deps.androidx.navigation.fragment
     implementation deps.androidx.navigation.ui
     implementation deps.androidx.recyclerview
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+
 
     // Timber
     implementation deps.timber
