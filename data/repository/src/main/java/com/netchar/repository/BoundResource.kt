@@ -13,6 +13,7 @@ import kotlinx.coroutines.*
 import retrofit2.Response
 import timber.log.Timber
 import java.io.IOException
+import java.lang.IllegalArgumentException
 
 abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDispatchers, val context: Context) : IBoundResource<TResult> {
     private val result = MutableLiveData<Resource<TResult>>()

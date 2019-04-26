@@ -4,6 +4,8 @@ import android.app.Activity
 import android.app.Application
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.netchar.wallpaperify.BuildConfig
+import com.netchar.wallpaperify.di.AppComponent
+import com.netchar.wallpaperify.di.DaggerAppComponent
 import com.netchar.wallpaperify.infrastructure.BuildPreferences
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector

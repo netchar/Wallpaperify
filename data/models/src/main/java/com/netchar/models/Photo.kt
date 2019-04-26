@@ -1,32 +1,57 @@
 package com.netchar.models
 
+import androidx.room.*
 import com.squareup.moshi.Json
 
+@Entity
 data class Photo(
-    @Json(name = "color")
-    val color: String,
-    @Json(name = "created_at")
-    val createdAt: String,
-    @Json(name = "current_user_collections")
-    val currentUserCollections: List<CurrentUserCollection>,
-    @Json(name = "description")
-    val description: String,
-    @Json(name = "height")
-    val height: Int,
-    @Json(name = "id")
-    val id: String,
-    @Json(name = "liked_by_user")
-    val likedByUser: Boolean,
-    @Json(name = "likes")
-    val likes: Int,
-    @Json(name = "links")
-    val links: Links,
-    @Json(name = "updated_at")
-    val updatedAt: String,
-    @Json(name = "urls")
-    val urls: Urls,
-    @Json(name = "user")
-    val user: User,
-    @Json(name = "width")
-    val width: Int
-)
+        @Json(name = "color")
+        var color: String,
+
+        @Json(name = "created_at")
+        var createdAt: String,
+
+        @Json(name = "current_user_collections")
+        @Transient
+        var currentUserCollections: List<CurrentUserCollection>?,
+
+        @Json(name = "description")
+        var description: String?,
+
+        @Json(name = "height")
+        var height: Int,
+
+        @PrimaryKey(autoGenerate = false)
+        @Json(name = "id")
+        var id: String,
+
+        @Json(name = "liked_by_user")
+        var likedByUser: Boolean,
+
+        @Json(name = "likes")
+        var likes: Int,
+
+        @Json(name = "links")
+        @Embedded(prefix = "photo")
+        var links: Links?,
+
+        @Json(name = "updated_at")
+        var updatedAt: String,
+
+        @Json(name = "urls")
+        @Embedded
+        var urls: Urls?,
+
+        @Json(name = "user")
+        @Embedded
+        var user: User?,
+
+        @Json(name = "width")
+        var width: Int
+) {
+    constructor() : this("", "", null, "", 0, "", false, 0, null, "", null, null, 0)
+
+    init {
+        currentUserCollections = listOf(CurrentUserCollection(null, true, 1, "", "Tite", "", ""), CurrentUserCollection(null, true, 1, "", "Tite2", "", ""))
+    }
+}

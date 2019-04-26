@@ -30,7 +30,7 @@ class LatestPhotosRenderer(val listener: (com.netchar.models.Photo) -> Unit) : c
         itemView.row_photo_iv.fitWidth(photo.data.width, photo.data.height)
 
         Glide.with(itemView.context)
-            .load(photo.data.urls.regular)
+            .load(photo.data.urls?.regular)
             .fitCenter()
             .transition(DrawableTransitionOptions.withCrossFade())
             .into(itemView.row_photo_iv)
