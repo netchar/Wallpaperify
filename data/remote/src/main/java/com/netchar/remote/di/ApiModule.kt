@@ -6,7 +6,7 @@ import dagger.Provides
 import retrofit2.Retrofit
 import javax.inject.Singleton
 
-@Module
+@Module(includes = [NetworkModule::class])
 object ApiModule {
 
     @JvmStatic

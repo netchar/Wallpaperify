@@ -16,7 +16,8 @@ ext {
             legacy          : "1.0.0",
             lifecycle       : "2.0.0",
             navigation      : "2.0.0",
-            recycler        : "1.0.0"
+            recycler        : "1.0.0",
+            room            : "2.0.0"
     ]
 
     versions.test = [
@@ -63,7 +64,11 @@ ext {
                     fragment: "androidx.navigation:navigation-fragment-ktx:$versions.androidx.navigation",
                     ui      : "androidx.navigation:navigation-ui-ktx:$versions.androidx.navigation",
             ],
-            recyclerview    : "androidx.recyclerview:recyclerview:$versions.androidx.recycler"
+            recyclerview    : "androidx.recyclerview:recyclerview:$versions.androidx.recycler",
+            room            : [
+                    runtime : "androidx.room:room-runtime:$versions.androidx.room",
+                    compiler: "androidx.room:room-compiler:$versions.androidx.room"
+            ]
     ]
 
     deps.timber = "com.jakewharton.timber:timber:$versions.timber"

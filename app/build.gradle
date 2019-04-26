@@ -108,6 +108,10 @@ dependencies {
     implementation deps.glide.glide
     implementation deps.glide.okhttp3
     kapt deps.glide.compiler
+
+    // Room
+    implementation deps.androidx.room.runtime
+    kapt deps.androidx.room.compiler
 }
 
 dependencies {
