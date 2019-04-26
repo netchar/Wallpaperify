@@ -42,8 +42,7 @@ class PhotosRepository @Inject constructor(
             override fun apiRequestAsync() = api.getPhotosAsync(request.page, request.perPage, request.orderBy)
 
             override fun saveRemoteDataInStorage(data: List<Photo>) {
-                dao.deleteAll()
-                dao.insertAll(data)
+                dao.insert(data)
             }
 
             override fun isNeedRefresh(localData: List<Photo>) = localData.isNullOrEmpty()
