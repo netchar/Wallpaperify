@@ -27,7 +27,6 @@ class LatestViewModel @Inject constructor(
     data class OopsPlaceholder(val isVisible: Boolean, val message: String)
 
     private var page = 1
-    private val _shinePlaceholder: SingleLiveData<Boolean> = SingleLiveData()
     private val _oopsPlaceholder: SingleLiveData<OopsPlaceholder> = SingleLiveData()
     private val _toast: SingleLiveData<String> = SingleLiveData()
     private val _error: SingleLiveData<String> = SingleLiveData()
@@ -40,42 +39,52 @@ class LatestViewModel @Inject constructor(
 
     fun refresh() = fetchPhotos(buildRequest(1, true))
 
-    fun loadMore() = fetchPhotos(buildRequest(++page, true))
+    fun loadMore() {
+        fetchPhotos(buildRequest(++page, true))
+    }
 
     val photos: LiveData<List<Photo>> get() = _photos
     val refreshing: LiveData<Boolean> get() = _refreshing
     val error: LiveData<String> get() = _error
     val toast: LiveData<String> get() = _toast
-    val shinePlaceholder: LiveData<Boolean> = _shinePlaceholder
     val oopsPlaceholder: LiveData<OopsPlaceholder> = _oopsPlaceholder
 
     private fun fetchPhotos(request: PhotosApiRequest) {
         hidePlaceholders()
 
-        if (_photos.value == null) {
-            _shinePlaceholder.value = true
-        }
-
         val repoLiveData = repository.getPhotos(request, scope).getLiveData()
+        _photos.removeSource(repoLiveData)
         _photos.addSource(repoLiveData) { response ->
-            when (response) {
-                is Resource.Success -> {
-                    _photos.value = response.data
-                    _shinePlaceholder.value = false
-                    _toast.value = getApplication<App>().getString(R.string.latest_message_data_updated)
-                }
-                is Resource.Loading -> _refreshing.value = response.isLoading
-                is Resource.Error -> {
-                    _shinePlaceholder.value = false
-                    _refreshing.value = false
-                    raiseErrorMessage(response)
-                }
+            if (request.page <= 1) {
+                onFetch(response)
+            } else {
+                onFetchNextPageItems(response)
             }
         }
     }
 
+    private fun onFetch(response: Resource<List<Photo>>) {
+        when (response) {
+            is Resource.Success -> {
+                _photos.value = response.data
+                _toast.value = getStringRes(R.string.latest_message_data_updated)
+            }
+            is Resource.Loading -> _refreshing.value = response.isLoading
+            is Resource.Error -> {
+                _refreshing.value = false
+                raiseErrorMessage(response)
+            }
+        }
+    }
+
+    private fun onFetchNextPageItems(response: Resource<List<Photo>>) {
+        when (response) {
+            is Resource.Success -> _photos.apply { value = value?.plus(response.data) }
+            is Resource.Error -> raiseErrorMessage(response)
+        }
+    }
+
     private fun hidePlaceholders() {
-        _shinePlaceholder.value = false
         _oopsPlaceholder.value = OopsPlaceholder(false, "")
     }
 
@@ -94,5 +103,9 @@ class LatestViewModel @Inject constructor(
 
     private fun buildRequest(page: Int, forceFetching: Boolean): PhotosApiRequest {
         return PhotosApiRequest(page, PhotosApiRequest.ITEMS_PER_PAGE, PhotosApiRequest.LATEST, forceFetching)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
     }
 }

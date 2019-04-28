@@ -25,3 +25,4 @@ inline fun <reified TViewModel : ViewModel> injectViewModelOf(context: Fragment,
 }
 
 fun File.notExist() = !this.exists()
+

@@ -39,7 +39,7 @@
     <string name="about_fragment_title">About</string>
     <string name="support_development_fragment_title">Support Development</string>
     <string name="home_fragment_title">Wallpaperify</string>
-    <string name="latest_message_data_updated">Successfully updated</string>
+    <string name="latest_message_data_updated">Updated</string>
     <string name="error_message_try_again_later">Something goes wrong. Try again later.</string>
 
 </resources>

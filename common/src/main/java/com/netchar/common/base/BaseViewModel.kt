@@ -1,6 +1,7 @@
 package com.netchar.common.base
 
 import android.app.Application
+import androidx.annotation.StringRes
 import androidx.lifecycle.AndroidViewModel
 import com.netchar.common.utils.CoroutineDispatchers
 import kotlinx.coroutines.CoroutineScope
@@ -15,4 +16,6 @@ import kotlinx.coroutines.SupervisorJob
 open class BaseViewModel(protected val dispatchers: CoroutineDispatchers, app: Application) : AndroidViewModel(app) {
     protected val job = SupervisorJob()
     protected val scope = CoroutineScope(job + dispatchers.main)
+
+    fun getStringRes(@StringRes resId: Int): String = getApplication<Application>().getString(resId)
 }
