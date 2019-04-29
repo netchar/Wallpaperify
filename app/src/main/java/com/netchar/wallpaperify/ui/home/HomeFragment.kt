@@ -1,6 +1,5 @@
 package com.netchar.wallpaperify.ui.home
 
-
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment

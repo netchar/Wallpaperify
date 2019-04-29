@@ -7,12 +7,11 @@ import dagger.android.ContributesAndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
 
 @Module(
-    includes = [AndroidSupportInjectionModule::class]
+        includes = [AndroidSupportInjectionModule::class]
 )
 abstract class ActivityBindingModule {
 
     @ActivityScope
     @ContributesAndroidInjector(modules = [MainActivityModule::class])
     abstract fun contributeMainActivity(): MainActivity
-
 }

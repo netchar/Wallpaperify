@@ -3,14 +3,11 @@ package com.netchar.wallpaperify.di
 import android.content.Context
 import com.netchar.common.di.CommonModule
 import com.netchar.common.utils.IBuildPreferences
-import com.netchar.local.di.DaoModule
-import com.netchar.local.di.LocalModule
 import com.netchar.local.di.PreferencesModule
 import com.netchar.repository.di.RepositoryModule
-import com.netchar.remote.di.NetworkModule
 import com.netchar.wallpaperify.di.modules.ActivityBindingModule
-import com.netchar.wallpaperify.di.modules.ViewModelBindingModule
 import com.netchar.wallpaperify.di.modules.GlideConfigurationModule
+import com.netchar.wallpaperify.di.modules.ViewModelBindingModule
 import com.netchar.wallpaperify.ui.App
 import dagger.BindsInstance
 import dagger.Component

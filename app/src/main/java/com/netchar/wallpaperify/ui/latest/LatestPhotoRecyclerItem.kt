@@ -3,7 +3,6 @@ package com.netchar.wallpaperify.ui.latest
 import com.netchar.common.poweradapter.item.IRecyclerItem
 import com.netchar.models.Photo
 
-
 /**
  * Created by Netchar on 03.04.2019.
  * e.glushankov@gmail.com

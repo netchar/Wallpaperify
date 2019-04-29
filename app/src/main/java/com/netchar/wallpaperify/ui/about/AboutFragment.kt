@@ -1,6 +1,5 @@
 package com.netchar.wallpaperify.ui.about
 
-
 import com.netchar.wallpaperify.R
 import com.netchar.common.base.FlowFragment
 

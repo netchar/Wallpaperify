@@ -22,7 +22,6 @@ import com.netchar.wallpaperify.di.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_latest.*
 import javax.inject.Inject
 
-
 class LatestFragment : BaseFragment() {
 
     companion object {
@@ -90,13 +89,13 @@ class LatestFragment : BaseFragment() {
 
         viewModel.oopsPlaceholder.observe(viewLifecycleOwner, Observer { message ->
             view?.let {
-                val goesWrongView = it.findViewById<ConstraintLayout>(R.id.something_goes_wrong_view)
-                toggleOppsView(message, goesWrongView)
+                val oopsView = it.findViewById<ConstraintLayout>(R.id.something_goes_wrong_view)
+                toggleOopsView(message, oopsView)
             }
         })
     }
 
-    private fun toggleOppsView(message: LatestViewModel.OopsPlaceholder, goesWrongView: ConstraintLayout) {
+    private fun toggleOopsView(message: LatestViewModel.OopsPlaceholder, goesWrongView: ConstraintLayout) {
         if (message.isVisible) {
             goesWrongView.toVisible()
             goesWrongView.findViewById<TextView>(R.id.something_goes_wrong_text).text = message.message

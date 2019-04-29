@@ -20,7 +20,6 @@ import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.ui.App
 import kotlinx.android.synthetic.main.raw_photo.view.*
 
-
 class LatestPhotosRenderer(private val glide: RequestManager, val listener: (Photo) -> Unit) : ItemRenderer() {
 
     companion object {
