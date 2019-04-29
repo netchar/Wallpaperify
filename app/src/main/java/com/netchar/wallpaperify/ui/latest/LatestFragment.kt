@@ -1,22 +1,22 @@
 package com.netchar.wallpaperify.ui.latest
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.netchar.common.base.BaseFragment
-import com.netchar.common.extensions.injectViewModel
-import com.netchar.common.extensions.showSnackbar
-import com.netchar.common.extensions.toGone
-import com.netchar.common.extensions.toVisible
+import com.netchar.common.extensions.*
 import com.netchar.common.poweradapter.adapter.EndlessRecyclerAdapter
 import com.netchar.common.poweradapter.adapter.EndlessRecyclerDataSource
 import com.netchar.models.Photo
+import com.netchar.repository.IPhotosRepository
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_latest.*
@@ -47,6 +47,22 @@ class LatestFragment : BaseFragment() {
 
     private val adapter: EndlessRecyclerAdapter by lazy {
         EndlessRecyclerAdapter(dataSource)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_latest, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val ordering = when (item.itemId) {
+            R.id.latest_menu_item_latest -> IPhotosRepository.PhotosApiRequest.LATEST
+            R.id.latest_menu_item_oldest -> IPhotosRepository.PhotosApiRequest.OLDEST
+            R.id.latest_menu_item_popular -> IPhotosRepository.PhotosApiRequest.POPULAR
+            else -> IPhotosRepository.PhotosApiRequest.LATEST
+        }
+
+        viewModel.orderBy(ordering)
+        return true
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -84,7 +100,7 @@ class LatestFragment : BaseFragment() {
         })
 
         viewModel.toast.observe(viewLifecycleOwner, Observer { message ->
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            showToast(message)
         })
 
         viewModel.oopsPlaceholder.observe(viewLifecycleOwner, Observer { message ->
@@ -117,4 +133,4 @@ class LatestFragment : BaseFragment() {
     }
 }
 
-fun List<Photo>.toRecyclerItem() = map { LatestPhotoRecyclerItem(it) }
+fun List<Photo>.toRecyclerItem() = map { PhotoRecyclerItem(it) }

@@ -3,6 +3,7 @@ package com.netchar.wallpaperify.ui.latest
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import com.netchar.common.base.BaseViewModel
 import com.netchar.common.utils.CoroutineDispatchers
 import com.netchar.common.utils.SingleLiveData
@@ -11,6 +12,7 @@ import com.netchar.remote.Resource
 import com.netchar.remote.enums.Cause
 import com.netchar.repository.IPhotosRepository
 import com.netchar.repository.IPhotosRepository.PhotosApiRequest
+import com.netchar.repository.IPhotosRepository.PhotosApiRequest.*
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.ui.App
 import javax.inject.Inject
@@ -20,27 +22,35 @@ import javax.inject.Inject
  * e.glushankov@gmail.com
  */
 class LatestViewModel @Inject constructor(
-    private val repository: IPhotosRepository,
-    dispatchers: CoroutineDispatchers,
-    context: Context
+        private val repository: IPhotosRepository,
+        dispatchers: CoroutineDispatchers,
+        context: Context
 ) : BaseViewModel(dispatchers, context as App) {
     data class OopsPlaceholder(val isVisible: Boolean, val message: String)
 
     private var page = 1
-    private val _oopsPlaceholder: SingleLiveData<OopsPlaceholder> = SingleLiveData()
-    private val _toast: SingleLiveData<String> = SingleLiveData()
-    private val _error: SingleLiveData<String> = SingleLiveData()
-    private val _refreshing: SingleLiveData<Boolean> = SingleLiveData()
-    private val _photos = MediatorLiveData<List<Photo>>()
-
-    init {
-        fetchPhotos(buildRequest(1, false))
+    private val _oopsPlaceholder = SingleLiveData<OopsPlaceholder>()
+    private val _toast = SingleLiveData<String>()
+    private val _error = SingleLiveData<String>()
+    private val _refreshing = SingleLiveData<Boolean>()
+    private val _ordering = MutableLiveData<String>()
+    private val _photos = MediatorLiveData<List<Photo>>().apply {
+        addSource(_ordering) { orderBy ->
+            fetchPhotos(PhotosApiRequest(1, PhotosApiRequest.ITEMS_PER_PAGE, orderBy, true))
+        }
     }
 
-    fun refresh() = fetchPhotos(buildRequest(1, true))
+
+    fun refresh() {
+        fetchPhotos(PhotosApiRequest(1, PhotosApiRequest.ITEMS_PER_PAGE, orderingOrDefault(), true))
+    }
 
     fun loadMore() {
-        fetchPhotos(buildRequest(++page, true))
+        fetchPhotos(PhotosApiRequest(++page, PhotosApiRequest.ITEMS_PER_PAGE, orderingOrDefault(), true))
+    }
+
+    fun orderBy(@OrderBy ordering: String) {
+        _ordering.value = ordering
     }
 
     val photos: LiveData<List<Photo>> get() = _photos
@@ -102,9 +112,11 @@ class LatestViewModel @Inject constructor(
         }
     }
 
-    private fun buildRequest(page: Int, forceFetching: Boolean): PhotosApiRequest {
-        return PhotosApiRequest(page, PhotosApiRequest.ITEMS_PER_PAGE, PhotosApiRequest.LATEST, forceFetching)
-    }
+//    private fun buildRequest(page: Int, forceFetching: Boolean): PhotosApiRequest {
+//        return PhotosApiRequest(page, PhotosApiRequest.ITEMS_PER_PAGE, orderingOrDefault(), forceFetching)
+//    }
+
+    private fun orderingOrDefault() = _ordering.value ?: PhotosApiRequest.LATEST
 
     override fun onCleared() {
         super.onCleared()

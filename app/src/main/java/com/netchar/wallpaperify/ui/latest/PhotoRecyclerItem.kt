@@ -8,7 +8,7 @@ import com.netchar.models.Photo
  * e.glushankov@gmail.com
  */
 
-data class LatestPhotoRecyclerItem(val data: Photo) : IRecyclerItem {
+data class PhotoRecyclerItem(val data: Photo) : IRecyclerItem {
 
     override fun getId(): Long = data.hashCode().toLong()
 

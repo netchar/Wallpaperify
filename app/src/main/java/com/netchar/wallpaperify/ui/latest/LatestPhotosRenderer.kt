@@ -30,7 +30,7 @@ class LatestPhotosRenderer(private val glide: RequestManager, val listener: (Pho
 
     override fun layoutRes() = R.layout.raw_photo
 
-    private lateinit var photo: LatestPhotoRecyclerItem
+    private lateinit var photo: PhotoRecyclerItem
 
     override fun onSetListeners(itemView: View) {
         itemView.setOnClickListener {
@@ -42,7 +42,7 @@ class LatestPhotosRenderer(private val glide: RequestManager, val listener: (Pho
     }
 
     override fun bind(itemView: View, item: IRecyclerItem) {
-        photo = item as LatestPhotoRecyclerItem
+        photo = item as PhotoRecyclerItem
         val model = photo.data
 
         val shimmer = ShimmerDrawable().apply {

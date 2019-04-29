@@ -120,5 +120,6 @@ dependencies {
 dependencies {
     androidTestImplementation deps.test.runner
     androidTestImplementation deps.test.espresso
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 
 }

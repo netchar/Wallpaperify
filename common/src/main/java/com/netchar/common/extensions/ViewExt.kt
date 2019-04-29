@@ -2,6 +2,7 @@ package com.netchar.common.extensions
 
 import android.content.res.Resources
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 
@@ -26,6 +27,11 @@ fun View.toGone() {
 fun Fragment.showSnackbar(message: String, timeLength: Int) {
     activity?.let { Snackbar.make(it.findViewById<View>(android.R.id.content), message, timeLength).show() }
 }
+
+fun Fragment.showToast(message: String, length: Int = Toast.LENGTH_LONG) {
+    Toast.makeText(this.context, message, length).show()
+}
+
 
 val Int.dp get() = (this / Resources.getSystem().displayMetrics.density).toInt()
 
