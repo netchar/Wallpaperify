@@ -76,6 +76,9 @@ class LatestFragment : BaseFragment() {
         main_recycler.setHasFixedSize(true)
         main_recycler.adapter = adapter
         latest_swipe.setOnRefreshListener { viewModel.refresh() }
+        view_filter.setOnClickListener {
+//            BottomSheetDialogFragment
+        }
     }
 
     private fun onLoadMoreItems() {
