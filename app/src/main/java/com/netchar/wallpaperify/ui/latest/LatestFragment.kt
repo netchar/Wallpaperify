@@ -54,14 +54,13 @@ class LatestFragment : BaseFragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val ordering = when (item.itemId) {
-            R.id.latest_menu_item_latest -> IPhotosRepository.PhotosApiRequest.LATEST
-            R.id.latest_menu_item_oldest -> IPhotosRepository.PhotosApiRequest.OLDEST
-            R.id.latest_menu_item_popular -> IPhotosRepository.PhotosApiRequest.POPULAR
+        when (item.itemId) {
+            R.id.latest_menu_item_latest -> viewModel.orderBy(IPhotosRepository.PhotosApiRequest.LATEST)
+            R.id.latest_menu_item_oldest -> viewModel.orderBy(IPhotosRepository.PhotosApiRequest.OLDEST)
+            R.id.latest_menu_item_popular -> viewModel.orderBy(IPhotosRepository.PhotosApiRequest.POPULAR)
             else -> IPhotosRepository.PhotosApiRequest.LATEST
         }
 
-        viewModel.orderBy(ordering)
         return true
     }
 

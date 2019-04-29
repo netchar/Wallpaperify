@@ -12,7 +12,7 @@ import com.netchar.remote.Resource
 import com.netchar.remote.enums.Cause
 import com.netchar.repository.IPhotosRepository
 import com.netchar.repository.IPhotosRepository.PhotosApiRequest
-import com.netchar.repository.IPhotosRepository.PhotosApiRequest.*
+import com.netchar.repository.IPhotosRepository.PhotosApiRequest.OrderBy
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.ui.App
 import javax.inject.Inject
@@ -38,6 +38,10 @@ class LatestViewModel @Inject constructor(
         addSource(_ordering) { orderBy ->
             fetchPhotos(PhotosApiRequest(1, PhotosApiRequest.ITEMS_PER_PAGE, orderBy, true))
         }
+    }
+
+    init {
+        fetchPhotos(PhotosApiRequest(1, PhotosApiRequest.ITEMS_PER_PAGE, orderingOrDefault(), false))
     }
 
 
