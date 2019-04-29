@@ -14,12 +14,18 @@ import com.facebook.shimmer.Shimmer
 import com.facebook.shimmer.ShimmerDrawable
 import com.netchar.common.poweradapter.item.IRecyclerItem
 import com.netchar.common.poweradapter.item.ItemRenderer
+import com.netchar.common.utils.getThemeAttrColor
 import com.netchar.models.Photo
 import com.netchar.wallpaperify.R
+import com.netchar.wallpaperify.ui.App
 import kotlinx.android.synthetic.main.raw_photo.view.*
 
 
 class LatestPhotosRenderer(private val glide: RequestManager, val listener: (Photo) -> Unit) : ItemRenderer() {
+
+    companion object {
+        val fetchedColors = hashMapOf<String, Int>()
+    }
 
     override val renderKey: String = this::class.java.name
 
@@ -30,49 +36,72 @@ class LatestPhotosRenderer(private val glide: RequestManager, val listener: (Pho
     override fun onSetListeners(itemView: View) {
         itemView.setOnClickListener {
             if (::photo.isInitialized) {
-                listener(photo.data)
+                val data = photo.data
+                listener(data)
             }
         }
     }
 
     override fun bind(itemView: View, item: IRecyclerItem) {
         photo = item as LatestPhotoRecyclerItem
+        val model = photo.data
 
-        itemView.row_photo_iv.fitWidth(photo.data.width, photo.data.height)
-
-        val shimmer = Shimmer.ColorHighlightBuilder()
-            .setBaseColor(Color.parseColor(photo.data.color))
-            .setHighlightColor(Color.parseColor(photo.data.color))
-            .setHighlightAlpha(0.8f)
-            .setBaseAlpha(0.9f)
-            .setAutoStart(true)
-            .setDuration(2000)
-            .build()
-
-        val shimmerDrawable = ShimmerDrawable().apply {
-            setShimmer(shimmer)
+        val shimmer = ShimmerDrawable().apply {
+            setShimmer(Shimmer.AlphaHighlightBuilder()
+                    .setHighlightAlpha(0.85f)
+                    .setBaseAlpha(0.8f)
+                    .setAutoStart(true)
+                    .setDuration(1500)
+                    .setIntensity(0.2f)
+                    .build())
         }
 
-        itemView.row_photo_iv.background = shimmerDrawable
+        val color = getCardBackgroundColor(model.color)
+        itemView.row_photo_card.setBackgroundColor(color)
 
-        glide.load(photo.data.urls?.raw)
-            .fitCenter()
-            .transition(DrawableTransitionOptions.withCrossFade())
-            .listener(object : RequestListener<Drawable> {
-                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                    shimmerDrawable.stopShimmer()
-                    return false
-                }
+        with(itemView.row_photo_iv) {
+            fitHeightToWidth(model.width, model.height)
+            background = shimmer
 
-                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                    shimmerDrawable.stopShimmer()
-                    return false
-                }
-            })
-            .into(itemView.row_photo_iv)
+            glide.load(model.urls?.regular)
+                    .fitCenter()
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .listener(object : RequestListener<Drawable> {
+                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                            return releaseShimmer()
+                        }
+
+                        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                            return releaseShimmer()
+                        }
+
+                        private fun releaseShimmer(): Boolean {
+                            shimmer.stopShimmer()
+                            background = null
+                            return false
+                        }
+                    })
+                    .into(this)
+        }
     }
 
-    private fun ImageView.fitWidth(imageWidth: Int, imageHeight: Int) {
+    private fun getCardBackgroundColor(stringColor: String): Int {
+        return fetchedColors.getOrPut(stringColor) {
+            getColorWithAlpha(stringColor, 40)
+        }
+    }
+
+    private fun getColorWithAlpha(stringColor: String?, /*from = 0, to = 255*/ alpha: Int): Int {
+        return if (stringColor == null) {
+            getThemeAttrColor(App.get(), R.attr.colorPrimary)
+        } else {
+            val hsv = FloatArray(3)
+            Color.colorToHSV(Color.parseColor(stringColor), hsv)
+            Color.HSVToColor(alpha, hsv)
+        }
+    }
+
+    private fun ImageView.fitHeightToWidth(imageWidth: Int, imageHeight: Int) {
         val scaleFactor = imageWidth.toFloat() / imageHeight
         minimumHeight = (resources.displayMetrics.widthPixels / scaleFactor).toInt()
     }

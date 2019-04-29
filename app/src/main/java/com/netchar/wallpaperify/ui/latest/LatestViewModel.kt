@@ -55,7 +55,8 @@ class LatestViewModel @Inject constructor(
         val repoLiveData = repository.getPhotos(request, scope).getLiveData()
         _photos.removeSource(repoLiveData)
         _photos.addSource(repoLiveData) { response ->
-            if (request.page <= 1) {
+            val isRefreshing = request.page <= 1
+            if (isRefreshing) {
                 onFetch(response)
             } else {
                 onFetchNextPageItems(response)

@@ -30,6 +30,10 @@ class LatestFragment : BaseFragment() {
         fun newInstance() = LatestFragment()
     }
 
+    init {
+        setHasOptionsMenu(true)
+    }
+
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
@@ -37,25 +41,21 @@ class LatestFragment : BaseFragment() {
 
     override val layoutResId: Int = R.layout.fragment_latest
 
-    private val dataSource: Lazy<EndlessRecyclerDataSource> = lazy {
+    private val dataSource: EndlessRecyclerDataSource by lazy {
         val photoRenderer = LatestPhotosRenderer(Glide.with(this), ::onItemClick)
         EndlessRecyclerDataSource(mutableListOf(photoRenderer), ::onLoadMoreItems)
     }
 
-    private lateinit var adapter: EndlessRecyclerAdapter
+    private val adapter: EndlessRecyclerAdapter by lazy {
+        EndlessRecyclerAdapter(dataSource)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = injectViewModel(viewModelFactory)
 
-        setupAdapter()
         setupViews()
         observe()
-    }
-
-    private fun setupAdapter() {
-//        val photoRenderer = LatestPhotosRenderer(Glide.with(this), ::onItemClick)
-        adapter = EndlessRecyclerAdapter(dataSource.value)
     }
 
     private fun setupViews() {
@@ -71,18 +71,16 @@ class LatestFragment : BaseFragment() {
     private fun observe() {
         viewModel.photos.observe(viewLifecycleOwner, Observer { photos ->
             photos?.let {
-                dataSource.value.setData(it.toRecyclerItem())
+                dataSource.setData(it.toRecyclerItem())
             }
         })
 
         viewModel.refreshing.observe(viewLifecycleOwner, Observer { refreshing ->
-            with(latest_swipe) {
-                post { this.isRefreshing = refreshing }
-            }
+            latest_swipe.post { latest_swipe.isRefreshing = refreshing }
         })
 
         viewModel.error.observe(viewLifecycleOwner, Observer { message ->
-            dataSource.value.showRetryItem()
+            dataSource.showRetryItem()
             showSnackbar(message, Snackbar.LENGTH_LONG)
         })
 
@@ -91,19 +89,23 @@ class LatestFragment : BaseFragment() {
         })
 
         viewModel.oopsPlaceholder.observe(viewLifecycleOwner, Observer { message ->
-            view?.run {
-                val goesWrongView = findViewById<ConstraintLayout>(R.id.something_goes_wrong_view)
-                if (message.isVisible) {
-                    goesWrongView.toVisible()
-                    goesWrongView.findViewById<TextView>(R.id.something_goes_wrong_text).text = message.message
-                    main_recycler.toGone()
-                } else {
-                    goesWrongView.toGone()
-                    goesWrongView.findViewById<TextView>(R.id.something_goes_wrong_text).text = ""
-                    main_recycler.toVisible()
-                }
+            view?.let {
+                val goesWrongView = it.findViewById<ConstraintLayout>(R.id.something_goes_wrong_view)
+                toggleOppsView(message, goesWrongView)
             }
         })
+    }
+
+    private fun toggleOppsView(message: LatestViewModel.OopsPlaceholder, goesWrongView: ConstraintLayout) {
+        if (message.isVisible) {
+            goesWrongView.toVisible()
+            goesWrongView.findViewById<TextView>(R.id.something_goes_wrong_text).text = message.message
+            main_recycler.toGone()
+        } else {
+            goesWrongView.toGone()
+            goesWrongView.findViewById<TextView>(R.id.something_goes_wrong_text).text = ""
+            main_recycler.toVisible()
+        }
     }
 
     override fun onDestroyView() {
