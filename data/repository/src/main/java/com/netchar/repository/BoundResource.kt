@@ -69,7 +69,7 @@ abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDi
 
     private suspend fun fetchFromNetworkAsync(): Resource<TResult> {
         result.value = Resource.Loading(true)
-        val apiResponse = apiRequestAsync().awaitSafe()
+        val apiResponse = getApiCallAsync().awaitSafe()
         result.value = Resource.Loading(false)
 
         return when (apiResponse) {
@@ -79,14 +79,14 @@ abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDi
             is HttpResult.Exception -> {
                 if (apiResponse.exception is NoNetworkException) {
                     Resource.Error(Cause.NO_INTERNET_CONNECTION)
-                }else{
+                } else {
                     Resource.Error(Cause.UNEXPECTED, message = apiResponse.exception.localizedMessage)
                 }
             }
         }
     }
 
-    abstract fun apiRequestAsync(): Deferred<Response<TResult>>
+    abstract fun getApiCallAsync(): Deferred<Response<TResult>>
 
     private fun TResult?.isInvalidated() = this == null || isNeedRefresh(this)
 }

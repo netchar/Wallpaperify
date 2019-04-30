@@ -61,7 +61,7 @@ internal class BoundResourceTest {
                 return true
             }
 
-            override fun apiRequestAsync(): Deferred<Response<String>> {
+            override fun getApiCallAsync(): Deferred<Response<String>> {
                 return spyk()
             }
         })
@@ -85,7 +85,7 @@ internal class BoundResourceTest {
         runBlocking {
             // arrange
             every { boundResource.getStorageData() } returns null
-            coEvery { boundResource.apiRequestAsync().await() } returns successApiResponseMock
+            coEvery { boundResource.getApiCallAsync().await() } returns successApiResponseMock
 
             // act
             val boundResponse = boundResource.launchIn(this)
@@ -124,7 +124,7 @@ internal class BoundResourceTest {
         runBlocking {
             // arrange
             every { boundResource.getStorageData() } returns null
-            coEvery { boundResource.apiRequestAsync().await() } coAnswers {
+            coEvery { boundResource.getApiCallAsync().await() } coAnswers {
                 delay(50)
                 successApiResponseMock
             }
@@ -135,7 +135,7 @@ internal class BoundResourceTest {
             assertThat(ASSERT_LIVE_DATA_IN_ORDER, responseSet, equalTo(successReferenceResponseSet))
 
             verify { boundResource.getStorageData() }
-            verify { boundResource.apiRequestAsync() }
+            verify { boundResource.getApiCallAsync() }
             verify { boundResource.saveRemoteDataInStorage(successApiResponseMock.body()!!) }
         }
     }
@@ -146,7 +146,7 @@ internal class BoundResourceTest {
             // arrange
             every { boundResource.getStorageData() } returns storageDataMock
             every { boundResource.isNeedRefresh(any()) } returns true
-            coEvery { boundResource.apiRequestAsync().await() } coAnswers {
+            coEvery { boundResource.getApiCallAsync().await() } coAnswers {
                 delay(50)
                 successApiResponseMock
             }
@@ -159,7 +159,7 @@ internal class BoundResourceTest {
 
             verify { boundResource.getStorageData() }
             verify { boundResource.isNeedRefresh(storageDataMock) }
-            verify { boundResource.apiRequestAsync() }
+            verify { boundResource.getApiCallAsync() }
             verify { boundResource.saveRemoteDataInStorage(successApiResponseMock.body()!!) }
         }
     }
@@ -206,7 +206,7 @@ internal class BoundResourceTest {
             // arrange
             val referenceSet = linkedSetOf<Resource<String>>(Resource.Loading(true), Resource.Loading(false), Resource.Error(Cause.UNEXPECTED, "Unable to store"))
             every { boundResource.saveRemoteDataInStorage(any()) } throws IOException("Unable to store")
-            coEvery { boundResource.apiRequestAsync().await() } coAnswers {
+            coEvery { boundResource.getApiCallAsync().await() } coAnswers {
                 delay(50)
                 successApiResponseMock
             }
@@ -229,7 +229,7 @@ internal class BoundResourceTest {
             val referenceSet = linkedSetOf<Resource<String>>(Resource.Loading(true), Resource.Loading(false), Resource.Error(Cause.UNEXPECTED, com.netchar.remote.enums.HttpStatusCode.INTERNAL_SERVER_ERROR.description))
             every { boundResource.getStorageData() } returns storageDataMock
             every { boundResource.isNeedRefresh(storageDataMock) } returns true
-            coEvery { boundResource.apiRequestAsync().await() } coAnswers {
+            coEvery { boundResource.getApiCallAsync().await() } coAnswers {
                 delay(50)
                 getMockErrorResponse(com.netchar.remote.enums.HttpStatusCode.INTERNAL_SERVER_ERROR)
             }
@@ -242,7 +242,7 @@ internal class BoundResourceTest {
 
             verify { boundResource.getStorageData() }
             verify { boundResource.isNeedRefresh(storageDataMock) }
-            verify { boundResource.apiRequestAsync() }
+            verify { boundResource.getApiCallAsync() }
             verify(exactly = 0) { boundResource.saveRemoteDataInStorage(eq(storageDataMock)) }
         }
     }
@@ -255,7 +255,7 @@ internal class BoundResourceTest {
             val referenceSet = linkedSetOf<Resource<String>>(Resource.Loading(true), Resource.Loading(false), Resource.Error(Cause.NOT_AUTHENTICATED, com.netchar.remote.enums.HttpStatusCode.UNAUTHORIZED.description))
             every { boundResource.getStorageData() } returns storageDataMock
             every { boundResource.isNeedRefresh(any()) } returns true
-            coEvery { boundResource.apiRequestAsync().await() } coAnswers {
+            coEvery { boundResource.getApiCallAsync().await() } coAnswers {
                 delay(50)
                 getMockErrorResponse(com.netchar.remote.enums.HttpStatusCode.UNAUTHORIZED)
             }
@@ -268,7 +268,7 @@ internal class BoundResourceTest {
 
             verify { boundResource.getStorageData() }
             verify { boundResource.isNeedRefresh(any()) }
-            verify { boundResource.apiRequestAsync() }
+            verify { boundResource.getApiCallAsync() }
             verify(exactly = 0) { boundResource.saveRemoteDataInStorage(any()) }
         }
     }
@@ -280,7 +280,7 @@ internal class BoundResourceTest {
             val referenceSet = linkedSetOf<Resource<String>>(Resource.Loading(true), Resource.Loading(false), Resource.Error(Cause.UNEXPECTED, "Error during fetching data from server."))
             every { boundResource.getStorageData() } returns storageDataMock
             every { boundResource.isNeedRefresh(any()) } returns true
-            coEvery { boundResource.apiRequestAsync().await() } coAnswers {
+            coEvery { boundResource.getApiCallAsync().await() } coAnswers {
                 delay(50)
                 Response.success(com.netchar.remote.enums.HttpStatusCode.NO_CONTENT.code, "")
             }
@@ -293,7 +293,7 @@ internal class BoundResourceTest {
 
             verify { boundResource.getStorageData() }
             verify { boundResource.isNeedRefresh(any()) }
-            coVerify { boundResource.apiRequestAsync() }
+            coVerify { boundResource.getApiCallAsync() }
             verify(exactly = 0) { boundResource.saveRemoteDataInStorage(storageDataMock) }
         }
     }
@@ -301,8 +301,8 @@ internal class BoundResourceTest {
     @Test
     fun `when no network detected return NO_INTERNET_CONNECTION error resource`() {
         // arrange
-        every { boundResource.apiRequestAsync() } returns mockk()
-        coEvery { boundResource.apiRequestAsync().await() } throws NoNetworkException("No internet connection.")
+        every { boundResource.getApiCallAsync() } returns mockk()
+        coEvery { boundResource.getApiCallAsync().await() } throws NoNetworkException("No internet connection.")
         every { boundResource.getStorageData() } returns storageDataMock
         every { boundResource.isNeedRefresh(any()) } returns true
 
@@ -324,7 +324,7 @@ internal class BoundResourceTest {
             val referenceSet = linkedSetOf<Resource<String>>(Resource.Loading(true), Resource.Loading(false), Resource.Error(Cause.UNEXPECTED, "Parsing exception"))
             every { boundResource.getStorageData() } returns storageDataMock
             every { boundResource.isNeedRefresh(any()) } returns true
-            coEvery { boundResource.apiRequestAsync().await() } coAnswers {
+            coEvery { boundResource.getApiCallAsync().await() } coAnswers {
                 delay(50)
                 throw IOException("Parsing exception")
             }
@@ -338,7 +338,7 @@ internal class BoundResourceTest {
 
             verify { boundResource.getStorageData() }
             verify { boundResource.isNeedRefresh(any()) }
-            verify { boundResource.apiRequestAsync() }
+            verify { boundResource.getApiCallAsync() }
             verify(exactly = 0) { boundResource.saveRemoteDataInStorage(any()) }
         }
     }
@@ -351,7 +351,7 @@ internal class BoundResourceTest {
             val scope = CoroutineScope(mockDispatchers.main)
             every { boundResource.getStorageData() } returns "invalidated data"
             every { boundResource.isNeedRefresh(any()) } returns true
-            coEvery { boundResource.apiRequestAsync().await() } coAnswers {
+            coEvery { boundResource.getApiCallAsync().await() } coAnswers {
                 delay(500)
                 successApiResponseMock
             }
@@ -377,7 +377,7 @@ internal class BoundResourceTest {
             val scope = CoroutineScope(mockDispatchers.main)
             every { boundResource.getStorageData() } returns "invalidated data"
             every { boundResource.isNeedRefresh(any()) } returns true
-            coEvery { boundResource.apiRequestAsync().await() } coAnswers {
+            coEvery { boundResource.getApiCallAsync().await() } coAnswers {
                 delay(500)
                 successApiResponseMock
             }

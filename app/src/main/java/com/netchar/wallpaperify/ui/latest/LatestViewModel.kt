@@ -13,7 +13,7 @@ import com.netchar.models.uimodel.ErrorMessage
 import com.netchar.models.uimodel.Message
 import com.netchar.remote.Resource
 import com.netchar.remote.enums.Cause
-import com.netchar.repository.IPhotosRepository
+import com.netchar.repository.photos.IPhotosRepository
 import com.netchar.wallpaperify.R
 import javax.inject.Inject
 
@@ -23,8 +23,8 @@ import javax.inject.Inject
  */
 
 class LatestViewModel @Inject constructor(
-        private val repository: IPhotosRepository,
-        dispatchers: CoroutineDispatchers
+    private val repository: IPhotosRepository,
+    dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers) {
 
     private val paging = Paging(startPage = 1)
@@ -65,7 +65,6 @@ class LatestViewModel @Inject constructor(
         hideError()
 
         val repoLiveData = repository.getPhotos(request, scope).getLiveData()
-        _photos.removeSource(repoLiveData)
         _photos.addSource(repoLiveData) { response ->
             if (request.isStartPage()) {
                 onFreshFetch(response)
