@@ -18,5 +18,5 @@ object RepositoryModule {
     @JvmStatic
     @Provides
     @Singleton
-    fun photosRepo(context: Context, api: PhotosApi, dao: PhotoDao, dispatchers: CoroutineDispatchers): IPhotosRepository = PhotosRepository(api, dao, dispatchers, context)
+    fun photosRepo(api: PhotosApi, dao: PhotoDao, dispatchers: CoroutineDispatchers): IPhotosRepository = PhotosRepository(api, dao, dispatchers)
 }

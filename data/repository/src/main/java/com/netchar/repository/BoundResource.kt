@@ -1,20 +1,20 @@
 package com.netchar.repository
 
-import android.content.Context
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.netchar.common.utils.Connectivity
+import com.netchar.common.exceptions.NoNetworkException
 import com.netchar.common.utils.CoroutineDispatchers
 import com.netchar.remote.Resource
 import com.netchar.remote.enums.Cause
+import com.netchar.remote.enums.HttpResult
 import com.netchar.remote.extensions.awaitSafe
 import kotlinx.coroutines.*
 import retrofit2.Response
 import timber.log.Timber
 import java.io.IOException
 
-abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDispatchers, val context: Context) : IBoundResource<TResult> {
+abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDispatchers) : IBoundResource<TResult> {
     private val result = MutableLiveData<Resource<TResult>>()
 
     @VisibleForTesting
@@ -33,8 +33,7 @@ abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDi
         return try {
             val databaseData = fetchFromDatabaseAsync()
             if (databaseData.isInvalidated()) {
-                val result = fetchFromNetworkAsync().also { writeInStorageOnSuccessAsync(it) }
-                result
+                fetchFromNetworkAsync().also { writeInStorageOnSuccessAsync(it) }
             } else {
                 Resource.Success(databaseData!!)
             }
@@ -69,19 +68,21 @@ abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDi
     abstract fun isNeedRefresh(localData: TResult): Boolean
 
     private suspend fun fetchFromNetworkAsync(): Resource<TResult> {
-        return if (Connectivity.isInternetAvailable(context)) {
-            result.value = Resource.Loading(true)
-            val apiResponse = apiRequestAsync().awaitSafe()
-            result.value = Resource.Loading(false)
+        result.value = Resource.Loading(true)
+        val apiResponse = apiRequestAsync().awaitSafe()
+        result.value = Resource.Loading(false)
 
-            when (apiResponse) {
-                is com.netchar.remote.enums.HttpResult.Success -> Resource.Success(apiResponse.data)
-                is com.netchar.remote.enums.HttpResult.Empty -> Resource.Error(Cause.UNEXPECTED, "Error during fetching data from server.")
-                is com.netchar.remote.enums.HttpResult.Error -> Resource.Error.parse(apiResponse)
-                is com.netchar.remote.enums.HttpResult.Exception -> Resource.Error(Cause.UNEXPECTED, message = apiResponse.exception.localizedMessage)
+        return when (apiResponse) {
+            is HttpResult.Success -> Resource.Success(apiResponse.data)
+            is HttpResult.Empty -> Resource.Error(Cause.UNEXPECTED, "Error during fetching data from server.")
+            is HttpResult.Error -> Resource.Error.parse(apiResponse)
+            is HttpResult.Exception -> {
+                if (apiResponse.exception is NoNetworkException) {
+                    Resource.Error(Cause.NO_INTERNET_CONNECTION)
+                }else{
+                    Resource.Error(Cause.UNEXPECTED, message = apiResponse.exception.localizedMessage)
+                }
             }
-        } else {
-            Resource.Error(Cause.NO_INTERNET_CONNECTION, context.getString(R.string.error_message_no_internet))
         }
     }
 

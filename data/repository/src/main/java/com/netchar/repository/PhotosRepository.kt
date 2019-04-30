@@ -16,12 +16,11 @@ import javax.inject.Inject
 class PhotosRepository @Inject constructor(
         private val api: com.netchar.remote.api.PhotosApi,
         private val dao: PhotoDao,
-        private val dispatchers: CoroutineDispatchers,
-        private val context: Context
+        private val dispatchers: CoroutineDispatchers
 ) : IPhotosRepository {
 
     override fun getPhotos(request: PhotosRequest, scope: CoroutineScope): IBoundResource<List<Photo>> {
-        return object : BoundResource<List<Photo>>(dispatchers, context) {
+        return object : BoundResource<List<Photo>>(dispatchers) {
             override fun getStorageData(): List<Photo>? {
 //                return dao.getAll()
                 return emptyList()

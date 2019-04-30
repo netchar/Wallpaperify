@@ -1,9 +1,8 @@
 package com.netchar.repository
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import com.netchar.common.utils.Connectivity
+import com.netchar.common.exceptions.NoNetworkException
 import com.netchar.common.utils.CoroutineDispatchers
 import com.netchar.remote.Resource
 import com.netchar.remote.enums.Cause
@@ -18,8 +17,8 @@ import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
-import retrofit2.Response
 import org.junit.jupiter.api.extension.ExtendWith
+import retrofit2.Response
 import java.io.IOException
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -39,7 +38,6 @@ internal class BoundResourceTest {
         every { network } returns Dispatchers.Unconfined
     }
 
-    private val mockContext = mockk<Context>()
     private val successApiResponseMock = Response.success("success")
     private val storageDataMock = "Mock database data"
     private lateinit var boundResource: BoundResource<String>
@@ -47,13 +45,11 @@ internal class BoundResourceTest {
     private val successReferenceResponseSet: LinkedHashSet<Resource<String>> = linkedSetOf(Resource.Loading(true), Resource.Loading(false), Resource.Success(successApiResponseMock.body()!!))
     private val observer = Observer<Resource<String>> { responseSet.add(it) }
 
+    private lateinit var observerMock: Observer<Resource<String>>
+
     @BeforeEach
     fun setUp() {
-        mockkObject(Connectivity)
-        every { Connectivity.isInternetAvailable(any()) } returns true
-        every { mockContext.getString(R.string.error_message_no_internet) } returns "Please check that you have an Internet connection and try again."
-
-        boundResource = spyk(object : BoundResource<String>(mockDispatchers, mockContext) {
+        boundResource = spyk(object : BoundResource<String>(mockDispatchers) {
             override fun saveRemoteDataInStorage(data: String) {
             }
 
@@ -69,6 +65,8 @@ internal class BoundResourceTest {
                 return spyk()
             }
         })
+
+        observerMock = mockk(relaxed = true)
     }
 
     @AfterEach
@@ -300,25 +298,23 @@ internal class BoundResourceTest {
         }
     }
 
-
     @Test
     fun `when no network detected return NO_INTERNET_CONNECTION error resource`() {
+        // arrange
+        every { boundResource.apiRequestAsync() } returns mockk()
+        coEvery { boundResource.apiRequestAsync().await() } throws NoNetworkException("No internet connection.")
+        every { boundResource.getStorageData() } returns storageDataMock
+        every { boundResource.isNeedRefresh(any()) } returns true
+
+        // act
         runBlocking {
-            // arrange
-            every { Connectivity.isInternetAvailable(any()) } returns false
-            every { boundResource.getStorageData() } returns storageDataMock
-            every { boundResource.isNeedRefresh(any()) } returns true
-
-            // act
-            launchAndObserve()
-
-            // assert
-            assertThat(responseSet, allOf(hasItem(Resource.Error(Cause.NO_INTERNET_CONNECTION, mockContext.getString(R.string.error_message_no_internet))), hasSize(equalTo(1))))
-
-            verify { boundResource.getStorageData() }
-            verify { boundResource.isNeedRefresh(storageDataMock) }
-            verify(exactly = 0) { boundResource.apiRequestAsync() }
+            boundResource.launchIn(this).getLiveData().observeForever(observerMock)
         }
+
+        verify { observerMock.onChanged(Resource.Error(Cause.NO_INTERNET_CONNECTION)) }
+
+        // assert
+        confirmVerified(observerMock)
     }
 
     @Test
