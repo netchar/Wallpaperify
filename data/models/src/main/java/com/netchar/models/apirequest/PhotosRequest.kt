@@ -1,6 +1,6 @@
 package com.netchar.models.apirequest
 
-data class PhotosRequest(val page: Int = 0, val perPage: Int = 30, val orderBy: String = LATEST) {
+data class PhotosRequest(val page: Int = 1, val orderBy: String = LATEST, val perPage: Int = 30) {
     companion object {
         const val LATEST = "latest"
         const val OLDEST = "oldest"
@@ -8,4 +8,6 @@ data class PhotosRequest(val page: Int = 0, val perPage: Int = 30, val orderBy: 
 
         const val ITEMS_PER_PAGE = 30
     }
+
+    fun isStartPage() = page == 1
 }

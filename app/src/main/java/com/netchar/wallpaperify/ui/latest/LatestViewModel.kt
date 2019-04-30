@@ -7,6 +7,7 @@ import com.netchar.common.base.BaseViewModel
 import com.netchar.common.utils.CoroutineDispatchers
 import com.netchar.common.utils.SingleLiveData
 import com.netchar.models.Photo
+import com.netchar.models.apirequest.Paging
 import com.netchar.models.apirequest.PhotosRequest
 import com.netchar.models.uimodel.ErrorMessage
 import com.netchar.models.uimodel.Message
@@ -26,7 +27,7 @@ class LatestViewModel @Inject constructor(
         dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers) {
 
-    private var page = 1
+    private val paging = Paging(startPage = 1)
     private val _errorPlaceholder = SingleLiveData<ErrorMessage>()
     private val _toast = SingleLiveData<Message>()
     private val _error = SingleLiveData<ErrorMessage>()
@@ -34,27 +35,12 @@ class LatestViewModel @Inject constructor(
     private val _ordering = MutableLiveData<String>()
     private val _photos = MediatorLiveData<List<Photo>>().apply {
         addSource(_ordering) { orderBy ->
-            fetchPhotos(PhotosRequest(1, PhotosRequest.ITEMS_PER_PAGE, orderBy))
+            fetchPhotos(PhotosRequest(paging.fromStart(), orderBy))
         }
     }
 
     init {
-        page = 1
-        fetchPhotos(PhotosRequest(1, PhotosRequest.ITEMS_PER_PAGE, orderingOrDefault()))
-    }
-
-
-    fun refresh() {
-        page = 1
-        fetchPhotos(PhotosRequest(1, PhotosRequest.ITEMS_PER_PAGE, orderingOrDefault()))
-    }
-
-    fun loadMore() {
-        fetchPhotos(PhotosRequest(++page, PhotosRequest.ITEMS_PER_PAGE, orderingOrDefault()))
-    }
-
-    fun orderBy(ordering: String) {
-        _ordering.value = ordering
+        fetchPhotos(PhotosRequest(paging.fromStart(), getOrderingOrDefault()))
     }
 
     val photos: LiveData<List<Photo>> get() = _photos
@@ -63,14 +49,25 @@ class LatestViewModel @Inject constructor(
     val toast: LiveData<Message> get() = _toast
     val errorPlaceholder: LiveData<ErrorMessage> = _errorPlaceholder
 
+    fun refresh() {
+        fetchPhotos(PhotosRequest(paging.fromStart(), getOrderingOrDefault()))
+    }
+
+    fun loadMore() {
+        fetchPhotos(PhotosRequest(paging.nextPage(), getOrderingOrDefault()))
+    }
+
+    fun orderBy(ordering: String) {
+        _ordering.value = ordering
+    }
+
     private fun fetchPhotos(request: PhotosRequest) {
         hideError()
 
         val repoLiveData = repository.getPhotos(request, scope).getLiveData()
         _photos.removeSource(repoLiveData)
         _photos.addSource(repoLiveData) { response ->
-            val isRefreshing = request.page <= 1
-            if (isRefreshing) {
+            if (request.isStartPage()) {
                 onFreshFetch(response)
             } else {
                 onFetchNextPage(response)
@@ -87,7 +84,7 @@ class LatestViewModel @Inject constructor(
             is Resource.Loading -> _refreshing.value = response.isLoading
             is Resource.Error -> {
                 _refreshing.value = false
-                raiseErrorMessage(response)
+                riseError(response)
             }
         }
     }
@@ -96,10 +93,8 @@ class LatestViewModel @Inject constructor(
         when (response) {
             is Resource.Success -> _photos.apply { value = value?.plus(response.data) }
             is Resource.Error -> {
-                if (page > 1) {
-                    page--
-                }
-                raiseErrorMessage(response)
+                paging.prevPage()
+                riseError(response)
             }
         }
     }
@@ -108,18 +103,22 @@ class LatestViewModel @Inject constructor(
         _errorPlaceholder.value = ErrorMessage.empty()
     }
 
-    private fun raiseErrorMessage(response: Resource.Error) {
-        val errorMessage = when (response.cause) {
-            Cause.NO_INTERNET_CONNECTION -> ErrorMessage(true, Message(R.string.error_message_no_internet), R.drawable.ic_no_internet_connection)
-            Cause.NOT_AUTHENTICATED, Cause.UNEXPECTED -> ErrorMessage(true, Message(R.string.error_message_try_again_later), R.drawable.img_unexpected_error)
-        }
+    private fun riseError(response: Resource.Error) {
+        val errorMessage = getErrorMessage(response)
 
-        if (_photos.value == null) {
+        if (_photos.value.isNullOrEmpty()) {
             _errorPlaceholder.value = errorMessage
         } else {
             _error.value = errorMessage
         }
     }
 
-    private fun orderingOrDefault() = _ordering.value ?: PhotosRequest.LATEST
+    private fun getErrorMessage(response: Resource.Error): ErrorMessage {
+        return when (response.cause) {
+            Cause.NO_INTERNET_CONNECTION -> ErrorMessage(true, Message(R.string.error_message_no_internet), R.drawable.ic_no_internet_connection)
+            Cause.NOT_AUTHENTICATED, Cause.UNEXPECTED -> ErrorMessage(true, Message(R.string.error_message_try_again_later), R.drawable.img_unexpected_error)
+        }
+    }
+
+    private fun getOrderingOrDefault() = _ordering.value ?: PhotosRequest.LATEST
 }

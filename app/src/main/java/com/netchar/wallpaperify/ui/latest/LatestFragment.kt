@@ -55,7 +55,7 @@ class LatestFragment : BaseFragment() {
             else -> PhotosRequest.LATEST
         }
 
-        return true
+        return false
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
