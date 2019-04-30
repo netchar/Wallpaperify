@@ -1,9 +1,9 @@
 package com.netchar.wallpaperify.ui.photosdetails
 
+import com.netchar.common.base.BaseFragment
 import com.netchar.wallpaperify.R
-import com.netchar.common.base.FlowFragment
 
-class PhotoDetailsFragment : FlowFragment() {
+class PhotoDetailsFragment : BaseFragment() {
 
     override val layoutResId: Int = R.layout.fragment_photo_details
 }

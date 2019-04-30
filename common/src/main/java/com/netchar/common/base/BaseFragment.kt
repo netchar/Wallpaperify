@@ -5,29 +5,30 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.CallSuper
 import androidx.annotation.CheckResult
 import androidx.annotation.LayoutRes
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.netchar.common.R
+import com.netchar.common.extensions.setSupportActionBar
 import com.netchar.common.utils.Injector
-import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject
 
-abstract class BaseFragment : androidx.fragment.app.Fragment(), HasSupportFragmentInjector {
+abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
 
     @Inject
-    lateinit var childFragmentInjector: DispatchingAndroidInjector<androidx.fragment.app.Fragment>
+    lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
 
     @get:LayoutRes
     abstract val layoutResId: Int
 
-    protected val drawerActivity: IDrawerActivity? get() = activity as? IDrawerActivity
+    private val drawerActivity get() = activity as? IDrawerActivity
 
     protected var toolbar: Toolbar? = null
 
@@ -36,36 +37,47 @@ abstract class BaseFragment : androidx.fragment.app.Fragment(), HasSupportFragme
         super.onAttach(context)
     }
 
-    override fun supportFragmentInjector(): AndroidInjector<androidx.fragment.app.Fragment> = childFragmentInjector
+    override fun supportFragmentInjector() = childFragmentInjector
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = inflater.inflate(layoutResId, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        return inflater.inflate(layoutResId, container, false)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupToolbar(view)
-    }
-
-    @CallSuper
-    protected open fun setupToolbar(view: View) {
-        val toolbar: Toolbar? = view.findViewById(R.id.toolbar)
-
-        if (toolbar != null) {
-            val drawerAct = drawerActivity
-
-            if (drawerAct != null) {
-                toolbar.setupWithNavController(findNavController(), drawerAct.appBarConfiguration)
-            } else {
-                toolbar.setupWithNavController(findNavController())
-            }
-
-            val currentActivity = activity as AppCompatActivity
-            currentActivity.setSupportActionBar(toolbar)
-        }
-        this.toolbar = toolbar
+        toolbar = view.findViewById<Toolbar>(R.id.toolbar)?.also { it.setupNavigation() }
+        drawerActivity?.setupNavigationDrawer()
     }
 
     @CheckResult
     open fun onBackPressed(): Boolean {
         return false
     }
+
+    private fun Toolbar?.setupNavigation() = this?.let {
+        setSupportActionBar(it)
+        setupToolbarNavigation(it)
+    }
+
+    private fun IDrawerActivity.setupNavigationDrawer() = appBarConfiguration.setupNavigationDrawer()
+
+    private fun AppBarConfiguration.setupNavigationDrawer() = drawerLayout?.let { drawer ->
+        val mode = getLockMode(this)
+        drawer.setDrawerLockMode(mode)
+    }
+
+    private fun getLockMode(configuration: AppBarConfiguration): Int {
+        val isTopLevelDestination = configuration.topLevelDestinations.contains(findNavController().currentDestination?.id)
+        return if (isTopLevelDestination) DrawerLayout.LOCK_MODE_UNDEFINED else DrawerLayout.LOCK_MODE_LOCKED_CLOSED
+    }
+
+    private fun setupToolbarNavigation(toolbar: Toolbar) {
+        val drawerAct = drawerActivity
+        if (drawerAct == null) {
+            toolbar.setupWithNavController(findNavController())
+        } else {
+            toolbar.setupWithNavController(findNavController(), drawerAct.appBarConfiguration)
+        }
+    }
 }
+
