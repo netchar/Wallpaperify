@@ -1,5 +1,6 @@
 package com.netchar.common.extensions
 
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
@@ -25,4 +26,3 @@ inline fun <reified TViewModel : ViewModel> injectViewModelOf(context: Fragment,
 }
 
 fun File.notExist() = !this.exists()
-

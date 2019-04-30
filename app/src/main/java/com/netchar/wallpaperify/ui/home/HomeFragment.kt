@@ -21,7 +21,7 @@ class HomeFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         val viewpager = view.findViewById<ViewPager>(R.id.pager)
         viewpager.adapter = MyFragmentPagerAdapter(childFragmentManager).also {
-            it.addFragment(LatestFragment.newInstance(), "Latest")
+            it.addFragment(LatestFragment(), "Latest")
             it.addFragment(TrendingFragment(), "Trending")
             it.addFragment(CollectionsFragment(), "Collections")
         }

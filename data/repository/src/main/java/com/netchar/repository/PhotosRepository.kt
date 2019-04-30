@@ -4,6 +4,7 @@ import android.content.Context
 import com.netchar.common.utils.CoroutineDispatchers
 import com.netchar.local.dao.PhotoDao
 import com.netchar.models.Photo
+import com.netchar.models.apirequest.PhotosRequest
 import kotlinx.coroutines.CoroutineScope
 import javax.inject.Inject
 
@@ -13,13 +14,13 @@ import javax.inject.Inject
  */
 
 class PhotosRepository @Inject constructor(
-    private val api: com.netchar.remote.api.PhotosApi,
-    private val dao: PhotoDao,
-    private val dispatchers: CoroutineDispatchers,
-    private val context: Context
+        private val api: com.netchar.remote.api.PhotosApi,
+        private val dao: PhotoDao,
+        private val dispatchers: CoroutineDispatchers,
+        private val context: Context
 ) : IPhotosRepository {
 
-    override fun getPhotos(request: IPhotosRepository.PhotosApiRequest, scope: CoroutineScope): IBoundResource<List<Photo>> {
+    override fun getPhotos(request: PhotosRequest, scope: CoroutineScope): IBoundResource<List<Photo>> {
         return object : BoundResource<List<Photo>>(dispatchers, context) {
             override fun getStorageData(): List<Photo>? {
 //                return dao.getAll()
@@ -32,7 +33,7 @@ class PhotosRepository @Inject constructor(
 //                dao.insert(data)
             }
 
-            override fun isNeedRefresh(localData: List<Photo>) = localData.isNullOrEmpty() || request.forceFetching
+            override fun isNeedRefresh(localData: List<Photo>) = localData.isNullOrEmpty()
         }.launchIn(scope)
     }
 }

@@ -10,3 +10,8 @@ dependencies {
     implementation deps.androidx.room.runtime
     kapt deps.androidx.room.compiler
 }
+compileKotlin {
+    kotlinOptions {
+        freeCompilerArgs = ["-XXLanguage:+InlineClasses"]
+    }
+}

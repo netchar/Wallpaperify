@@ -1,6 +1,5 @@
 package com.netchar.wallpaperify.ui.latest
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,81 +7,82 @@ import com.netchar.common.base.BaseViewModel
 import com.netchar.common.utils.CoroutineDispatchers
 import com.netchar.common.utils.SingleLiveData
 import com.netchar.models.Photo
+import com.netchar.models.apirequest.PhotosRequest
+import com.netchar.models.uimodel.ErrorMessage
+import com.netchar.models.uimodel.Message
 import com.netchar.remote.Resource
 import com.netchar.remote.enums.Cause
 import com.netchar.repository.IPhotosRepository
-import com.netchar.repository.IPhotosRepository.PhotosApiRequest
-import com.netchar.repository.IPhotosRepository.PhotosApiRequest.OrderBy
 import com.netchar.wallpaperify.R
-import com.netchar.wallpaperify.ui.App
 import javax.inject.Inject
 
 /**
  * Created by Netchar on 26.04.2019.
  * e.glushankov@gmail.com
  */
+
 class LatestViewModel @Inject constructor(
         private val repository: IPhotosRepository,
-        dispatchers: CoroutineDispatchers,
-        context: Context
-) : BaseViewModel(dispatchers, context as App) {
-    data class OopsPlaceholder(val isVisible: Boolean, val message: String)
+        dispatchers: CoroutineDispatchers
+) : BaseViewModel(dispatchers) {
 
     private var page = 1
-    private val _oopsPlaceholder = SingleLiveData<OopsPlaceholder>()
-    private val _toast = SingleLiveData<String>()
-    private val _error = SingleLiveData<String>()
+    private val _errorPlaceholder = SingleLiveData<ErrorMessage>()
+    private val _toast = SingleLiveData<Message>()
+    private val _error = SingleLiveData<ErrorMessage>()
     private val _refreshing = SingleLiveData<Boolean>()
     private val _ordering = MutableLiveData<String>()
     private val _photos = MediatorLiveData<List<Photo>>().apply {
         addSource(_ordering) { orderBy ->
-            fetchPhotos(PhotosApiRequest(1, PhotosApiRequest.ITEMS_PER_PAGE, orderBy, true))
+            fetchPhotos(PhotosRequest(1, PhotosRequest.ITEMS_PER_PAGE, orderBy))
         }
     }
 
     init {
-        fetchPhotos(PhotosApiRequest(1, PhotosApiRequest.ITEMS_PER_PAGE, orderingOrDefault(), false))
+        page = 1
+        fetchPhotos(PhotosRequest(1, PhotosRequest.ITEMS_PER_PAGE, orderingOrDefault()))
     }
 
 
     fun refresh() {
-        fetchPhotos(PhotosApiRequest(1, PhotosApiRequest.ITEMS_PER_PAGE, orderingOrDefault(), true))
+        page = 1
+        fetchPhotos(PhotosRequest(1, PhotosRequest.ITEMS_PER_PAGE, orderingOrDefault()))
     }
 
     fun loadMore() {
-        fetchPhotos(PhotosApiRequest(++page, PhotosApiRequest.ITEMS_PER_PAGE, orderingOrDefault(), true))
+        fetchPhotos(PhotosRequest(++page, PhotosRequest.ITEMS_PER_PAGE, orderingOrDefault()))
     }
 
-    fun orderBy(@OrderBy ordering: String) {
+    fun orderBy(ordering: String) {
         _ordering.value = ordering
     }
 
     val photos: LiveData<List<Photo>> get() = _photos
     val refreshing: LiveData<Boolean> get() = _refreshing
-    val error: LiveData<String> get() = _error
-    val toast: LiveData<String> get() = _toast
-    val oopsPlaceholder: LiveData<OopsPlaceholder> = _oopsPlaceholder
+    val error: LiveData<ErrorMessage> get() = _error
+    val toast: LiveData<Message> get() = _toast
+    val errorPlaceholder: LiveData<ErrorMessage> = _errorPlaceholder
 
-    private fun fetchPhotos(request: PhotosApiRequest) {
-        hidePlaceholders()
+    private fun fetchPhotos(request: PhotosRequest) {
+        hideError()
 
         val repoLiveData = repository.getPhotos(request, scope).getLiveData()
         _photos.removeSource(repoLiveData)
         _photos.addSource(repoLiveData) { response ->
             val isRefreshing = request.page <= 1
             if (isRefreshing) {
-                onFetch(response)
+                onFreshFetch(response)
             } else {
-                onFetchNextPageItems(response)
+                onFetchNextPage(response)
             }
         }
     }
 
-    private fun onFetch(response: Resource<List<Photo>>) {
+    private fun onFreshFetch(response: Resource<List<Photo>>) {
         when (response) {
             is Resource.Success -> {
                 _photos.value = response.data
-                _toast.value = getStringRes(R.string.latest_message_data_updated)
+                _toast.value = Message(R.string.latest_message_data_updated)
             }
             is Resource.Loading -> _refreshing.value = response.isLoading
             is Resource.Error -> {
@@ -92,37 +92,29 @@ class LatestViewModel @Inject constructor(
         }
     }
 
-    private fun onFetchNextPageItems(response: Resource<List<Photo>>) {
+    private fun onFetchNextPage(response: Resource<List<Photo>>) {
         when (response) {
             is Resource.Success -> _photos.apply { value = value?.plus(response.data) }
             is Resource.Error -> raiseErrorMessage(response)
         }
     }
 
-    private fun hidePlaceholders() {
-        _oopsPlaceholder.value = OopsPlaceholder(false, "")
+    private fun hideError() {
+        _errorPlaceholder.value = ErrorMessage.empty()
     }
 
     private fun raiseErrorMessage(response: Resource.Error) {
-        val message = when (response.cause) {
-            Cause.NO_INTERNET_CONNECTION -> getApplication<App>().getString(R.string.error_message_no_internet)
-            Cause.NOT_AUTHENTICATED, Cause.UNEXPECTED -> getApplication<App>().getString(R.string.error_message_try_again_later)
+        val errorMessage = when (response.cause) {
+            Cause.NO_INTERNET_CONNECTION -> ErrorMessage(true, Message(R.string.error_message_no_internet), R.drawable.ic_no_internet_connection)
+            Cause.NOT_AUTHENTICATED, Cause.UNEXPECTED -> ErrorMessage(true, Message(R.string.error_message_try_again_later), R.drawable.img_unexpected_error)
         }
 
         if (_photos.value == null) {
-            _oopsPlaceholder.value = OopsPlaceholder(true, message)
+            _errorPlaceholder.value = errorMessage
         } else {
-            _error.value = message
+            _error.value = errorMessage
         }
     }
 
-//    private fun buildRequest(page: Int, forceFetching: Boolean): PhotosApiRequest {
-//        return PhotosApiRequest(page, PhotosApiRequest.ITEMS_PER_PAGE, orderingOrDefault(), forceFetching)
-//    }
-
-    private fun orderingOrDefault() = _ordering.value ?: PhotosApiRequest.LATEST
-
-    override fun onCleared() {
-        super.onCleared()
-    }
+    private fun orderingOrDefault() = _ordering.value ?: PhotosRequest.LATEST
 }

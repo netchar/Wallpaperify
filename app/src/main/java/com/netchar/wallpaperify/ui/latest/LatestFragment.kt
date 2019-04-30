@@ -5,8 +5,6 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -16,18 +14,14 @@ import com.netchar.common.extensions.*
 import com.netchar.common.poweradapter.adapter.EndlessRecyclerAdapter
 import com.netchar.common.poweradapter.adapter.EndlessRecyclerDataSource
 import com.netchar.models.Photo
-import com.netchar.repository.IPhotosRepository
+import com.netchar.models.apirequest.PhotosRequest
+import com.netchar.models.uimodel.ErrorMessage
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_latest.*
 import javax.inject.Inject
 
 class LatestFragment : BaseFragment() {
-
-    companion object {
-        @JvmStatic
-        fun newInstance() = LatestFragment()
-    }
 
     init {
         setHasOptionsMenu(true)
@@ -55,10 +49,10 @@ class LatestFragment : BaseFragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.latest_menu_item_latest -> viewModel.orderBy(IPhotosRepository.PhotosApiRequest.LATEST)
-            R.id.latest_menu_item_oldest -> viewModel.orderBy(IPhotosRepository.PhotosApiRequest.OLDEST)
-            R.id.latest_menu_item_popular -> viewModel.orderBy(IPhotosRepository.PhotosApiRequest.POPULAR)
-            else -> IPhotosRepository.PhotosApiRequest.LATEST
+            R.id.latest_menu_item_latest -> viewModel.orderBy(PhotosRequest.LATEST)
+            R.id.latest_menu_item_oldest -> viewModel.orderBy(PhotosRequest.OLDEST)
+            R.id.latest_menu_item_popular -> viewModel.orderBy(PhotosRequest.POPULAR)
+            else -> PhotosRequest.LATEST
         }
 
         return true
@@ -73,12 +67,9 @@ class LatestFragment : BaseFragment() {
     }
 
     private fun setupViews() {
-        main_recycler.setHasFixedSize(true)
-        main_recycler.adapter = adapter
+        latest_recycler.setHasFixedSize(true)
+        latest_recycler.adapter = adapter
         latest_swipe.setOnRefreshListener { viewModel.refresh() }
-        view_filter.setOnClickListener {
-//            BottomSheetDialogFragment
-        }
     }
 
     private fun onLoadMoreItems() {
@@ -88,46 +79,44 @@ class LatestFragment : BaseFragment() {
     private fun observe() {
         viewModel.photos.observe(viewLifecycleOwner, Observer { photos ->
             photos?.let {
-                dataSource.setData(it.toRecyclerItem())
+                dataSource.setData(it.asRecyclerItems())
             }
         })
 
-        viewModel.refreshing.observe(viewLifecycleOwner, Observer { refreshing ->
-            latest_swipe.post { latest_swipe.isRefreshing = refreshing }
+        viewModel.refreshing.observe(viewLifecycleOwner, Observer {
+            latest_swipe.postAction { isRefreshing = it }
         })
 
-        viewModel.error.observe(viewLifecycleOwner, Observer { message ->
+        viewModel.error.observe(viewLifecycleOwner, Observer {
             dataSource.showRetryItem()
-            showSnackbar(message, Snackbar.LENGTH_LONG)
+            showSnackbar(getStringSafe(it.errorMessage.messageRes), Snackbar.LENGTH_LONG)
         })
 
-        viewModel.toast.observe(viewLifecycleOwner, Observer { message ->
-            showToast(message)
+        viewModel.toast.observe(viewLifecycleOwner, Observer {
+            showToast(getStringSafe(it.messageRes))
         })
 
-        viewModel.oopsPlaceholder.observe(viewLifecycleOwner, Observer { message ->
-            view?.let {
-                val oopsView = it.findViewById<ConstraintLayout>(R.id.something_goes_wrong_view)
-                toggleOopsView(message, oopsView)
-            }
+        viewModel.errorPlaceholder.observe(viewLifecycleOwner, Observer {
+            toggleError(it)
         })
     }
 
-    private fun toggleOopsView(message: LatestViewModel.OopsPlaceholder, goesWrongView: ConstraintLayout) {
-        if (message.isVisible) {
-            goesWrongView.toVisible()
-            goesWrongView.findViewById<TextView>(R.id.something_goes_wrong_text).text = message.message
-            main_recycler.toGone()
-        } else {
-            goesWrongView.toGone()
-            goesWrongView.findViewById<TextView>(R.id.something_goes_wrong_text).text = ""
-            main_recycler.toVisible()
+    private fun toggleError(error: ErrorMessage) {
+        latest_recycler.inverseBooleanVisibility(error.isVisible)
+
+        with(latest_error) {
+            booleanVisibility(error.isVisible)
+
+            if (isVisible()) {
+                message = getStringSafe(error.errorMessage.messageRes)
+                imageResource = error.errorImageRes
+            }
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        main_recycler.adapter = null
+        latest_recycler.adapter = null
     }
 
     private fun onItemClick(model: Photo) {
@@ -135,4 +124,4 @@ class LatestFragment : BaseFragment() {
     }
 }
 
-fun List<Photo>.toRecyclerItem() = map { PhotoRecyclerItem(it) }
+fun List<Photo>.asRecyclerItems() = map { PhotoRecyclerItem(it) }
