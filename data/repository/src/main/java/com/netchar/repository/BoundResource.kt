@@ -33,7 +33,8 @@ abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDi
         return try {
             val databaseData = fetchFromDatabaseAsync()
             if (databaseData.isInvalidated()) {
-                fetchFromNetworkAsync().also { writeInStorageOnSuccessAsync(it) }
+                val result = fetchFromNetworkAsync().also { writeInStorageOnSuccessAsync(it) }
+                result
             } else {
                 Resource.Success(databaseData!!)
             }

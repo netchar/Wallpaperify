@@ -95,7 +95,12 @@ class LatestViewModel @Inject constructor(
     private fun onFetchNextPage(response: Resource<List<Photo>>) {
         when (response) {
             is Resource.Success -> _photos.apply { value = value?.plus(response.data) }
-            is Resource.Error -> raiseErrorMessage(response)
+            is Resource.Error -> {
+                if (page > 1) {
+                    page--
+                }
+                raiseErrorMessage(response)
+            }
         }
     }
 
