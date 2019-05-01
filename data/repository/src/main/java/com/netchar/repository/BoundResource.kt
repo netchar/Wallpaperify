@@ -68,9 +68,9 @@ abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDi
     abstract fun isNeedRefresh(localData: TResult): Boolean
 
     private suspend fun fetchFromNetworkAsync(): Resource<TResult> {
-        result.value = Resource.Loading(true)
+        result.postValue(Resource.Loading(true))
         val apiResponse = getApiCallAsync().awaitSafe()
-        result.value = Resource.Loading(false)
+        result.postValue(Resource.Loading(false))
 
         return when (apiResponse) {
             is HttpResult.Success -> Resource.Success(apiResponse.data)

@@ -2,6 +2,7 @@ package com.netchar.remote.di
 
 import android.content.Context
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
+import com.netchar.common.di.BaseUrl
 import com.netchar.common.di.OAuthInterceptor
 import com.netchar.common.extensions.notExist
 import com.netchar.common.utils.Memory
@@ -20,7 +21,6 @@ import java.io.File
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
-const val BASE_URL = "https://api.unsplash.com/"
 
 @Module
 object NetworkModule {
@@ -79,11 +79,17 @@ object NetworkModule {
     @JvmStatic
     @Provides
     @Singleton
-    fun provideRetrofit(httpClient: OkHttpClient, moshi: Moshi): Retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
+    fun provideRetrofit(httpClient: OkHttpClient, moshi: Moshi, @BaseUrl baseUrl: String): Retrofit = Retrofit.Builder()
+            .baseUrl(baseUrl)
             .client(httpClient)
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
+
+    @JvmStatic
+    @Provides
+    @Singleton
+    @BaseUrl
+    fun provideBaseUrl(): String = "https://api.unsplash.com/"
 }
 

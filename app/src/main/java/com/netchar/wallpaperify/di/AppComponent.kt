@@ -3,7 +3,10 @@ package com.netchar.wallpaperify.di
 import android.content.Context
 import com.netchar.common.di.CommonModule
 import com.netchar.common.utils.IBuildPreferences
+import com.netchar.local.di.DaoModule
 import com.netchar.local.di.PreferencesModule
+import com.netchar.remote.di.ApiModule
+import com.netchar.remote.di.NetworkModule
 import com.netchar.repository.di.RepositoryModule
 import com.netchar.wallpaperify.di.modules.ActivityBindingModule
 import com.netchar.wallpaperify.di.modules.GlideConfigurationModule
@@ -23,7 +26,10 @@ import javax.inject.Singleton
             OAuthModule::class,
             RepositoryModule::class,
             ActivityBindingModule::class,
-            ViewModelBindingModule::class
+            ViewModelBindingModule::class,
+            NetworkModule::class,
+            ApiModule::class,
+            DaoModule::class
         ]
 )
 interface AppComponent : AndroidInjector<App> {
