@@ -1,8 +1,12 @@
 package com.netchar.repository
 
+import androidx.annotation.MainThread
+import androidx.annotation.Nullable
 import androidx.annotation.VisibleForTesting
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import com.netchar.common.exceptions.NoNetworkException
 import com.netchar.common.utils.CoroutineDispatchers
 import com.netchar.remote.Resource
@@ -13,6 +17,7 @@ import kotlinx.coroutines.*
 import retrofit2.Response
 import timber.log.Timber
 import java.io.IOException
+
 
 abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDispatchers) : IBoundResource<TResult> {
     private val result = MutableLiveData<Resource<TResult>>()
@@ -68,9 +73,9 @@ abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDi
     abstract fun isNeedRefresh(localData: TResult): Boolean
 
     private suspend fun fetchFromNetworkAsync(): Resource<TResult> {
-        result.postValue(Resource.Loading(true))
+        result.value = Resource.Loading(true)
         val apiResponse = getApiCallAsync().awaitSafe()
-        result.postValue(Resource.Loading(false))
+        result.value = Resource.Loading(false)
 
         return when (apiResponse) {
             is HttpResult.Success -> Resource.Success(apiResponse.data)
