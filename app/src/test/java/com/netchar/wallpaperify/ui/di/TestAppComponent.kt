@@ -1,9 +1,10 @@
-package com.netchar.repository.di
+package com.netchar.wallpaperify.ui.di
 
 import com.netchar.common.di.BaseUrl
 import com.netchar.remote.di.ApiModule
-import com.netchar.repository.photos.PhotosRepositoryTest
-import com.netchar.repository.utils.BaseMockServerTest
+import com.netchar.repository.di.RepositoryModule
+import com.netchar.test.di.TestCommonModule
+import com.netchar.wallpaperify.ui.latest.LatestViewModelTest
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
@@ -16,17 +17,16 @@ import javax.inject.Singleton
 
 @Singleton
 @Component(
-    modules = [
-        TestCommonModule::class,
-        ApiModule::class,
-        RepositoryModule::class,
-        TestNetworkModule::class
-    ]
+        modules = [
+            TestCommonModule::class,
+            ApiModule::class,
+            RepositoryModule::class,
+            TestNetworkModule::class
+        ]
 )
 interface TestAppComponent {
 
-    fun inject(baseTest: BaseMockServerTest)
-    fun inject(photoRepo: PhotosRepositoryTest)
+    fun inject(baseTest: LatestViewModelTest)
 
     @Component.Builder
     interface Builder {

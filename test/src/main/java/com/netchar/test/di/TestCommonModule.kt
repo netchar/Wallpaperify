@@ -1,4 +1,4 @@
-package com.netchar.repository.di
+package com.netchar.test.di
 
 import com.netchar.common.utils.CoroutineDispatchers
 import dagger.Module

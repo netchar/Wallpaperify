@@ -1,8 +1,8 @@
-package com.netchar.repository.utils
+package com.netchar.wallpaperify.ui.latest
 
 import android.content.res.Resources
-import com.netchar.repository.di.DaggerTestAppComponent
-import com.netchar.repository.di.TestAppComponent
+import com.netchar.wallpaperify.ui.di.DaggerTestAppComponent
+import com.netchar.wallpaperify.ui.di.TestAppComponent
 import com.squareup.okhttp.mockwebserver.MockResponse
 import com.squareup.okhttp.mockwebserver.MockWebServer
 import org.junit.jupiter.api.AfterAll
@@ -38,7 +38,6 @@ abstract class BaseMockServerTest {
         testAppComponent = DaggerTestAppComponent.builder()
             .baseUrl(mockServer.url("/").toString())
             .build()
-        testAppComponent.inject(this)
         onSetupDaggerComponent(testAppComponent)
     }
 

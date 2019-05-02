@@ -1,4 +1,4 @@
-package com.netchar.repository.di
+package com.netchar.wallpaperify.ui.di
 
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.netchar.common.di.BaseUrl
@@ -47,12 +47,4 @@ object TestNetworkModule {
         .addCallAdapterFactory(CoroutineCallAdapterFactory())
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .build()
-
-//        @JvmStatic
-//        @Provides
-//        @Singleton
-//        @BaseUrl
-//        fun provideBaseUrl(): String = url
-
-
 }
