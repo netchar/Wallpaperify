@@ -80,7 +80,9 @@ class LatestViewModel @Inject constructor(
                 _photos.value = response.data
                 _toast.value = Message(R.string.latest_message_data_updated)
             }
-            is Resource.Loading -> _refreshing.value = response.isLoading
+            is Resource.Loading -> {
+                _refreshing.value = response.isLoading
+            }
             is Resource.Error -> {
                 _refreshing.value = false
                 riseError(response)
@@ -90,7 +92,9 @@ class LatestViewModel @Inject constructor(
 
     private fun onFetchNextPage(response: Resource<List<Photo>>) {
         when (response) {
-            is Resource.Success -> _photos.apply { value = value?.plus(response.data) }
+            is Resource.Success -> {
+                _photos.apply { value = value?.plus(response.data) }
+            }
             is Resource.Error -> {
                 paging.prevPage()
                 riseError(response)

@@ -10,16 +10,16 @@ import com.netchar.wallpaperify.ui.InstantTaskExecutorExtension
 import com.netchar.wallpaperify.ui.di.TestAppComponent
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
-import io.mockk.confirmVerified
-import io.mockk.mockk
-import io.mockk.verify
-import io.mockk.verifyOrder
+import io.mockk.*
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import java.net.HttpURLConnection
 import javax.inject.Inject
+
+private const val PHOTOS_JSON_FILE_NAME = "photos.json"
+private const val PHOTOS_LOAD_MORE_JSON_FILE_NAME = "photos_load_more.json"
 
 /**
  * Created by Netchar on 02.05.2019.
@@ -55,13 +55,30 @@ class LatestViewModelTest : BaseMockServerTest() {
 
     @Inject
     lateinit var moshi: Moshi
+//
+//    val adapter by lazy {
+//        moshi.adapter<List<Photo>>(Types.newParameterizedType(List::class.java, Photo::class.java))
+//    }
+//
+//    val expectedFreshResult by lazy {
+//        adapter.fromJson(getJson(PHOTOS_JSON_FILE_NAME))
+//    }
+//    val expectedLoadMoreFreshResult by lazy {
+//        adapter.fromJson(getJson(PHOTOS_LOAD_MORE_JS
+//
+//
+//
+//
+//
+//        ON_FILE_NAME))
+//    }
 
     @Test
     fun `On Init photos LiveData should emit network data response`() {
         val adapter = moshi.adapter<List<Photo>>(Types.newParameterizedType(List::class.java, Photo::class.java))
-        val expectedResult = adapter.fromJson(getJson("photos.json"))
+        val expectedFreshResult = adapter.fromJson(getJson(PHOTOS_JSON_FILE_NAME))
 
-        mockHttpResponse("photos.json", HttpURLConnection.HTTP_OK)
+        mockHttpResponse(PHOTOS_JSON_FILE_NAME, HttpURLConnection.HTTP_OK)
 
         runBlocking {
             val latestViewModel = LatestViewModel(repository, dispatchers)
@@ -69,7 +86,7 @@ class LatestViewModelTest : BaseMockServerTest() {
         }
 
         verify {
-            photosObserver.onChanged(expectedResult)
+            photosObserver.onChanged(expectedFreshResult)
         }
 
         confirmVerified(photosObserver)
@@ -77,10 +94,11 @@ class LatestViewModelTest : BaseMockServerTest() {
 
     @Test
     fun `On Init should emit loading LiveData`() {
-        mockHttpResponse("photos.json", HttpURLConnection.HTTP_OK)
+        mockHttpResponse(PHOTOS_JSON_FILE_NAME, HttpURLConnection.HTTP_OK)
 
         runBlocking {
             val latestViewModel = LatestViewModel(repository, dispatchers)
+            latestViewModel.photos.observeForever(photosObserver)
             latestViewModel.refreshing.observeForever(refreshingObserver)
         }
 
@@ -89,9 +107,54 @@ class LatestViewModelTest : BaseMockServerTest() {
             refreshingObserver.onChanged(false)
         }
 
-        confirmVerified(refreshingObserver)
+        confirmVerified(errorObserver)
     }
 
+    @Test
+    fun `On Init should return error when bad response`() {
+        mockHttpResponse(PHOTOS_JSON_FILE_NAME, HttpURLConnection.HTTP_INTERNAL_ERROR)
+
+        runBlocking {
+            val latestViewModel = LatestViewModel(repository, dispatchers)
+            latestViewModel.photos.observeForever(photosObserver)
+            latestViewModel.errorPlaceholder.observeForever(errorPlaceholderObserver)
+            latestViewModel.error.observeForever(errorObserver)
+        }
+
+        verifyOrder {
+            errorPlaceholderObserver.onChanged(ErrorMessage.empty())
+            errorPlaceholderObserver.onChanged(ofType(ErrorMessage::class))
+        }
+
+        verifyAll {
+            errorObserver wasNot Called
+            photosObserver wasNot Called
+        }
+
+        confirmVerified(errorPlaceholderObserver, errorObserver, photosObserver)
+    }
+
+    @Test
+    fun `On success refresh should fetch fresh data`() {
+        val adapter = moshi.adapter<List<Photo>>(Types.newParameterizedType(List::class.java, Photo::class.java))
+        val expectedLoadMoreFreshResult = adapter.fromJson(getJson(PHOTOS_JSON_FILE_NAME))
+
+
+//        mockHttpResponse(PHOTOS_LOAD_MORE_JSON_FILE_NAME, HttpURLConnection.HTTP_OK)
+        val latestViewModel = LatestViewModel(repository, dispatchers)
+
+        runBlocking {
+            mockHttpResponse(PHOTOS_LOAD_MORE_JSON_FILE_NAME, HttpURLConnection.HTTP_OK)
+            latestViewModel.refresh()
+            latestViewModel.photos.observeForever(photosObserver)
+        }
+
+        verify {
+            photosObserver.onChanged(expectedLoadMoreFreshResult)
+        }
+
+        confirmVerified(photosObserver)
+    }
 
     @Test
     fun refresh() {

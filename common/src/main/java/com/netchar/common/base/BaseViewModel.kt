@@ -15,7 +15,7 @@ import kotlinx.coroutines.SupervisorJob
  */
 
 open class BaseViewModel(protected val dispatchers: CoroutineDispatchers) : ViewModel() {
-    protected val job = SupervisorJob()
+    val job = SupervisorJob()
     protected val scope = CoroutineScope(job + dispatchers.main)
 
 }

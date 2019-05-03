@@ -9,6 +9,7 @@ import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.TestInstance
 import java.io.File
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -36,8 +37,8 @@ abstract class BaseMockServerTest {
 
     open fun configureDi() {
         testAppComponent = DaggerTestAppComponent.builder()
-            .baseUrl(mockServer.url("/").toString())
-            .build()
+                .baseUrl(mockServer.url("/").toString())
+                .build()
         onSetupDaggerComponent(testAppComponent)
     }
 
@@ -53,9 +54,9 @@ abstract class BaseMockServerTest {
     }
 
     open fun mockHttpResponse(fileName: String, responseCode: Int) = mockServer.enqueue(
-        MockResponse()
-            .setResponseCode(responseCode)
-            .setBody(getJson(fileName))
+            MockResponse()
+                    .setResponseCode(responseCode)
+                    .setBody(getJson(fileName))
     )
 
     fun getJson(fileName: String): String {
