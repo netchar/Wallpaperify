@@ -2,10 +2,12 @@ package com.netchar.remote.di
 
 import android.content.Context
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
+import com.netchar.common.di.BaseUrl
 import com.netchar.common.di.OAuthInterceptor
-import com.netchar.remote.ApplicationJsonAdapterFactory
 import com.netchar.common.extensions.notExist
 import com.netchar.common.utils.Memory
+import com.netchar.remote.ApplicationJsonAdapterFactory
+import com.netchar.remote.interceptors.ConnectivityInterceptor
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
@@ -19,7 +21,6 @@ import java.io.File
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
-const val BASE_URL = "https://api.unsplash.com/"
 
 @Module
 object NetworkModule {
@@ -27,14 +28,26 @@ object NetworkModule {
     @JvmStatic
     @Provides
     @Singleton
-    fun provideOkHttpClient(@OAuthInterceptor authInterceptor: Interceptor, loggingInterceptor: HttpLoggingInterceptor, cache: Cache): OkHttpClient = OkHttpClient.Builder()
-        .connectTimeout(10L, TimeUnit.SECONDS)
-        .writeTimeout(10L, TimeUnit.SECONDS)
-        .readTimeout(30L, TimeUnit.SECONDS)
-        .addInterceptor(authInterceptor)
-        .addInterceptor(loggingInterceptor)
-        .cache(cache)
-        .build()
+    fun provideOkHttpClient(
+            @OAuthInterceptor authInterceptor: Interceptor,
+            loggingInterceptor: HttpLoggingInterceptor,
+            connectivityInterceptor: ConnectivityInterceptor,
+            httpCache: Cache
+    ): OkHttpClient = OkHttpClient.Builder()
+            .connectTimeout(10L, TimeUnit.SECONDS)
+            .writeTimeout(10L, TimeUnit.SECONDS)
+            .readTimeout(30L, TimeUnit.SECONDS)
+            .addInterceptor(authInterceptor)
+            .addInterceptor(loggingInterceptor)
+            .addInterceptor(connectivityInterceptor)
+            .cache(httpCache)
+            .build()
+
+
+    @JvmStatic
+    @Provides
+    @Singleton
+    fun provideConnectivityInterceptor(context: Context): ConnectivityInterceptor = ConnectivityInterceptor(context)
 
     @JvmStatic
     @Provides
@@ -59,18 +72,24 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideMoshi(): Moshi = Moshi.Builder()
-        .add(ApplicationJsonAdapterFactory.instance)
-        .add(com.netchar.remote.converters.ThreeTenConverter())
-        .build()
+            .add(ApplicationJsonAdapterFactory.instance)
+            .add(com.netchar.remote.converters.ThreeTenConverter())
+            .build()
 
     @JvmStatic
     @Provides
     @Singleton
-    fun provideRetrofit(httpClient: OkHttpClient, moshi: Moshi): Retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .client(httpClient)
-        .addCallAdapterFactory(CoroutineCallAdapterFactory())
-        .addConverterFactory(MoshiConverterFactory.create(moshi))
-        .build()
+    fun provideRetrofit(httpClient: OkHttpClient, moshi: Moshi, @BaseUrl baseUrl: String): Retrofit = Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .client(httpClient)
+            .addCallAdapterFactory(CoroutineCallAdapterFactory())
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+
+    @JvmStatic
+    @Provides
+    @Singleton
+    @BaseUrl
+    fun provideBaseUrl(): String = "https://api.unsplash.com/"
 }
 

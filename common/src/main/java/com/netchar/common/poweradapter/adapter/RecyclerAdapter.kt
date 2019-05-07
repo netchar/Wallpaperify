@@ -8,18 +8,22 @@ import androidx.recyclerview.widget.RecyclerView
  * e.glushankov@gmail.com
  */
 
-class RecyclerAdapter(private val dataSource: RecyclerDataSource) : RecyclerView.Adapter<RecyclerViewHolder>() {
+open class RecyclerAdapter(private val dataSource: RecyclerDataSource) : RecyclerView.Adapter<RecyclerViewHolder>() {
 
     init {
+        init()
+    }
+
+    private fun init() {
         dataSource.attach(this)
         setHasStableIds(true)
     }
 
-    override fun getItemViewType(position: Int) : Int {
+    override fun getItemViewType(position: Int): Int {
         return dataSource.getLayoutResFor(position)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : RecyclerViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolder {
         return RecyclerViewHolder(parent, dataSource.getRendererFor(viewType))
     }
 

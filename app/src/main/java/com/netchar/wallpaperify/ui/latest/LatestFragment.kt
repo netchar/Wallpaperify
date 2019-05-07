@@ -1,64 +1,130 @@
 package com.netchar.wallpaperify.ui.latest
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.netchar.common.poweradapter.adapter.RecyclerAdapter
-import com.netchar.remote.Resource
+import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
+import com.netchar.common.base.BaseFragment
+import com.netchar.common.extensions.*
+import com.netchar.common.poweradapter.adapter.EndlessRecyclerAdapter
+import com.netchar.common.poweradapter.adapter.EndlessRecyclerDataSource
+import com.netchar.models.Photo
+import com.netchar.models.apirequest.LATEST
+import com.netchar.models.apirequest.OLDEST
+import com.netchar.models.apirequest.Ordering
+import com.netchar.models.apirequest.POPULAR
+import com.netchar.models.uimodel.ErrorMessage
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.ViewModelFactory
-import com.netchar.common.extensions.injectViewModel
-import com.netchar.common.base.BaseFragment
-import com.netchar.wallpaperify.ui.home.MainViewModel
 import kotlinx.android.synthetic.main.fragment_latest.*
 import javax.inject.Inject
 
-
 class LatestFragment : BaseFragment() {
 
-    companion object {
-        @JvmStatic
-        fun newInstance() = LatestFragment()
+    init {
+        setHasOptionsMenu(true)
     }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private lateinit var viewModel: MainViewModel
+    private lateinit var viewModel: LatestViewModel
 
     override val layoutResId: Int = R.layout.fragment_latest
 
+    private val dataSource: EndlessRecyclerDataSource by lazy {
+        val photoRenderer = LatestPhotosRenderer(Glide.with(this), ::onItemClick)
+        EndlessRecyclerDataSource(mutableListOf(photoRenderer), ::onLoadMoreItems)
+    }
+
+    private val adapter: EndlessRecyclerAdapter by lazy {
+        EndlessRecyclerAdapter(dataSource)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_latest, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.latest_menu_item_latest -> viewModel.orderBy(Ordering(LATEST) )
+            R.id.latest_menu_item_oldest -> viewModel.orderBy(Ordering(OLDEST))
+            R.id.latest_menu_item_popular -> viewModel.orderBy(Ordering(POPULAR))
+            else -> LATEST
+        }
+
+        return false
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        main_recycler.setHasFixedSize(true)
-        main_recycler.adapter = RecyclerAdapter(dataSource)
-    }
-
-    private val dataSource by lazy {
-        com.netchar.common.poweradapter.adapter.RecyclerDataSource(listOf(LatestPhotosRenderer(::onItemClick)))
-    }
-
-    private fun onItemClick(model: com.netchar.models.Photo) {
-        findNavController().navigate(R.id.photoDetailsFragment)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         viewModel = injectViewModel(viewModelFactory)
-        viewModel.photos.observe(viewLifecycleOwner, Observer { response ->
-            when (response) {
-                is Resource.Success -> {
-                    dataSource.setData(response.data.map { LatestPhotoRecyclerItem(it) })
-                }
-                is Resource.Loading -> {
-                    Toast.makeText(this.context, response.isLoading.toString(), Toast.LENGTH_LONG).show()
-                }
-                is Resource.Error -> {
-                    Toast.makeText(this.context, response.message, Toast.LENGTH_LONG).show()
-                }
+
+        setupViews()
+        observe()
+    }
+
+    private fun setupViews() {
+        latest_recycler.setHasFixedSize(true)
+        latest_recycler.adapter = adapter
+        latest_swipe.setOnRefreshListener { viewModel.refresh() }
+    }
+
+    private fun onLoadMoreItems() {
+        viewModel.loadMore()
+    }
+
+    private fun observe() {
+        viewModel.photos.observe(viewLifecycleOwner, Observer { photos ->
+            photos?.let {
+                dataSource.setData(it.asRecyclerItems())
             }
         })
+
+        viewModel.refreshing.observe(viewLifecycleOwner, Observer {
+            latest_swipe.postAction { isRefreshing = it }
+        })
+
+        viewModel.error.observe(viewLifecycleOwner, Observer {
+            dataSource.showRetryItem()
+            showSnackbar(getStringSafe(it.errorMessage.messageRes), Snackbar.LENGTH_LONG)
+        })
+
+        viewModel.toast.observe(viewLifecycleOwner, Observer {
+            showToast(getStringSafe(it.messageRes))
+        })
+
+        viewModel.errorPlaceholder.observe(viewLifecycleOwner, Observer {
+            toggleError(it)
+        })
+    }
+
+    private fun toggleError(error: ErrorMessage) {
+        latest_recycler.inverseBooleanVisibility(error.isVisible)
+
+        with(latest_error) {
+            booleanVisibility(error.isVisible)
+
+            if (isVisible()) {
+                message = getStringSafe(error.errorMessage.messageRes)
+                imageResource = error.errorImageRes
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        latest_recycler.adapter = null
+    }
+
+    private fun onItemClick(model: Photo) {
+        findNavController().navigate(R.id.photoDetailsFragment)
     }
 }
+
+fun List<Photo>.asRecyclerItems() = map { PhotoRecyclerItem(it) }

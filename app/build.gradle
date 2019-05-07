@@ -62,6 +62,7 @@ dependencies {
     implementation project(project_modules.repository)
     implementation project(project_modules.common)
     implementation project(project_modules.auth)
+    implementation project(project_modules.test)
 
     // Kotlin
     implementation deps.kotlin.stdlib
@@ -77,6 +78,10 @@ dependencies {
     implementation deps.androidx.navigation.fragment
     implementation deps.androidx.navigation.ui
     implementation deps.androidx.recyclerview
+    implementation deps.androidx.swiperefreshlayout
+    implementation deps.androidx.card
+
+    implementation deps.shimmer
 
     // Timber
     implementation deps.timber
@@ -86,6 +91,8 @@ dependencies {
     implementation deps.dagger.android
     kapt deps.dagger.processor
     kapt deps.dagger.compiler
+    kaptTest deps.dagger.processor
+    kaptTest deps.dagger.compiler
 
     // Retrofit
     implementation deps.retrofit.retrofit
@@ -117,4 +124,5 @@ dependencies {
 dependencies {
     androidTestImplementation deps.test.runner
     androidTestImplementation deps.test.espresso
+    testImplementation deps.test.mockwebserver
 }

@@ -1,5 +1,7 @@
 apply plugin: 'com.android.library'
 apply from: '../commons-android.gradle'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 dependencies {
     // Kotlin
@@ -16,6 +18,7 @@ dependencies {
     implementation deps.androidx.navigation.fragment
     implementation deps.androidx.navigation.ui
     implementation deps.androidx.recyclerview
+    implementation deps.androidx.card
 
     // Dagger
     implementation deps.dagger.dagger

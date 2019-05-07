@@ -14,3 +14,7 @@ annotation class AppPrefs
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
 annotation class OAuthInterceptor
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class BaseUrl

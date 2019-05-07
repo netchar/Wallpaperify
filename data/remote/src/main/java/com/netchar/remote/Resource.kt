@@ -6,7 +6,7 @@ import com.netchar.remote.enums.HttpStatusCode
 
 sealed class Resource<out TValue> {
     data class Success<out TValue>(val data: TValue) : Resource<TValue>()
-    data class Error(val cause: Cause, val message: String) : Resource<Nothing>() {
+    data class Error(val cause: Cause, val message: String = "") : Resource<Nothing>() {
         companion object {
 
             fun parse(response: HttpResult.Error): Error {

@@ -17,8 +17,10 @@ dependencies {
     // Dagger
     implementation deps.dagger.dagger
     implementation deps.dagger.android
-    kapt deps.dagger.processor
-    kapt deps.dagger.compiler
+    kapt  deps.dagger.processor
+    kapt  deps.dagger.compiler
+    kaptTest  deps.dagger.processor
+    kaptTest  deps.dagger.compiler
 
     // Retrofit
     implementation deps.retrofit.retrofit
@@ -31,4 +33,6 @@ dependencies {
 
     // ThreeTen
     implementation deps.threetenabp
+
+    testImplementation deps.test.mockwebserver
 }

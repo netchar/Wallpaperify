@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">common</string>
+    <string name="load_more_label_retry">Retry</string>
 </resources>

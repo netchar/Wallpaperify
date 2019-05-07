@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.netchar.wallpaperify">
 
+    <!--<meta-data android:name="com.demo.myglide.GlideConfiguration"-->
+        <!--android:value="GlideModule"/>-->
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
 

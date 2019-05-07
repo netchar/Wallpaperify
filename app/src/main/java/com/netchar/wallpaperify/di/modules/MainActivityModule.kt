@@ -25,5 +25,4 @@ abstract class MainActivityModule {
 
     @ContributesAndroidInjector
     abstract fun contributeAboutFragment(): AboutFragment
-
 }

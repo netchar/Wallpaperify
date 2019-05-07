@@ -1,10 +1,9 @@
 package com.netchar.wallpaperify.ui.about
 
-
+import com.netchar.common.base.BaseFragment
 import com.netchar.wallpaperify.R
-import com.netchar.common.base.FlowFragment
 
-class AboutFragment : FlowFragment() {
+class AboutFragment : BaseFragment() {
 
     override val layoutResId: Int = R.layout.fragment_about
 }

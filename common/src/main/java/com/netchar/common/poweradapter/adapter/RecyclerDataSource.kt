@@ -14,16 +14,16 @@ import java.lang.ref.WeakReference
  * e.glushankov@gmail.com
  */
 
-class RecyclerDataSource(private val renderers: List<ItemRenderer>) {
-    private val data = arrayListOf<IRecyclerItem>()
-    private lateinit var adapterReference: WeakReference<RecyclerView.Adapter<RecyclerViewHolder>>
+open class RecyclerDataSource(private val renderers: List<ItemRenderer>) {
+    protected val data = mutableListOf<IRecyclerItem>()
+    protected lateinit var adapterReference: WeakReference<RecyclerView.Adapter<RecyclerViewHolder>>
+        private set
 
     @MainThread
     fun setData(newData: List<IRecyclerItem>) {
         val diffResult = DiffUtil.calculateDiff(RecyclerDiffCallback(data, newData))
         seedData(newData)
-        val adapter = adapterReference.get()
-        adapter?.let {
+        adapterReference.get()?.let {
             diffResult.dispatchUpdatesTo(it)
         }
     }
@@ -43,7 +43,7 @@ class RecyclerDataSource(private val renderers: List<ItemRenderer>) {
 
     fun getItem(position: Int) = data[position]
 
-    fun attach(adapter: RecyclerView.Adapter<RecyclerViewHolder>) {
+    open fun attach(adapter: RecyclerView.Adapter<RecyclerViewHolder>) {
         adapterReference = WeakReference(adapter)
     }
 
