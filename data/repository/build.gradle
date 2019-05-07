@@ -34,5 +34,5 @@ dependencies {
     // ThreeTen
     implementation deps.threetenabp
 
-    testImplementation 'com.squareup.okhttp:mockwebserver:2.7.5'
+    testImplementation deps.test.mockwebserver
 }

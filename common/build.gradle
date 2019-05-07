@@ -18,7 +18,7 @@ dependencies {
     implementation deps.androidx.navigation.fragment
     implementation deps.androidx.navigation.ui
     implementation deps.androidx.recyclerview
-    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation deps.androidx.card
 
     // Dagger
     implementation deps.dagger.dagger

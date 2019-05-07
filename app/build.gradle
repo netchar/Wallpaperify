@@ -78,9 +78,10 @@ dependencies {
     implementation deps.androidx.navigation.fragment
     implementation deps.androidx.navigation.ui
     implementation deps.androidx.recyclerview
-    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
-    implementation 'com.facebook.shimmer:shimmer:0.4.0'
-    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation deps.androidx.swiperefreshlayout
+    implementation deps.androidx.card
+
+    implementation deps.shimmer
 
     // Timber
     implementation deps.timber
@@ -123,5 +124,5 @@ dependencies {
 dependencies {
     androidTestImplementation deps.test.runner
     androidTestImplementation deps.test.espresso
-    testImplementation 'com.squareup.okhttp:mockwebserver:2.7.5'
+    testImplementation deps.test.mockwebserver
 }
