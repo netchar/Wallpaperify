@@ -3,6 +3,7 @@ package com.netchar.wallpaperify.ui.latest
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import com.netchar.common.base.BaseViewModel
 import com.netchar.common.utils.CoroutineDispatchers
 import com.netchar.common.utils.SingleLiveData
@@ -30,25 +31,22 @@ class LatestViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers) {
 
     private val paging = Paging(startPage = 1)
+    private val request = MediatorLiveData<PhotosRequest>()
+
     private val _errorPlaceholder = SingleLiveData<ErrorMessage>()
     private val _toast = SingleLiveData<Message>()
     private val _error = SingleLiveData<ErrorMessage>()
     private val _refreshing = SingleLiveData<Boolean>()
     private val _ordering = MutableLiveData<Ordering>()
+    private val _photos: MediatorLiveData<List<Photo>> = MediatorLiveData()
 
-//
-//    private val _boundResource = Transformations.switchMap(repository.getPhotos(PhotosRequest(paging.fromStart(), getOrderingOrDefault()), scope).getLiveData(), {
-//        it
-//    })
-
-    private val _photos = MediatorLiveData<List<Photo>>().apply {
-        addSource(_ordering) { orderBy ->
-            fetchPhotos(PhotosRequest(paging.fromStart(), orderBy.order))
-        }
+    private val repositoryLiveData = Transformations.switchMap(request) { request ->
+        repository.getPhotos(request, scope).getLiveData()
     }
 
     init {
-        fetchPhotos(PhotosRequest(paging.fromStart(), getOrderingOrDefault().order))
+        addMediatorSources()
+        requestPhotos(paging.fromStart(), Ordering(LATEST))
     }
 
     val photos: LiveData<List<Photo>> get() = _photos
@@ -59,36 +57,48 @@ class LatestViewModel @Inject constructor(
     val ordering: LiveData<Ordering> get() = _ordering
 
     fun refresh() {
-        fetchPhotos(PhotosRequest(paging.fromStart(), getOrderingOrDefault().order))
+        requestPhotos(paging.fromStart(), getOrderingOrDefault())
     }
 
     fun loadMore() {
-        fetchPhotos(PhotosRequest(paging.nextPage(), getOrderingOrDefault().order))
+        requestPhotos(paging.nextPage(), getOrderingOrDefault())
     }
 
     fun orderBy(ordering: Ordering) {
         _ordering.value = ordering
     }
 
-    private fun fetchPhotos(request: PhotosRequest) {
+    private fun addMediatorSources() {
+        request.addSource(_ordering) { ordering ->
+            requestPhotos(paging.fromStart(), ordering)
+        }
+
+        _photos.addSource(repositoryLiveData) { response ->
+            proceedFetching(response)
+        }
+    }
+
+    private fun requestPhotos(page: Int, ordering: Ordering) {
+        request.value = PhotosRequest(page, ordering.order)
+    }
+
+    private fun proceedFetching(response: Resource<List<Photo>>) {
         if (needToHidePlaceholder) {
             hidePlaceholderError()
         }
 
-        val repoLiveData = repository.getPhotos(request, scope).getLiveData()
-        _photos.removeSource(repoLiveData)
-        _photos.addSource(repoLiveData) { response ->
-            if (request.isStartPage()) {
-                onFreshFetch(response)
-            } else {
-                onFetchNextPage(response)
-            }
+        if (isFreshFetching) {
+            handleFreshFetch(response)
+        } else {
+            handleLoadMoreFetch(response)
         }
     }
 
-    private val needToHidePlaceholder = isNoItemsVisible && _errorPlaceholder.value?.isVisible == true
+    private val needToHidePlaceholder get() = isNoItemsVisible && _errorPlaceholder.value?.isVisible == true
 
-    private fun onFreshFetch(response: Resource<List<Photo>>) {
+    private val isFreshFetching get() = paging.currentPage == paging.startPage
+
+    private fun handleFreshFetch(response: Resource<List<Photo>>) {
         when (response) {
             is Resource.Success -> {
                 _photos.value = response.data
@@ -104,7 +114,7 @@ class LatestViewModel @Inject constructor(
         }
     }
 
-    private fun onFetchNextPage(response: Resource<List<Photo>>) {
+    private fun handleLoadMoreFetch(response: Resource<List<Photo>>) {
         when (response) {
             is Resource.Success -> {
                 _photos.apply { value = value?.plus(response.data) }
@@ -139,5 +149,5 @@ class LatestViewModel @Inject constructor(
         }
     }
 
-    private fun getOrderingOrDefault() : Ordering = _ordering.value ?: Ordering(LATEST)
+    private fun getOrderingOrDefault(): Ordering = _ordering.value ?: Ordering(LATEST)
 }

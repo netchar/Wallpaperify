@@ -341,4 +341,19 @@ class LatestViewModelTest {
 
         confirmVerified(orderingObserver, repo)
     }
+
+    @Test
+    fun `On refresh when no items provided should emit placeholder LiveData`() {
+        every { repo.getPhotos(any(), any()).getLiveData() } returns errorResponseMock andThen successResponseMock
+
+        val latestViewModel = LatestViewModel(repo, dispatchersMock)
+        latestViewModel.photos.observeForever(photosObserver)
+        latestViewModel.errorPlaceholder.observeForever(errorPlaceholderObserver)
+        latestViewModel.refresh()
+
+        verifyOrder {
+            errorPlaceholderObserver.onChanged(ofType())
+            errorPlaceholderObserver.onChanged(ErrorMessage.empty())
+        }
+    }
 }
