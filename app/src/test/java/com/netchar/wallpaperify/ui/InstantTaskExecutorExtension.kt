@@ -13,7 +13,7 @@ import org.junit.jupiter.api.extension.ExtensionContext
 /**
  * Allows to mock android acrch Task Executor to work with LiveData in unit tests. Instant run.
  */
-internal class InstantTaskExecutorExtension : BeforeAllCallback {
+class InstantTaskExecutorExtension : BeforeAllCallback {
     override fun beforeAll(context: ExtensionContext?) {
         ArchTaskExecutor.getInstance()
             .setDelegate(object : TaskExecutor() {

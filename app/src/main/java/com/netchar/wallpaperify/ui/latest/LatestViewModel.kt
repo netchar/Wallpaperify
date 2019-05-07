@@ -23,8 +23,8 @@ import javax.inject.Inject
  */
 
 class LatestViewModel @Inject constructor(
-        private val repository: IPhotosRepository,
-        dispatchers: CoroutineDispatchers
+    private val repository: IPhotosRepository,
+    dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers) {
 
     private val paging = Paging(startPage = 1)
@@ -47,7 +47,7 @@ class LatestViewModel @Inject constructor(
     val refreshing: LiveData<Boolean> get() = _refreshing
     val error: LiveData<ErrorMessage> get() = _error
     val toast: LiveData<Message> get() = _toast
-    val errorPlaceholder: LiveData<ErrorMessage> = _errorPlaceholder
+    val errorPlaceholder: LiveData<ErrorMessage> get() = _errorPlaceholder
 
     fun refresh() {
         fetchPhotos(PhotosRequest(paging.fromStart(), getOrderingOrDefault()))
@@ -62,9 +62,12 @@ class LatestViewModel @Inject constructor(
     }
 
     private fun fetchPhotos(request: PhotosRequest) {
-        hideError()
+        if (needToHidePlaceholder) {
+            hidePlaceholderError()
+        }
 
         val repoLiveData = repository.getPhotos(request, scope).getLiveData()
+        _photos.removeSource(repoLiveData)
         _photos.addSource(repoLiveData) { response ->
             if (request.isStartPage()) {
                 onFreshFetch(response)
@@ -73,6 +76,8 @@ class LatestViewModel @Inject constructor(
             }
         }
     }
+
+    private val needToHidePlaceholder = isNoItemsVisible && _errorPlaceholder.value?.isVisible == true
 
     private fun onFreshFetch(response: Resource<List<Photo>>) {
         when (response) {
@@ -102,14 +107,16 @@ class LatestViewModel @Inject constructor(
         }
     }
 
-    private fun hideError() {
+    private fun hidePlaceholderError() {
         _errorPlaceholder.value = ErrorMessage.empty()
     }
+
+    private val isNoItemsVisible get() = _photos.value.isNullOrEmpty()
 
     private fun riseError(response: Resource.Error) {
         val errorMessage = getErrorMessage(response)
 
-        if (_photos.value.isNullOrEmpty()) {
+        if (isNoItemsVisible) {
             _errorPlaceholder.value = errorMessage
         } else {
             _error.value = errorMessage
