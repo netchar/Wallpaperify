@@ -4,6 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.netchar.common.utils.CoroutineDispatchers
 import com.netchar.models.Photo
+import com.netchar.models.apirequest.OLDEST
+import com.netchar.models.apirequest.Ordering
 import com.netchar.models.apirequest.Paging
 import com.netchar.models.apirequest.PhotosRequest
 import com.netchar.models.uimodel.ErrorMessage
@@ -30,6 +32,7 @@ class LatestViewModelTest {
     private lateinit var errorObserver: Observer<ErrorMessage>
     private lateinit var toastObserver: Observer<Message>
     private lateinit var errorPlaceholderObserver: Observer<ErrorMessage>
+    private lateinit var orderingObserver: Observer<Ordering>
     private lateinit var repo: IPhotosRepository
 
     private val dispatchersMock = CoroutineDispatchers(
@@ -46,6 +49,7 @@ class LatestViewModelTest {
         errorObserver = mockk(relaxed = true)
         toastObserver = mockk(relaxed = true)
         errorPlaceholderObserver = mockk(relaxed = true)
+        orderingObserver = mockk(relaxed = true)
         repo = mockk(relaxed = true)
     }
 
@@ -317,5 +321,24 @@ class LatestViewModelTest {
         }
 
         confirmVerified(errorObserver, repo)
+    }
+
+    @Test
+    fun `On orderBy assume valid order parameter`() {
+        val expectedOrderByParameter = PhotosRequest(Paging().fromStart(), orderBy = OLDEST)
+        every { repo.getPhotos(any(), any()).getLiveData() } returns successResponseMock andThen successResponseMock
+
+        val latestViewModel = LatestViewModel(repo, dispatchersMock)
+        latestViewModel.photos.observeForever(photosObserver)
+        latestViewModel.ordering.observeForever(orderingObserver)
+        latestViewModel.orderBy(Ordering(OLDEST))
+
+        verifyOrder {
+            repo.getPhotos(any(), any())
+            repo.getPhotos(expectedOrderByParameter, any())
+            orderingObserver.onChanged(Ordering(OLDEST))
+        }
+
+        confirmVerified(orderingObserver, repo)
     }
 }

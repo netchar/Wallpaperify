@@ -14,7 +14,10 @@ import com.netchar.common.extensions.*
 import com.netchar.common.poweradapter.adapter.EndlessRecyclerAdapter
 import com.netchar.common.poweradapter.adapter.EndlessRecyclerDataSource
 import com.netchar.models.Photo
-import com.netchar.models.apirequest.PhotosRequest
+import com.netchar.models.apirequest.LATEST
+import com.netchar.models.apirequest.OLDEST
+import com.netchar.models.apirequest.Ordering
+import com.netchar.models.apirequest.POPULAR
 import com.netchar.models.uimodel.ErrorMessage
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.ViewModelFactory
@@ -49,10 +52,10 @@ class LatestFragment : BaseFragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.latest_menu_item_latest -> viewModel.orderBy(PhotosRequest.LATEST)
-            R.id.latest_menu_item_oldest -> viewModel.orderBy(PhotosRequest.OLDEST)
-            R.id.latest_menu_item_popular -> viewModel.orderBy(PhotosRequest.POPULAR)
-            else -> PhotosRequest.LATEST
+            R.id.latest_menu_item_latest -> viewModel.orderBy(Ordering(LATEST) )
+            R.id.latest_menu_item_oldest -> viewModel.orderBy(Ordering(OLDEST))
+            R.id.latest_menu_item_popular -> viewModel.orderBy(Ordering(POPULAR))
+            else -> LATEST
         }
 
         return false

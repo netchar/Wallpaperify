@@ -7,6 +7,8 @@ import com.netchar.common.base.BaseViewModel
 import com.netchar.common.utils.CoroutineDispatchers
 import com.netchar.common.utils.SingleLiveData
 import com.netchar.models.Photo
+import com.netchar.models.apirequest.LATEST
+import com.netchar.models.apirequest.Ordering
 import com.netchar.models.apirequest.Paging
 import com.netchar.models.apirequest.PhotosRequest
 import com.netchar.models.uimodel.ErrorMessage
@@ -32,15 +34,21 @@ class LatestViewModel @Inject constructor(
     private val _toast = SingleLiveData<Message>()
     private val _error = SingleLiveData<ErrorMessage>()
     private val _refreshing = SingleLiveData<Boolean>()
-    private val _ordering = MutableLiveData<String>()
+    private val _ordering = MutableLiveData<Ordering>()
+
+//
+//    private val _boundResource = Transformations.switchMap(repository.getPhotos(PhotosRequest(paging.fromStart(), getOrderingOrDefault()), scope).getLiveData(), {
+//        it
+//    })
+
     private val _photos = MediatorLiveData<List<Photo>>().apply {
         addSource(_ordering) { orderBy ->
-            fetchPhotos(PhotosRequest(paging.fromStart(), orderBy))
+            fetchPhotos(PhotosRequest(paging.fromStart(), orderBy.order))
         }
     }
 
     init {
-        fetchPhotos(PhotosRequest(paging.fromStart(), getOrderingOrDefault()))
+        fetchPhotos(PhotosRequest(paging.fromStart(), getOrderingOrDefault().order))
     }
 
     val photos: LiveData<List<Photo>> get() = _photos
@@ -48,16 +56,17 @@ class LatestViewModel @Inject constructor(
     val error: LiveData<ErrorMessage> get() = _error
     val toast: LiveData<Message> get() = _toast
     val errorPlaceholder: LiveData<ErrorMessage> get() = _errorPlaceholder
+    val ordering: LiveData<Ordering> get() = _ordering
 
     fun refresh() {
-        fetchPhotos(PhotosRequest(paging.fromStart(), getOrderingOrDefault()))
+        fetchPhotos(PhotosRequest(paging.fromStart(), getOrderingOrDefault().order))
     }
 
     fun loadMore() {
-        fetchPhotos(PhotosRequest(paging.nextPage(), getOrderingOrDefault()))
+        fetchPhotos(PhotosRequest(paging.nextPage(), getOrderingOrDefault().order))
     }
 
-    fun orderBy(ordering: String) {
+    fun orderBy(ordering: Ordering) {
         _ordering.value = ordering
     }
 
@@ -130,5 +139,5 @@ class LatestViewModel @Inject constructor(
         }
     }
 
-    private fun getOrderingOrDefault() = _ordering.value ?: PhotosRequest.LATEST
+    private fun getOrderingOrDefault() : Ordering = _ordering.value ?: Ordering(LATEST)
 }
