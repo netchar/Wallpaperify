@@ -4,7 +4,7 @@ ext {
             sdk       : [
                     compile: 28,
                     target : 28,
-                    min    : 21
+                    min    : 22
             ],
             buildTools: "28.0.3"
     ]

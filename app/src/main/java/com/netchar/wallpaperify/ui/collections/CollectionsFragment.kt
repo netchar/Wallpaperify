@@ -1,20 +1,25 @@
 package com.netchar.wallpaperify.ui.collections
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import com.netchar.common.base.BaseFragment
+import com.netchar.common.extensions.injectViewModel
 import com.netchar.wallpaperify.R
+import com.netchar.wallpaperify.di.ViewModelFactory
+import javax.inject.Inject
 
-class CollectionsFragment : Fragment() {
+class CollectionsFragment : BaseFragment() {
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_collections, container, false)
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private lateinit var viewModel: CollectionsViewModel
+
+    override val layoutResId: Int = R.layout.fragment_collections
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel = injectViewModel(viewModelFactory)
     }
+
 }

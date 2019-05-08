@@ -125,4 +125,5 @@ dependencies {
     androidTestImplementation deps.test.runner
     androidTestImplementation deps.test.espresso
     testImplementation deps.test.mockwebserver
+    implementation 'androidx.cardview:cardview:1.0.0'
 }
