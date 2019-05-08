@@ -1,4 +1,4 @@
-package com.netchar.wallpaperify.ui.latest
+package com.netchar.wallpaperify.ui.photos
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
@@ -25,7 +25,7 @@ import javax.inject.Inject
  * e.glushankov@gmail.com
  */
 
-class LatestViewModel @Inject constructor(
+class PhotosViewModel @Inject constructor(
     private val repository: IPhotosRepository,
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers) {

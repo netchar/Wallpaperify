@@ -34,9 +34,9 @@
             app:destination="@id/photoDetailsFragment" />
     </fragment>
     <fragment
-        android:id="@+id/latestFragment"
-        android:name="com.netchar.wallpaperify.ui.latest.LatestFragment"
-        android:label="@string/latest_fragment_title" >
+        android:id="@+id/photosFragment"
+        android:name="com.netchar.wallpaperify.ui.photos.PhotosFragment"
+        android:label="@string/photos_fragment_title" >
         <action android:id="@+id/action_latestFragment_to_photoDetailsFragment" app:destination="@id/photoDetailsFragment"/>
     </fragment>
     <fragment

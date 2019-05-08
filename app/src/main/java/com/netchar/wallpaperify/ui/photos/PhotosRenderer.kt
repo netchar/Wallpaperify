@@ -1,4 +1,4 @@
-package com.netchar.wallpaperify.ui.latest
+package com.netchar.wallpaperify.ui.photos
 
 import android.graphics.Color
 import android.graphics.drawable.Drawable
@@ -20,7 +20,7 @@ import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.ui.App
 import kotlinx.android.synthetic.main.raw_photo.view.*
 
-class LatestPhotosRenderer(private val glide: RequestManager, val listener: (Photo) -> Unit) : ItemRenderer() {
+class PhotosRenderer(private val glide: RequestManager, val listener: (Photo) -> Unit) : ItemRenderer() {
 
     companion object {
         val fetchedColors = hashMapOf<String, Int>()

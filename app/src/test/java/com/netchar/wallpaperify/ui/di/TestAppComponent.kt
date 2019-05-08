@@ -4,7 +4,7 @@ import com.netchar.common.di.BaseUrl
 import com.netchar.remote.di.ApiModule
 import com.netchar.repository.di.RepositoryModule
 import com.netchar.test.di.TestCommonModule
-import com.netchar.wallpaperify.ui.latest.LatestViewModelTest
+import com.netchar.wallpaperify.ui.photos.PhotosViewModelTest
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
@@ -26,7 +26,7 @@ import javax.inject.Singleton
 )
 interface TestAppComponent {
 
-    fun inject(baseTest: LatestViewModelTest)
+    fun inject(baseTest: PhotosViewModelTest)
 
     @Component.Builder
     interface Builder {

@@ -1,4 +1,4 @@
-package com.netchar.wallpaperify.ui.latest
+package com.netchar.wallpaperify.ui.photos
 
 import android.content.res.Resources
 import com.netchar.wallpaperify.ui.di.DaggerTestAppComponent
@@ -9,7 +9,6 @@ import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.TestInstance
 import java.io.File
-import java.util.concurrent.TimeUnit
 
 
 /**

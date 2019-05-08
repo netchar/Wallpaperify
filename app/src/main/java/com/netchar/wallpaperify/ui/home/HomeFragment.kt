@@ -9,7 +9,7 @@ import androidx.viewpager.widget.ViewPager
 import com.netchar.common.base.BaseFragment
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.ui.collections.CollectionsFragment
-import com.netchar.wallpaperify.ui.latest.LatestFragment
+import com.netchar.wallpaperify.ui.photos.PhotosFragment
 import kotlinx.android.synthetic.main.fragment_home.*
 
 class HomeFragment : BaseFragment() {
@@ -20,7 +20,7 @@ class HomeFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         val viewpager = view.findViewById<ViewPager>(R.id.pager)
         viewpager.adapter = MyFragmentPagerAdapter(childFragmentManager).also {
-            it.addFragment(LatestFragment(), "Latest")
+            it.addFragment(PhotosFragment(), "Latest")
             it.addFragment(CollectionsFragment(), "Collections")
         }
         tabs.setupWithViewPager(viewpager)

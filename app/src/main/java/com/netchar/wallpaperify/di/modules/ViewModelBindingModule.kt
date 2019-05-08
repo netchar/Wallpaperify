@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.netchar.common.di.ViewModelKey
 import com.netchar.wallpaperify.di.ViewModelFactory
-import com.netchar.wallpaperify.ui.latest.LatestViewModel
+import com.netchar.wallpaperify.ui.photos.PhotosViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -14,8 +14,8 @@ abstract class ViewModelBindingModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(LatestViewModel::class)
-    abstract fun bindLatestViewModel(viewModel: LatestViewModel): ViewModel
+    @ViewModelKey(PhotosViewModel::class)
+    abstract fun bindLatestViewModel(viewModel: PhotosViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory

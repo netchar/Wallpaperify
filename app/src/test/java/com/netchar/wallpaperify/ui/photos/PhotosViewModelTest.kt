@@ -1,4 +1,4 @@
-package com.netchar.wallpaperify.ui.latest
+package com.netchar.wallpaperify.ui.photos
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -25,7 +25,7 @@ import org.junit.jupiter.api.extension.ExtendWith
  * e.glushankov@gmail.com
  */
 @ExtendWith(InstantTaskExecutorExtension::class)
-class LatestViewModelTest {
+class PhotosViewModelTest {
 
     private lateinit var photosObserver: Observer<List<Photo>>
     private lateinit var refreshingObserver: Observer<Boolean>
@@ -69,7 +69,7 @@ class LatestViewModelTest {
     fun `On init should start fetching`() {
         every { repo.getPhotos(any(), any()).getLiveData() } returns successResponseMock
 
-        val latestViewModel = LatestViewModel(repo, dispatchersMock)
+        val latestViewModel = PhotosViewModel(repo, dispatchersMock)
         latestViewModel.photos.observeForever(photosObserver)
 
         verify {
@@ -83,7 +83,7 @@ class LatestViewModelTest {
     fun `On init when success fetch should emit toast`() {
         every { repo.getPhotos(any(), any()).getLiveData() } returns successResponseMock
 
-        val latestViewModel = LatestViewModel(repo, dispatchersMock)
+        val latestViewModel = PhotosViewModel(repo, dispatchersMock)
         latestViewModel.photos.observeForever(photosObserver)
         latestViewModel.toast.observeForever(toastObserver)
 
@@ -99,7 +99,7 @@ class LatestViewModelTest {
     fun `On init when error should emit error placeholder`() {
         every { repo.getPhotos(any(), any()).getLiveData() } returns errorResponseMock
 
-        val latestViewModel = LatestViewModel(repo, dispatchersMock)
+        val latestViewModel = PhotosViewModel(repo, dispatchersMock)
         latestViewModel.photos.observeForever(photosObserver)
         latestViewModel.errorPlaceholder.observeForever(errorPlaceholderObserver)
         latestViewModel.error.observeForever(errorObserver)
@@ -120,7 +120,7 @@ class LatestViewModelTest {
     fun `On init when start loading should emit refreshing`() {
         every { repo.getPhotos(any(), any()).getLiveData() } returns loadingStartResponseMock
 
-        val latestViewModel = LatestViewModel(repo, dispatchersMock)
+        val latestViewModel = PhotosViewModel(repo, dispatchersMock)
         latestViewModel.photos.observeForever(photosObserver)
         latestViewModel.refreshing.observeForever(refreshingObserver)
 
@@ -139,7 +139,7 @@ class LatestViewModelTest {
     fun `On init when end loading should emit refreshing`() {
         every { repo.getPhotos(any(), any()).getLiveData() } returns loadingEndResponseMock
 
-        val latestViewModel = LatestViewModel(repo, dispatchersMock)
+        val latestViewModel = PhotosViewModel(repo, dispatchersMock)
         latestViewModel.photos.observeForever(photosObserver)
         latestViewModel.refreshing.observeForever(refreshingObserver)
 
@@ -158,7 +158,7 @@ class LatestViewModelTest {
     fun `On init when error should emit refreshing to false`() {
         every { repo.getPhotos(any(), any()).getLiveData() } returns errorResponseMock
 
-        val latestViewModel = LatestViewModel(repo, dispatchersMock)
+        val latestViewModel = PhotosViewModel(repo, dispatchersMock)
         latestViewModel.photos.observeForever(photosObserver)
         latestViewModel.refreshing.observeForever(refreshingObserver)
 
@@ -180,7 +180,7 @@ class LatestViewModelTest {
         every { repo.getPhotos(any(), any()).getLiveData() } returns successResponseMock andThen successResponseMock
 
         // act
-        val latestViewModel = LatestViewModel(repo, dispatchersMock)
+        val latestViewModel = PhotosViewModel(repo, dispatchersMock)
         latestViewModel.photos.observeForever(photosObserver)
         latestViewModel.refresh()
 
@@ -202,7 +202,7 @@ class LatestViewModelTest {
         every { repo.getPhotos(any(), any()).getLiveData() } returns errorResponseMock
 
         // act
-        val latestViewModel = LatestViewModel(repo, dispatchersMock)
+        val latestViewModel = PhotosViewModel(repo, dispatchersMock)
         latestViewModel.photos.observeForever(photosObserver)
         latestViewModel.error.observeForever(errorObserver)
         latestViewModel.errorPlaceholder.observeForever(errorPlaceholderObserver)
@@ -225,7 +225,7 @@ class LatestViewModelTest {
         every { repo.getPhotos(any(), any()).getLiveData() } returns successResponseMock andThen errorResponseMock
 
         // act
-        val latestViewModel = LatestViewModel(repo, dispatchersMock)
+        val latestViewModel = PhotosViewModel(repo, dispatchersMock)
         latestViewModel.photos.observeForever(photosObserver)
         latestViewModel.error.observeForever(errorObserver)
         latestViewModel.errorPlaceholder.observeForever(errorPlaceholderObserver)
@@ -249,7 +249,7 @@ class LatestViewModelTest {
         every { repo.getPhotos(any(), any()).getLiveData() } returns successResponseMock andThen successLoadMoreResponseMock
 
         // act
-        val latestViewModel = LatestViewModel(repo, dispatchersMock)
+        val latestViewModel = PhotosViewModel(repo, dispatchersMock)
         latestViewModel.photos.observeForever(photosObserver)
         latestViewModel.loadMore()
 
@@ -266,7 +266,7 @@ class LatestViewModelTest {
         every { repo.getPhotos(any(), any()).getLiveData() } returns successResponseMock andThen successLoadMoreResponseMock
 
         // act
-        val latestViewModel = LatestViewModel(repo, dispatchersMock)
+        val latestViewModel = PhotosViewModel(repo, dispatchersMock)
         latestViewModel.photos.observeForever(photosObserver)
         latestViewModel.loadMore()
 
@@ -283,7 +283,7 @@ class LatestViewModelTest {
         every { repo.getPhotos(any(), any()).getLiveData() } returns successResponseMock andThen errorResponseMock
 
         // act
-        val latestViewModel = LatestViewModel(repo, dispatchersMock)
+        val latestViewModel = PhotosViewModel(repo, dispatchersMock)
         latestViewModel.photos.observeForever(photosObserver)
         latestViewModel.error.observeForever(errorObserver)
         latestViewModel.loadMore()
@@ -305,7 +305,7 @@ class LatestViewModelTest {
         every { repo.getPhotos(any(), any()).getLiveData() } returns successResponseMock andThen successLoadMoreResponseMock andThen errorResponseMock andThen successLoadMoreResponseMock
 
         // act
-        val latestViewModel = LatestViewModel(repo, dispatchersMock)
+        val latestViewModel = PhotosViewModel(repo, dispatchersMock)
         latestViewModel.photos.observeForever(photosObserver)
         latestViewModel.error.observeForever(errorObserver)
         latestViewModel.loadMore()
@@ -328,7 +328,7 @@ class LatestViewModelTest {
         val expectedOrderByParameter = PhotosRequest(Paging().fromStart(), orderBy = OLDEST)
         every { repo.getPhotos(any(), any()).getLiveData() } returns successResponseMock andThen successResponseMock
 
-        val latestViewModel = LatestViewModel(repo, dispatchersMock)
+        val latestViewModel = PhotosViewModel(repo, dispatchersMock)
         latestViewModel.photos.observeForever(photosObserver)
         latestViewModel.ordering.observeForever(orderingObserver)
         latestViewModel.orderBy(Ordering(OLDEST))
@@ -346,7 +346,7 @@ class LatestViewModelTest {
     fun `On refresh when no items provided should emit placeholder LiveData`() {
         every { repo.getPhotos(any(), any()).getLiveData() } returns errorResponseMock andThen successResponseMock
 
-        val latestViewModel = LatestViewModel(repo, dispatchersMock)
+        val latestViewModel = PhotosViewModel(repo, dispatchersMock)
         latestViewModel.photos.observeForever(photosObserver)
         latestViewModel.errorPlaceholder.observeForever(errorPlaceholderObserver)
         latestViewModel.refresh()

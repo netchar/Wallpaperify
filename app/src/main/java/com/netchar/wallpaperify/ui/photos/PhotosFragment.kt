@@ -1,4 +1,4 @@
-package com.netchar.wallpaperify.ui.latest
+package com.netchar.wallpaperify.ui.photos
 
 import android.os.Bundle
 import android.view.Menu
@@ -21,10 +21,10 @@ import com.netchar.models.apirequest.POPULAR
 import com.netchar.models.uimodel.ErrorMessage
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.ViewModelFactory
-import kotlinx.android.synthetic.main.fragment_latest.*
+import kotlinx.android.synthetic.main.fragment_photos.*
 import javax.inject.Inject
 
-class LatestFragment : BaseFragment() {
+class PhotosFragment : BaseFragment() {
 
     init {
         setHasOptionsMenu(true)
@@ -33,12 +33,12 @@ class LatestFragment : BaseFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private lateinit var viewModel: LatestViewModel
+    private lateinit var viewModel: PhotosViewModel
 
-    override val layoutResId: Int = R.layout.fragment_latest
+    override val layoutResId: Int = R.layout.fragment_photos
 
     private val dataSource: EndlessRecyclerDataSource by lazy {
-        val photoRenderer = LatestPhotosRenderer(Glide.with(this), ::onItemClick)
+        val photoRenderer = PhotosRenderer(Glide.with(this), ::onItemClick)
         EndlessRecyclerDataSource(mutableListOf(photoRenderer), ::onLoadMoreItems)
     }
 
