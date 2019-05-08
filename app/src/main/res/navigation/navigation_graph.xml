@@ -6,15 +6,6 @@
     app:startDestination="@id/homeFragment">
 
     <fragment
-        android:id="@+id/trendingFragment"
-        android:name="com.netchar.wallpaperify.ui.trending.TrendingFragment"
-        android:label="@string/trending_fragment_title"
-        tools:layout="@layout/fragment_featured">
-        <action
-            android:id="@+id/action_featuredFragment_to_photoDetailsFragment"
-            app:destination="@id/photoDetailsFragment" />
-    </fragment>
-    <fragment
         android:id="@+id/collectionsFragment"
         android:name="com.netchar.wallpaperify.ui.collections.CollectionsFragment"
         android:label="@string/collections_fragment_title"
@@ -45,7 +36,9 @@
     <fragment
         android:id="@+id/latestFragment"
         android:name="com.netchar.wallpaperify.ui.latest.LatestFragment"
-        android:label="@string/latest_fragment_title" />
+        android:label="@string/latest_fragment_title" >
+        <action android:id="@+id/action_latestFragment_to_photoDetailsFragment" app:destination="@id/photoDetailsFragment"/>
+    </fragment>
     <fragment
         android:id="@+id/aboutFragment"
         android:name="com.netchar.wallpaperify.ui.about.AboutFragment"
