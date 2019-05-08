@@ -4,4 +4,9 @@
         <attr name="message" format="string" />
         <attr name="icon" format="reference" />
     </declare-styleable>
+
+    <declare-styleable name="TextViewCompatTint">
+        <attr name="drawableTint" format="reference|color" />
+        <attr name="drawableTintMode" format="reference" />
+    </declare-styleable>
 </resources>

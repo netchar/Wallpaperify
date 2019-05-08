@@ -30,9 +30,9 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:background="@drawable/background_layer_gradient"
             app:layout_constraintBottom_toBottomOf="@+id/collections_image"
             app:layout_constraintEnd_toStartOf="@+id/collections_image"
-            android:background="@drawable/background_layer_gradient"
             app:layout_constraintStart_toStartOf="@+id/collections_image"
             app:layout_constraintTop_toTopOf="@+id/collections_image" />
 
@@ -64,7 +64,7 @@
             app:layout_constraintTop_toTopOf="@+id/collection_created_txt"
             tools:text="by Kurt Wagner" />
 
-        <TextView
+        <com.netchar.common.views.TextViewCompatTint
             android:id="@+id/collection_photo_count_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -73,20 +73,22 @@
             android:drawablePadding="4dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Caption"
             android:textColor="#FFF"
+            app:drawableTint="@android:color/white"
             app:layout_constraintBottom_toBottomOf="@+id/collections_author_txt"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/collections_author_txt"
             tools:text="63 Photos" />
 
-        <TextView
+        <com.netchar.common.views.TextViewCompatTint
             android:id="@+id/collection_created_txt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="16dp"
             android:drawableStart="@drawable/ic_date_small"
             android:drawablePadding="4dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Caption"
             android:textColor="#FFF"
+            app:drawableTint="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/collections_title_txt"
             tools:text="02/03/2019"
