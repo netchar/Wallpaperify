@@ -1,24 +1,17 @@
 package com.netchar.models
 
-import com.squareup.moshi.Json
-import se.ansman.kotshi.JsonSerializable
 
-@JsonSerializable
+import com.squareup.moshi.Json
+
 data class CurrentUserCollection(
-        @Json(name = "cover_photo")
-        val coverPhoto: Any?,
-        @Json(name = "curated")
-        val curated: Boolean,
-        @Json(name = "id")
-        val id: Int,
+        val id: Int = 0,
+        val title: String = "",
         @Json(name = "published_at")
-        val publishedAt: String,
-        @Json(name = "title")
-        val title: String,
+        val publishedAt: String = "",
         @Json(name = "updated_at")
-        val updatedAt: String,
-        @Json(name = "user")
-        val user: Any?
-) {
-    constructor() : this(null, false, 0, "", "", "", null)
-}
+        val updatedAt: String = "",
+        val curated: Boolean = false,
+        @Json(name = "cover_photo")
+        val coverPhoto: Any? = Any(),
+        val user: Any? = Any()
+)

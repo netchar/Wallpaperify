@@ -2,6 +2,7 @@ package com.netchar.wallpaperify.ui.collections
 
 import com.netchar.common.base.BaseViewModel
 import com.netchar.common.utils.CoroutineDispatchers
+import javax.inject.Inject
 
 
 /**
@@ -9,6 +10,6 @@ import com.netchar.common.utils.CoroutineDispatchers
  * e.glushankov@gmail.com
  */
 
-class CollectionsViewModel(
+class CollectionsViewModel @Inject constructor(
         dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers)
