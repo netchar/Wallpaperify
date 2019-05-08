@@ -30,6 +30,9 @@ dependencies {
     implementation deps.glide.glide
     implementation deps.glide.okhttp3
     kapt deps.glide.compiler
+
+    // Timber
+    implementation deps.timber
 }
 
 dependencies {

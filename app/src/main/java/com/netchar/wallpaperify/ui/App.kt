@@ -3,6 +3,8 @@ package com.netchar.wallpaperify.ui
 import android.app.Activity
 import android.app.Application
 import com.jakewharton.threetenabp.AndroidThreeTen
+import com.netchar.common.utils.DebugTree
+import com.netchar.common.utils.ReleaseTree
 import com.netchar.wallpaperify.BuildConfig
 import com.netchar.wallpaperify.di.AppComponent
 import com.netchar.wallpaperify.di.DaggerAppComponent
@@ -29,9 +31,9 @@ class App : Application(), HasActivityInjector {
 
     val component: AppComponent by lazy {
         DaggerAppComponent.builder()
-                .context(this)
-                .buildPrefs(BuildPreferences())
-                .build()
+            .context(this)
+            .buildPrefs(BuildPreferences())
+            .build()
     }
 
     override fun onCreate() {
@@ -39,7 +41,9 @@ class App : Application(), HasActivityInjector {
         component.inject(this)
         AndroidThreeTen.init(this)
         if (BuildConfig.DEBUG) {
-            Timber.plant(Timber.DebugTree())
+            Timber.plant(DebugTree())
+        } else {
+            Timber.plant(ReleaseTree())
         }
     }
 
