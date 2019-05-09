@@ -8,10 +8,8 @@ import com.netchar.common.base.BaseViewModel
 import com.netchar.common.utils.CoroutineDispatchers
 import com.netchar.common.utils.SingleLiveData
 import com.netchar.models.Photo
-import com.netchar.models.apirequest.LATEST
-import com.netchar.models.apirequest.Ordering
+import com.netchar.models.apirequest.ApiRequest
 import com.netchar.models.apirequest.Paging
-import com.netchar.models.apirequest.PhotosRequest
 import com.netchar.models.uimodel.ErrorMessage
 import com.netchar.models.uimodel.Message
 import com.netchar.remote.Resource
@@ -31,13 +29,13 @@ class PhotosViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers) {
 
     private val paging = Paging(startPage = 1)
-    private val request = MediatorLiveData<PhotosRequest>()
+    private val request = MediatorLiveData<ApiRequest.Photos>()
 
     private val _errorPlaceholder = SingleLiveData<ErrorMessage>()
     private val _toast = SingleLiveData<Message>()
     private val _error = SingleLiveData<ErrorMessage>()
     private val _refreshing = SingleLiveData<Boolean>()
-    private val _ordering = MutableLiveData<Ordering>()
+    private val _ordering = MutableLiveData<ApiRequest.Order>()
     private val _photos: MediatorLiveData<List<Photo>> = MediatorLiveData()
 
     private val repositoryLiveData = Transformations.switchMap(request) { request ->
@@ -46,7 +44,7 @@ class PhotosViewModel @Inject constructor(
 
     init {
         addMediatorSources()
-        requestPhotos(paging.fromStart(), Ordering(LATEST))
+        requestPhotos(paging.fromStart(), ApiRequest.Order.LATEST)
     }
 
     val photos: LiveData<List<Photo>> get() = _photos
@@ -54,7 +52,7 @@ class PhotosViewModel @Inject constructor(
     val error: LiveData<ErrorMessage> get() = _error
     val toast: LiveData<Message> get() = _toast
     val errorPlaceholder: LiveData<ErrorMessage> get() = _errorPlaceholder
-    val ordering: LiveData<Ordering> get() = _ordering
+    val ordering: LiveData<ApiRequest.Order> get() = _ordering
 
     fun refresh() {
         requestPhotos(paging.fromStart(), getOrderingOrDefault())
@@ -64,7 +62,7 @@ class PhotosViewModel @Inject constructor(
         requestPhotos(paging.nextPage(), getOrderingOrDefault())
     }
 
-    fun orderBy(ordering: Ordering) {
+    fun orderBy(ordering: ApiRequest.Order) {
         _ordering.value = ordering
     }
 
@@ -78,8 +76,8 @@ class PhotosViewModel @Inject constructor(
         }
     }
 
-    private fun requestPhotos(page: Int, ordering: Ordering) {
-        request.value = PhotosRequest(page, ordering.order)
+    private fun requestPhotos(page: Int, order: ApiRequest.Order) {
+        request.value = ApiRequest.Photos(page, order)
     }
 
     private fun proceedFetching(response: Resource<List<Photo>>) {
@@ -149,5 +147,5 @@ class PhotosViewModel @Inject constructor(
         }
     }
 
-    private fun getOrderingOrDefault(): Ordering = _ordering.value ?: Ordering(LATEST)
+    private fun getOrderingOrDefault(): ApiRequest.Order = _ordering.value ?: ApiRequest.Order.LATEST
 }

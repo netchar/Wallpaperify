@@ -4,10 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.netchar.common.utils.CoroutineDispatchers
 import com.netchar.models.Photo
-import com.netchar.models.apirequest.OLDEST
-import com.netchar.models.apirequest.Ordering
+import com.netchar.models.apirequest.ApiRequest
 import com.netchar.models.apirequest.Paging
-import com.netchar.models.apirequest.PhotosRequest
 import com.netchar.models.uimodel.ErrorMessage
 import com.netchar.models.uimodel.Message
 import com.netchar.remote.Resource
@@ -32,14 +30,14 @@ class PhotosViewModelTest {
     private lateinit var errorObserver: Observer<ErrorMessage>
     private lateinit var toastObserver: Observer<Message>
     private lateinit var errorPlaceholderObserver: Observer<ErrorMessage>
-    private lateinit var orderingObserver: Observer<Ordering>
+    private lateinit var orderingObserver: Observer<ApiRequest.Order>
     private lateinit var repo: IPhotosRepository
 
     private val dispatchersMock = CoroutineDispatchers(
-        Dispatchers.Unconfined,
-        Dispatchers.Unconfined,
-        Dispatchers.Unconfined,
-        Dispatchers.Unconfined
+            Dispatchers.Unconfined,
+            Dispatchers.Unconfined,
+            Dispatchers.Unconfined,
+            Dispatchers.Unconfined
     )
 
     @BeforeEach
@@ -53,8 +51,15 @@ class PhotosViewModelTest {
         repo = mockk(relaxed = true)
     }
 
-    private val successValue: MutableList<Photo> = mutableListOf(spyk<Photo>().apply { id = "1" }, spyk<Photo>().apply { id = "2" })
-    private val successLoadMoreValue: List<Photo> = listOf(spyk<Photo>().apply { id = "3" }, spyk<Photo>().apply { id = "4" })
+    private val successValue: MutableList<Photo> = mutableListOf(
+            spyk { every { id } returns "1" },
+            spyk { every { id } returns "2" })
+
+    private val successLoadMoreValue: List<Photo> = listOf(
+            spyk { every { id } returns "3" },
+            spyk { every { id } returns "4" })
+
+
     private val errorValue = Cause.UNEXPECTED
     private val loadingStartValue = true
     private val loadingEndValue = false
@@ -175,7 +180,7 @@ class PhotosViewModelTest {
 
     @Test
     fun `On refresh assume valid request arguments`() {
-        val expectedRefreshRequest = PhotosRequest(Paging().fromStart())
+        val expectedRefreshRequest = ApiRequest.Photos(Paging().fromStart())
 
         every { repo.getPhotos(any(), any()).getLiveData() } returns successResponseMock andThen successResponseMock
 
@@ -243,8 +248,8 @@ class PhotosViewModelTest {
 
     @Test
     fun `On loadMore assume valid request arguments`() {
-        val expectedFreshRequest = PhotosRequest(Paging().fromStart())
-        val expectedLoadMoreRequest = PhotosRequest(Paging().nextPage())
+        val expectedFreshRequest = ApiRequest.Photos(Paging().fromStart())
+        val expectedLoadMoreRequest = ApiRequest.Photos(Paging().nextPage())
 
         every { repo.getPhotos(any(), any()).getLiveData() } returns successResponseMock andThen successLoadMoreResponseMock
 
@@ -299,9 +304,9 @@ class PhotosViewModelTest {
 
     @Test
     fun `On loadMore when retry should run same page`() {
-        val freshRequest = PhotosRequest(Paging().fromStart())
-        val loadMore1Request = PhotosRequest(Paging(1).nextPage())
-        val loadMore2Request = PhotosRequest(Paging(2).nextPage())
+        val freshRequest = ApiRequest.Photos(Paging().fromStart())
+        val loadMore1Request = ApiRequest.Photos(Paging(1).nextPage())
+        val loadMore2Request = ApiRequest.Photos(Paging(2).nextPage())
         every { repo.getPhotos(any(), any()).getLiveData() } returns successResponseMock andThen successLoadMoreResponseMock andThen errorResponseMock andThen successLoadMoreResponseMock
 
         // act
@@ -325,18 +330,18 @@ class PhotosViewModelTest {
 
     @Test
     fun `On orderBy assume valid order parameter`() {
-        val expectedOrderByParameter = PhotosRequest(Paging().fromStart(), orderBy = OLDEST)
+        val expectedOrderByParameter = ApiRequest.Photos(Paging().fromStart(), order = ApiRequest.Order.OLDEST)
         every { repo.getPhotos(any(), any()).getLiveData() } returns successResponseMock andThen successResponseMock
 
         val latestViewModel = PhotosViewModel(repo, dispatchersMock)
         latestViewModel.photos.observeForever(photosObserver)
         latestViewModel.ordering.observeForever(orderingObserver)
-        latestViewModel.orderBy(Ordering(OLDEST))
+        latestViewModel.orderBy(ApiRequest.Order.OLDEST)
 
         verifyOrder {
             repo.getPhotos(any(), any())
             repo.getPhotos(expectedOrderByParameter, any())
-            orderingObserver.onChanged(Ordering(OLDEST))
+            orderingObserver.onChanged(ApiRequest.Order.OLDEST)
         }
 
         confirmVerified(orderingObserver, repo)
