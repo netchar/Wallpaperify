@@ -1,6 +1,7 @@
 package com.netchar.common.utils
 
 import android.graphics.Color
+import timber.log.Timber
 
 
 /**
@@ -13,7 +14,12 @@ fun String?.parseColor(/*from = 0, to = 255*/ alpha: Int, defaultColor: Int): In
         return defaultColor
     }
 
-    val hsv = FloatArray(3)
-    Color.colorToHSV(Color.parseColor(this), hsv)
-    return Color.HSVToColor(alpha, hsv)
+    return try {
+        val hsv = FloatArray(3)
+        Color.colorToHSV(Color.parseColor(this), hsv)
+        Color.HSVToColor(alpha, hsv)
+    } catch (e: NumberFormatException) {
+        Timber.e(e)
+        defaultColor
+    }
 }

@@ -24,10 +24,7 @@
     <string name="navigation_bottom_bar_title_trending">Trending</string>
     <string name="navigation_bottom_bar_title_collections">Collections</string>
 
-    <!--Latest Page-->
 
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_fragment_trending">Trending</string>
     <string name="trending_fragment_title">Trending</string>
