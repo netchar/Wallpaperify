@@ -3,7 +3,6 @@ package com.netchar.wallpaperify.ui.photos
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.view.View
-import android.widget.ImageView
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -12,6 +11,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.facebook.shimmer.Shimmer
 import com.facebook.shimmer.ShimmerDrawable
+import com.netchar.common.extensions.fitWidth
 import com.netchar.common.poweradapter.item.IRecyclerItem
 import com.netchar.common.poweradapter.item.ItemRenderer
 import com.netchar.common.utils.getThemeAttrColor
@@ -59,10 +59,10 @@ class PhotosRenderer(private val glide: RequestManager, val listener: (Photo) ->
         itemView.row_photo_card.setBackgroundColor(color)
 
         with(itemView.row_photo_iv) {
-            fitHeightToWidth(model.width, model.height)
+            fitWidth(model.width, model.height)
             background = shimmer
 
-            glide.load(model.urls?.regular)
+            glide.load(model.urls.regular)
                     .fitCenter()
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .listener(object : RequestListener<Drawable> {
@@ -98,10 +98,5 @@ class PhotosRenderer(private val glide: RequestManager, val listener: (Photo) ->
             Color.colorToHSV(Color.parseColor(stringColor), hsv)
             Color.HSVToColor(alpha, hsv)
         }
-    }
-
-    private fun ImageView.fitHeightToWidth(imageWidth: Int, imageHeight: Int) {
-        val scaleFactor = imageWidth.toFloat() / imageHeight
-        minimumHeight = (resources.displayMetrics.widthPixels / scaleFactor).toInt()
     }
 }

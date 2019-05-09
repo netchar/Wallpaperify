@@ -71,19 +71,19 @@ import com.squareup.moshi.Json
 
 data class Photo(
         val id: String = "",
-        @Json(name = "created_at")
+        @field:Json(name = "created_at")
         val createdAt: String = "",
-        @Json(name = "updated_at")
+        @field:Json(name = "updated_at")
         val updatedAt: String = "",
         val width: Int = 0,
         val height: Int = 0,
         val color: String = "",
         val likes: Int = 0,
-        @Json(name = "liked_by_user")
+        @field:Json(name = "liked_by_user")
         val likedByUser: Boolean = false,
         val description: String = "",
         val user: User = User(),
-        @Json(name = "current_user_collections")
+        @field:Json(name = "current_user_collections")
         val currentUserCollections: List<CurrentUserCollection> = listOf(),
         val urls: Urls = Urls(),
         val links: Links = Links()

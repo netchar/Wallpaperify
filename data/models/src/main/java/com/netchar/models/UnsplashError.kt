@@ -5,6 +5,6 @@ import se.ansman.kotshi.JsonSerializable
 
 @JsonSerializable
 data class UnsplashError(
-    @Json(name = "errors")
+    @field:Json(name = "errors")
     val errors: List<String>
 )

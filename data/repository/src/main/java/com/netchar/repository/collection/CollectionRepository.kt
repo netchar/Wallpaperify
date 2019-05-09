@@ -15,11 +15,11 @@ import javax.inject.Inject
  * e.glushankov@gmail.com
  */
 class CollectionRepository @Inject constructor(
-        private val coroutineDispatchers: CoroutineDispatchers,
-        private val collectionsApi: CollectionsApi
+        private val collectionsApi: CollectionsApi,
+        private val coroutineDispatchers: CoroutineDispatchers
 ) : ICollectionRepository {
 
     override fun getCollections(request: ApiRequest.Collections, scope: CoroutineScope): IBoundResource<List<Collection>> {
-        return NetworkBoundResource(coroutineDispatchers, apiCall = { collectionsApi.getPhotosAsync(request.page, request.perPage) })
+        return NetworkBoundResource(coroutineDispatchers, apiCall = { collectionsApi.getCollectionsAsync(request.page, request.perPage) }).launchIn(scope)
     }
 }

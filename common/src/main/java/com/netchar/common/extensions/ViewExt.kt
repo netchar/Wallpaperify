@@ -1,9 +1,8 @@
 package com.netchar.common.extensions
 
-import android.content.res.Resources
 import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
-import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 
@@ -39,12 +38,11 @@ fun Fragment.showToast(message: String, length: Int = Toast.LENGTH_LONG) {
     Toast.makeText(this.context, message, length).show()
 }
 
-val Int.dp get() = (this / Resources.getSystem().displayMetrics.density).toInt()
-
-val Int.px get() = (this * Resources.getSystem().displayMetrics.density).toInt()
-
 inline fun <reified T : View> T.postAction(action: T.() -> Unit) {
     action()
 }
 
-fun Fragment.getStringSafe(@StringRes res: Int?): String = res?.let { getString(it) } ?: ""
+fun ImageView.fitWidth(imageWidth: Int, imageHeight: Int) {
+    val scaleFactor = imageWidth.toFloat() / imageHeight
+    minimumHeight = (resources.displayMetrics.widthPixels / scaleFactor).toInt()
+}

@@ -13,8 +13,9 @@ import retrofit2.http.Query
  */
 
 interface CollectionsApi {
-    @GET("photos")
-    fun getPhotosAsync(
+
+    @GET("collections")
+    fun getCollectionsAsync(
             @Query("page") page: Int,
             @Query("per_page") per_page: Int
     ): Deferred<Response<List<Collection>>>

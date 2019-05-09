@@ -1,5 +1,7 @@
 package com.netchar.common.extensions
 
+import android.content.res.Resources
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
@@ -29,3 +31,9 @@ inline fun <reified TViewModel : ViewModel> injectViewModelOf(context: Fragment,
 }
 
 fun BaseFragment.setSupportActionBar(toolbar: Toolbar) = (activity as AppCompatActivity).setSupportActionBar(toolbar)
+
+val Int.dp get() = (this / Resources.getSystem().displayMetrics.density).toInt()
+
+val Int.px get() = (this * Resources.getSystem().displayMetrics.density).toInt()
+
+fun Fragment.getStringSafe(@StringRes res: Int?): String = res?.let { getString(it) } ?: ""

@@ -2,9 +2,6 @@ package com.netchar.wallpaperify.ui.home
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.netchar.common.base.BaseFragment
 import com.netchar.wallpaperify.R
@@ -19,30 +16,10 @@ class HomeFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val viewpager = view.findViewById<ViewPager>(R.id.pager)
-        viewpager.adapter = MyFragmentPagerAdapter(childFragmentManager).also {
-            it.addFragment(PhotosFragment(), "Latest")
-            it.addFragment(CollectionsFragment(), "Collections")
+        viewpager.adapter = HomeFragmentPagerAdapter(childFragmentManager).also {
+            it.addFragment(PhotosFragment(), getString(R.string.photos_fragment_title))
+            it.addFragment(CollectionsFragment(), getString(R.string.collections_fragment_title))
         }
         tabs.setupWithViewPager(viewpager)
-    }
-
-    class MyFragmentPagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
-        private val fragments = LinkedHashMap<Fragment, String>()
-
-        override fun getItem(position: Int): Fragment? {
-            return fragments.keys.elementAt(position)
-        }
-
-        override fun getCount(): Int {
-            return fragments.keys.size
-        }
-
-        fun addFragment(fragment: Fragment, title: String) {
-            fragments[fragment] = title
-        }
-
-        override fun getPageTitle(position: Int): CharSequence {
-            return fragments.values.elementAt(position)
-        }
     }
 }

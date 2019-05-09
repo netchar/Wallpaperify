@@ -24,8 +24,8 @@ import javax.inject.Inject
  */
 
 class PhotosViewModel @Inject constructor(
-    private val repository: IPhotosRepository,
-    dispatchers: CoroutineDispatchers
+        private val repository: IPhotosRepository,
+        dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers) {
 
     private val paging = Paging(startPage = 1)

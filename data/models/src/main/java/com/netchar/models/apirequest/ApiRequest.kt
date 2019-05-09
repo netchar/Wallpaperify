@@ -14,5 +14,5 @@ class ApiRequest {
     }
 
     data class Photos(val page: Int = 1, val order: Order = Order.LATEST, val perPage: Int = 30)
-    data class Collections(val page: Int = 1, val perPage: Int = 10)
+    data class Collections(val page: Int = 1, val perPage: Int = 15)
 }

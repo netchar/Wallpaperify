@@ -7,6 +7,6 @@ data class Links(
         val self: String = "",
         val html: String = "",
         val download: String = "",
-        @Json(name = "download_location")
+        @field:Json(name = "download_location")
         val downloadLocation: String = ""
 )

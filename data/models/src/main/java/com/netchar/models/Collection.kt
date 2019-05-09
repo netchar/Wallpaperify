@@ -2,6 +2,7 @@ package com.netchar.models
 
 
 import com.squareup.moshi.Json
+import se.ansman.kotshi.JsonSerializable
 
 /*
 {
@@ -91,22 +92,23 @@ import com.squareup.moshi.Json
   },
  */
 
+@JsonSerializable
 data class Collection(
         val id: Int = 0,
         val title: String = "",
         val description: String = "",
-        @Json(name = "published_at")
+        @field:Json(name = "published_at")
         val publishedAt: String = "",
-        @Json(name = "updated_at")
+        @field:Json(name = "updated_at")
         val updatedAt: String = "",
         val curated: Boolean = false,
-        @Json(name = "total_photos")
+        @field:Json(name = "total_photos")
         val totalPhotos: Int = 0,
-        @Json(name = "private")
+        @field:Json(name = "private")
         val isPrivate: Boolean = false,
-        @Json(name = "share_key")
+        @field:Json(name = "share_key")
         val shareKey: String = "",
-        @Json(name = "cover_photo")
+        @field:Json(name = "cover_photo")
         val coverPhoto: Photo = Photo(),
         val user: User = User(),
         val links: CollectionLinks = CollectionLinks()
