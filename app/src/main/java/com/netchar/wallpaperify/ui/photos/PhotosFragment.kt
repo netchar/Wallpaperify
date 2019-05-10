@@ -1,9 +1,6 @@
 package com.netchar.wallpaperify.ui.photos
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -55,7 +52,9 @@ class PhotosFragment : BaseFragment() {
     private fun setupViews() {
         latest_recycler.setHasFixedSize(true)
         latest_recycler.adapter = adapter
-        latest_swipe.setOnRefreshListener { viewModel.refresh() }
+        latest_swipe.setOnRefreshListener {
+            viewModel.refresh()
+        }
         photos_filter_spinner.setOnDropdownItemSelectedListener(object : IOnDropdownSelectedListener {
             override fun onDropdownItemSelected(position: Int, id: Long) {
                 val newOrder = ApiRequest.Order.getBy(position)

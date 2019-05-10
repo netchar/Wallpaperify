@@ -20,7 +20,7 @@ open class RecyclerDataSource(private val renderers: List<ItemRenderer>) {
         private set
 
     @MainThread
-    fun setData(newData: List<IRecyclerItem>) {
+    open fun setData(newData: List<IRecyclerItem>) {
         val diffResult = DiffUtil.calculateDiff(RecyclerDiffCallback(data, newData))
         seedData(newData)
         adapterReference.get()?.let {
