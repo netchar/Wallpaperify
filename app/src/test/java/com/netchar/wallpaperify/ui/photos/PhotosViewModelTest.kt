@@ -85,22 +85,6 @@ class PhotosViewModelTest {
     }
 
     @Test
-    fun `On init when success fetch should emit toast`() {
-        every { repo.getPhotos(any(), any()).getLiveData() } returns successResponseMock
-
-        val latestViewModel = PhotosViewModel(repo, dispatchersMock)
-        latestViewModel.photos.observeForever(photosObserver)
-        latestViewModel.toast.observeForever(toastObserver)
-
-        verify {
-            photosObserver.onChanged(successValue)
-            toastObserver.onChanged(any())
-        }
-
-        confirmVerified(photosObserver, toastObserver)
-    }
-
-    @Test
     fun `On init when error should emit error placeholder`() {
         every { repo.getPhotos(any(), any()).getLiveData() } returns errorResponseMock
 
@@ -340,6 +324,7 @@ class PhotosViewModelTest {
 
         verifyOrder {
             repo.getPhotos(any(), any())
+            orderingObserver.onChanged(ApiRequest.Order.LATEST)
             repo.getPhotos(expectedOrderByParameter, any())
             orderingObserver.onChanged(ApiRequest.Order.OLDEST)
         }

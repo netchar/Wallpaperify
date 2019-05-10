@@ -44,7 +44,6 @@ class BasicEndlessListViewModel<TModel> {
         when (response) {
             is Resource.Success -> {
                 items.value = response.data
-                toast.value = Message(R.string.latest_message_data_updated)
             }
             is Resource.Loading -> {
                 refreshing.value = response.isLoading

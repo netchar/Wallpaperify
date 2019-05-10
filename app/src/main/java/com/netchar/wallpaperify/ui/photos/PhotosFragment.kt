@@ -66,8 +66,6 @@ class PhotosFragment : BaseFragment() {
 
                 viewModel.orderBy(newOrder)
             }
-
-            private fun ApiRequest.Order?.isNullOrSame(newOrder: ApiRequest.Order) = this == null || this == newOrder
         })
     }
 
@@ -128,4 +126,5 @@ class PhotosFragment : BaseFragment() {
     }
 }
 
+fun ApiRequest.Order?.isNullOrSame(newOrder: ApiRequest.Order) = this == null || this == newOrder
 fun List<Photo>.asRecyclerItems() = map { PhotoRecyclerItem(it) }
