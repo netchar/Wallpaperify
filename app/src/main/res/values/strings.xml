@@ -40,5 +40,12 @@
     <string name="error_message_try_again_later">Something goes wrong. Try again later.</string>
     <string name="collection_item_author_prefix">by %1$s</string>
     <string name="collection_item_photo_count_postfix">%1$d Photos</string>
+    <string name="label_prompt_photos_filter">Sort by</string>
+
+    <string-array name="array_photos_ordering_spinner">
+        <item>Sort by latest</item>
+        <item>Sort by oldest</item>
+        <item>Sort by popular</item>
+    </string-array>
 
 </resources>

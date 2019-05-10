@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.netchar.common.base.BaseFragment
+import com.netchar.common.base.callbacs.IOnDropdownSelectedListener
 import com.netchar.common.extensions.*
 import com.netchar.common.poweradapter.adapter.EndlessRecyclerAdapter
 import com.netchar.common.poweradapter.adapter.EndlessRecyclerDataSource
@@ -43,21 +44,6 @@ class PhotosFragment : BaseFragment() {
         EndlessRecyclerAdapter(dataSource)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_latest, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.latest_menu_item_latest -> viewModel.orderBy(ApiRequest.Order.LATEST)
-            R.id.latest_menu_item_oldest -> viewModel.orderBy(ApiRequest.Order.OLDEST)
-            R.id.latest_menu_item_popular -> viewModel.orderBy(ApiRequest.Order.POPULAR)
-            else -> ApiRequest.Order.LATEST
-        }
-
-        return false
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = injectViewModel(viewModelFactory)
@@ -70,6 +56,20 @@ class PhotosFragment : BaseFragment() {
         latest_recycler.setHasFixedSize(true)
         latest_recycler.adapter = adapter
         latest_swipe.setOnRefreshListener { viewModel.refresh() }
+        photos_filter_spinner.setOnDropdownItemSelectedListener(object : IOnDropdownSelectedListener {
+            override fun onDropdownItemSelected(position: Int, id: Long) {
+                val newOrder = ApiRequest.Order.getBy(position)
+                val oldOrder = viewModel.ordering.value
+
+                if (oldOrder.isNullOrSame(newOrder)) {
+                    return
+                }
+
+                viewModel.orderBy(newOrder)
+            }
+
+            private fun ApiRequest.Order?.isNullOrSame(newOrder: ApiRequest.Order) = this == null || this == newOrder
+        })
     }
 
     private fun onLoadMoreItems() {
@@ -99,6 +99,10 @@ class PhotosFragment : BaseFragment() {
         viewModel.errorPlaceholder.observe(viewLifecycleOwner, Observer {
             toggleError(it)
         })
+
+        viewModel.ordering.observe(viewLifecycleOwner, Observer {
+            photos_filter_spinner.setSelection(it.ordinal)
+        })
     }
 
     private fun toggleError(error: ErrorMessage) {
@@ -116,7 +120,8 @@ class PhotosFragment : BaseFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        latest_recycler.adapter = null
+        // removing listeners from EndlessRecyclerAdapter
+        latest_recycler.detachAdapter()
     }
 
     private fun onItemClick(model: Photo) {

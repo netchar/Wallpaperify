@@ -28,7 +28,6 @@ class CollectionsFragment : BaseFragment() {
 
     override val layoutResId: Int = R.layout.fragment_collections
 
-
     private val dataSource: EndlessRecyclerDataSource by lazy {
         val renderer = CollectionRenderer(Glide.with(this), ::onItemClick)
         EndlessRecyclerDataSource(mutableListOf(renderer), ::onLoadMoreItems)
@@ -36,10 +35,6 @@ class CollectionsFragment : BaseFragment() {
 
     private val adapter: EndlessRecyclerAdapter by lazy {
         EndlessRecyclerAdapter(dataSource)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_latest, menu)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -106,7 +101,6 @@ class CollectionsFragment : BaseFragment() {
     private fun onItemClick(model: Collection) {
         findNavController().navigate(R.id.collectionDetailsFragment)
     }
-
 }
 
 fun List<Collection>.asRecyclerItems() = map { CollectionRecyclerItem(it) }

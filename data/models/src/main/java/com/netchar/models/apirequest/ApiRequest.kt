@@ -10,7 +10,11 @@ class ApiRequest {
     enum class Order(val value: String) {
         LATEST("latest"),
         OLDEST("oldest"),
-        POPULAR("popular")
+        POPULAR("popular");
+
+        companion object {
+            fun getBy(position: Int) = values()[position]
+        }
     }
 
     data class Photos(val page: Int = 1, val order: Order = Order.LATEST, val perPage: Int = 30)

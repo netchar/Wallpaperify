@@ -1,10 +1,14 @@
 package com.netchar.common.extensions
 
 import android.view.View
+import android.widget.AdapterView
 import android.widget.ImageView
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.netchar.common.base.callbacs.IOnDropdownSelectedListener
 
 
 /**
@@ -45,4 +49,20 @@ inline fun <reified T : View> T.postAction(action: T.() -> Unit) {
 fun ImageView.fitWidth(imageWidth: Int, imageHeight: Int) {
     val scaleFactor = imageWidth.toFloat() / imageHeight
     minimumHeight = (resources.displayMetrics.widthPixels / scaleFactor).toInt()
+}
+
+fun Spinner.setOnDropdownItemSelectedListener(callback: IOnDropdownSelectedListener) {
+    onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        override fun onNothingSelected(parent: AdapterView<*>?) {
+            /* ignore */
+        }
+
+        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            callback.onDropdownItemSelected(position, id)
+        }
+    }
+}
+
+fun RecyclerView.detachAdapter() {
+    adapter = null
 }

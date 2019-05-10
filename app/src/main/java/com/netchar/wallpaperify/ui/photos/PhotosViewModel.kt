@@ -24,6 +24,10 @@ class PhotosViewModel @Inject constructor(
         dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers) {
 
+    companion object {
+        val defaultOrdering = ApiRequest.Order.LATEST
+    }
+
     private val request = MediatorLiveData<ApiRequest.Photos>()
     private val listViewModel = BasicEndlessListViewModel<Photo>()
     private val _ordering = MutableLiveData<ApiRequest.Order>()
@@ -34,7 +38,9 @@ class PhotosViewModel @Inject constructor(
 
     init {
         addMediatorSources()
-        requestPhotos(listViewModel.paging.fromStart(), ApiRequest.Order.LATEST)
+
+        // will trigger to fetch data
+        orderBy(defaultOrdering)
     }
 
     val photos: LiveData<List<Photo>> get() = listViewModel.items

@@ -10,12 +10,12 @@ import com.netchar.common.poweradapter.EndlessRecyclerOnScrollListener
  */
 class EndlessRecyclerAdapter(dataSource: EndlessRecyclerDataSource) : RecyclerAdapter(dataSource) {
 
-    var loadMore: (() -> Unit)? = null
+    var loadMore: (() -> Unit) = {}
 
     private val endlessScrollListener by lazy {
         object : EndlessRecyclerOnScrollListener() {
             override fun onLoadMore() {
-                loadMore?.invoke()
+                loadMore.invoke()
             }
         }
     }
@@ -28,8 +28,5 @@ class EndlessRecyclerAdapter(dataSource: EndlessRecyclerDataSource) : RecyclerAd
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
         recyclerView.removeOnScrollListener(endlessScrollListener)
-        if (loadMore != null) {
-            loadMore = null
-        }
     }
 }
