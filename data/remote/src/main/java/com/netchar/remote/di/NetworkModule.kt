@@ -7,6 +7,7 @@ import com.netchar.common.di.OAuthInterceptor
 import com.netchar.common.extensions.notExist
 import com.netchar.common.utils.Memory
 import com.netchar.remote.ApplicationJsonAdapterFactory
+import com.netchar.remote.converters.ThreeTenConverter
 import com.netchar.remote.interceptors.ConnectivityInterceptor
 import com.squareup.moshi.Moshi
 import dagger.Module
@@ -72,8 +73,8 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideMoshi(): Moshi = Moshi.Builder()
-            .add(ApplicationJsonAdapterFactory.instance)
-            .add(com.netchar.remote.converters.ThreeTenConverter())
+            .add(ApplicationJsonAdapterFactory)
+            .add(ThreeTenConverter())
             .build()
 
     @JvmStatic

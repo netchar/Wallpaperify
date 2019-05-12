@@ -2,7 +2,6 @@ package com.netchar.models
 
 
 import com.squareup.moshi.Json
-import se.ansman.kotshi.JsonSerializable
 
 /*
 {
@@ -92,7 +91,6 @@ import se.ansman.kotshi.JsonSerializable
   },
  */
 
-@JsonSerializable
 data class Collection(
         val id: Int = 0,
         val title: String = "",
