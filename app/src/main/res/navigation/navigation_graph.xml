@@ -23,7 +23,14 @@
         android:id="@+id/photoDetailsFragment"
         android:name="com.netchar.wallpaperify.ui.photosdetails.PhotoDetailsFragment"
         android:label="@string/photo_details_fragment_title"
-        tools:layout="@layout/fragment_photo_details" />
+        tools:layout="@layout/fragment_photo_details" >
+        <argument
+            android:name="photoUrl"
+            app:argType="string" />
+        <argument
+            android:name="imageTransitionName"
+            app:argType="string" />
+    </fragment>
     <fragment
         android:id="@+id/collectionDetailsFragment"
         android:name="com.netchar.wallpaperify.ui.collectiondetails.CollectionDetailsFragment"
@@ -52,5 +59,9 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.netchar.wallpaperify.ui.home.HomeFragment"
-        android:label="@string/home_fragment_title" />
+        android:label="@string/home_fragment_title" >
+        <action
+            android:id="@+id/action_homeFragment_to_photoDetailsFragment"
+            app:destination="@id/photoDetailsFragment" />
+    </fragment>
 </navigation>

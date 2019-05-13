@@ -1,6 +1,8 @@
 package com.netchar.common.extensions
 
+import android.content.Context
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ImageView
 import android.widget.Spinner
@@ -65,4 +67,9 @@ fun Spinner.setOnDropdownItemSelectedListener(callback: IOnDropdownSelectedListe
 
 fun RecyclerView.detachAdapter() {
     adapter = null
+}
+
+fun View.closeSoftKeyboard() {
+    val imm = this.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(this.windowToken, 0)
 }

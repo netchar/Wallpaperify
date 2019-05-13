@@ -2,7 +2,9 @@ package com.netchar.wallpaperify.ui.photos
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
@@ -16,6 +18,7 @@ import com.netchar.models.apirequest.ApiRequest
 import com.netchar.models.uimodel.ErrorMessage
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.ViewModelFactory
+import com.netchar.wallpaperify.ui.home.HomeFragmentDirections
 import kotlinx.android.synthetic.main.fragment_photos.*
 import javax.inject.Inject
 
@@ -121,8 +124,12 @@ class PhotosFragment : BaseFragment() {
         latest_recycler.detachAdapter()
     }
 
-    private fun onItemClick(model: Photo) {
-        findNavController().navigate(R.id.photoDetailsFragment)
+    private fun onItemClick(model: Photo, imageView: ImageView) {
+        val extras = FragmentNavigatorExtras(
+                imageView to imageView.transitionName
+        )
+        val action = HomeFragmentDirections.actionHomeFragmentToPhotoDetailsFragment(model.urls.regular, imageView.transitionName)
+        findNavController().navigate(action, extras)
     }
 }
 
