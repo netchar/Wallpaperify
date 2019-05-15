@@ -57,7 +57,7 @@ class PhotosRenderer(private val glide: RequestManager, val listener: (Photo, Im
 
     private fun setupImage(itemView: View, photo: Photo) {
         val shimmer = ShimmerFactory.getShimmer()
-        itemView.row_photo_iv.transitionName = "photo_image_${photo.id}"
+        itemView.row_photo_iv.transitionName = photo.id
         with(itemView.row_photo_iv) {
             fitWidth(photo.width, photo.height)
             background = shimmer

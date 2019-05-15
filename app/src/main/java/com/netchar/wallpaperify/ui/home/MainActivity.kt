@@ -1,6 +1,7 @@
 package com.netchar.wallpaperify.ui.home
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.core.view.GravityCompat
 import androidx.navigation.NavController
@@ -28,13 +29,31 @@ class MainActivity : BaseActivity(), IDrawerActivity {
 
     override val appBarConfiguration: AppBarConfiguration by lazy(LazyThreadSafetyMode.NONE) {
         AppBarConfiguration.Builder(topLevelFragmentsIds)
-                .setDrawerLayout(drawer_layout)
-                .build()
+            .setDrawerLayout(drawer_layout)
+            .build()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         drawer_navigation_view.setupWithNavController(navigationController)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+
+//        main_navigation_fragment.view?.setOnApplyWindowInsetsListener { view, insets ->
+//            var consumed = false
+//
+//            (view as ViewGroup).forEach { child ->
+//                // Dispatch the insets to the child
+//                val childResult = child.dispatchApplyWindowInsets(insets)
+//                // If the child consumed the insets, record it
+//                if (childResult.isConsumed) {
+//                    consumed = true
+//                }
+//            }
+//
+//            // If any of the children consumed the insets, return
+//            // an appropriate value
+//            if (consumed) insets.consumeSystemWindowInsets() else insets
+//        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

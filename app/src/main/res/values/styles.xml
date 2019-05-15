@@ -8,7 +8,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="AppTheme.NoActionBar" parent="Base.Theme.NoActionBar"></style>
+    <style name="AppTheme.NoActionBar" parent="Base.Theme.NoActionBar">
+        <item name="android:statusBarColor">#80000000</item>
+        <item name="android:navigationBarColor">#80000000</item>
+    </style>
 
     <style name="AppTheme.AppBarOverlay" parent="Base.Theme.AppBarOverlay" />
 
