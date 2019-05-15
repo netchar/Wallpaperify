@@ -3,6 +3,7 @@ package com.netchar.wallpaperify.ui.photosdetails
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.updatePadding
 import androidx.transition.TransitionInflater
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -17,31 +18,18 @@ class PhotoDetailsFragment : BaseFragment() {
 
     override val layoutResId: Int = R.layout.fragment_photo_details
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        view.setOnApplyWindowInsetsListener { view2, insets ->
-////            var consumed = false
-////            (view2 as ViewGroup).forEach { child ->
-////                // Dispatch the insets to the child
-////                val childResult = child.dispatchApplyWindowInsets(insets)
-////                // If the child consumed the insets, record it
-////                if (childResult.isConsumed) {
-////                    consumed = true
-////                }
-////            }
-////
-////            // If any of the children consumed the insets, return
-////            // an appropriate value
-////            if (consumed) insets.consumeSystemWindowInsets() else insets
-////        }
 
-        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
-
-//        ViewCompat.setOnApplyWindowInsetsListener(view.toolbar) { v, insets ->
-//            v.updatePadding(top = insets.systemWindowInsetTop, bottom = 0)
-////            v.requestLayout()
-//            insets
-//        }
+        photo_details_constraint.setOnApplyWindowInsetsListener { _, windowInsets ->
+            toolbar?.updatePadding(top = windowInsets.systemWindowInsetTop, bottom = 0)
+            windowInsets.consumeSystemWindowInsets()
+        }
 
         arguments?.let {
             val safeArgs = PhotoDetailsFragmentArgs.fromBundle(it)
@@ -62,14 +50,6 @@ class PhotoDetailsFragment : BaseFragment() {
                     }
                 })
                 .into(photo_details_image)
-
-//            photo_details_image.setOnApplyWindowInsetsListener { view, windowInsets -> windowInsets }
-//            ViewCompat.requestApplyInsets(view)
-
-//            view.toolbar.setOnApplyWindowInsetsListener { v, windowInsets ->
-//                v.updatePadding(top = windowInsets.systemWindowInsetTop, bottom = 0)
-//                windowInsets
-//            }
         }
     }
 
