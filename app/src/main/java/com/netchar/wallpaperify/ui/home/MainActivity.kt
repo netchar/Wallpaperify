@@ -3,6 +3,7 @@ package com.netchar.wallpaperify.ui.home
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.core.view.GravityCompat
 import androidx.core.view.forEach

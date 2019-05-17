@@ -128,4 +128,6 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.core:core-ktx:1.0.2'
     implementation 'com.google.android.material:material:1.0.0'
+//    implementation 'androidx.transition:transition:1.2.0-alpha01'
+    implementation "com.andkulikov:transitionseverywhere:2.0.0-beta01"
 }
