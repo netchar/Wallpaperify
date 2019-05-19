@@ -11,6 +11,7 @@
     <style name="AppTheme.NoActionBar" parent="Base.Theme.NoActionBar">
         <item name="android:statusBarColor">#80000000</item>
         <item name="android:navigationBarColor">#80000000</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="Base.Theme.AppBarOverlay" />
