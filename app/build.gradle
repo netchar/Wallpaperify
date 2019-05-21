@@ -1,6 +1,8 @@
 apply plugin: 'com.android.application'
 apply from: '../commons-android.gradle'
 apply plugin: 'androidx.navigation.safeargs'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 def secretProperties = new Properties()
 secretProperties.load(project.rootProject.file('secret.properties').newDataInputStream())

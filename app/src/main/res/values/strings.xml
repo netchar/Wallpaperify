@@ -30,7 +30,7 @@
     <string name="trending_fragment_title">Trending</string>
     <string name="collections_fragment_title">Collections</string>
     <string name="settings_fragment_title">Settings</string>
-    <string name="photo_details_fragment_title">Photo Details</string>
+    <string name="photo_details_fragment_title"> </string>
     <string name="collection_details_fragment_title">Collection Details</string>
     <string name="photos_fragment_title">Photos</string>
     <string name="about_fragment_title">About</string>
