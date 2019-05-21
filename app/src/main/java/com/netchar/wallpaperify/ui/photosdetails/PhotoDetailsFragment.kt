@@ -3,9 +3,7 @@ package com.netchar.wallpaperify.ui.photosdetails
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
-import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.transition.*
 import com.bumptech.glide.Glide
@@ -76,20 +74,9 @@ class PhotoDetailsFragment : BaseFragment() {
 //        activity?.window?.navigationBarColor = Color.BLACK
         photo_details_coordinator.setOnApplyWindowInsetsListener { _, windowInsets ->
             toolbar?.updatePadding(top = windowInsets.systemWindowInsetTop, bottom = 0)
-//            toolbar?.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-//                topMargin = windowInsets.systemWindowInsetTop
-//            }
-            photo_details_bottom_sheet_layout.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                setMargins(0, 0, 0, windowInsets.systemWindowInsetBottom)
-            }
-//            photo_details_floating_action_btn.updatePadding(bottom = 0)
+            photo_details_bottom_sheet_layout.updatePadding(bottom = windowInsets.systemWindowInsetBottom)
             windowInsets.consumeSystemWindowInsets()
         }
-
-//
-//        photo_details_bottom_sheet.getConstraintSet(R.id.start)?.let { startConstraintSet ->
-//            startConstraintSet.constrainMinHeight(R.id.photo_details_bottom_sheet_layout, 500.dp)
-//        }
 
         arguments?.let {
             val safeArgs = PhotoDetailsFragmentArgs.fromBundle(it)
