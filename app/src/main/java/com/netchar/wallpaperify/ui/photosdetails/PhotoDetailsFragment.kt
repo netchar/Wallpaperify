@@ -22,6 +22,8 @@ class PhotoDetailsFragment : BaseFragment() {
     override val layoutResId: Int = R.layout.fragment_photo_details
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        activity?.setTheme(R.style.AppTheme_NoActionBar_TransparentSystemBar)
+
         super.onCreate(savedInstanceState)
 
         val transition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
@@ -41,7 +43,7 @@ class PhotoDetailsFragment : BaseFragment() {
                     first.addTransition(Fade())
                     first.duration = 250
                     first.interpolator = LinearInterpolator()
-                    first.addTarget(photo_details_bottom_sheet_layout)
+                    first.addTarget(photo_details_bottom_panel_constraint)
                     first.addTarget(it)
 
                     val second = TransitionSet()
@@ -55,7 +57,7 @@ class PhotoDetailsFragment : BaseFragment() {
 
                     TransitionManager.beginDelayedTransition(photo_details_coordinator, set)
 
-                    photo_details_bottom_sheet_layout.toVisible()
+                    photo_details_bottom_panel_constraint.toVisible()
                     photo_details_floating_action_btn.toVisible()
                     it.toVisible()
                 }
@@ -63,18 +65,19 @@ class PhotoDetailsFragment : BaseFragment() {
         })
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        activity?.setTheme(R.style.AppTheme_NoActionBar_SemiTransparentSystemBar)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        var flags = activity?.window?.decorView?.systemUiVisibility!!
-//        flags = flags xor View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-//        activity?.window?.decorView?.systemUiVisibility = flags
 
-//        activity?.window?.decorView?.systemUiVisibility  = flags
-//        activity?.window?.navigationBarColor = Color.BLACK
+
         photo_details_coordinator.setOnApplyWindowInsetsListener { _, windowInsets ->
             toolbar?.updatePadding(top = windowInsets.systemWindowInsetTop, bottom = 0)
-            photo_details_bottom_sheet_layout.updatePadding(bottom = windowInsets.systemWindowInsetBottom)
+            photo_details_bottom_panel_constraint.updatePadding(bottom = windowInsets.systemWindowInsetBottom)
             windowInsets.consumeSystemWindowInsets()
         }
 

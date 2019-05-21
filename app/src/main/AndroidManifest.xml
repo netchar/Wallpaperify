@@ -19,7 +19,7 @@
         <activity
                 android:name="com.netchar.wallpaperify.ui.home.MainActivity"
                 android:label="@string/app_name"
-                android:theme="@style/AppTheme.NoActionBar">
+                android:theme="@style/AppTheme.NoActionBar.SemiTransparentSystemBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <action android:name="android.intent.action.VIEW"/>

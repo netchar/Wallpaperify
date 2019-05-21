@@ -16,7 +16,7 @@
         tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/photo_details_bottom_sheet_layout"
+        android:id="@+id/photo_details_bottom_panel_constraint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
@@ -132,7 +132,7 @@
         android:visibility="invisible"
         app:backgroundTint="#FFF"
         app:fabSize="normal"
-        app:layout_anchor="@id/photo_details_bottom_sheet_layout"
+        app:layout_anchor="@id/photo_details_bottom_panel_constraint"
         app:layout_anchorGravity="top|right"
         app:useCompatPadding="true" />
 
