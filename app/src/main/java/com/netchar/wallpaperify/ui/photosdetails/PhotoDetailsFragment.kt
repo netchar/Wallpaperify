@@ -4,7 +4,7 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintSet
+import android.view.animation.LinearInterpolator
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.transition.*
@@ -25,101 +25,48 @@ class PhotoDetailsFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        val transition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
-//        transition.duration = 2000
-//        transition.interpolator = BounceInterpolator()
-        val transition = TransitionSet()
-        transition.duration = 250
-        transition.addTransition(ChangeBounds())
-        transition.addTransition(ChangeTransform())
-        transition.addTransition(ChangeClipBounds())
-        transition.addTransition(ChangeImageTransform())
+
+        val transition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+        transition.duration = 200
 
         sharedElementEnterTransition = transition
-//        val enterTrans = Fade()
-//        enterTrans.duration = 1000
-//        enterTrans.interpolator = AccelerateDecelerateInterpolator()
-//        enterTransition = enterTrans
 
-//        exitTransition= TransitionInflater.from(context).inflateTransition(android.R.transition.explode)
         transition.addListener(object : TransitionListenerAdapter() {
 
             override fun onTransitionEnd(transition: Transition) {
 
                 toolbar?.let {
-                    //                    val toolbarSet = TransitionSet().apply {
-//                        addTransition(Fade())
-//                        addTarget(it)
-//                        addTarget(photo_details_bottom_sheet_layout)
-//                    }
-//                    TransitionManager.beginDelayedTransition(photo_details_coordinator, toolbarSet)
-//                    it.toVisible()
-//                    photo_details_bottom_sheet_layout.toVisible()
 
                     val set = TransitionSet()
 
-                    val first = Scale(0.3f)
-                    first.addTarget(photo_details_floating_action_btn)
+                    val first = TransitionSet()
+                    first.addTransition(Fade())
+                    first.duration = 250
+                    first.interpolator = LinearInterpolator()
+                    first.addTarget(photo_details_bottom_sheet_layout)
+                    first.addTarget(it)
 
-                    val second = Fade()
-                    second.addTarget(it)
+                    val second = TransitionSet()
+                    second.addTransition(Scale(0.2f))
+                    second.addTransition(Fade())
+                    second.addTarget(photo_details_floating_action_btn)
 
-
-                    val third = ChangeBounds()
-                    third.addTarget(photo_details_bottom_sheet_layout)
-
-                    set.setOrdering(TransitionSet.ORDERING_TOGETHER)
-                            .addTransition(first)
-                            .addTransition(second)
-                            .addTransition(third)
+                    set.setOrdering(TransitionSet.ORDERING_SEQUENTIAL)
+                        .addTransition(first)
+                        .addTransition(second)
 
                     TransitionManager.beginDelayedTransition(photo_details_coordinator, set)
 
+                    photo_details_bottom_sheet_layout.toVisible()
                     photo_details_floating_action_btn.toVisible()
                     it.toVisible()
-                    photo_details_bottom_sheet_layout.translationY = 0f
-
-//                    val ss = ConstraintSet()
-//                    ss.setTranslationY(photo_details_bottom_sheet_layout.id, -400f)
-//                    ss.applyTo(photo_details_bottom_sheet_layout)
                 }
             }
         })
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-//        val flags = activity?.window?.decorView?.systemUiVisibility!!
-//        activity?.window?.decorView?.systemUiVisibility = flags or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-//        activity?.window?.navigationBarColor = getThemeAttrColor(context!!, android.R.attr.navigationBarColor)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-//        view.setOnApplyWindowInsetsListener { view, insets ->
-//            var consumed = false
-//
-//            (view as ViewGroup).forEach { child ->
-//                // Dispatch the insets to the child
-//                val childResult = child.dispatchApplyWindowInsets(insets)
-//                // If the child consumed the insets, record it
-//                if (childResult.isConsumed) {
-//                    consumed = true
-//                }
-//            }
-//
-//            // If any of the children consumed the insets, return
-//            // an appropriate value
-//            if (consumed) insets.consumeSystemWindowInsets() else insets
-//        }
-
-
-//        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-//        photo_details_coordinator.setOnApplyWindowInsetsListener { v, insets ->
-//            insets
-//        }
-//        photo_details_coordinator.requestApplyInsetsWhenAttached()
 
 //        var flags = activity?.window?.decorView?.systemUiVisibility!!
 //        flags = flags xor View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -129,6 +76,9 @@ class PhotoDetailsFragment : BaseFragment() {
 //        activity?.window?.navigationBarColor = Color.BLACK
         photo_details_coordinator.setOnApplyWindowInsetsListener { _, windowInsets ->
             toolbar?.updatePadding(top = windowInsets.systemWindowInsetTop, bottom = 0)
+//            toolbar?.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+//                topMargin = windowInsets.systemWindowInsetTop
+//            }
             photo_details_bottom_sheet_layout.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 setMargins(0, 0, 0, windowInsets.systemWindowInsetBottom)
             }
@@ -147,49 +97,19 @@ class PhotoDetailsFragment : BaseFragment() {
             photo_details_image.transitionName = safeArgs.imageTransitionName
 
             Glide.with(this)
-                    .load(safeArgs.photoUrl)
-                    .listener(object : RequestListener<Drawable> {
-                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                            startPostponedEnterTransition()
-                            return false
-                        }
+                .load(safeArgs.photoUrl)
+                .listener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                        startPostponedEnterTransition()
+                        return false
+                    }
 
-                        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                            startPostponedEnterTransition()
-                            return false
-                        }
-                    })
-                    .into(photo_details_image)
-
-
-//            view.dispatchApplyWindowInsets(activity!!.window.decorView.rootWindowInsets)
-
-//            val bottomSheetBehavior = BottomSheetBehavior.from(photo_details_bottom_sheet)
-//            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-//            bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-//                override fun onStateChanged(bottomSheet: View, newState: Int) {
-//                    when (newState) {
-//                        BottomSheetBehavior.STATE_EXPANDED -> {
-////                            textBottom.text = getString(R.string.slide_down)
-//                            //textFull.visibility = View.VISIBLE
-//                        }
-//                        BottomSheetBehavior.STATE_COLLAPSED -> {
-////                            textBottom.text = getString(R.string.slide_up)
-//                            //textFull.visibility = View.GONE
-//                        }
-//                    }
-//                }
-//
-//                override fun onSlide(bottomSheet: View, slideOffset: Float) {
-//
-//                }
-//            })
+                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                        startPostponedEnterTransition()
+                        return false
+                    }
+                })
+                .into(photo_details_image)
         }
     }
-
-//    private fun AnimateEnter() {
-//        val constraintSet = ConstraintSet()
-//        constraintSet.clone(context!!, R.layout.fragment_photo_details)
-//    }
-
 }

@@ -7,22 +7,13 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-
-    <!--<androidx.constraintlayout.widget.ConstraintLayout-->
-        <!--android:id="@+id/photo_details_bottom_sheet"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:background="#242424"-->
-        <!--android:visibility="visible">-->
-
-        <ImageView
-            android:id="@+id/photo_details_image"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            android:scaleType="centerCrop"
-            tools:srcCompat="@tools:sample/backgrounds/scenic" />
-
+    <ImageView
+        android:id="@+id/photo_details_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:scaleType="centerCrop"
+        tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/photo_details_bottom_sheet_layout"
@@ -31,7 +22,7 @@
         android:layout_gravity="bottom"
         android:background="#80000000"
         android:minHeight="100dp"
-        android:translationY="100dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -107,13 +98,13 @@
             tools:text="1200" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-    <!--</androidx.constraintlayout.widget.ConstraintLayout>-->
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
+        android:background="@drawable/layer_background_gradient_toolbar"
+        android:elevation="0dp"
         android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
         android:visibility="invisible"
@@ -130,9 +121,9 @@
         android:layout_marginEnd="8dp"
         android:src="@drawable/ic_expand_more"
         android:tint="#000"
+        android:visibility="invisible"
         app:backgroundTint="#FFF"
         app:fabSize="normal"
-        android:visibility="invisible"
         app:layout_anchor="@id/photo_details_bottom_sheet_layout"
         app:layout_anchorGravity="top|right"
         app:useCompatPadding="true" />
