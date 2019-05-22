@@ -3,6 +3,9 @@ package com.netchar.wallpaperify.ui.photosdetails
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.animation.LinearInterpolator
 import androidx.appcompat.widget.Toolbar
@@ -14,6 +17,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.netchar.common.base.BaseFragment
+import com.netchar.common.extensions.showToast
 import com.netchar.common.extensions.toVisible
 import com.netchar.common.utils.getThemeAttrColor
 import com.netchar.wallpaperify.R
@@ -33,6 +37,7 @@ class PhotoDetailsFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        setHasOptionsMenu(true)
         sharedElementEnterTransition = sharedElementEnterTransitionSet
         sharedElementEnterTransitionSet.addListener(transitionListenerAdapter)
     }
@@ -76,6 +81,20 @@ class PhotoDetailsFragment : BaseFragment() {
                     })
                     .into(photo_details_image)
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_photo_details, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.photo_details_share_menu_item -> {
+                showToast("Share")
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private val transitionListenerAdapter = object : TransitionListenerAdapter() {

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/photo_details_share_menu_item"
+        android:icon="?attr/actionModeShareDrawable"
+        android:title="@string/photo_details_menu_share"
+        app:showAsAction="always" />
+</menu>
