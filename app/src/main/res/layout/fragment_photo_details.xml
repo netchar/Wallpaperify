@@ -42,8 +42,7 @@
             android:textColor="#FFF"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="A man drinking a coffee. A man drinking a coffee. A man drinking a coffee. A man drinking a coffee." />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/photo_details_author_img"
@@ -71,30 +70,38 @@
             app:layout_constraintTop_toTopOf="@+id/photo_details_author_img"
             tools:text="by Gaelle Marcel" />
 
-        <TextView
+        <com.netchar.common.views.CompoundDrawableTextView
             android:id="@+id/photo_details_likes_txt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="16dp"
             android:backgroundTintMode="src_atop"
-            android:drawableLeft="@drawable/ic_thumb_up"
-            android:drawablePadding="4dp"
+            android:drawablePadding="8dp"
             android:gravity="center_vertical"
+            android:minHeight="24dp"
             android:text="32"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
             android:textColor="#fff"
+            app:compoundDrawableHeight="16dp"
+            app:compoundDrawableWidth="16dp"
+            app:drawableStartVector="@drawable/ic_thumb_up"
+            app:drawableTint="@color/white"
             app:layout_constraintBottom_toBottomOf="@+id/photo_details_photo_by_txt"
             app:layout_constraintEnd_toStartOf="@+id/photo_details_total_downloads_txt"
             app:layout_constraintTop_toTopOf="@+id/photo_details_photo_by_txt"
             tools:text="32" />
 
-        <TextView
+        <com.netchar.common.views.CompoundDrawableTextView
             android:id="@+id/photo_details_total_downloads_txt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:drawableLeft="@drawable/ic_file_download"
-            android:drawablePadding="4dp"
+            android:minHeight="24dp"
+            app:drawableStartVector="@drawable/ic_file_download"
+            app:compoundDrawableHeight="18dp"
+            app:compoundDrawableWidth="18dp"
+            app:drawableTint="@color/white"
+            android:drawablePadding="8dp"
             android:gravity="center_vertical"
             android:text="1200"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
