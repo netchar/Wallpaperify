@@ -138,8 +138,9 @@
             android:id="@+id/fab_overlay"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#30ffffff"
-            android:visibility="gone" />
+            android:background="#35ffffff"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/photo_details_floating_download"

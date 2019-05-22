@@ -110,13 +110,13 @@ class PhotoDetailsFragment : BaseFragment() {
         photo_details_floating_action_btn.animate().setInterpolator(interpolator).rotation(180f).setDuration(300).start()
 
         photo_details_floating_download.animate().translationY(0f).alpha(1f).setInterpolator(interpolator).setDuration(300).start()
-        textView3.animate().translationX(0f).alpha(1f).setInterpolator(interpolator).setDuration(300).start()
+        textView3.animate().setStartDelay(0).translationX(0f).alpha(1f).setInterpolator(interpolator).setDuration(300).start()
 
         photo_details_floating_raw.animate().translationY(0f).alpha(1f).setInterpolator(interpolator).setDuration(300).start()
-        textView4.animate().translationX(0f).alpha(1f).setInterpolator(interpolator).setDuration(300).start()
+        textView4.animate().setStartDelay(50).translationX(0f).alpha(1f).setInterpolator(interpolator).setDuration(300).start()
 
         photo_details_floating_wallpaper.animate().translationY(0f).alpha(1f).setInterpolator(interpolator).setDuration(300).start()
-        textView5.animate().translationX(0f).alpha(1f).setInterpolator(interpolator).setDuration(300).start()
+        textView5.animate().setStartDelay(100).translationX(0f).alpha(1f).setInterpolator(interpolator).setDuration(300).start()
 
         TransitionManager.beginDelayedTransition(photo_details_main_constraint)
         fab_overlay.toVisible()
@@ -165,6 +165,7 @@ class PhotoDetailsFragment : BaseFragment() {
 
         setTransparentStatusBars()
         applyWindowsInsets()
+        disableToolbarTitle()
         initFabs()
 
         arguments?.let { args ->
@@ -207,6 +208,10 @@ class PhotoDetailsFragment : BaseFragment() {
         }
     }
 
+    private fun disableToolbarTitle() {
+        fragmentToolbar?.title = ""
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_photo_details, menu)
         super.onCreateOptionsMenu(menu, inflater)
@@ -219,6 +224,16 @@ class PhotoDetailsFragment : BaseFragment() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onBackPressed(): Boolean {
+
+        if (isMenuOpen) {
+            closeMenu()
+            return true
+        }
+
+        return false
     }
 
     private val transitionListenerAdapter = object : TransitionListenerAdapter() {
