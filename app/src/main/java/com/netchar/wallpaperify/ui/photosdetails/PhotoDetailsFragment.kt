@@ -24,6 +24,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.LinearInterpolator
+import android.view.animation.OvershootInterpolator
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.updatePadding
 import androidx.transition.*
@@ -34,13 +35,18 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.netchar.common.base.BaseFragment
 import com.netchar.common.extensions.showToast
+import com.netchar.common.extensions.toGone
 import com.netchar.common.extensions.toVisible
 import com.netchar.common.utils.getThemeAttrColor
 import com.netchar.wallpaperify.R
 import com.transitionseverywhere.extra.Scale
 import kotlinx.android.synthetic.main.fragment_photo_details.*
 
+
 class PhotoDetailsFragment : BaseFragment() {
+
+    private var isMenuOpen: Boolean = false
+    var interpolator = OvershootInterpolator()
 
     override val layoutResId: Int = R.layout.fragment_photo_details
 
@@ -70,17 +76,119 @@ class PhotoDetailsFragment : BaseFragment() {
         restoreStatusBarsThemeColors()
     }
 
+    private val initialFabTranslationY = 100f
+
+    fun initFabs() {
+        photo_details_floating_download.alpha = 0f
+        photo_details_floating_raw.alpha = 0f
+        photo_details_floating_wallpaper.alpha = 0f
+        textView3.alpha = 0f
+        textView4.alpha = 0f
+        textView5.alpha = 0f
+
+        textView3.translationX = initialFabTranslationY * 2
+        textView4.translationX = initialFabTranslationY * 2
+        textView5.translationX = initialFabTranslationY * 2
+
+        photo_details_floating_download.translationY = initialFabTranslationY
+        photo_details_floating_raw.translationY = initialFabTranslationY
+        photo_details_floating_wallpaper.translationY = initialFabTranslationY
+
+        photo_details_floating_download.setOnClickListener(fabClickListener)
+        photo_details_floating_raw.setOnClickListener(fabClickListener)
+        photo_details_floating_wallpaper.setOnClickListener(fabClickListener)
+
+        photo_details_floating_action_btn.setOnClickListener(fabClickListener)
+        fab_overlay.setOnClickListener(fabClickListener)
+
+        fab_overlay.toGone()
+    }
+
+    private fun openMenu() {
+        isMenuOpen = !isMenuOpen
+
+        photo_details_floating_action_btn.animate().setInterpolator(interpolator).rotation(180f).setDuration(300).start()
+
+        photo_details_floating_download.animate().translationY(0f).alpha(1f).setInterpolator(interpolator).setDuration(300).start()
+        textView3.animate().translationX(0f).alpha(1f).setInterpolator(interpolator).setDuration(300).start()
+
+        photo_details_floating_raw.animate().translationY(0f).alpha(1f).setInterpolator(interpolator).setDuration(300).start()
+        textView4.animate().translationX(0f).alpha(1f).setInterpolator(interpolator).setDuration(300).start()
+
+        photo_details_floating_wallpaper.animate().translationY(0f).alpha(1f).setInterpolator(interpolator).setDuration(300).start()
+        textView5.animate().translationX(0f).alpha(1f).setInterpolator(interpolator).setDuration(300).start()
+
+        TransitionManager.beginDelayedTransition(photo_details_main_constraint)
+        fab_overlay.toVisible()
+    }
+
+    private fun closeMenu() {
+        isMenuOpen = !isMenuOpen
+
+        photo_details_floating_action_btn.animate().setInterpolator(interpolator).rotation(0f).setDuration(300).start()
+
+        photo_details_floating_download.animate().translationY(initialFabTranslationY).alpha(0f).setInterpolator(interpolator).setDuration(300).start()
+        textView3.animate().translationX(initialFabTranslationY * 2).alpha(0f).setInterpolator(interpolator).setDuration(300).start()
+
+        photo_details_floating_raw.animate().translationY(initialFabTranslationY).alpha(0f).setInterpolator(interpolator).setDuration(300).start()
+        textView4.animate().translationX(initialFabTranslationY * 2).alpha(0f).setInterpolator(interpolator).setDuration(300).start()
+
+        photo_details_floating_wallpaper.animate().translationY(initialFabTranslationY).alpha(0f).setInterpolator(interpolator).setDuration(300).start()
+        textView5.animate().translationX(initialFabTranslationY * 2).alpha(0f).setInterpolator(interpolator).setDuration(300).start()
+
+        TransitionManager.beginDelayedTransition(photo_details_main_constraint)
+        fab_overlay.toGone()
+    }
+
+    private val fabClickListener = View.OnClickListener {
+        //        when (it.id) {
+//            R.id.photo_details_menu_item_wallpaper -> {
+//                showToast("Wallpaper")
+//            }
+//            R.id.photo_details_menu_item_raw -> {
+//                showToast("Raw")
+//            }
+//            R.id.photo_details_menu_item_download -> {
+//                showToast("Download")
+//            }
+//        }
+        if (isMenuOpen) {
+            closeMenu()
+        } else {
+            openMenu()
+        }
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setTransparentStatusBars()
         applyWindowsInsets()
+        initFabs()
 
         arguments?.let { args ->
             postponeEnterTransition()
             val safeArgs = PhotoDetailsFragmentArgs.fromBundle(args)
             photo_details_image.transitionName = safeArgs.imageTransitionName
+
+//            photo_details_floating_action_btn.inflate(R.menu.menu_photo_details_fab)
+//            photo_details_floating_action_btn.setOnActionSelectedListener { actionItem ->
+//                when (actionItem.id) {
+//                    R.id.photo_details_menu_item_wallpaper -> {
+//                        showToast("Wallpaper")
+//                    }
+//                    R.id.photo_details_menu_item_raw -> {
+//                        showToast("Raw")
+//                    }
+//                    R.id.photo_details_menu_item_download -> {
+//                        showToast("Download")
+//                    }
+//                }
+//
+//                photo_details_floating_action_btn.close(true)
+//                true
+//            }
 
             Glide.with(this)
                     .load(safeArgs.photoUrl)
