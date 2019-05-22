@@ -42,6 +42,9 @@
     <string name="collection_item_photo_count_postfix">%1$d Photos</string>
     <string name="label_prompt_photos_filter">Sort by</string>
     <string name="photo_details_menu_share">Share photo</string>
+    <string name="photo_details_floating_label_title_raw">Original Photo</string>
+    <string name="photo_details_floating_label_title_wallpaper">Set As Wallpaper</string>
+    <string name="photo_details_floating_label_title_download">Download</string>
 
     <string-array name="array_photos_ordering_spinner">
         <item>Sort by latest</item>
