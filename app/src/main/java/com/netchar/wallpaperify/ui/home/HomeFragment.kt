@@ -28,7 +28,7 @@ class HomeFragment : BaseFragment() {
     }
 
     private fun applyWindowInsetsForToolbarOnly() {
-        this.toolbar?.setOnApplyWindowInsetsListener { toolbar, windowInsets ->
+        this.fragmentToolbar?.setOnApplyWindowInsetsListener { toolbar, windowInsets ->
             toolbar.updatePadding(top = windowInsets.systemWindowInsetTop, bottom = 0)
             // consuming insets will stop propagating them to other children
             windowInsets.consumeSystemWindowInsets()
