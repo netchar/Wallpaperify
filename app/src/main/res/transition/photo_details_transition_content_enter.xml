@@ -18,7 +18,7 @@
     android:transitionOrdering="sequential">
 
     <transitionSet
-        android:duration="@android:integer/config_mediumAnimTime"
+        android:duration="@android:integer/config_shortAnimTime"
         android:interpolator="@android:interpolator/fast_out_slow_in"
         android:transitionOrdering="sequential">
 
@@ -26,8 +26,6 @@
         <targets>
             <target android:targetId="@+id/toolbar"/>
             <target android:targetId="@+id/photo_details_bottom_panel_background_overlay"/>
-            <target android:targetId="@+id/photo_details_bottom_panel_constraint"/>
-
         </targets>
     </transitionSet>
 

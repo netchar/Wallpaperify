@@ -8,12 +8,12 @@
     android:fitsSystemWindows="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/photo_details_main_constraint"
+        android:id="@+id/photo_details_constraint_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/photo_details_image"
+            android:id="@+id/photo_details_iv_photo"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
@@ -30,20 +30,20 @@
             android:layout_height="0dp"
             android:background="#80000000"
             android:visibility="gone"
-            app:layout_constraintTop_toTopOf="@+id/photo_details_bottom_panel_constraint"
+            app:layout_constraintTop_toTopOf="@+id/photo_details_constraint_bottom_panel"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/photo_details_bottom_panel_constraint"
+            android:id="@+id/photo_details_constraint_bottom_panel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:clipToPadding="true"
             android:minHeight="120dp"
             android:paddingBottom="16dp"
-            android:visibility="gone"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -57,7 +57,7 @@
                 app:layout_constraintGuide_percent="0.81" />
 
             <TextView
-                android:id="@+id/photo_details_description"
+                android:id="@+id/photo_details_tv_description"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="16dp"
@@ -89,12 +89,12 @@
                 android:layout_marginTop="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/photo_details_description"
+                app:layout_constraintTop_toBottomOf="@+id/photo_details_tv_description"
                 app:layout_goneMarginTop="16dp"
                 tools:srcCompat="@tools:sample/avatars" />
 
             <TextView
-                android:id="@+id/photo_details_photo_by_txt"
+                android:id="@+id/photo_details_tv_photo_by"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -102,13 +102,13 @@
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                 android:textColor="#FFF"
                 app:layout_constraintBottom_toBottomOf="@+id/photo_details_author_img"
-                app:layout_constraintEnd_toStartOf="@+id/photo_details_likes_txt"
+                app:layout_constraintEnd_toStartOf="@+id/photo_details_tv_likes"
                 app:layout_constraintStart_toEndOf="@+id/photo_details_author_img"
                 app:layout_constraintTop_toTopOf="@+id/photo_details_author_img"
                 tools:text="by Gaelle Marcel" />
 
             <com.netchar.common.views.CompoundDrawableTextView
-                android:id="@+id/photo_details_likes_txt"
+                android:id="@+id/photo_details_tv_likes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
@@ -122,12 +122,12 @@
                 app:compoundDrawableWidth="16dp"
                 app:drawableStartVector="@drawable/ic_thumb_up"
                 app:drawableTint="@color/white"
-                app:layout_constraintBottom_toBottomOf="@+id/photo_details_photo_by_txt"
-                app:layout_constraintEnd_toStartOf="@+id/photo_details_total_downloads_txt"
-                app:layout_constraintTop_toTopOf="@+id/photo_details_photo_by_txt" />
+                app:layout_constraintBottom_toBottomOf="@+id/photo_details_tv_photo_by"
+                app:layout_constraintEnd_toStartOf="@+id/photo_details_tv_total_downloads"
+                app:layout_constraintTop_toTopOf="@+id/photo_details_tv_photo_by" />
 
             <com.netchar.common.views.CompoundDrawableTextView
-                android:id="@+id/photo_details_total_downloads_txt"
+                android:id="@+id/photo_details_tv_total_downloads"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
@@ -141,26 +141,29 @@
                 app:compoundDrawableWidth="18dp"
                 app:drawableStartVector="@drawable/ic_file_download"
                 app:drawableTint="@color/white"
-                app:layout_constraintBottom_toBottomOf="@+id/photo_details_likes_txt"
+                app:layout_constraintBottom_toBottomOf="@+id/photo_details_tv_likes"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/photo_details_likes_txt" />
-
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/photo_details_loading_shimmer"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:duration="800"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="gone">
-
-                <include layout="@layout/view_photo_details_shimmer" />
-
-            </com.facebook.shimmer.ShimmerFrameLayout>
+                app:layout_constraintTop_toTopOf="@+id/photo_details_tv_likes" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/photo_details_loading_shimmer"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:shimmer_duration="2000"
+            app:shimmer_intensity="0.3"
+            app:shimmer_base_alpha="0.75"
+            app:shimmer_fixed_height="120dp"
+            app:layout_constraintBottom_toBottomOf="@id/photo_details_constraint_bottom_panel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/photo_details_constraint_bottom_panel"
+            tools:visibility="visible">
+
+            <include layout="@layout/view_photo_details_shimmer" />
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
 
         <View
             android:id="@+id/fab_overlay"
@@ -274,11 +277,11 @@
             android:visibility="invisible"
             app:backgroundTint="#FFF"
             app:fabSize="normal"
-            app:layout_anchor="@id/photo_details_bottom_panel_constraint"
+            app:layout_anchor="@id/photo_details_constraint_bottom_panel"
             app:layout_anchorGravity="top|right"
-            app:layout_constraintBottom_toTopOf="@+id/photo_details_bottom_panel_constraint"
+            app:layout_constraintBottom_toTopOf="@+id/photo_details_constraint_bottom_panel"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/photo_details_bottom_panel_constraint"
+            app:layout_constraintTop_toTopOf="@+id/photo_details_constraint_bottom_panel"
             app:useCompatPadding="true"
             tools:visibility="visible" />
 

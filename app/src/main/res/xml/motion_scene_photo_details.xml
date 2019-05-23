@@ -9,13 +9,13 @@
         motion:duration="1000"
         motion:motionInterpolator="linear">
         <OnSwipe
-            motion:touchAnchorId="@+id/photo_details_bottom_panel_constraint"
+            motion:touchAnchorId="@+id/photo_details_constraint_bottom_panel"
             motion:touchAnchorSide="top" />
     </Transition>
 
     <ConstraintSet android:id="@+id/start">
         <Constraint
-            android:id="@id/photo_details_bottom_panel_constraint"
+            android:id="@id/photo_details_constraint_bottom_panel"
             android:layout_width="match_parent"
             android:layout_height="90dp"
             motion:layout_constraintBottom_toBottomOf="parent">
@@ -32,7 +32,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             motion:layout_constraintStart_toStartOf="parent"
-            motion:layout_constraintTop_toBottomOf="@+id/photo_details_description"
+            motion:layout_constraintTop_toBottomOf="@+id/photo_details_tv_description"
             motion:srcCompat="@android:drawable/sym_def_app_icon">
             <!--<CustomAttribute-->
                 <!--motion:attributeName="textColor"-->
@@ -51,7 +51,7 @@
 
     <ConstraintSet android:id="@+id/end">
         <Constraint
-            android:id="@id/photo_details_bottom_panel_constraint"
+            android:id="@id/photo_details_constraint_bottom_panel"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             motion:layout_constraintBottom_toBottomOf="parent"
@@ -67,7 +67,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             motion:layout_constraintStart_toStartOf="parent"
-            motion:layout_constraintTop_toBottomOf="@+id/photo_details_description"
+            motion:layout_constraintTop_toBottomOf="@+id/photo_details_tv_description"
             motion:srcCompat="@android:drawable/sym_def_app_icon">
             <!--<CustomAttribute-->
             <!--motion:attributeName="textColor"-->

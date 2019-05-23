@@ -27,7 +27,6 @@ import androidx.core.view.updatePadding
 import androidx.lifecycle.Observer
 import androidx.transition.Transition
 import androidx.transition.TransitionInflater
-import androidx.transition.TransitionListenerAdapter
 import androidx.transition.TransitionManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -59,56 +58,37 @@ class PhotoDetailsFragment : BaseFragment() {
 
     override val layoutResId: Int = R.layout.fragment_photo_details
 
-    private val sharedElementEnterTransitionSet: Transition by lazy {
-        TransitionInflater.from(context).inflateTransition(android.R.transition.move).apply {
-            duration = 200
-        }
+    private val safeArguments: PhotoDetailsFragmentArgs by lazy {
+        PhotoDetailsFragmentArgs.fromBundle(arguments!!)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setHasOptionsMenu(true)
-        sharedElementEnterTransition = sharedElementEnterTransitionSet
-        sharedElementEnterTransitionSet.addListener(transitionListenerAdapter)
+        postponeEnterTransition()
+        sharedElementEnterTransition = getEnterTransitionAnimation()
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        arguments?.let { args ->
-            val safeArgs = PhotoDetailsFragmentArgs.fromBundle(args)
+        viewModel = injectViewModel(viewModelFactory)
 
-            startShimmer()
-
-            viewModel = injectViewModel(viewModelFactory)
-
-            setTransparentStatusBars()
-            applyWindowsInsets()
-            disableToolbarTitle()
-            initFabs()
-            initViews(safeArgs)
-            observe()
-
-            viewModel.fetchPhoto(safeArgs.photoId)
-        }
+        setTransparentStatusBars()
+        applyWindowsInsets()
+        disableToolbarTitle()
+        initFabs()
+        initViews()
+        observe()
     }
 
-    private fun initViews(safeArgs: PhotoDetailsFragmentArgs) {
-        postponeEnterTransition()
-
-        photo_details_likes_txt.toGone()
-        photo_details_total_downloads_txt.toGone()
-        photo_details_photo_by_txt.toGone()
-        photo_details_description.toGone()
-        photo_details_author_img.toInvisible()
-
-        photo_details_image.transitionName = safeArgs.imageTransitionName
+    private fun initViews() {
+        photo_details_iv_photo.transitionName = safeArguments.imageTransitionName
         Glide.with(this)
-                .load(safeArgs.photoUrl)
-                .listener(photoTransitionRequestListener)
-                .into(photo_details_image)
+            .load(safeArguments.photoUrl)
+            .listener(photoTransitionRequestListener)
+            .into(photo_details_iv_photo)
 
     }
 
@@ -117,49 +97,44 @@ class PhotoDetailsFragment : BaseFragment() {
         photo_details_loading_shimmer.startShimmer()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-
-        sharedElementEnterTransitionSet.removeListener(transitionListenerAdapter)
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
 
         restoreStatusBarsThemeColors()
-        stopShimmer()
     }
 
     private fun observe() {
         viewModel.photo.observe(viewLifecycleOwner, Observer { photo ->
+            TransitionManager.beginDelayedTransition(photo_details_constraint_main)
+
             Glide.with(this)
-                    .load(photo.user.profileImage.small)
-                    .transform(CircleCrop())
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .error(R.drawable.ic_person)
-                    .into(photo_details_author_img)
+                .load(photo.user.profileImage.small)
+                .transform(CircleCrop())
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .error(R.drawable.ic_person)
+                .into(photo_details_author_img)
 
-            TransitionManager.beginDelayedTransition(photo_details_main_constraint)
+            photo_details_tv_photo_by.text = getString(R.string.collection_item_author_prefix, photo.user.name)
+            photo_details_tv_description.text = photo.description
+            photo_details_tv_likes.text = photo.likes.toString()
+            photo_details_tv_total_downloads.text = photo.downloads.toString()
 
-            stopShimmer()
-
-            photo_details_photo_by_txt.text = getString(R.string.collection_item_author_prefix, photo.user.name)
-            photo_details_description.apply { text = photo.description }
-            photo_details_likes_txt.text = photo.likes.toString()
-            photo_details_total_downloads_txt.text = photo.downloads.toString()
-
-            photo_details_likes_txt.toVisible()
-            photo_details_total_downloads_txt.toVisible()
-            photo_details_photo_by_txt.toVisible()
-            photo_details_author_img.toVisible()
-
-            if (photo_details_description.text.isNotBlank()) {
-                photo_details_description.toVisible()
-            }
+            photo_details_tv_description.goneIfEmpty()
+            photo_details_constraint_bottom_panel.toVisible()
         })
 
         viewModel.error.observe(viewLifecycleOwner, Observer { error ->
             showToast(getStringSafe(error.messageRes))
+        })
+
+        viewModel.loading.observe(viewLifecycleOwner, Observer { loading ->
+            TransitionManager.beginDelayedTransition(photo_details_constraint_main)
+
+            if (loading) {
+                startShimmer()
+            } else {
+                stopShimmer()
+            }
         })
     }
 
@@ -191,20 +166,23 @@ class PhotoDetailsFragment : BaseFragment() {
         return false
     }
 
-    private val transitionListenerAdapter = object : TransitionListenerAdapter() {
+    private fun getEnterTransitionAnimation(): Transition {
+        val imageTransition: Transition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+        imageTransition.duration = 250
+        imageTransition.onTransitionEnd {
 
-        override fun onTransitionEnd(transition: Transition) {
-
-            fragmentToolbar?.let { toolbar ->
-                val transitionSet = TransitionInflater.from(context).inflateTransition(R.transition.photo_details_transition_content_enter)
-                TransitionManager.beginDelayedTransition(photo_details_coordinator, transitionSet)
-
-                photo_details_bottom_panel_background_overlay.toVisible()
-                photo_details_bottom_panel_constraint.toVisible()
-                photo_details_floating_main.toVisible()
-                toolbar.toVisible()
+            val contentTransition = inflateTransition(R.transition.photo_details_transition_content_enter)
+            contentTransition.onTransitionEnd {
+                viewModel.fetchPhoto(safeArguments.photoId)
             }
+
+            TransitionManager.beginDelayedTransition(photo_details_coordinator, contentTransition)
+
+            photo_details_bottom_panel_background_overlay.toVisible()
+            photo_details_floating_main.toVisible()
+            fragmentToolbar?.toVisible()
         }
+        return imageTransition
     }
 
     private fun restoreStatusBarsThemeColors() {
@@ -224,7 +202,7 @@ class PhotoDetailsFragment : BaseFragment() {
     private fun applyWindowsInsets() {
         photo_details_coordinator.setOnApplyWindowInsetsListener { _, windowInsets ->
             fragmentToolbar?.updatePadding(top = windowInsets.systemWindowInsetTop, bottom = 0)
-            photo_details_bottom_panel_constraint.updateLayoutParams<ViewGroup.MarginLayoutParams> { bottomMargin = windowInsets.systemWindowInsetBottom }
+            photo_details_constraint_bottom_panel.updateLayoutParams<ViewGroup.MarginLayoutParams> { bottomMargin = windowInsets.systemWindowInsetBottom }
             windowInsets.consumeSystemWindowInsets()
         }
     }
@@ -315,7 +293,7 @@ class PhotoDetailsFragment : BaseFragment() {
     }
 
     private fun animateOverlayShow() {
-        TransitionManager.beginDelayedTransition(photo_details_main_constraint)
+        TransitionManager.beginDelayedTransition(photo_details_constraint_main)
         fab_overlay.toVisible()
     }
 
@@ -324,7 +302,7 @@ class PhotoDetailsFragment : BaseFragment() {
     }
 
     private fun animateOverlayHide() {
-        TransitionManager.beginDelayedTransition(photo_details_main_constraint)
+        TransitionManager.beginDelayedTransition(photo_details_constraint_main)
         fab_overlay.toGone()
     }
 
@@ -339,10 +317,8 @@ class PhotoDetailsFragment : BaseFragment() {
     }
 
     private fun stopShimmer() {
-        if (photo_details_loading_shimmer.isShimmerStarted) {
-            photo_details_loading_shimmer.toGone()
-            photo_details_loading_shimmer.stopShimmer()
-        }
+        photo_details_loading_shimmer.toGone()
+        photo_details_loading_shimmer.stopShimmer()
     }
 
     private val photoTransitionRequestListener = object : RequestListener<Drawable> {

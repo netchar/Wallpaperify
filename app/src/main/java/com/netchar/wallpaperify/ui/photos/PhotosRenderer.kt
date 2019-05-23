@@ -38,7 +38,6 @@ class PhotosRenderer(private val glide: RequestManager, val listener: (Photo, Im
         val photo = photoItem.data
         val color = getPhotoColor(photo.color)
 
-        itemView.isClickable = false
         itemView.row_photo_card.setBackgroundColor(color)
         setupImage(itemView, photo)
 
@@ -49,8 +48,9 @@ class PhotosRenderer(private val glide: RequestManager, val listener: (Photo, Im
 
     private fun setupImage(itemView: View, photo: Photo) {
         val shimmer = ShimmerFactory.getShimmer()
-        itemView.row_photo_iv.transitionName = photo.id
+
         with(itemView.row_photo_iv) {
+            transitionName = photo.id
             fitWidth(photo.width, photo.height)
             background = shimmer
 
@@ -63,7 +63,6 @@ class PhotosRenderer(private val glide: RequestManager, val listener: (Photo, Im
                         }
 
                         override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                            itemView.isClickable = true
                             return releaseShimmer()
                         }
 

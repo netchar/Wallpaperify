@@ -39,17 +39,11 @@
         android:id="@+id/collectionDetailsFragment"
         android:name="com.netchar.wallpaperify.ui.collectiondetails.CollectionDetailsFragment"
         android:label="@string/collection_details_fragment_title"
-        tools:layout="@layout/fragment_collection_details">
-        <action
-            android:id="@+id/action_collectionDetailsFragment_to_photoDetailsFragment"
-            app:destination="@id/photoDetailsFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_collection_details"/>
     <fragment
         android:id="@+id/photosFragment"
         android:name="com.netchar.wallpaperify.ui.photos.PhotosFragment"
-        android:label="@string/photos_fragment_title" >
-        <action android:id="@+id/action_latestFragment_to_photoDetailsFragment" app:destination="@id/photoDetailsFragment"/>
-    </fragment>
+        android:label="@string/photos_fragment_title" />
     <fragment
         android:id="@+id/aboutFragment"
         android:name="com.netchar.wallpaperify.ui.about.AboutFragment"
@@ -63,9 +57,9 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.netchar.wallpaperify.ui.home.HomeFragment"
-        android:label="@string/home_fragment_title" >
-        <action
-            android:id="@+id/action_homeFragment_to_photoDetailsFragment"
-            app:destination="@id/photoDetailsFragment" />
-    </fragment>
+        android:label="@string/home_fragment_title" />
+    <action
+        android:id="@+id/action_global_photoDetailsFragment"
+        app:destination="@id/photoDetailsFragment"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim" />
 </navigation>

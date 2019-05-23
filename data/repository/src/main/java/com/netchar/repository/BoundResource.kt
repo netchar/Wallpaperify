@@ -1,12 +1,8 @@
 package com.netchar.repository
 
-import androidx.annotation.MainThread
-import androidx.annotation.Nullable
 import androidx.annotation.VisibleForTesting
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import com.netchar.common.exceptions.NoNetworkException
 import com.netchar.common.utils.CoroutineDispatchers
 import com.netchar.remote.Resource
@@ -74,7 +70,6 @@ abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDi
 
     private suspend fun fetchFromNetworkAsync(): Resource<TResult> {
         result.value = Resource.Loading(true)
-        delay(2000)
         val apiResponse = getApiCallAsync().awaitSafe()
         result.value = Resource.Loading(false)
 
