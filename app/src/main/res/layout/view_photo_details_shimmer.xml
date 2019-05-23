@@ -3,14 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="120dp">
 
     <View
         android:id="@+id/photo_details_shimmer_description"
         android:layout_width="250dp"
         android:layout_height="24dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
         android:background="#f3f3f3"
         app:layout_constraintBottom_toTopOf="@+id/photo_details_shimmer_author_img"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,13 +20,10 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
         android:background="@drawable/bg_round_oval"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/photo_details_shimmer_description"
-        app:layout_goneMarginTop="40dp"
         tools:srcCompat="@tools:sample/avatars" />
 
     <View

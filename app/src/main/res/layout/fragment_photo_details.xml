@@ -20,35 +20,35 @@
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0"
             tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
         <View
-            android:id="@+id/fab_overlay"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#35ffffff"
+            android:id="@+id/photo_details_bottom_panel_background_overlay"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="#80000000"
             android:visibility="gone"
-            tools:visibility="visible" />
+            app:layout_constraintTop_toTopOf="@+id/photo_details_bottom_panel_constraint"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/photo_details_bottom_panel_constraint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:background="#80000000"
+            android:clipToPadding="true"
+            android:minHeight="120dp"
+            android:paddingBottom="16dp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:visibility="visible">
 
-            <!--<include-->
-            <!--android:id="@+id/photo_details_bottom_panel_content"-->
-            <!--layout="@layout/view_photo_details_bottom_panel" />-->
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/title_fab_guidline"
                 android:layout_width="wrap_content"
@@ -64,9 +64,9 @@
                 android:layout_marginTop="8dp"
                 android:ellipsize="end"
                 android:gravity="center_vertical"
-                android:maxLines="3"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                 android:textColor="#FFF"
+                android:visibility="visible"
                 app:autoSizeMaxTextSize="24sp"
                 app:autoSizeMinTextSize="12sp"
                 app:autoSizeStepGranularity="2sp"
@@ -74,12 +74,10 @@
                 app:layout_constraintBottom_toTopOf="@+id/photo_details_author_img"
                 app:layout_constraintEnd_toStartOf="@+id/title_fab_guidline"
                 app:layout_constraintHeight_default="spread"
-                app:layout_constraintHeight_max="100dp"
+                app:layout_constraintHeight_max="70dp"
                 app:layout_constraintHeight_min="50dp"
-                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_goneMarginTop="80dp"
                 tools:text="asdadsasd"
                 tools:visibility="visible" />
 
@@ -89,13 +87,11 @@
                 android:layout_height="30dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/photo_details_description"
-                app:layout_goneMarginTop="40dp"
+                app:layout_goneMarginTop="16dp"
                 tools:srcCompat="@tools:sample/avatars" />
-
 
             <TextView
                 android:id="@+id/photo_details_photo_by_txt"
@@ -165,6 +161,14 @@
             </com.facebook.shimmer.ShimmerFrameLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:id="@+id/fab_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#35ffffff"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/photo_details_floating_download"

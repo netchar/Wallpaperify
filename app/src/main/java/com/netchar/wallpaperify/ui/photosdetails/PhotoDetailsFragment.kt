@@ -19,15 +19,13 @@ package com.netchar.wallpaperify.ui.photosdetails
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.animation.LinearInterpolator
+import android.view.*
 import android.view.animation.OvershootInterpolator
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
+import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import androidx.lifecycle.Observer
 import androidx.transition.*
 import com.bumptech.glide.Glide
@@ -202,6 +200,7 @@ class PhotoDetailsFragment : BaseFragment() {
                 val transitionSet = getEnterTransitionSet(toolbar)
                 TransitionManager.beginDelayedTransition(photo_details_coordinator, transitionSet)
 
+                photo_details_bottom_panel_background_overlay.toVisible()
                 photo_details_bottom_panel_constraint.toVisible()
                 photo_details_floating_main.toVisible()
                 toolbar.toVisible()
@@ -211,11 +210,12 @@ class PhotoDetailsFragment : BaseFragment() {
         private fun getEnterTransitionSet(toolbar: Toolbar): TransitionSet {
 
             val titleAndBottomPanelTransition = TransitionSet().apply {
-                addTransition(Fade())
-                duration = 250
-                interpolator = LinearInterpolator()
-                addTarget(photo_details_bottom_panel_constraint)
+                duration = 300
+                interpolator = LinearOutSlowInInterpolator()
+                addTransition(AutoTransition())
                 addTarget(toolbar)
+                addTarget(photo_details_bottom_panel_background_overlay)
+                addTarget(photo_details_bottom_panel_constraint)
             }
 
             val fabButtonTransition = TransitionSet().apply {
@@ -248,7 +248,7 @@ class PhotoDetailsFragment : BaseFragment() {
     private fun applyWindowsInsets() {
         photo_details_coordinator.setOnApplyWindowInsetsListener { _, windowInsets ->
             fragmentToolbar?.updatePadding(top = windowInsets.systemWindowInsetTop, bottom = 0)
-            photo_details_bottom_panel_constraint.updatePadding(bottom = windowInsets.systemWindowInsetBottom)
+            photo_details_bottom_panel_constraint.updateLayoutParams<ViewGroup.MarginLayoutParams> { bottomMargin = windowInsets.systemWindowInsetBottom }
             windowInsets.consumeSystemWindowInsets()
         }
     }
