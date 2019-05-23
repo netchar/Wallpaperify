@@ -74,6 +74,7 @@ abstract class BoundResource<TResult : Any>(private val dispatchers: CoroutineDi
 
     private suspend fun fetchFromNetworkAsync(): Resource<TResult> {
         result.value = Resource.Loading(true)
+        delay(2000)
         val apiResponse = getApiCallAsync().awaitSafe()
         result.value = Resource.Loading(false)
 

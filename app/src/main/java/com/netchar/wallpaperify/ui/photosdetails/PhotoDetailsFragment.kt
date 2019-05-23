@@ -22,12 +22,13 @@ import android.os.Bundle
 import android.view.*
 import android.view.animation.OvershootInterpolator
 import android.widget.TextView
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
-import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import androidx.lifecycle.Observer
-import androidx.transition.*
+import androidx.transition.Transition
+import androidx.transition.TransitionInflater
+import androidx.transition.TransitionListenerAdapter
+import androidx.transition.TransitionManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -41,7 +42,6 @@ import com.netchar.common.extensions.*
 import com.netchar.common.utils.getThemeAttrColor
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.ViewModelFactory
-import com.transitionseverywhere.extra.Scale
 import kotlinx.android.synthetic.main.fragment_photo_details.*
 import javax.inject.Inject
 
@@ -196,8 +196,7 @@ class PhotoDetailsFragment : BaseFragment() {
         override fun onTransitionEnd(transition: Transition) {
 
             fragmentToolbar?.let { toolbar ->
-
-                val transitionSet = getEnterTransitionSet(toolbar)
+                val transitionSet = TransitionInflater.from(context).inflateTransition(R.transition.photo_details_transition_content_enter)
                 TransitionManager.beginDelayedTransition(photo_details_coordinator, transitionSet)
 
                 photo_details_bottom_panel_background_overlay.toVisible()
@@ -205,29 +204,6 @@ class PhotoDetailsFragment : BaseFragment() {
                 photo_details_floating_main.toVisible()
                 toolbar.toVisible()
             }
-        }
-
-        private fun getEnterTransitionSet(toolbar: Toolbar): TransitionSet {
-
-            val titleAndBottomPanelTransition = TransitionSet().apply {
-                duration = 300
-                interpolator = LinearOutSlowInInterpolator()
-                addTransition(AutoTransition())
-                addTarget(toolbar)
-                addTarget(photo_details_bottom_panel_background_overlay)
-                addTarget(photo_details_bottom_panel_constraint)
-            }
-
-            val fabButtonTransition = TransitionSet().apply {
-                addTransition(Scale(0.2f))
-                addTransition(Fade())
-                addTarget(photo_details_floating_main)
-            }
-
-            return TransitionSet()
-                    .setOrdering(TransitionSet.ORDERING_SEQUENTIAL)
-                    .addTransition(titleAndBottomPanelTransition)
-                    .addTransition(fabButtonTransition)
         }
     }
 
