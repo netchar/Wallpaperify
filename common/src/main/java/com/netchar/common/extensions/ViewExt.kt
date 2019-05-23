@@ -3,10 +3,7 @@ package com.netchar.common.extensions
 import android.content.Context
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.AdapterView
-import android.widget.ImageView
-import android.widget.Spinner
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -35,6 +32,8 @@ fun View.booleanVisibility(visible: Boolean) = if (visible) toVisible() else toG
 fun View.inverseBooleanVisibility(visible: Boolean) = booleanVisibility(!visible)
 
 fun View.isVisible() = visibility == View.VISIBLE
+
+fun TextView.goneIfEmpty() = if (this.text.isNullOrEmpty()) this.toGone() else this.toVisible()
 
 fun Fragment.showSnackbar(message: String, timeLength: Int) {
     activity?.let { Snackbar.make(it.findViewById<View>(android.R.id.content), message, timeLength).show() }

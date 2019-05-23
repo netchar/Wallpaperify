@@ -30,6 +30,10 @@
         <argument
             android:name="imageTransitionName"
             app:argType="string" />
+        <argument
+            android:name="photoId"
+            app:argType="string"
+            android:defaultValue='""' />
     </fragment>
     <fragment
         android:id="@+id/collectionDetailsFragment"

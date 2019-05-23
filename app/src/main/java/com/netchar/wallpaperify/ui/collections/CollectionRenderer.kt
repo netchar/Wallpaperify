@@ -39,15 +39,6 @@ class CollectionRenderer(private val glide: RequestManager, val onClickListener:
 
     private lateinit var collection: CollectionRecyclerItem
 
-    override fun onSetListeners(itemView: View) {
-        itemView.setOnClickListener {
-            if (::collection.isInitialized) {
-                val data = collection.data
-                onClickListener(data)
-            }
-        }
-    }
-
     override fun bind(itemView: View, item: IRecyclerItem) = with(itemView) {
         collection = item as CollectionRecyclerItem
 
@@ -64,6 +55,10 @@ class CollectionRenderer(private val glide: RequestManager, val onClickListener:
         row_collection_gradient_overlay.toGone()
 
         setupImage(this, photo)
+
+        itemView.setOnClickListener {
+            onClickListener(data)
+        }
     }
 
     private fun setupImage(itemView: View, coverPhoto: Photo) {
@@ -74,25 +69,25 @@ class CollectionRenderer(private val glide: RequestManager, val onClickListener:
             background = shimmer
 
             glide.load(coverPhoto.urls.regular)
-                .fitCenter()
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .listener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                        return releaseShimmer()
-                    }
+                    .fitCenter()
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .listener(object : RequestListener<Drawable> {
+                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                            return releaseShimmer()
+                        }
 
-                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                        itemView.row_collection_gradient_overlay.toVisible()
-                        return releaseShimmer()
-                    }
+                        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                            itemView.row_collection_gradient_overlay.toVisible()
+                            return releaseShimmer()
+                        }
 
-                    private fun releaseShimmer(): Boolean {
-                        shimmer.stopShimmer()
-                        background = null
-                        return false
-                    }
-                })
-                .into(this)
+                        private fun releaseShimmer(): Boolean {
+                            shimmer.stopShimmer()
+                            background = null
+                            return false
+                        }
+                    })
+                    .into(this)
         }
     }
 

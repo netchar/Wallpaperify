@@ -7,6 +7,7 @@ import com.netchar.remote.api.PhotosApi
 import com.netchar.repository.IBoundResource
 import com.netchar.repository.NetworkBoundResource
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 /**
@@ -22,6 +23,12 @@ class PhotosRepository @Inject constructor(
     override fun getPhotos(request: ApiRequest.Photos, scope: CoroutineScope): IBoundResource<List<Photo>> {
         return NetworkBoundResource(dispatchers, apiCall = {
             api.getPhotosAsync(request.page, request.perPage, request.order.value)
+        }).launchIn(scope)
+    }
+
+    override fun getPhoto(id: String, scope: CoroutineScope): IBoundResource<Photo> {
+        return NetworkBoundResource(dispatchers, apiCall = {
+            api.getPhotoAsync(id)
         }).launchIn(scope)
     }
 }

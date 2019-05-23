@@ -17,8 +17,6 @@ abstract class ItemRenderer {
     }
 
     abstract fun bind(itemView: View, item: IRecyclerItem)
-
-    open fun onSetListeners(itemView: View) {}
 }
 
 

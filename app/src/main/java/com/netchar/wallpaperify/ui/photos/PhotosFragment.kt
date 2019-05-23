@@ -137,6 +137,7 @@ class PhotosFragment : BaseFragment() {
                 imageView to imageView.transitionName
         )
         val action = HomeFragmentDirections.actionHomeFragmentToPhotoDetailsFragment(model.urls.regular, imageView.transitionName)
+        action.photoId = model.id
         findNavController().navigate(action, extras)
     }
 }

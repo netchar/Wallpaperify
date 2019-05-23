@@ -28,21 +28,24 @@ import android.view.animation.OvershootInterpolator
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.updatePadding
+import androidx.lifecycle.Observer
 import androidx.transition.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.netchar.common.base.BaseFragment
-import com.netchar.common.extensions.showToast
-import com.netchar.common.extensions.toGone
-import com.netchar.common.extensions.toVisible
+import com.netchar.common.extensions.*
 import com.netchar.common.utils.getThemeAttrColor
 import com.netchar.wallpaperify.R
+import com.netchar.wallpaperify.di.ViewModelFactory
 import com.transitionseverywhere.extra.Scale
 import kotlinx.android.synthetic.main.fragment_photo_details.*
+import javax.inject.Inject
 
 class PhotoDetailsFragment : BaseFragment() {
 
@@ -50,6 +53,11 @@ class PhotoDetailsFragment : BaseFragment() {
     private var interpolator = OvershootInterpolator()
     private val initialFabTranslationY = 100f
     private val initialFabLabelTranslationX = 100f
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private lateinit var viewModel: PhotoDetailsViewModel
 
     override val layoutResId: Int = R.layout.fragment_photo_details
 
@@ -67,6 +75,50 @@ class PhotoDetailsFragment : BaseFragment() {
         sharedElementEnterTransitionSet.addListener(transitionListenerAdapter)
     }
 
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        arguments?.let { args ->
+            val safeArgs = PhotoDetailsFragmentArgs.fromBundle(args)
+
+            startShimmer()
+
+            viewModel = injectViewModel(viewModelFactory)
+
+            setTransparentStatusBars()
+            applyWindowsInsets()
+            disableToolbarTitle()
+            initFabs()
+            initViews(safeArgs)
+            observe()
+
+            viewModel.fetchPhoto(safeArgs.photoId)
+        }
+    }
+
+    private fun initViews(safeArgs: PhotoDetailsFragmentArgs) {
+        postponeEnterTransition()
+
+        photo_details_likes_txt.toGone()
+        photo_details_total_downloads_txt.toGone()
+        photo_details_photo_by_txt.toGone()
+        photo_details_description.toGone()
+        photo_details_author_img.toInvisible()
+
+        photo_details_image.transitionName = safeArgs.imageTransitionName
+        Glide.with(this)
+                .load(safeArgs.photoUrl)
+                .listener(photoTransitionRequestListener)
+                .into(photo_details_image)
+
+    }
+
+    private fun startShimmer() {
+        photo_details_loading_shimmer.toVisible()
+        photo_details_loading_shimmer.startShimmer()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
 
@@ -77,35 +129,40 @@ class PhotoDetailsFragment : BaseFragment() {
         super.onDestroyView()
 
         restoreStatusBarsThemeColors()
+        stopShimmer()
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        setTransparentStatusBars()
-        applyWindowsInsets()
-        disableToolbarTitle()
-        initFabs()
-
-        arguments?.let { args ->
-            postponeEnterTransition()
-            val safeArgs = PhotoDetailsFragmentArgs.fromBundle(args)
-            photo_details_image.transitionName = safeArgs.imageTransitionName
+    private fun observe() {
+        viewModel.photo.observe(viewLifecycleOwner, Observer { photo ->
             Glide.with(this)
-                .load(safeArgs.photoUrl)
-                .listener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                        startPostponedEnterTransition()
-                        return false
-                    }
+                    .load(photo.user.profileImage.small)
+                    .transform(CircleCrop())
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .error(R.drawable.ic_person)
+                    .into(photo_details_author_img)
 
-                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                        startPostponedEnterTransition()
-                        return false
-                    }
-                })
-                .into(photo_details_image)
-        }
+            TransitionManager.beginDelayedTransition(photo_details_main_constraint)
+
+            stopShimmer()
+
+            photo_details_photo_by_txt.text = getString(R.string.collection_item_author_prefix, photo.user.name)
+            photo_details_description.apply { text = photo.description }
+            photo_details_likes_txt.text = photo.likes.toString()
+            photo_details_total_downloads_txt.text = photo.downloads.toString()
+
+            photo_details_likes_txt.toVisible()
+            photo_details_total_downloads_txt.toVisible()
+            photo_details_photo_by_txt.toVisible()
+            photo_details_author_img.toVisible()
+
+            if (photo_details_description.text.isNotBlank()) {
+                photo_details_description.toVisible()
+            }
+        })
+
+        viewModel.error.observe(viewLifecycleOwner, Observer { error ->
+            showToast(getStringSafe(error.messageRes))
+        })
     }
 
     private fun disableToolbarTitle() {
@@ -168,9 +225,9 @@ class PhotoDetailsFragment : BaseFragment() {
             }
 
             return TransitionSet()
-                .setOrdering(TransitionSet.ORDERING_SEQUENTIAL)
-                .addTransition(titleAndBottomPanelTransition)
-                .addTransition(fabButtonTransition)
+                    .setOrdering(TransitionSet.ORDERING_SEQUENTIAL)
+                    .addTransition(titleAndBottomPanelTransition)
+                    .addTransition(fabButtonTransition)
         }
     }
 
@@ -287,12 +344,31 @@ class PhotoDetailsFragment : BaseFragment() {
     }
 
     private fun animateFabMenuItemOpen(fab: FloatingActionButton, label: TextView) {
-        fab.animate().translationY(0f).alpha(1f).setInterpolator(interpolator).setDuration(300).start()
-        label.animate().setStartDelay(0).translationX(0f).alpha(1f).setInterpolator(interpolator).setDuration(300).start()
+        fab.animate().withStartAction { fab.toVisible() }.translationY(0f).alpha(1f).setInterpolator(interpolator).setDuration(300).start()
+        label.animate().withStartAction { label.toVisible() }.setStartDelay(0).translationX(0f).alpha(1f).setInterpolator(interpolator).setDuration(300).start()
     }
 
     private fun animateFabMenuItemClose(fab: FloatingActionButton, label: TextView) {
-        fab.animate().translationY(initialFabTranslationY).alpha(0f).setInterpolator(interpolator).setDuration(300).start()
-        label.animate().translationX(initialFabLabelTranslationX).alpha(0f).setInterpolator(interpolator).setDuration(300).start()
+        fab.animate().withEndAction { fab.toGone() }.translationY(initialFabTranslationY).alpha(0f).setInterpolator(interpolator).setDuration(300).start()
+        label.animate().withEndAction { label.toGone() }.translationX(initialFabLabelTranslationX).alpha(0f).setInterpolator(interpolator).setDuration(300).start()
+    }
+
+    private fun stopShimmer() {
+        if (photo_details_loading_shimmer.isShimmerStarted) {
+            photo_details_loading_shimmer.toGone()
+            photo_details_loading_shimmer.stopShimmer()
+        }
+    }
+
+    private val photoTransitionRequestListener = object : RequestListener<Drawable> {
+        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+            startPostponedEnterTransition()
+            return false
+        }
+
+        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+            startPostponedEnterTransition()
+            return false
+        }
     }
 }

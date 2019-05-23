@@ -31,15 +31,6 @@ class PhotosRenderer(private val glide: RequestManager, val listener: (Photo, Im
     override fun layoutRes() = R.layout.row_photo
 
     private lateinit var photoItem: PhotoRecyclerItem
-//
-//    override fun onSetListeners(itemView: View) {
-//        itemView.setOnClickListener {
-//            if (::photoItem.isInitialized) {
-//                val data = photoItem.data
-//                listener(data, itemView.row_photo_iv)
-//            }
-//        }
-//    }
 
     override fun bind(itemView: View, item: IRecyclerItem) {
         photoItem = item as PhotoRecyclerItem
@@ -47,6 +38,7 @@ class PhotosRenderer(private val glide: RequestManager, val listener: (Photo, Im
         val photo = photoItem.data
         val color = getPhotoColor(photo.color)
 
+        itemView.isClickable = false
         itemView.row_photo_card.setBackgroundColor(color)
         setupImage(itemView, photo)
 
@@ -71,6 +63,7 @@ class PhotosRenderer(private val glide: RequestManager, val listener: (Photo, Im
                         }
 
                         override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                            itemView.isClickable = true
                             return releaseShimmer()
                         }
 

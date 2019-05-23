@@ -79,6 +79,7 @@ data class Photo(
         val height: Int = 0,
         val color: String = "",
         val likes: Int = 0,
+        val downloads: Int = 0,
         @field:Json(name = "liked_by_user")
         val likedByUser: Boolean = false,
         val description: String = "",
@@ -86,5 +87,7 @@ data class Photo(
         @field:Json(name = "current_user_collections")
         val currentUserCollections: List<CurrentUserCollection> = listOf(),
         val urls: Urls = Urls(),
-        val links: Links = Links()
+        val links: Links = Links(),
+        val exif: Exif = Exif(),
+        val location: Location = Location()
 )

@@ -7,4 +7,6 @@ import kotlinx.coroutines.CoroutineScope
 
 interface IPhotosRepository {
     fun getPhotos(request: ApiRequest.Photos, scope: CoroutineScope): IBoundResource<List<Photo>>
+
+    fun getPhoto(id: String, scope: CoroutineScope): IBoundResource<Photo>
 }

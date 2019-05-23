@@ -64,9 +64,7 @@ class EndlessRecyclerDataSource(
                 itemView.load_more_retry_group.toGone()
                 itemView.load_more_item_loading.toVisible()
             }
-        }
 
-        override fun onSetListeners(itemView: View) {
             itemView.load_more_retry_group.setOnClickListener {
                 onRetryClick()
             }

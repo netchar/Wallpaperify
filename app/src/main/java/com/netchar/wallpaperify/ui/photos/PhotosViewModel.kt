@@ -10,6 +10,7 @@ import com.netchar.models.Photo
 import com.netchar.models.apirequest.ApiRequest
 import com.netchar.models.uimodel.ErrorMessage
 import com.netchar.models.uimodel.Message
+import com.netchar.remote.Resource
 import com.netchar.repository.photos.IPhotosRepository
 import com.netchar.wallpaperify.ui.base.BasicEndlessListViewModel
 import javax.inject.Inject
@@ -32,7 +33,7 @@ class PhotosViewModel @Inject constructor(
     private val listViewModel = BasicEndlessListViewModel<Photo>()
     private val _ordering = MutableLiveData<ApiRequest.Order>()
 
-    private val repositoryLiveData = Transformations.switchMap(request) { request ->
+    private val repositoryLiveData: LiveData<Resource<List<Photo>>> = Transformations.switchMap(request) { request ->
         repository.getPhotos(request, scope).getLiveData()
     }
 
