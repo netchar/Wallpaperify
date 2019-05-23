@@ -257,6 +257,7 @@ class PhotoDetailsFragment : BaseFragment() {
         photo_details_floating_download.alpha = 0f
         photo_details_floating_raw.alpha = 0f
         photo_details_floating_wallpaper.alpha = 0f
+
         photo_details_floating_label_download.alpha = 0f
         photo_details_floating_label_raw.alpha = 0f
         photo_details_floating_label_wallpaper.alpha = 0f
@@ -268,6 +269,14 @@ class PhotoDetailsFragment : BaseFragment() {
         photo_details_floating_download.translationY = initialFabTranslationY
         photo_details_floating_raw.translationY = initialFabTranslationY
         photo_details_floating_wallpaper.translationY = initialFabTranslationY
+
+        photo_details_floating_download.toGone()
+        photo_details_floating_raw.toGone()
+        photo_details_floating_wallpaper.toGone()
+
+        photo_details_floating_label_download.toGone()
+        photo_details_floating_label_raw.toGone()
+        photo_details_floating_label_wallpaper.toGone()
 
         val fabClickListener = View.OnClickListener {
 
