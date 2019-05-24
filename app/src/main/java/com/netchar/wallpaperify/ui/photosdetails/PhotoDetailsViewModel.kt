@@ -16,10 +16,16 @@
 
 package com.netchar.wallpaperify.ui.photosdetails
 
+import android.app.DownloadManager
+import android.content.Context
+import android.net.Uri
+import android.os.Environment
+import androidx.core.content.getSystemService
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import com.livinglifetechway.quickpermissions_kotlin.runWithPermissions
 import com.netchar.common.base.BaseViewModel
 import com.netchar.common.utils.CoroutineDispatchers
 import com.netchar.remote.Resource
@@ -33,7 +39,8 @@ import javax.inject.Inject
 
 class PhotoDetailsViewModel @Inject constructor(
         coroutineDispatchers: CoroutineDispatchers,
-        private val repo: IPhotosRepository
+        private val repo: IPhotosRepository,
+        private val context: Context
 
 ) : BaseViewModel(coroutineDispatchers) {
 
@@ -88,4 +95,19 @@ class PhotoDetailsViewModel @Inject constructor(
         super.onCleared()
         scope.cancel()
     }
+
+    fun downloadImage(url: String) = context.runWithPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) {
+        val downloadManager = context.getSystemService<DownloadManager>()
+        val uri = Uri.parse(url)
+        val request = DownloadManager.Request(uri).apply {
+            setDescription("Wallpaperify downloading a photo")
+            setTitle("Downloading...")
+            setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, "Wallpaperify.png")
+            setVisibleInDownloadsUi(true)
+            setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
+        }
+        val id = downloadManager?.enqueue(request)
+    }
+
+
 }

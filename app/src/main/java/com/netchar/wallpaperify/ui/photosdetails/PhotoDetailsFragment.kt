@@ -243,6 +243,9 @@ class PhotoDetailsFragment : BaseFragment() {
                     dialog.setView(LayoutInflater.from(context).inflate(R.layout.view_dialog_download, null))
                     dialog.setTitle("Downloading...")
                     dialog.show()
+
+                    val photo = viewModel.photo.value!!
+                    viewModel.downloadImage(photo.urls.raw)
                 }
                 R.id.photo_details_floating_raw,
                 R.id.photo_details_floating_label_raw -> {
