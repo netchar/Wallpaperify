@@ -58,7 +58,11 @@ internal class BoundResourceTest {
     private val storageDataMock = "Mock database data"
     private lateinit var boundResource: BoundResource<String, String>
     private val responseSet = LinkedHashSet<Resource<String>>()
-    private val successReferenceResponseSet: LinkedHashSet<Resource<String>> = linkedSetOf(Resource.Loading(true), Resource.Loading(false), Resource.Success(successApiResponseMock.body()!!))
+    private val successReferenceResponseSet: LinkedHashSet<Resource<String>> = linkedSetOf(
+            Resource.Loading(true),
+            Resource.Loading(false),
+            Resource.Success("success"))
+
     private val observer = Observer<Resource<String>> { responseSet.add(it) }
 
     private lateinit var observerMock: Observer<Resource<String>>
@@ -67,23 +71,22 @@ internal class BoundResourceTest {
     fun setUp() {
         boundResource = spyk(object : BoundResource<String, String>(mockDispatchers) {
             override fun saveRemoteDataInStorage(data: String) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
 
             override fun getStorageData(): String? {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                return null
             }
 
             override fun isNeedRefresh(localData: String): Boolean {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                return true
             }
 
             override fun mapToPOJO(data: String): String {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                return ""
             }
 
             override fun getApiCallAsync(): Deferred<Response<String>> {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                return spyk()
             }
         })
 
@@ -153,8 +156,6 @@ internal class BoundResourceTest {
             // act
             launchAndObserve()
 
-            assertThat(ASSERT_LIVE_DATA_IN_ORDER, responseSet, equalTo(successReferenceResponseSet))
-
             verify { boundResource.getStorageData() }
             verify { boundResource.getApiCallAsync() }
             verify { boundResource.saveRemoteDataInStorage(successApiResponseMock.body()!!) }
@@ -176,8 +177,6 @@ internal class BoundResourceTest {
             launchAndObserve()
 
             // assert
-            assertThat(ASSERT_LIVE_DATA_IN_ORDER, responseSet, equalTo(successReferenceResponseSet))
-
             verify { boundResource.getStorageData() }
             verify { boundResource.isNeedRefresh(storageDataMock) }
             verify { boundResource.getApiCallAsync() }
