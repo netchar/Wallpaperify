@@ -1,12 +1,28 @@
+/*
+ * Copyright © 2019 Eugene Glushankov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.netchar.wallpaperify.ui.base
 
 import androidx.lifecycle.MediatorLiveData
 import com.netchar.common.utils.SingleLiveData
-import com.netchar.models.apirequest.Paging
-import com.netchar.models.uimodel.ErrorMessage
-import com.netchar.models.uimodel.Message
 import com.netchar.remote.Resource
+import com.netchar.remote.apirequest.Paging
 import com.netchar.remote.enums.Cause
+import com.netchar.repository.pojo.ErrorMessage
+import com.netchar.repository.pojo.Message
 import com.netchar.wallpaperify.R
 
 /**

@@ -14,4 +14,19 @@
  * limitations under the License.
  */
 
-include ':app', ':common', ':test', ':data:remote', ':data:local', ':data:repository', ':data:auth'
+package com.netchar.repository.pojo
+
+data class CollectionPOJO(
+        val id: Int = 0,
+        val title: String = "",
+        val description: String = "",
+        val publishedAt: String = "",
+        val updatedAt: String = "",
+        val curated: Boolean = false,
+        val totalPhotos: Int = 0,
+        val isPrivate: Boolean = false,
+        val shareKey: String = "",
+        val coverPhoto: PhotoPOJO = PhotoPOJO(),
+        val user: UserPOJO = UserPOJO(),
+        val links: LinksPOJO = LinksPOJO()
+)

@@ -14,4 +14,15 @@
  * limitations under the License.
  */
 
-include ':app', ':common', ':test', ':data:remote', ':data:local', ':data:repository', ':data:auth'
+package com.netchar.remote.dto
+
+
+import com.squareup.moshi.Json
+
+data class Links(
+        val self: String = "",
+        val html: String = "",
+        val download: String = "",
+        @field:Json(name = "download_location")
+        val downloadLocation: String = ""
+)

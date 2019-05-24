@@ -1,11 +1,27 @@
+/*
+ * Copyright © 2019 Eugene Glushankov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.netchar.wallpaperify.ui.base
 
 import androidx.lifecycle.Observer
-import com.netchar.models.Photo
-import com.netchar.models.uimodel.ErrorMessage
-import com.netchar.models.uimodel.Message
 import com.netchar.remote.Resource
 import com.netchar.remote.enums.Cause
+import com.netchar.repository.pojo.ErrorMessage
+import com.netchar.repository.pojo.Message
+import com.netchar.repository.pojo.PhotoPOJO
 import com.netchar.wallpaperify.ui.InstantTaskExecutorExtension
 import io.mockk.*
 import org.junit.jupiter.api.BeforeEach
@@ -19,7 +35,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 @ExtendWith(InstantTaskExecutorExtension::class)
 class BasicEndlessListViewModelTest {
 
-    private lateinit var itemsObserver: Observer<List<Photo>>
+    private lateinit var itemsObserver: Observer<List<PhotoPOJO>>
     private lateinit var refreshingObserver: Observer<Boolean>
     private lateinit var errorObserver: Observer<ErrorMessage>
     private lateinit var toastObserver: Observer<Message>
@@ -34,11 +50,11 @@ class BasicEndlessListViewModelTest {
         errorPlaceholderObserver = mockk(relaxed = true)
     }
 
-    private val successValue: MutableList<Photo> = mutableListOf(
+    private val successValue: MutableList<PhotoPOJO> = mutableListOf(
             spyk { every { id } returns "1" },
             spyk { every { id } returns "2" })
 
-    private val successLoadMoreValue: List<Photo> = listOf(
+    private val successLoadMoreValue: List<PhotoPOJO> = listOf(
             spyk { every { id } returns "3" },
             spyk { every { id } returns "4" })
 
@@ -56,7 +72,7 @@ class BasicEndlessListViewModelTest {
     @Test
     fun `On proceed when success should emit items LiveData`() {
 
-        val model = BasicEndlessListViewModel<Photo>()
+        val model = BasicEndlessListViewModel<PhotoPOJO>()
         model.proceedFetching(successResponseMock)
         model.items.observeForever(itemsObserver)
 
@@ -70,7 +86,7 @@ class BasicEndlessListViewModelTest {
     @Test
     fun `On proceed when error should emit error placeholder`() {
 
-        val model = BasicEndlessListViewModel<Photo>()
+        val model = BasicEndlessListViewModel<PhotoPOJO>()
         model.proceedFetching(errorResponseMock)
         model.items.observeForever(itemsObserver)
         model.errorPlaceholder.observeForever(errorPlaceholderObserver)
@@ -90,7 +106,7 @@ class BasicEndlessListViewModelTest {
 
     @Test
     fun `On proceed when error and items exist should emit error toast`() {
-        val model = BasicEndlessListViewModel<Photo>()
+        val model = BasicEndlessListViewModel<PhotoPOJO>()
 
         model.items.value = successValue
 
@@ -110,7 +126,7 @@ class BasicEndlessListViewModelTest {
     @Test
     fun `On proceed when start loading should emit refreshing`() {
 
-        val latestViewModel = BasicEndlessListViewModel<Photo>()
+        val latestViewModel = BasicEndlessListViewModel<PhotoPOJO>()
         latestViewModel.items.observeForever(itemsObserver)
         latestViewModel.refreshing.observeForever(refreshingObserver)
         latestViewModel.proceedFetching(loadingStartResponseMock)
@@ -126,7 +142,7 @@ class BasicEndlessListViewModelTest {
     @Test
     fun `On proceed when end loading should emit refreshing`() {
 
-        val latestViewModel = BasicEndlessListViewModel<Photo>()
+        val latestViewModel = BasicEndlessListViewModel<PhotoPOJO>()
         latestViewModel.items.observeForever(itemsObserver)
         latestViewModel.refreshing.observeForever(refreshingObserver)
         latestViewModel.proceedFetching(loadingEndResponseMock)
@@ -142,7 +158,7 @@ class BasicEndlessListViewModelTest {
     @Test
     fun `On proceed when error should emit refreshing to false`() {
 
-        val latestViewModel = BasicEndlessListViewModel<Photo>()
+        val latestViewModel = BasicEndlessListViewModel<PhotoPOJO>()
         latestViewModel.items.observeForever(itemsObserver)
         latestViewModel.refreshing.observeForever(refreshingObserver)
         latestViewModel.proceedFetching(errorResponseMock)
@@ -157,7 +173,7 @@ class BasicEndlessListViewModelTest {
 
     @Test
     fun `On proceed when loadMore and success should emit previous loaded photos plus photos next page`() {
-        val latestViewModel = BasicEndlessListViewModel<Photo>()
+        val latestViewModel = BasicEndlessListViewModel<PhotoPOJO>()
 
         // act
         latestViewModel.items.observeForever(itemsObserver)
@@ -176,7 +192,7 @@ class BasicEndlessListViewModelTest {
 
     @Test
     fun `On proceed when loadMore and  error should emit error LiveData`() {
-        val latestViewModel = BasicEndlessListViewModel<Photo>()
+        val latestViewModel = BasicEndlessListViewModel<PhotoPOJO>()
 
         latestViewModel.items.observeForever(itemsObserver)
         latestViewModel.error.observeForever(errorObserver)
@@ -195,7 +211,7 @@ class BasicEndlessListViewModelTest {
 
     @Test
     fun `On proceed when loadMore and  retry should run same page`() {
-        val latestViewModel = BasicEndlessListViewModel<Photo>()
+        val latestViewModel = BasicEndlessListViewModel<PhotoPOJO>()
 
         latestViewModel.items.observeForever(itemsObserver)
         latestViewModel.error.observeForever(errorObserver)

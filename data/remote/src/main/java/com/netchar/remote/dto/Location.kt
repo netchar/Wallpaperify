@@ -14,4 +14,11 @@
  * limitations under the License.
  */
 
-include ':app', ':common', ':test', ':data:remote', ':data:local', ':data:repository', ':data:auth'
+package com.netchar.remote.dto
+
+
+data class Location(
+        val city: String = "",
+        val country: String = "",
+        val position: Position = Position()
+)

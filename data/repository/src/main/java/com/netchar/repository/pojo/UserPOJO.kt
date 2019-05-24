@@ -14,4 +14,11 @@
  * limitations under the License.
  */
 
-include ':app', ':common', ':test', ':data:remote', ':data:local', ':data:repository', ':data:auth'
+package com.netchar.repository.pojo
+
+data class UserPOJO(
+        val id: String = "",
+        val username: String = "",
+        val name: String = "",
+        val profileImage: ProfileImagePOJO = ProfileImagePOJO()
+)

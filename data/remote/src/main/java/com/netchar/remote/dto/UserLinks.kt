@@ -14,4 +14,13 @@
  * limitations under the License.
  */
 
-include ':app', ':common', ':test', ':data:remote', ':data:local', ':data:repository', ':data:auth'
+package com.netchar.remote.dto
+
+
+data class UserLinks(
+        val self: String = "",
+        val html: String = "",
+        val photos: String = "",
+        val likes: String = "",
+        val portfolio: String = ""
+)

@@ -1,3 +1,19 @@
+/*
+ * Copyright © 2019 Eugene Glushankov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.netchar.wallpaperify.ui.photosdetails
 
 import androidx.lifecycle.LiveData
@@ -6,12 +22,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.netchar.common.base.BaseViewModel
 import com.netchar.common.utils.CoroutineDispatchers
-import com.netchar.models.Photo
-import com.netchar.models.uimodel.ErrorMessage
-import com.netchar.models.uimodel.Message
 import com.netchar.remote.Resource
 import com.netchar.remote.enums.Cause
 import com.netchar.repository.photos.IPhotosRepository
+import com.netchar.repository.pojo.Message
+import com.netchar.repository.pojo.PhotoPOJO
 import com.netchar.wallpaperify.R
 import javax.inject.Inject
 
@@ -22,11 +37,11 @@ class PhotoDetailsViewModel @Inject constructor(
 ) : BaseViewModel(coroutineDispatchers) {
 
     private val _photoId = MutableLiveData<String>()
-    private val _photo = MediatorLiveData<Photo>()
+    private val _photo = MediatorLiveData<PhotoPOJO>()
     private val _loading = MutableLiveData<Boolean>()
     private val _error = MutableLiveData<Message>()
 
-    private val repoLiveData: LiveData<Resource<Photo>> = Transformations.switchMap(_photoId) { id ->
+    private val repoLiveData: LiveData<Resource<PhotoPOJO>> = Transformations.switchMap(_photoId) { id ->
         repo.getPhoto(id, scope).getLiveData()
     }
 
@@ -36,7 +51,7 @@ class PhotoDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun proceedResponse(response: Resource<Photo>?) {
+    private fun proceedResponse(response: Resource<PhotoPOJO>?) {
 
         when (response) {
             is Resource.Success -> {
@@ -55,7 +70,7 @@ class PhotoDetailsViewModel @Inject constructor(
         _photoId.value = id
     }
 
-    val photo: LiveData<Photo> get() = _photo
+    val photo: LiveData<PhotoPOJO> get() = _photo
 
     val error: LiveData<Message> get() = _error
 

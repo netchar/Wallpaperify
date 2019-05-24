@@ -14,4 +14,24 @@
  * limitations under the License.
  */
 
-include ':app', ':common', ':test', ':data:remote', ':data:local', ':data:repository', ':data:auth'
+package com.netchar.remote.dto
+
+
+import com.squareup.moshi.Json
+
+data class Exif(
+
+        val aperture: String = "",
+
+        @field:Json(name = "exposure_time")
+        val exposureTime: String = "",
+
+        @field:Json(name = "focal_length")
+        val focalLength: String = "",
+
+        val iso: String = "",
+
+        val make: String = "",
+
+        val model: String = ""
+)

@@ -1,16 +1,32 @@
+/*
+ * Copyright © 2019 Eugene Glushankov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.netchar.wallpaperify.ui.photos
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.netchar.common.utils.CoroutineDispatchers
-import com.netchar.models.Photo
-import com.netchar.models.apirequest.ApiRequest
-import com.netchar.models.apirequest.Paging
-import com.netchar.models.uimodel.ErrorMessage
-import com.netchar.models.uimodel.Message
 import com.netchar.remote.Resource
+import com.netchar.remote.apirequest.ApiRequest
+import com.netchar.remote.apirequest.Paging
 import com.netchar.remote.enums.Cause
 import com.netchar.repository.photos.IPhotosRepository
+import com.netchar.repository.pojo.ErrorMessage
+import com.netchar.repository.pojo.Message
+import com.netchar.repository.pojo.PhotoPOJO
 import com.netchar.wallpaperify.ui.InstantTaskExecutorExtension
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
@@ -25,7 +41,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 @ExtendWith(InstantTaskExecutorExtension::class)
 class PhotosViewModelTest {
 
-    private lateinit var photosObserver: Observer<List<Photo>>
+    private lateinit var photosObserver: Observer<List<PhotoPOJO>>
     private lateinit var refreshingObserver: Observer<Boolean>
     private lateinit var errorObserver: Observer<ErrorMessage>
     private lateinit var toastObserver: Observer<Message>
@@ -51,11 +67,11 @@ class PhotosViewModelTest {
         repo = mockk(relaxed = true)
     }
 
-    private val successValue: MutableList<Photo> = mutableListOf(
+    private val successValue: MutableList<PhotoPOJO> = mutableListOf(
             spyk { every { id } returns "1" },
             spyk { every { id } returns "2" })
 
-    private val successLoadMoreValue: List<Photo> = listOf(
+    private val successLoadMoreValue: List<PhotoPOJO> = listOf(
             spyk { every { id } returns "3" },
             spyk { every { id } returns "4" })
 
@@ -64,11 +80,11 @@ class PhotosViewModelTest {
     private val loadingStartValue = true
     private val loadingEndValue = false
 
-    private val successResponseMock = MutableLiveData<Resource<List<Photo>>>().apply { value = Resource.Success(successValue) }
-    private val successLoadMoreResponseMock = MutableLiveData<Resource<List<Photo>>>().apply { value = Resource.Success(successLoadMoreValue) }
-    private val errorResponseMock = MutableLiveData<Resource<List<Photo>>>().apply { value = Resource.Error(errorValue) }
-    private val loadingStartResponseMock = MutableLiveData<Resource<List<Photo>>>().apply { value = Resource.Loading(loadingStartValue) }
-    private val loadingEndResponseMock = MutableLiveData<Resource<List<Photo>>>().apply { value = Resource.Loading(loadingEndValue) }
+    private val successResponseMock = MutableLiveData<Resource<List<PhotoPOJO>>>().apply { value = Resource.Success(successValue) }
+    private val successLoadMoreResponseMock = MutableLiveData<Resource<List<PhotoPOJO>>>().apply { value = Resource.Success(successLoadMoreValue) }
+    private val errorResponseMock = MutableLiveData<Resource<List<PhotoPOJO>>>().apply { value = Resource.Error(errorValue) }
+    private val loadingStartResponseMock = MutableLiveData<Resource<List<PhotoPOJO>>>().apply { value = Resource.Loading(loadingStartValue) }
+    private val loadingEndResponseMock = MutableLiveData<Resource<List<PhotoPOJO>>>().apply { value = Resource.Loading(loadingEndValue) }
 
     @Test
     fun `On init should start fetching`() {

@@ -14,4 +14,12 @@
  * limitations under the License.
  */
 
-include ':app', ':common', ':test', ':data:remote', ':data:local', ':data:repository', ':data:auth'
+package com.netchar.repository.pojo
+
+data class UrlsPOJO(
+        val raw: String = "",
+        val full: String = "",
+        val regular: String = "",
+        val small: String = "",
+        val thumb: String = ""
+)
