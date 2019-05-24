@@ -19,6 +19,7 @@ dependencies {
     implementation deps.androidx.navigation.ui
     implementation deps.androidx.recyclerview
     implementation deps.androidx.card
+    implementation deps.shimmer
 
     // Dagger
     implementation deps.dagger.dagger
@@ -33,6 +34,9 @@ dependencies {
 
     // Timber
     implementation deps.timber
+
+    // ThreeTen
+    implementation deps.threetenabp
 }
 
 dependencies {

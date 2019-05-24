@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/latestFragment"
+        android:id="@+id/photosFragment"
         android:icon="@drawable/ic_bottom_bar_item_latest"
         android:title="@string/navigation_bottom_bar_title_latest" />
 

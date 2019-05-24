@@ -1,7 +1,7 @@
 package com.netchar.common.poweradapter.adapter
 
 import androidx.recyclerview.widget.RecyclerView
-import com.netchar.common.poweradapter.EndlessRecyclerOnScrollListener
+import com.netchar.common.poweradapter.EndlessRecyclerViewScrollListener
 
 
 /**
@@ -10,26 +10,25 @@ import com.netchar.common.poweradapter.EndlessRecyclerOnScrollListener
  */
 class EndlessRecyclerAdapter(dataSource: EndlessRecyclerDataSource) : RecyclerAdapter(dataSource) {
 
-    var loadMore: (() -> Unit)? = null
+    lateinit var loadMore: (() -> Unit)
 
-    private val endlessScrollListener by lazy {
-        object : EndlessRecyclerOnScrollListener() {
-            override fun onLoadMore() {
-                loadMore?.invoke()
-            }
-        }
-    }
+    private lateinit var endlessScrollListener: EndlessRecyclerViewScrollListener
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
+        val layoutManager = recyclerView.layoutManager ?: throw IllegalStateException("LayoutManager must be assigned.")
+
+        endlessScrollListener = object : EndlessRecyclerViewScrollListener(layoutManager) {
+            override fun loadMore() {
+                loadMore.invoke()
+            }
+        }
+
         recyclerView.addOnScrollListener(endlessScrollListener)
     }
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
         recyclerView.removeOnScrollListener(endlessScrollListener)
-        if (loadMore != null) {
-            loadMore = null
-        }
     }
 }

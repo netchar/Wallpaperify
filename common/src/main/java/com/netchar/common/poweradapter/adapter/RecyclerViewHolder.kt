@@ -10,10 +10,6 @@ class RecyclerViewHolder(
     private val renderer: ItemRenderer
 ) : RecyclerView.ViewHolder(renderer.createView(parent)) {
 
-    init {
-        renderer.onSetListeners(itemView)
-    }
-
     internal fun bind(item: IRecyclerItem) {
         renderer.bind(itemView, item)
     }

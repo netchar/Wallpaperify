@@ -7,11 +7,24 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+
     <style name="AppTheme.NoActionBar" parent="Base.Theme.NoActionBar">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="Base.Theme.AppBarOverlay"/>
-    <style name="AppTheme.PopupOverlay" parent="Base.Theme.PopupOverlay"/>
+    <style name="AppTheme.NoActionBar.SemiTransparentSystemBar">
+        <item name="android:statusBarColor">#80000000</item>
+        <item name="android:navigationBarColor">#80000000</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.TransparentSystemBar">
+        <item name="android:statusBarColor">#00000000</item>
+        <item name="android:navigationBarColor">#00000000</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="Base.Theme.AppBarOverlay" />
+
+    <style name="AppTheme.PopupOverlay" parent="Base.Theme.PopupOverlay" />
 
     <style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="android:fontFamily">@font/pacifico</item>

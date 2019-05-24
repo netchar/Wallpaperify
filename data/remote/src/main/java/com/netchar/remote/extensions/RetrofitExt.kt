@@ -3,6 +3,7 @@ package com.netchar.remote.extensions
 import com.netchar.common.exceptions.NoNetworkException
 import com.netchar.remote.enums.HttpResult
 import com.netchar.remote.enums.HttpStatusCode
+import com.squareup.moshi.JsonDataException
 import kotlinx.coroutines.Deferred
 import retrofit2.Response
 import timber.log.Timber
@@ -21,6 +22,9 @@ suspend fun <T : Any> Deferred<Response<T>>.awaitSafe(): HttpResult<T> {
         } else {
             HttpResult.Error.parse(response)
         }
+    } catch (e: JsonDataException) {
+        Timber.e(e)
+        HttpResult.Exception(e)
     } catch (e: NoNetworkException) {
         HttpResult.Exception(e)
     } catch (e: IOException) {

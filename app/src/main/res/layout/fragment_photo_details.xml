@@ -1,13 +1,305 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/photo_details_coordinator"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
-    <com.netchar.common.views.ErrorLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/photo_details_constraint_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:icon="@drawable/ic_no_internet_connection"
-        app:message="Hi Error Layout" />
+        android:layout_height="match_parent">
 
-</FrameLayout>
+        <ImageView
+            android:id="@+id/photo_details_iv_photo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+        <View
+            android:id="@+id/photo_details_bottom_panel_background_overlay"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="#80000000"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="@+id/photo_details_constraint_bottom_panel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/photo_details_constraint_bottom_panel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:clipToPadding="true"
+            android:minHeight="120dp"
+            android:paddingBottom="16dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:visibility="visible">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/title_fab_guidline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.81" />
+
+            <TextView
+                android:id="@+id/photo_details_tv_description"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                android:textColor="#FFF"
+                android:visibility="visible"
+                app:autoSizeMaxTextSize="24sp"
+                app:autoSizeMinTextSize="12sp"
+                app:autoSizeStepGranularity="2sp"
+                app:autoSizeTextType="uniform"
+                app:layout_constraintBottom_toTopOf="@+id/photo_details_author_img"
+                app:layout_constraintEnd_toStartOf="@+id/title_fab_guidline"
+                app:layout_constraintHeight_default="spread"
+                app:layout_constraintHeight_max="70dp"
+                app:layout_constraintHeight_min="50dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="asdadsasd"
+                tools:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/photo_details_author_img"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/photo_details_tv_description"
+                app:layout_goneMarginTop="16dp"
+                tools:srcCompat="@tools:sample/avatars" />
+
+            <TextView
+                android:id="@+id/photo_details_tv_photo_by"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                android:textColor="#FFF"
+                app:layout_constraintBottom_toBottomOf="@+id/photo_details_author_img"
+                app:layout_constraintEnd_toStartOf="@+id/photo_details_tv_likes"
+                app:layout_constraintStart_toEndOf="@+id/photo_details_author_img"
+                app:layout_constraintTop_toTopOf="@+id/photo_details_author_img"
+                tools:text="by Gaelle Marcel" />
+
+            <com.netchar.common.views.CompoundDrawableTextView
+                android:id="@+id/photo_details_tv_likes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical"
+                android:minWidth="35dp"
+                android:minHeight="24dp"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                android:textColor="#fff"
+                app:compoundDrawableHeight="16dp"
+                app:compoundDrawableWidth="16dp"
+                app:drawableStartVector="@drawable/ic_thumb_up"
+                app:drawableTint="@color/white"
+                app:layout_constraintBottom_toBottomOf="@+id/photo_details_tv_photo_by"
+                app:layout_constraintEnd_toStartOf="@+id/photo_details_tv_total_downloads"
+                app:layout_constraintTop_toTopOf="@+id/photo_details_tv_photo_by" />
+
+            <com.netchar.common.views.CompoundDrawableTextView
+                android:id="@+id/photo_details_tv_total_downloads"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical"
+                android:minWidth="55dp"
+                android:minHeight="24dp"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                android:textColor="#fff"
+                app:compoundDrawableHeight="18dp"
+                app:compoundDrawableWidth="18dp"
+                app:drawableStartVector="@drawable/ic_file_download"
+                app:drawableTint="@color/white"
+                app:layout_constraintBottom_toBottomOf="@+id/photo_details_tv_likes"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/photo_details_tv_likes" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/photo_details_loading_shimmer"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:shimmer_duration="2000"
+            app:shimmer_intensity="0.3"
+            app:shimmer_base_alpha="0.75"
+            app:shimmer_fixed_height="120dp"
+            app:layout_constraintBottom_toBottomOf="@id/photo_details_constraint_bottom_panel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/photo_details_constraint_bottom_panel"
+            tools:visibility="visible">
+
+            <include layout="@layout/view_photo_details_shimmer" />
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+        <View
+            android:id="@+id/fab_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#35ffffff"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/photo_details_floating_download"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/ic_file_download"
+            android:tint="#000"
+            android:visibility="visible"
+            app:backgroundTint="#FFF"
+            app:fabSize="mini"
+            app:layout_constraintBottom_toTopOf="@+id/photo_details_floating_main"
+            app:layout_constraintEnd_toEndOf="@+id/photo_details_floating_main"
+            app:layout_constraintStart_toStartOf="@+id/photo_details_floating_main" />
+
+        <TextView
+            android:id="@+id/photo_details_floating_label_download"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/bg_fab_label"
+            android:clickable="true"
+            android:elevation="2dp"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:padding="6dp"
+            android:text="@string/photo_details_floating_label_title_download"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            app:layout_constraintBottom_toBottomOf="@+id/photo_details_floating_download"
+            app:layout_constraintEnd_toStartOf="@+id/photo_details_floating_download"
+            app:layout_constraintTop_toTopOf="@+id/photo_details_floating_download" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/photo_details_floating_raw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/ic_aspect_ratio"
+            android:tint="#000"
+            android:visibility="visible"
+            app:backgroundTint="#FFF"
+            app:fabSize="mini"
+            app:layout_constraintBottom_toTopOf="@+id/photo_details_floating_download"
+            app:layout_constraintEnd_toEndOf="@+id/photo_details_floating_main"
+            app:layout_constraintStart_toStartOf="@+id/photo_details_floating_main" />
+
+        <TextView
+            android:id="@+id/photo_details_floating_label_raw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/bg_fab_label"
+            android:clickable="true"
+            android:elevation="2dp"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:padding="6dp"
+            android:text="@string/photo_details_floating_label_title_raw"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            app:layout_constraintBottom_toBottomOf="@+id/photo_details_floating_raw"
+            app:layout_constraintEnd_toStartOf="@+id/photo_details_floating_raw"
+            app:layout_constraintTop_toTopOf="@+id/photo_details_floating_raw" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/photo_details_floating_wallpaper"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:cropToPadding="false"
+            android:src="@drawable/ic_wallpaper"
+            android:tint="#000"
+            android:visibility="visible"
+            app:backgroundTint="#FFF"
+            app:fabSize="mini"
+            app:layout_constraintBottom_toTopOf="@+id/photo_details_floating_raw"
+            app:layout_constraintEnd_toEndOf="@+id/photo_details_floating_main"
+            app:layout_constraintStart_toStartOf="@+id/photo_details_floating_main" />
+
+        <TextView
+            android:id="@+id/photo_details_floating_label_wallpaper"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/bg_fab_label"
+            android:clickable="true"
+            android:elevation="2dp"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:padding="6dp"
+            android:text="@string/photo_details_floating_label_title_wallpaper"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            app:layout_constraintBottom_toBottomOf="@+id/photo_details_floating_wallpaper"
+            app:layout_constraintEnd_toStartOf="@+id/photo_details_floating_wallpaper"
+            app:layout_constraintTop_toTopOf="@+id/photo_details_floating_wallpaper" />
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/photo_details_floating_main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_expand_more"
+            android:tint="#000"
+            android:visibility="invisible"
+            app:backgroundTint="#FFF"
+            app:fabSize="normal"
+            app:layout_anchor="@id/photo_details_constraint_bottom_panel"
+            app:layout_anchorGravity="top|right"
+            app:layout_constraintBottom_toTopOf="@+id/photo_details_constraint_bottom_panel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/photo_details_constraint_bottom_panel"
+            app:useCompatPadding="true"
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/layer_background_gradient_toolbar"
+        android:elevation="0dp"
+        android:fitsSystemWindows="true"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light"
+        tools:visibility="visible" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

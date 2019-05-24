@@ -1,8 +1,9 @@
 package com.netchar.wallpaperify.di.modules
 
 import com.netchar.wallpaperify.ui.about.AboutFragment
+import com.netchar.wallpaperify.ui.collections.CollectionsFragment
 import com.netchar.wallpaperify.ui.home.HomeFragment
-import com.netchar.wallpaperify.ui.latest.LatestFragment
+import com.netchar.wallpaperify.ui.photos.PhotosFragment
 import com.netchar.wallpaperify.ui.photosdetails.PhotoDetailsFragment
 import com.netchar.wallpaperify.ui.settings.SettingsFragment
 import dagger.Module
@@ -12,7 +13,10 @@ import dagger.android.ContributesAndroidInjector
 abstract class MainActivityModule {
 
     @ContributesAndroidInjector
-    abstract fun contributeLatestFragment(): LatestFragment
+    abstract fun contributePhotosFragment(): PhotosFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeCollectionsFragment(): CollectionsFragment
 
     @ContributesAndroidInjector
     abstract fun contributeHomeFragment(): HomeFragment

@@ -8,7 +8,7 @@ import com.netchar.common.extensions.toVisible
 import com.netchar.common.poweradapter.item.IRecyclerItem
 import com.netchar.common.poweradapter.item.ItemRenderer
 import kotlinx.android.synthetic.main.view_recycler_load_more_loading.view.*
-
+import java.util.*
 
 /**
  * Created by Netchar on 27.04.2019.
@@ -16,8 +16,8 @@ import kotlinx.android.synthetic.main.view_recycler_load_more_loading.view.*
  */
 
 class EndlessRecyclerDataSource(
-    renderers: MutableList<ItemRenderer>,
-    private val onLoadMore: () -> Unit
+        renderers: MutableList<ItemRenderer>,
+        private val onLoadMore: () -> Unit
 ) : RecyclerDataSource(renderers) {
 
     private val loadingItem = LoadingItem()
@@ -39,25 +39,19 @@ class EndlessRecyclerDataSource(
         notifyItemChanged(loadingItem)
     }
 
-    private fun insertLoadingItem() {
-        adapterReference.get()?.let {
-            data.add(loadingItem)
-            it.notifyItemInserted(data.indexOf(loadingItem))
-        }
+    override fun setData(newData: List<IRecyclerItem>) {
+        super.setData(newData.plus(loadingItem))
     }
 
     override fun attach(adapter: RecyclerView.Adapter<RecyclerViewHolder>) {
         if (adapter is EndlessRecyclerAdapter) {
-            adapter.loadMore = {
-                insertLoadingItem()
-                onLoadMore()
-            }
+            adapter.loadMore = onLoadMore
         }
         super.attach(adapter)
     }
 
-    open class LoadingItemRenderer(val onRetryClick: () -> Unit) : ItemRenderer() {
-        final override val renderKey: String = LoadingItem::class.java.simpleName
+    private class LoadingItemRenderer(val onRetryClick: () -> Unit) : ItemRenderer() {
+        override val renderKey: String = LoadingItem::class.java.simpleName
 
         override fun layoutRes(): Int = R.layout.view_recycler_load_more_loading
 
@@ -70,9 +64,7 @@ class EndlessRecyclerDataSource(
                 itemView.load_more_retry_group.toGone()
                 itemView.load_more_item_loading.toVisible()
             }
-        }
 
-        override fun onSetListeners(itemView: View) {
             itemView.load_more_retry_group.setOnClickListener {
                 onRetryClick()
             }
@@ -80,7 +72,9 @@ class EndlessRecyclerDataSource(
     }
 
     private class LoadingItem : IRecyclerItem {
-        override fun getId(): Long = -1
+        // needed to every time to calculate new random
+        // to make diffUtil work with appropriate insert notification for this item
+        override fun getId(): Long = UUID.randomUUID().hashCode().toLong()
         override fun getRenderKey(): String = LoadingItem::class.java.simpleName
 
         var isRetryVisible: Boolean = false

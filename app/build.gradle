@@ -1,6 +1,8 @@
 apply plugin: 'com.android.application'
 apply from: '../commons-android.gradle'
 apply plugin: 'androidx.navigation.safeargs'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 def secretProperties = new Properties()
 secretProperties.load(project.rootProject.file('secret.properties').newDataInputStream())
@@ -125,4 +127,10 @@ dependencies {
     androidTestImplementation deps.test.runner
     androidTestImplementation deps.test.espresso
     testImplementation deps.test.mockwebserver
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.core:core-ktx:1.0.2'
+    implementation 'com.google.android.material:material:1.0.0'
+    implementation "com.andkulikov:transitionseverywhere:2.0.0-beta01"
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta1'
+    implementation "com.leinardi.android:speed-dial:2.0.1"
 }

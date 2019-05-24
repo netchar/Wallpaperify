@@ -9,6 +9,7 @@ dependencies {
 
     implementation deps.moshi
     implementation deps.kotshi.api
+    kapt deps.kotshi.compiler
 
     // Room
     implementation deps.androidx.room.runtime

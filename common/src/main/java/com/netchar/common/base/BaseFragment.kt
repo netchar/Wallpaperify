@@ -30,7 +30,7 @@ abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
 
     private val drawerActivity get() = activity as? IDrawerActivity
 
-    protected var toolbar: Toolbar? = null
+    protected var fragmentToolbar: Toolbar? = null
 
     override fun onAttach(context: Context) {
         Injector.inject(this)
@@ -45,7 +45,7 @@ abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        toolbar = view.findViewById<Toolbar>(R.id.toolbar)?.also { it.setupNavigation() }
+        fragmentToolbar = view.findViewById<Toolbar>(R.id.toolbar)?.also { it.setupNavigation() }
         drawerActivity?.setupNavigationDrawer()
     }
 

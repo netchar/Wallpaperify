@@ -1,5 +1,6 @@
 package com.netchar.remote.di
 
+import com.netchar.remote.api.CollectionsApi
 import com.netchar.remote.api.PhotosApi
 import dagger.Module
 import dagger.Provides
@@ -13,5 +14,10 @@ object ApiModule {
     @Provides
     @Singleton
     fun providesPhotoApi(retrofit: Retrofit): PhotosApi = retrofit.create(PhotosApi::class.java)
+
+    @JvmStatic
+    @Provides
+    @Singleton
+    fun providesCollectionsApi(retrofit: Retrofit): CollectionsApi = retrofit.create(CollectionsApi::class.java)
 
 }
