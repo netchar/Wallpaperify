@@ -16,6 +16,7 @@
 
 package com.netchar.wallpaperify.ui.photosdetails
 
+import android.app.AlertDialog
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -86,9 +87,9 @@ class PhotoDetailsFragment : BaseFragment() {
     private fun initViews() {
         photo_details_iv_photo.transitionName = safeArguments.imageTransitionName
         Glide.with(this)
-            .load(safeArguments.photoUrl)
-            .listener(photoTransitionRequestListener)
-            .into(photo_details_iv_photo)
+                .load(safeArguments.photoUrl)
+                .listener(photoTransitionRequestListener)
+                .into(photo_details_iv_photo)
 
     }
 
@@ -108,11 +109,11 @@ class PhotoDetailsFragment : BaseFragment() {
             TransitionManager.beginDelayedTransition(photo_details_constraint_main)
 
             Glide.with(this)
-                .load(photo.user.profileImage.small)
-                .transform(CircleCrop())
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .error(R.drawable.ic_person)
-                .into(photo_details_author_img)
+                    .load(photo.user.profileImage.small)
+                    .transform(CircleCrop())
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .error(R.drawable.ic_person)
+                    .into(photo_details_author_img)
 
             photo_details_tv_photo_by.text = getString(R.string.collection_item_author_prefix, photo.user.name)
             photo_details_tv_description.text = photo.description
@@ -207,6 +208,7 @@ class PhotoDetailsFragment : BaseFragment() {
         }
     }
 
+    // todo: create custom control
     private fun initFabs() {
         photo_details_floating_download.alpha = 0f
         photo_details_floating_raw.alpha = 0f
@@ -237,7 +239,10 @@ class PhotoDetailsFragment : BaseFragment() {
             when (it.id) {
                 R.id.photo_details_floating_download,
                 R.id.photo_details_floating_label_download -> {
-                    showToast("Download")
+                    val dialog = AlertDialog.Builder(context)
+                    dialog.setView(LayoutInflater.from(context).inflate(R.layout.view_dialog_download, null))
+                    dialog.setTitle("Downloading...")
+                    dialog.show()
                 }
                 R.id.photo_details_floating_raw,
                 R.id.photo_details_floating_label_raw -> {

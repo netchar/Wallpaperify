@@ -57,5 +57,8 @@ dependencies {
     implementation deps.androidx.room.runtime
     kapt deps.androidx.room.compiler
 
+    // Kotlin + coroutines
+    implementation "androidx.work:work-runtime-ktx:2.0.1"
+
     testImplementation deps.test.mockwebserver
 }

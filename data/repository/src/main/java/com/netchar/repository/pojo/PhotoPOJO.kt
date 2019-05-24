@@ -23,7 +23,7 @@ data class PhotoPOJO(
         val color: String = "",
         val likes: Int = 0,
         val downloads: Int = 0,
-        val description: String = "",
+        val description: String? = "",
         val user: UserPOJO = UserPOJO(),
         val urls: UrlsPOJO = UrlsPOJO()
 )

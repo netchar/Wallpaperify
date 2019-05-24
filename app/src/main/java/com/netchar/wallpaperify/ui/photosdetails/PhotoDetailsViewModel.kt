@@ -28,6 +28,7 @@ import com.netchar.repository.photos.IPhotosRepository
 import com.netchar.repository.pojo.Message
 import com.netchar.repository.pojo.PhotoPOJO
 import com.netchar.wallpaperify.R
+import kotlinx.coroutines.cancel
 import javax.inject.Inject
 
 class PhotoDetailsViewModel @Inject constructor(
@@ -51,7 +52,7 @@ class PhotoDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun proceedResponse(response: Resource<PhotoPOJO>?) {
+    private fun proceedResponse(response: Resource<PhotoPOJO>) {
 
         when (response) {
             is Resource.Success -> {
@@ -81,5 +82,10 @@ class PhotoDetailsViewModel @Inject constructor(
             Cause.NO_INTERNET_CONNECTION -> Message(R.string.error_message_no_internet)
             Cause.NOT_AUTHENTICATED, Cause.UNEXPECTED -> Message(R.string.error_message_try_again_later)
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        scope.cancel()
     }
 }

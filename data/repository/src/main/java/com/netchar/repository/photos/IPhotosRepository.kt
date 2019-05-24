@@ -25,4 +25,6 @@ interface IPhotosRepository {
     fun getPhotos(request: ApiRequest.Photos, scope: CoroutineScope): IBoundResource<List<PhotoPOJO>>
 
     fun getPhoto(id: String, scope: CoroutineScope): IBoundResource<PhotoPOJO>
+
+//    fun downloadPhoto(url: String, scope: CoroutineScope) : ByteArray
 }

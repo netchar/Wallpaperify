@@ -46,6 +46,10 @@
     <string name="photo_details_floating_label_title_wallpaper">Set As Wallpaper</string>
     <string name="photo_details_floating_label_title_download">Download</string>
 
+    <string name="photo_details_dialog_progress_status">%1$s / 100 %</string>
+
+
+
     <string-array name="array_photos_ordering_spinner">
         <item>Sort by latest</item>
         <item>Sort by oldest</item>

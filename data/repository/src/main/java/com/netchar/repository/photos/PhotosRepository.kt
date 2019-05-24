@@ -29,11 +29,6 @@ import kotlinx.coroutines.Deferred
 import retrofit2.Response
 import javax.inject.Inject
 
-/**
- * Created by Netchar on 21.03.2019.
- * e.glushankov@gmail.com
- */
-
 class PhotosRepository @Inject constructor(
         private val api: PhotosApi,
         private val dispatchers: CoroutineDispatchers
@@ -62,6 +57,21 @@ class PhotosRepository @Inject constructor(
             }
         }.launchIn(scope)
     }
+
+//    override fun downloadPhoto(url: String, scope: CoroutineScope): ByteArray {
+
+//        val workerParameters = WorkerParameters("id")
+//        return object : CoroutineWorker(context, workerParameters) {
+//
+//            override suspend fun doWork(): Result {
+//                val byteArray = withContext(scope.coroutineContext) {
+//
+//                }
+//
+
+//            }
+//        }
+//    }
 }
 
 

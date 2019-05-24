@@ -86,6 +86,9 @@ dependencies {
     implementation deps.kotlin.coroutines.android
     implementation deps.kotlin.coroutines.core
 
+    // Kotlin + coroutines
+    implementation "androidx.work:work-runtime-ktx:2.0.1"
+
     // Androidx
     implementation deps.androidx.appcompat
     implementation deps.androidx.constraintlayout
@@ -148,4 +151,5 @@ dependencies {
     implementation "com.andkulikov:transitionseverywhere:2.0.0-beta01"
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta1'
     implementation "com.leinardi.android:speed-dial:2.0.1"
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 }
