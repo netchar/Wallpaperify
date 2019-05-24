@@ -14,4 +14,20 @@
  * limitations under the License.
  */
 
-include ':app', ':common', ':test', ':data:remote', ':data:local', ':data:repository', ':data:auth'
+package com.netchar.remote.apirequest
+
+data class Paging(val startPage: Int = 1) {
+
+    private var page: Int = startPage
+
+    fun nextPage(): Int = ++page
+
+    fun prevPage(): Int = if (page > 1) --page else page
+
+    fun fromStart(): Int {
+        page = startPage
+        return page
+    }
+
+    val currentPage get() = page
+}

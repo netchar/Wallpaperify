@@ -14,4 +14,11 @@
  * limitations under the License.
  */
 
-include ':app', ':common', ':test', ':data:remote', ':data:local', ':data:repository', ':data:auth'
+package com.netchar.remote.dto
+
+import com.squareup.moshi.Json
+
+data class UnsplashError(
+    @field:Json(name = "errors")
+    val errors: List<String>
+)

@@ -14,10 +14,15 @@
  * limitations under the License.
  */
 
-package com.netchar.models
+package com.netchar.repository.pojo
 
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 
-data class Position(
-        val latitude: Double? = 0.0,
-        val longitude: Double? = 0.0
-)
+inline class Message(@StringRes val messageRes: Int?)
+
+data class ErrorMessage(val isVisible: Boolean, val errorMessage: Message, @DrawableRes val errorImageRes: Int? = 0) {
+    companion object {
+        fun empty() = ErrorMessage(false, Message(null), null)
+    }
+}

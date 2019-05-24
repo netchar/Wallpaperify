@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package com.netchar.models
+package com.netchar.repository.pojo
 
-
-data class Location(
-        val city: String = "",
-        val country: String = "",
-        val position: Position = Position()
+data class LinksPOJO(
+        val self: String = "",
+        val html: String = "",
+        val download: String = "",
+        val downloadLocation: String = "",
+        val photos: String = "",
+        val related: String = ""
 )

@@ -14,24 +14,10 @@
  * limitations under the License.
  */
 
-package com.netchar.models
+package com.netchar.remote.dto
 
 
-import com.squareup.moshi.Json
-
-data class Exif(
-
-        val aperture: String = "",
-
-        @field:Json(name = "exposure_time")
-        val exposureTime: String = "",
-
-        @field:Json(name = "focal_length")
-        val focalLength: String = "",
-
-        val iso: Int = 0,
-
-        val make: String = "",
-
-        val model: String = ""
+data class Position(
+        val latitude: Double? = 0.0,
+        val longitude: Double? = 0.0
 )

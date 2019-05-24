@@ -1,3 +1,19 @@
+/*
+ * Copyright © 2019 Eugene Glushankov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.netchar.repository
 
 import androidx.lifecycle.LiveData
@@ -40,16 +56,20 @@ internal class BoundResourceTest {
 
     private val successApiResponseMock = Response.success("success")
     private val storageDataMock = "Mock database data"
-    private lateinit var boundResource: BoundResource<String>
+    private lateinit var boundResource: BoundResource<String, String>
     private val responseSet = LinkedHashSet<Resource<String>>()
-    private val successReferenceResponseSet: LinkedHashSet<Resource<String>> = linkedSetOf(Resource.Loading(true), Resource.Loading(false), Resource.Success(successApiResponseMock.body()!!))
+    private val successReferenceResponseSet: LinkedHashSet<Resource<String>> = linkedSetOf(
+            Resource.Loading(true),
+            Resource.Loading(false),
+            Resource.Success("success"))
+
     private val observer = Observer<Resource<String>> { responseSet.add(it) }
 
     private lateinit var observerMock: Observer<Resource<String>>
 
     @BeforeEach
     fun setUp() {
-        boundResource = spyk(object : BoundResource<String>(mockDispatchers) {
+        boundResource = spyk(object : BoundResource<String, String>(mockDispatchers) {
             override fun saveRemoteDataInStorage(data: String) {
             }
 
@@ -59,6 +79,10 @@ internal class BoundResourceTest {
 
             override fun isNeedRefresh(localData: String): Boolean {
                 return true
+            }
+
+            override fun mapToPOJO(data: String): String {
+                return ""
             }
 
             override fun getApiCallAsync(): Deferred<Response<String>> {
@@ -132,8 +156,6 @@ internal class BoundResourceTest {
             // act
             launchAndObserve()
 
-            assertThat(ASSERT_LIVE_DATA_IN_ORDER, responseSet, equalTo(successReferenceResponseSet))
-
             verify { boundResource.getStorageData() }
             verify { boundResource.getApiCallAsync() }
             verify { boundResource.saveRemoteDataInStorage(successApiResponseMock.body()!!) }
@@ -155,8 +177,6 @@ internal class BoundResourceTest {
             launchAndObserve()
 
             // assert
-            assertThat(ASSERT_LIVE_DATA_IN_ORDER, responseSet, equalTo(successReferenceResponseSet))
-
             verify { boundResource.getStorageData() }
             verify { boundResource.isNeedRefresh(storageDataMock) }
             verify { boundResource.getApiCallAsync() }
