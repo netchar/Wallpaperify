@@ -117,7 +117,7 @@ class PhotosFragment : BaseFragment() {
         })
 
         viewModel.toast.observe(viewLifecycleOwner, Observer {
-            showToast(getStringSafe(it.messageRes))
+            toast(getStringSafe(it.messageRes))
         })
 
         viewModel.errorPlaceholder.observe(viewLifecycleOwner, Observer {

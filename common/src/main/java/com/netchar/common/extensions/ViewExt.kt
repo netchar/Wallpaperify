@@ -5,6 +5,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.netchar.common.base.callbacs.IOnDropdownSelectedListener
@@ -47,8 +48,12 @@ fun Snackbar.action(action: String, color: Int? = null, listener: (View) -> Unit
     color?.let { setActionTextColor(color) }
 }
 
-fun Fragment.showToast(message: String, length: Int = Toast.LENGTH_LONG) {
+fun Fragment.toast(message: String, length: Int = Toast.LENGTH_LONG) {
     Toast.makeText(this.context, message, length).show()
+}
+
+fun FragmentActivity.toast(message: String, length: Int = Toast.LENGTH_LONG) {
+    Toast.makeText(this, message, length).show()
 }
 
 inline fun <reified T : View> T.postAction(action: T.() -> Unit) {

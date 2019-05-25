@@ -133,7 +133,7 @@ class PhotoDetailsFragment : BaseFragment() {
         })
 
         viewModel.error.observe(viewLifecycleOwner, Observer { error ->
-            showToast(getStringSafe(error.messageRes))
+            toast(getStringSafe(error.messageRes))
         })
 
         viewModel.loading.observe(viewLifecycleOwner, Observer { loading ->
@@ -182,7 +182,7 @@ class PhotoDetailsFragment : BaseFragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.photo_details_share_menu_item -> consume { showToast("Share") }
+            R.id.photo_details_share_menu_item -> consume { toast("Share") }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -279,11 +279,11 @@ class PhotoDetailsFragment : BaseFragment() {
                 }
                 R.id.photo_details_floating_raw,
                 R.id.photo_details_floating_label_raw -> {
-                    showToast("Raw")
+                    toast("Raw")
                 }
                 R.id.photo_details_floating_wallpaper,
                 R.id.photo_details_floating_label_wallpaper -> {
-                    showToast("Wallpaper")
+                    toast("Wallpaper")
                 }
             }
 
