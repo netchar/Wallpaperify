@@ -23,9 +23,11 @@ apply plugin: 'kotlin-android-extensions'
 def secretProperties = new Properties()
 secretProperties.load(project.rootProject.file('secret.properties').newDataInputStream())
 
+def appId = "com.netchar.wallpaperify"
+
 android {
     defaultConfig {
-        applicationId "com.netchar.wallpaperify"
+        applicationId appId
 
         vectorDrawables {
             useSupportLibrary true
@@ -39,6 +41,7 @@ android {
         buildConfigField("String", "DEBUG_API_ACCESS_KEY", secretProperties['DEBUG_API_ACCESS_KEY'])
         buildConfigField("String", "DEBUG_API_SECRET_KEY", secretProperties['DEBUG_API_SECRET_KEY'])
         buildConfigField("String", "GOOGLE_PLAY_LICENSE_KEY", secretProperties['GOOGLE_PLAY_LICENSE_KEY'])
+//        buildConfigField("String", "APPLICATION_ID", appId)
     }
 
     buildTypes {

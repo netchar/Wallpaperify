@@ -16,16 +16,10 @@
 
 package com.netchar.wallpaperify.ui.photosdetails
 
-import android.app.DownloadManager
-import android.content.Context
-import android.net.Uri
-import android.os.Environment
-import androidx.core.content.getSystemService
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import com.livinglifetechway.quickpermissions_kotlin.runWithPermissions
 import com.netchar.common.base.BaseViewModel
 import com.netchar.common.utils.CoroutineDispatchers
 import com.netchar.remote.Resource
@@ -33,14 +27,16 @@ import com.netchar.remote.enums.Cause
 import com.netchar.repository.photos.IPhotosRepository
 import com.netchar.repository.pojo.Message
 import com.netchar.repository.pojo.PhotoPOJO
+import com.netchar.repository.services.DownloadService
 import com.netchar.wallpaperify.R
-import kotlinx.coroutines.cancel
+import timber.log.Timber
 import javax.inject.Inject
+
 
 class PhotoDetailsViewModel @Inject constructor(
         coroutineDispatchers: CoroutineDispatchers,
         private val repo: IPhotosRepository,
-        private val context: Context
+        private val downloadService: DownloadService
 
 ) : BaseViewModel(coroutineDispatchers) {
 
@@ -48,6 +44,7 @@ class PhotoDetailsViewModel @Inject constructor(
     private val _photo = MediatorLiveData<PhotoPOJO>()
     private val _loading = MutableLiveData<Boolean>()
     private val _error = MutableLiveData<Message>()
+    private var _downloading = MutableLiveData<Boolean>()
 
     private val repoLiveData: LiveData<Resource<PhotoPOJO>> = Transformations.switchMap(_photoId) { id ->
         repo.getPhoto(id, scope).getLiveData()
@@ -84,6 +81,13 @@ class PhotoDetailsViewModel @Inject constructor(
 
     val loading: LiveData<Boolean> get() = _loading
 
+    val downloading: LiveData<Boolean> get() = _downloading
+
+    // todo: rid up from this
+    var progress = Transformations.map(downloadService.progress) {
+        it
+    }
+
     private fun getErrorMessage(response: Resource.Error): Message {
         return when (response.cause) {
             Cause.NO_INTERNET_CONNECTION -> Message(R.string.error_message_no_internet)
@@ -91,23 +95,30 @@ class PhotoDetailsViewModel @Inject constructor(
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        scope.cancel()
-    }
+    fun downloadImage() {
+        _photo.value?.let { photo ->
+            try {
+                val request = DownloadService.DownloadRequest(
+                        url = photo.urls.raw,
+                        fileName = photo.id,
+                        fileQuality = "full",
+                        fileExtension = "jpg",
+                        requestType = DownloadService.DownloadRequest.REQUEST_DOWNLOAD
+                )
+                downloadService.download(request) {
+                    _downloading.value = false
+                }
 
-    fun downloadImage(url: String) = context.runWithPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) {
-        val downloadManager = context.getSystemService<DownloadManager>()
-        val uri = Uri.parse(url)
-        val request = DownloadManager.Request(uri).apply {
-            setDescription("Wallpaperify downloading a photo")
-            setTitle("Downloading...")
-            setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, "Wallpaperify.png")
-            setVisibleInDownloadsUi(true)
-            setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
+                _downloading.value = true
+
+            } catch (ex: IllegalStateException) {
+                _error.value = Message(R.string.error_download_unable_to_start_downloading)
+                Timber.e(ex)
+            }
         }
-        val id = downloadManager?.enqueue(request)
     }
 
-
+    fun cancelDownloading() {
+        downloadService.cancel()
+    }
 }

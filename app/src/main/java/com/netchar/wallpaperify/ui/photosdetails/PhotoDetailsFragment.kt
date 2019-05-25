@@ -16,7 +16,6 @@
 
 package com.netchar.wallpaperify.ui.photosdetails
 
-import android.app.AlertDialog
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -26,6 +25,7 @@ import android.widget.TextView
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.lifecycle.Observer
+import androidx.transition.AutoTransition
 import androidx.transition.Transition
 import androidx.transition.TransitionInflater
 import androidx.transition.TransitionManager
@@ -37,6 +37,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.livinglifetechway.quickpermissions_kotlin.runWithPermissions
 import com.netchar.common.base.BaseFragment
 import com.netchar.common.extensions.*
 import com.netchar.common.utils.getThemeAttrColor
@@ -48,7 +49,8 @@ import javax.inject.Inject
 class PhotoDetailsFragment : BaseFragment() {
 
     private var isMenuOpen: Boolean = false
-    private var interpolator = OvershootInterpolator()
+    private val interpolator = OvershootInterpolator()
+    private val autoTransition = AutoTransition().apply { duration = 100 }
     private val initialFabTranslationY = 100f
     private val initialFabLabelTranslationX = 100f
 
@@ -61,6 +63,12 @@ class PhotoDetailsFragment : BaseFragment() {
 
     private val safeArguments: PhotoDetailsFragmentArgs by lazy {
         PhotoDetailsFragmentArgs.fromBundle(arguments!!)
+    }
+
+    private val downloadDialog: DownloadDialogFragment by lazy {
+        DownloadDialogFragment().apply {
+            onDialogCancel = { viewModel.cancelDownloading() }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,10 +95,9 @@ class PhotoDetailsFragment : BaseFragment() {
     private fun initViews() {
         photo_details_iv_photo.transitionName = safeArguments.imageTransitionName
         Glide.with(this)
-                .load(safeArguments.photoUrl)
-                .listener(photoTransitionRequestListener)
-                .into(photo_details_iv_photo)
-
+            .load(safeArguments.photoUrl)
+            .listener(photoTransitionRequestListener)
+            .into(photo_details_iv_photo)
     }
 
     private fun startShimmer() {
@@ -106,14 +113,15 @@ class PhotoDetailsFragment : BaseFragment() {
 
     private fun observe() {
         viewModel.photo.observe(viewLifecycleOwner, Observer { photo ->
-            TransitionManager.beginDelayedTransition(photo_details_constraint_main)
+
+            TransitionManager.beginDelayedTransition(photo_details_constraint_main, autoTransition)
 
             Glide.with(this)
-                    .load(photo.user.profileImage.small)
-                    .transform(CircleCrop())
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .error(R.drawable.ic_person)
-                    .into(photo_details_author_img)
+                .load(photo.user.profileImage.small)
+                .transform(CircleCrop())
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .error(R.drawable.ic_person)
+                .into(photo_details_author_img)
 
             photo_details_tv_photo_by.text = getString(R.string.collection_item_author_prefix, photo.user.name)
             photo_details_tv_description.text = photo.description
@@ -129,14 +137,38 @@ class PhotoDetailsFragment : BaseFragment() {
         })
 
         viewModel.loading.observe(viewLifecycleOwner, Observer { loading ->
-            TransitionManager.beginDelayedTransition(photo_details_constraint_main)
+            handleShimmer(loading)
+        })
 
-            if (loading) {
-                startShimmer()
-            } else {
-                stopShimmer()
+        viewModel.downloading.observe(viewLifecycleOwner, Observer { downloading ->
+            handleDownloadDialog(downloading)
+        })
+
+        viewModel.progress.observe(viewLifecycleOwner, Observer { progress ->
+            if (progress > 0) {
+                downloadDialog.setProgress(progress)
             }
         })
+    }
+
+    private fun handleDownloadDialog(downloading: Boolean) {
+        if (downloading) {
+            downloadDialog.show(childFragmentManager, DownloadDialogFragment::class.java.simpleName)
+        } else {
+            downloadDialog.isDownloadFinished = true
+            //todo: find out how not to close dialog before loading progress completed
+            downloadDialog.dismiss()
+        }
+    }
+
+    private fun handleShimmer(loading: Boolean) {
+        TransitionManager.beginDelayedTransition(photo_details_constraint_main, autoTransition)
+
+        if (loading) {
+            startShimmer()
+        } else {
+            stopShimmer()
+        }
     }
 
     private fun disableToolbarTitle() {
@@ -149,12 +181,10 @@ class PhotoDetailsFragment : BaseFragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.photo_details_share_menu_item -> {
-                showToast("Share")
-            }
+        return when (item.itemId) {
+            R.id.photo_details_share_menu_item -> consume { showToast("Share") }
+            else -> super.onOptionsItemSelected(item)
         }
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onBackPressed(): Boolean {
@@ -239,13 +269,13 @@ class PhotoDetailsFragment : BaseFragment() {
             when (it.id) {
                 R.id.photo_details_floating_download,
                 R.id.photo_details_floating_label_download -> {
-                    val dialog = AlertDialog.Builder(context)
-                    dialog.setView(LayoutInflater.from(context).inflate(R.layout.view_dialog_download, null))
-                    dialog.setTitle("Downloading...")
-                    dialog.show()
 
-                    val photo = viewModel.photo.value!!
-                    viewModel.downloadImage(photo.urls.raw)
+                    runWithPermissions(
+                            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            android.Manifest.permission.READ_EXTERNAL_STORAGE
+                    ) {
+                        viewModel.downloadImage()
+                    }
                 }
                 R.id.photo_details_floating_raw,
                 R.id.photo_details_floating_label_raw -> {

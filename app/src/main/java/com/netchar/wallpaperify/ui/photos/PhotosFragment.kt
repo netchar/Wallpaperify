@@ -113,7 +113,7 @@ class PhotosFragment : BaseFragment() {
 
         viewModel.error.observe(viewLifecycleOwner, Observer {
             dataSource.showRetryItem()
-            showSnackbar(getStringSafe(it.errorMessage.messageRes), Snackbar.LENGTH_LONG)
+            snack(getStringSafe(it.errorMessage.messageRes), Snackbar.LENGTH_LONG)
         })
 
         viewModel.toast.observe(viewLifecycleOwner, Observer {

@@ -10,10 +10,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.netchar.common.base.callbacs.IOnDropdownSelectedListener
 
 
-/**
- * Created by Netchar on 17.03.2019.
- * e.glushankov@gmail.com
- */
+// todo: move into separate classes
 
 fun View.toVisible() {
     visibility = View.VISIBLE
@@ -35,8 +32,19 @@ fun View.isVisible() = visibility == View.VISIBLE
 
 fun TextView.goneIfEmpty() = if (this.text.isNullOrEmpty()) this.toGone() else this.toVisible()
 
-fun Fragment.showSnackbar(message: String, timeLength: Int) {
+fun Fragment.snack(message: String, timeLength: Int) {
     activity?.let { Snackbar.make(it.findViewById<View>(android.R.id.content), message, timeLength).show() }
+}
+
+inline fun View.snack(message: String, length: Int = Snackbar.LENGTH_LONG, f: Snackbar.() -> Unit) {
+    val snack = Snackbar.make(this, message, length)
+    snack.f()
+    snack.show()
+}
+
+fun Snackbar.action(action: String, color: Int? = null, listener: (View) -> Unit) {
+    setAction(action, listener)
+    color?.let { setActionTextColor(color) }
 }
 
 fun Fragment.showToast(message: String, length: Int = Toast.LENGTH_LONG) {
