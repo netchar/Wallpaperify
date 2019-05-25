@@ -31,6 +31,7 @@ class DownloadDialogFragment : DialogFragment() {
 
     fun setProgress(progress: Float) {
         dialog?.run {
+            photo_details_dialog_pv_progress.isIndeterminate = false
             photo_details_dialog_pv_progress.progress = progress.toInt()
             photo_details_dialog_tv_progress.text = getString(R.string.photo_details_dialog_progress_status, progress.toString())
         }

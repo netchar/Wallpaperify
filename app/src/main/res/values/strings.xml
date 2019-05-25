@@ -51,6 +51,7 @@
     <string name="title_downloading">Downloading..</string>
     <string name="label_cancel">Cancel</string>
     <string name="message_canceled">Canceled</string>
+    <string name="download_dialog_progress_info_initial_state">Calculating...</string>
 
     <string-array name="array_photos_ordering_spinner">
         <item>Sort by latest</item>
