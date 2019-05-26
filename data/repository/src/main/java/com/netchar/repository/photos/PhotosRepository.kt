@@ -16,6 +16,7 @@
 
 package com.netchar.repository.photos
 
+import androidx.lifecycle.LiveData
 import com.netchar.common.utils.CoroutineDispatchers
 import com.netchar.remote.api.PhotosApi
 import com.netchar.remote.apirequest.ApiRequest
@@ -23,6 +24,9 @@ import com.netchar.remote.dto.Photo
 import com.netchar.repository.IBoundResource
 import com.netchar.repository.NetworkBoundResource
 import com.netchar.repository.pojo.PhotoPOJO
+import com.netchar.repository.services.DownloadService
+import com.netchar.repository.services.IDownloadService
+import com.netchar.repository.services.Progress
 import com.netchar.repository.utils.Mapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -30,8 +34,9 @@ import retrofit2.Response
 import javax.inject.Inject
 
 class PhotosRepository @Inject constructor(
+        private val dispatchers: CoroutineDispatchers,
         private val api: PhotosApi,
-        private val dispatchers: CoroutineDispatchers
+        private var downloadService: IDownloadService
 ) : IPhotosRepository {
 
     override fun getPhotos(request: ApiRequest.Photos, scope: CoroutineScope): IBoundResource<List<PhotoPOJO>> {
@@ -58,20 +63,20 @@ class PhotosRepository @Inject constructor(
         }.launchIn(scope)
     }
 
-//    override fun downloadPhoto(url: String, scope: CoroutineScope): ByteArray {
+    override fun download(photo: PhotoPOJO): LiveData<Progress> {
+        val request = DownloadService.DownloadRequest(
+                url = photo.urls.raw,
+                fileName = photo.id,
+                fileQuality = "full",
+                fileExtension = "jpg",
+                requestType = DownloadService.DownloadRequest.REQUEST_DOWNLOAD
+        )
+        return downloadService.download(request)
+    }
 
-//        val workerParameters = WorkerParameters("id")
-//        return object : CoroutineWorker(context, workerParameters) {
-//
-//            override suspend fun doWork(): Result {
-//                val byteArray = withContext(scope.coroutineContext) {
-//
-//                }
-//
-
-//            }
-//        }
-//    }
+    override fun cancelDownload() {
+        downloadService.cancel()
+    }
 }
 
 

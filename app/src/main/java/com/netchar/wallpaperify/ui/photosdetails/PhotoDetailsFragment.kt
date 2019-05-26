@@ -144,10 +144,13 @@ class PhotoDetailsFragment : BaseFragment() {
             handleDownloadDialog(downloading)
         })
 
-        viewModel.progress.observe(viewLifecycleOwner, Observer { progress ->
+        viewModel.downloadProgress.observe(viewLifecycleOwner, Observer { progress ->
             if (progress > 0) {
                 downloadDialog.setProgress(progress)
             }
+        })
+
+        viewModel.progress.observe(viewLifecycleOwner, Observer { progress ->
         })
     }
 
@@ -156,7 +159,7 @@ class PhotoDetailsFragment : BaseFragment() {
             downloadDialog.show(childFragmentManager, DownloadDialogFragment::class.java.simpleName)
         } else {
             downloadDialog.isDownloadFinished = true
-            //todo: find out how not to close dialog before loading progress completed
+            //todo: find out how not to close dialog before loading progressSoFar completed
             downloadDialog.dismiss()
         }
     }

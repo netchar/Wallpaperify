@@ -22,42 +22,78 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.netchar.common.base.BaseViewModel
 import com.netchar.common.utils.CoroutineDispatchers
+import com.netchar.common.utils.Event
 import com.netchar.remote.Resource
 import com.netchar.remote.enums.Cause
 import com.netchar.repository.photos.IPhotosRepository
 import com.netchar.repository.pojo.Message
 import com.netchar.repository.pojo.PhotoPOJO
 import com.netchar.repository.services.DownloadService
+import com.netchar.repository.services.Progress
 import com.netchar.wallpaperify.R
-import timber.log.Timber
 import javax.inject.Inject
 
 
 class PhotoDetailsViewModel @Inject constructor(
         coroutineDispatchers: CoroutineDispatchers,
-        private val repo: IPhotosRepository,
-        private val downloadService: DownloadService
-
+        private val repo: IPhotosRepository
 ) : BaseViewModel(coroutineDispatchers) {
 
     private val _photoId = MutableLiveData<String>()
     private val _photo = MediatorLiveData<PhotoPOJO>()
     private val _loading = MutableLiveData<Boolean>()
     private val _error = MutableLiveData<Message>()
-    private var _downloading = MutableLiveData<Boolean>()
+    private val _downloading = MediatorLiveData<Boolean>()
+    private val _downloadProgress = MutableLiveData<Float>()
+    private val _downloadRequest = MutableLiveData<Event<PhotoPOJO>>()
 
-    private val repoLiveData: LiveData<Resource<PhotoPOJO>> = Transformations.switchMap(_photoId) { id ->
+    private val repoLiveData = Transformations.switchMap(_photoId) { id ->
         repo.getPhoto(id, scope).getLiveData()
+    }
+
+    private val downloadProgressLiveData = Transformations.switchMap(_downloadRequest) { photo ->
+        repo.download(photo.peekContent())
     }
 
     init {
         _photo.addSource(repoLiveData) { response ->
             proceedResponse(response)
         }
+
+        _downloading.addSource(downloadProgressLiveData) { progress ->
+            proceedProgress(progress)
+        }
+    }
+
+    val photo: LiveData<PhotoPOJO> get() = _photo
+
+    val error: LiveData<Message> get() = _error
+
+    val loading: LiveData<Boolean> get() = _loading
+
+    val downloading: LiveData<Boolean> get() = _downloading
+
+    val downloadProgress: LiveData<Float> get() = _downloadProgress
+
+    val progress: LiveData<Progress> get() = downloadProgressLiveData
+
+    fun fetchPhoto(id: String) {
+        _photoId.value = id
+    }
+
+    fun downloadImage() {
+        _photo.value?.let {
+            _downloadRequest.value = Event(it)
+            _downloading.value = true
+        }
+    }
+
+    fun cancelDownloading() {
+        _downloading.value = false
+//        downloadService.cancel()
     }
 
     private fun proceedResponse(response: Resource<PhotoPOJO>) {
-
         when (response) {
             is Resource.Success -> {
                 _photo.value = response.data
@@ -71,21 +107,23 @@ class PhotoDetailsViewModel @Inject constructor(
         }
     }
 
-    fun fetchPhoto(id: String) {
-        _photoId.value = id
-    }
-
-    val photo: LiveData<PhotoPOJO> get() = _photo
-
-    val error: LiveData<Message> get() = _error
-
-    val loading: LiveData<Boolean> get() = _loading
-
-    val downloading: LiveData<Boolean> get() = _downloading
-
-    // todo: rid up from this
-    var progress = Transformations.map(downloadService.progress) {
-        it
+    private fun proceedProgress(progress: Progress) {
+        when (progress) {
+            is Progress.Success -> {
+                _downloading.value = false
+            }
+            is Progress.Error -> {
+                _downloading.value = false
+                _error.value = when (progress.cause) {
+                    DownloadService.ErrorCause.UNKNOWN -> Message(R.string.message_error_unknown)
+                    DownloadService.ErrorCause.STATUS_FAILED -> Message(R.string.message_error_download_failed)
+                    DownloadService.ErrorCause.STATUS_PAUSED -> Message(R.string.message_error_download_failed)
+                }
+            }
+            is Progress.Downloading -> {
+                _downloadProgress.value = progress.progressSoFar
+            }
+        }
     }
 
     private fun getErrorMessage(response: Resource.Error): Message {
@@ -93,32 +131,5 @@ class PhotoDetailsViewModel @Inject constructor(
             Cause.NO_INTERNET_CONNECTION -> Message(R.string.error_message_no_internet)
             Cause.NOT_AUTHENTICATED, Cause.UNEXPECTED -> Message(R.string.error_message_try_again_later)
         }
-    }
-
-    fun downloadImage() {
-        _photo.value?.let { photo ->
-            try {
-                val request = DownloadService.DownloadRequest(
-                        url = photo.urls.raw,
-                        fileName = photo.id,
-                        fileQuality = "full",
-                        fileExtension = "jpg",
-                        requestType = DownloadService.DownloadRequest.REQUEST_DOWNLOAD
-                )
-                downloadService.download(request) {
-                    _downloading.value = false
-                }
-
-                _downloading.value = true
-
-            } catch (ex: IllegalStateException) {
-                _error.value = Message(R.string.error_download_unable_to_start_downloading)
-                Timber.e(ex)
-            }
-        }
-    }
-
-    fun cancelDownloading() {
-        downloadService.cancel()
     }
 }

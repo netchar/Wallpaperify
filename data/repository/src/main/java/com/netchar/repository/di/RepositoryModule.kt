@@ -9,6 +9,7 @@ import com.netchar.repository.collection.ICollectionRepository
 import com.netchar.repository.photos.IPhotosRepository
 import com.netchar.repository.photos.PhotosRepository
 import com.netchar.repository.services.DownloadService
+import com.netchar.repository.services.IDownloadService
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -19,16 +20,16 @@ object RepositoryModule {
     @JvmStatic
     @Provides
     @Singleton
-    fun photosRepo(api: PhotosApi, dispatchers: CoroutineDispatchers): IPhotosRepository = PhotosRepository(api, dispatchers)
+    fun photosRepo(photosApi: PhotosApi, dispatchers: CoroutineDispatchers, downloadService: IDownloadService): IPhotosRepository = PhotosRepository(dispatchers, photosApi, downloadService)
 
     @JvmStatic
     @Provides
     @Singleton
-    fun collectionsRepo(api: CollectionsApi, dispatchers: CoroutineDispatchers): ICollectionRepository = CollectionRepository(api, dispatchers)
+    fun collectionsRepo(collectionsApi: CollectionsApi, dispatchers: CoroutineDispatchers): ICollectionRepository = CollectionRepository(collectionsApi, dispatchers)
 
     @JvmStatic
     @Provides
     @Singleton
-    fun provideDownloadService(context: Context): DownloadService = DownloadService(context)
+    fun provideDownloadService(context: Context): IDownloadService = DownloadService(context)
 
 }
