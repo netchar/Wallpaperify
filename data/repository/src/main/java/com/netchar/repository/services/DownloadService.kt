@@ -13,7 +13,6 @@ import android.os.Handler
 import android.os.Message
 import androidx.core.content.getSystemService
 import androidx.core.net.toUri
-import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.netchar.common.extensions.getCursor
@@ -26,16 +25,15 @@ import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
 
-class DownloadService @Inject constructor(private val context: Context) : LifecycleObserver, IDownloadService {
-
+class DownloadService @Inject constructor(private val context: Context) : IDownloadService {
     var currentRequestedDownloadId: Long = -1
-    private lateinit var downloadManager: DownloadManager
-    private var observingCursor: Cursor? = null
 
+    private lateinit var downloadManager: DownloadManager
+    private var downloadBroadcast: DownloadCompletionBroadcastReceiver? = null
+    private var observingCursor: Cursor? = null
     private val downloads = hashMapOf<Long, DownloadRequest>()
     private val handler by lazy { DownloadProgressHandler(this) }
     private val contentObserver by lazy { DownloadChangeObserver(handler) }
-    private var downloadBroadcast: DownloadCompletionBroadcastReceiver? = null
 
     private val _progress: MutableLiveData<Progress> = MutableLiveData()
 
@@ -45,11 +43,13 @@ class DownloadService @Inject constructor(private val context: Context) : Lifecy
             downloadManager = context.getSystemService<DownloadManager>() ?: throw IllegalStateException("Unable to get DownloadManager")
 
             val uri = downloadRequest.url.toUri()
+            val notificationVisibility = getNotificationVisibilityMode(downloadRequest)
+
             val request = DownloadManager.Request(uri).apply {
                 setTitle(downloadRequest.fullFileName)
                 setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, downloadRequest.fullFileName)
                 setVisibleInDownloadsUi(true)
-                setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                setNotificationVisibility(notificationVisibility)
                 setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
                 allowScanningByMediaScanner()
             }
@@ -62,10 +62,31 @@ class DownloadService @Inject constructor(private val context: Context) : Lifecy
 
         } catch (ex: IllegalStateException) {
             Timber.e(ex)
-            _progress.value = Progress.Unknown(ex.localizedMessage)
+            notifyProgress(Progress.Unknown(ex.localizedMessage))
         }
 
         return _progress
+    }
+
+    override fun unregisterDownloadObservers() {
+        if (observingCursor != null) {
+            observingCursor?.unregisterContentObserver(contentObserver)
+            observingCursor?.close()
+            observingCursor = null
+        }
+
+        if (downloadBroadcast != null) {
+            context.unregisterReceiver(downloadBroadcast)
+            downloadBroadcast = null
+        }
+    }
+
+    private fun getNotificationVisibilityMode(downloadRequest: DownloadRequest): Int {
+        return if (downloadRequest.requestType == DownloadRequest.REQUEST_DOWNLOAD) {
+            DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED
+        } else {
+            DownloadManager.Request.VISIBILITY_VISIBLE
+        }
     }
 
     private fun registerDownloadObservers() {
@@ -74,20 +95,6 @@ class DownloadService @Inject constructor(private val context: Context) : Lifecy
         }
         downloadBroadcast = DownloadCompletionBroadcastReceiver(this)
         context.registerReceiver(downloadBroadcast, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
-    }
-
-    fun unregisterDownloadObservers() {
-        observingCursor.release()
-        observingCursor = null
-
-        if (downloadBroadcast != null) {
-            context.unregisterReceiver(downloadBroadcast)
-            downloadBroadcast = null
-        }
-    }
-
-    private fun notifyProgress(progress: Progress) {
-        _progress.postValue(progress)
     }
 
     fun updateProgressStatus() {
@@ -145,12 +152,19 @@ class DownloadService @Inject constructor(private val context: Context) : Lifecy
         }
     }
 
-    private fun forceScanForNewFiles(uri: Uri?) {
-        context.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri))
+    override fun cancel() {
+        // todo: check how it will work with remove
+        unregisterDownloadObservers()
+        downloadManager.remove(currentRequestedDownloadId)
+        downloads.remove(currentRequestedDownloadId)
     }
 
-    private fun Cursor?.release() = this?.using {
-        unregisterContentObserver(contentObserver)
+    private fun notifyProgress(progress: Progress) {
+        _progress.postValue(progress)
+    }
+
+    private fun forceScanForNewFiles(uri: Uri?) {
+        context.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri))
     }
 
     private fun getDownloadProgress(cursor: Cursor): Float {
@@ -158,13 +172,6 @@ class DownloadService @Inject constructor(private val context: Context) : Lifecy
         val total = cursor.getInt(DownloadManager.COLUMN_TOTAL_SIZE_BYTES)
         val result = (100.0 * soFar / total).toInt()
         return result.coerceIn(0..100).toFloat()
-    }
-
-    override fun cancel() {
-        // todo: check how it will work with remove
-        downloadManager.remove(currentRequestedDownloadId)
-        downloads.remove(currentRequestedDownloadId)
-        observingCursor.release()
     }
 
 //    private fun getPhotoUri(context: Context, currentRequestedDownloadId: Long): Uri {
@@ -189,7 +196,7 @@ class DownloadService @Inject constructor(private val context: Context) : Lifecy
     ) {
         companion object {
             const val REQUEST_DOWNLOAD = 100
-            const val REQUEST_WALLPAPER = 100
+            const val REQUEST_WALLPAPER = 101
         }
 
         val fullFileName get() = "wallpaperify_${fileName}_$fileQuality.$fileExtension"

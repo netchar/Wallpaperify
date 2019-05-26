@@ -31,4 +31,6 @@ interface IPhotosRepository {
     fun download(photo: PhotoPOJO): LiveData<Progress>
 
     fun cancelDownload()
+
+    fun unregisterDownloadObservers()
 }

@@ -27,6 +27,7 @@ import com.netchar.remote.enums.Cause
 import com.netchar.repository.photos.IPhotosRepository
 import com.netchar.repository.pojo.Message
 import com.netchar.repository.pojo.PhotoPOJO
+import com.netchar.repository.pojo.Progress
 import com.netchar.repository.pojo.Resource
 import com.netchar.wallpaperify.R
 import javax.inject.Inject
@@ -48,6 +49,7 @@ class PhotoDetailsViewModel @Inject constructor(
     private val repoLiveData = Transformations.switchMap(_photoId) { id ->
         repo.getPhoto(id, scope).getLiveData()
     }
+
 
     private val downloadProgressLiveData = Transformations.switchMap(_downloadRequest) { photo ->
         repo.download(photo.peekContent())
@@ -127,5 +129,10 @@ class PhotoDetailsViewModel @Inject constructor(
             Cause.NO_INTERNET_CONNECTION -> Message(R.string.error_message_no_internet)
             Cause.NOT_AUTHENTICATED, Cause.UNEXPECTED -> Message(R.string.error_message_try_again_later)
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        repo.unregisterDownloadObservers()
     }
 }
