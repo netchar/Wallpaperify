@@ -24,6 +24,7 @@ import com.netchar.remote.dto.Photo
 import com.netchar.repository.IBoundResource
 import com.netchar.repository.NetworkBoundResource
 import com.netchar.repository.pojo.PhotoPOJO
+import com.netchar.repository.pojo.Progress
 import com.netchar.repository.services.DownloadService
 import com.netchar.repository.services.IDownloadService
 import com.netchar.repository.utils.Mapper
@@ -63,7 +64,6 @@ class PhotosRepository @Inject constructor(
     }
 
     override fun download(photo: PhotoPOJO): LiveData<Progress> {
-        val dd = photo.urls.raw
         val request = DownloadService.DownloadRequest(
                 url = photo.urls.raw,
                 fileName = photo.id,

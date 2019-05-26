@@ -20,7 +20,7 @@ import androidx.lifecycle.LiveData
 import com.netchar.remote.apirequest.ApiRequest
 import com.netchar.repository.IBoundResource
 import com.netchar.repository.pojo.PhotoPOJO
-import com.netchar.repository.services.Progress
+import com.netchar.repository.pojo.Progress
 import kotlinx.coroutines.CoroutineScope
 
 interface IPhotosRepository {

@@ -28,7 +28,7 @@ import javax.inject.Inject
 
 class DownloadService @Inject constructor(private val context: Context) : LifecycleObserver, IDownloadService {
 
-    private var photoEnqueueId: Long = -1
+    var currentRequestedDownloadId: Long = -1
     private lateinit var downloadManager: DownloadManager
     private var observingCursor: Cursor? = null
 
@@ -54,8 +54,8 @@ class DownloadService @Inject constructor(private val context: Context) : Lifecy
                 allowScanningByMediaScanner()
             }
 
-            photoEnqueueId = downloadManager.enqueue(request)
-            downloads[photoEnqueueId] = downloadRequest
+            currentRequestedDownloadId = downloadManager.enqueue(request)
+            downloads[currentRequestedDownloadId] = downloadRequest
 
             unregisterDownloadObservers()
             registerDownloadObservers()
@@ -69,7 +69,7 @@ class DownloadService @Inject constructor(private val context: Context) : Lifecy
     }
 
     private fun registerDownloadObservers() {
-        observingCursor = downloadManager.getCursor(photoEnqueueId)?.also {
+        observingCursor = downloadManager.getCursor(currentRequestedDownloadId)?.also {
             it.registerContentObserver(contentObserver)
         }
         downloadBroadcast = DownloadCompletionBroadcastReceiver(this)
@@ -92,55 +92,61 @@ class DownloadService @Inject constructor(private val context: Context) : Lifecy
 
     fun updateProgressStatus() {
         synchronized(this) {
-            val cursor = downloadManager.getCursor(photoEnqueueId)
+            val cursor = downloadManager.getCursor(currentRequestedDownloadId)
 
             if (cursor == null) {
-                Timber.e("Cursor is empty for $photoEnqueueId")
+                Timber.e("Cursor is empty for $currentRequestedDownloadId")
                 return
             }
 
-            val downloadStatus = cursor.getInt(DownloadManager.COLUMN_STATUS)
-            val newProgressStatus: Progress
+            cursor.using {
+                val downloadStatus = getInt(DownloadManager.COLUMN_STATUS)
+                val newProgressStatus: Progress
 
-            when (downloadStatus) {
-                DownloadManager.STATUS_SUCCESSFUL -> {
-                    unregisterDownloadObservers()
+                when (downloadStatus) {
+                    DownloadManager.STATUS_SUCCESSFUL -> {
+                        unregisterDownloadObservers()
 
-                    val photoRequest = downloads[photoEnqueueId]
+                        val photoRequest = downloads[currentRequestedDownloadId]
 
-                    if (photoRequest == null) {
-                        val errorMessage = "Unable to find photoRequest for $photoEnqueueId"
-                        Timber.e(errorMessage)
-                        newProgressStatus = Progress.Error(Progress.ErrorCause.UNKNOWN, errorMessage)
-                    } else {
-                        val uri = Uri.parse(getFilePath(photoRequest))
+                        if (photoRequest == null) {
+                            val errorMessage = "Unable to find photoRequest for $currentRequestedDownloadId"
+                            Timber.e(errorMessage)
+                            newProgressStatus = Progress.Error(Progress.ErrorCause.UNKNOWN, errorMessage)
+                        } else {
+                            val uri = Uri.parse(getFilePath(photoRequest))
 
-                        if (photoRequest.requestType == DownloadRequest.REQUEST_WALLPAPER) {
-                            context.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri))
+                            if (photoRequest.requestType == DownloadRequest.REQUEST_WALLPAPER) {
+                                forceScanForNewFiles(uri)
+                            }
+
+                            newProgressStatus = Progress.Success(uri)
                         }
-
-                        newProgressStatus = Progress.Success(uri)
+                    }
+                    DownloadManager.STATUS_FAILED -> {
+                        unregisterDownloadObservers()
+                        newProgressStatus = Progress.Error(Progress.ErrorCause.STATUS_FAILED)
+                    }
+                    DownloadManager.STATUS_PAUSED -> {
+                        unregisterDownloadObservers()
+                        newProgressStatus = Progress.Error(Progress.ErrorCause.STATUS_PAUSED)
+                    }
+                    DownloadManager.STATUS_RUNNING -> {
+                        val progress = getDownloadProgress(cursor)
+                        newProgressStatus = Progress.Downloading(progress)
+                    }
+                    else -> {
+                        newProgressStatus = Progress.Unknown(downloadStatus.toString())
                     }
                 }
-                DownloadManager.STATUS_FAILED -> {
-                    unregisterDownloadObservers()
-                    newProgressStatus = Progress.Error(Progress.ErrorCause.STATUS_FAILED)
-                }
-                DownloadManager.STATUS_PAUSED -> {
-                    unregisterDownloadObservers()
-                    newProgressStatus = Progress.Error(Progress.ErrorCause.STATUS_PAUSED)
-                }
-                DownloadManager.STATUS_RUNNING -> {
-                    val progress = getDownloadProgress(cursor)
-                    newProgressStatus = Progress.Downloading(progress)
-                }
-                else -> {
-                    newProgressStatus = Progress.Unknown(downloadStatus.toString())
-                }
-            }
 
-            notifyProgress(newProgressStatus)
+                notifyProgress(newProgressStatus)
+            }
         }
+    }
+
+    private fun forceScanForNewFiles(uri: Uri?) {
+        context.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri))
     }
 
     private fun Cursor?.release() = this?.using {
@@ -156,13 +162,13 @@ class DownloadService @Inject constructor(private val context: Context) : Lifecy
 
     override fun cancel() {
         // todo: check how it will work with remove
-        downloadManager.remove(photoEnqueueId)
-        downloads.remove(photoEnqueueId)
+        downloadManager.remove(currentRequestedDownloadId)
+        downloads.remove(currentRequestedDownloadId)
         observingCursor.release()
     }
 
-//    private fun getPhotoUri(context: Context, photoEnqueueId: Long): Uri {
-//        val request = downloads[photoEnqueueId] ?: throw IllegalAccessException("Request for enqueueId: $photoEnqueueId not found.")
+//    private fun getPhotoUri(context: Context, currentRequestedDownloadId: Long): Uri {
+//        val request = downloads[currentRequestedDownloadId] ?: throw IllegalAccessException("Request for enqueueId: $currentRequestedDownloadId not found.")
 //
 //        val path = getFilePath(request)
 //        // todo: get app id from BuildConfig
@@ -220,6 +226,11 @@ class DownloadCompletionBroadcastReceiver(service: DownloadService) : BroadcastR
             if (intentDownloadId == -1L) {
                 unregisterDownloadObservers()
                 Timber.w("Unable to EXTRA_DOWNLOAD_ID from Intent")
+                return@run
+            }
+
+            if (currentRequestedDownloadId != intentDownloadId) {
+                Timber.w("Wrong download id")
                 return@run
             }
 
