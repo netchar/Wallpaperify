@@ -21,10 +21,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.netchar.common.exceptions.NoNetworkException
 import com.netchar.common.utils.CoroutineDispatchers
-import com.netchar.remote.Resource
 import com.netchar.remote.enums.Cause
 import com.netchar.remote.enums.HttpResult
 import com.netchar.remote.extensions.awaitSafe
+import com.netchar.repository.pojo.Resource
 import kotlinx.coroutines.*
 import retrofit2.Response
 import timber.log.Timber

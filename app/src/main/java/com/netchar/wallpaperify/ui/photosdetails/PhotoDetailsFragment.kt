@@ -149,9 +149,6 @@ class PhotoDetailsFragment : BaseFragment() {
                 downloadDialog.setProgress(progress)
             }
         })
-
-        viewModel.progress.observe(viewLifecycleOwner, Observer { progress ->
-        })
     }
 
     private fun handleDownloadDialog(downloading: Boolean) {

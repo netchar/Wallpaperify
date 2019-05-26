@@ -20,8 +20,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.netchar.common.exceptions.NoNetworkException
 import com.netchar.common.utils.CoroutineDispatchers
-import com.netchar.remote.Resource
 import com.netchar.remote.enums.Cause
+import com.netchar.repository.pojo.Resource
 import io.mockk.*
 import kotlinx.coroutines.*
 import org.hamcrest.CoreMatchers.*

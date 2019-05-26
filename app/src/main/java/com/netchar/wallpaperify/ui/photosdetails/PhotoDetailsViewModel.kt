@@ -23,13 +23,11 @@ import androidx.lifecycle.Transformations
 import com.netchar.common.base.BaseViewModel
 import com.netchar.common.utils.CoroutineDispatchers
 import com.netchar.common.utils.Event
-import com.netchar.remote.Resource
 import com.netchar.remote.enums.Cause
 import com.netchar.repository.photos.IPhotosRepository
 import com.netchar.repository.pojo.Message
 import com.netchar.repository.pojo.PhotoPOJO
-import com.netchar.repository.services.DownloadService
-import com.netchar.repository.services.Progress
+import com.netchar.repository.pojo.Resource
 import com.netchar.wallpaperify.R
 import javax.inject.Inject
 
@@ -75,8 +73,6 @@ class PhotoDetailsViewModel @Inject constructor(
 
     val downloadProgress: LiveData<Float> get() = _downloadProgress
 
-    val progress: LiveData<Progress> get() = downloadProgressLiveData
-
     fun fetchPhoto(id: String) {
         _photoId.value = id
     }
@@ -90,7 +86,7 @@ class PhotoDetailsViewModel @Inject constructor(
 
     fun cancelDownloading() {
         _downloading.value = false
-//        downloadService.cancel()
+        repo.cancelDownload()
     }
 
     private fun proceedResponse(response: Resource<PhotoPOJO>) {
@@ -115,9 +111,9 @@ class PhotoDetailsViewModel @Inject constructor(
             is Progress.Error -> {
                 _downloading.value = false
                 _error.value = when (progress.cause) {
-                    DownloadService.ErrorCause.UNKNOWN -> Message(R.string.message_error_unknown)
-                    DownloadService.ErrorCause.STATUS_FAILED -> Message(R.string.message_error_download_failed)
-                    DownloadService.ErrorCause.STATUS_PAUSED -> Message(R.string.message_error_download_failed)
+                    Progress.ErrorCause.UNKNOWN -> Message(R.string.message_error_unknown)
+                    Progress.ErrorCause.STATUS_FAILED -> Message(R.string.message_error_download_failed)
+                    Progress.ErrorCause.STATUS_PAUSED -> Message(R.string.message_error_download_failed)
                 }
             }
             is Progress.Downloading -> {

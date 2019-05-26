@@ -17,7 +17,7 @@
 package com.netchar.repository
 
 import androidx.lifecycle.LiveData
-import com.netchar.remote.Resource
+import com.netchar.repository.pojo.Resource
 
 interface IBoundResource<TResourceData : Any> {
     fun cancelJob()

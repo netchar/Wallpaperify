@@ -17,11 +17,11 @@
 package com.netchar.wallpaperify.ui.base
 
 import androidx.lifecycle.Observer
-import com.netchar.remote.Resource
 import com.netchar.remote.enums.Cause
 import com.netchar.repository.pojo.ErrorMessage
 import com.netchar.repository.pojo.Message
 import com.netchar.repository.pojo.PhotoPOJO
+import com.netchar.repository.pojo.Resource
 import com.netchar.wallpaperify.ui.InstantTaskExecutorExtension
 import io.mockk.*
 import org.junit.jupiter.api.BeforeEach
