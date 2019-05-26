@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Environment
 import android.os.Handler
 import android.os.Message
+import androidx.core.content.FileProvider
 import androidx.core.content.getSystemService
 import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
@@ -58,7 +59,7 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
             downloads[currentRequestedDownloadId] = downloadRequest
 
             unregisterDownloadObservers()
-            registerDownloadObservers()
+            registerDownloadObservers(currentRequestedDownloadId)
 
         } catch (ex: IllegalStateException) {
             Timber.e(ex)
@@ -89,12 +90,12 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
         }
     }
 
-    private fun registerDownloadObservers() {
-        observingCursor = downloadManager.getCursor(currentRequestedDownloadId)?.also {
+    private fun registerDownloadObservers(enqueueId: Long) {
+        observingCursor = downloadManager.getCursor(enqueueId)?.also {
             it.registerContentObserver(contentObserver)
+            downloadBroadcast = DownloadCompletionBroadcastReceiver(this)
+            context.registerReceiver(downloadBroadcast, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
         }
-        downloadBroadcast = DownloadCompletionBroadcastReceiver(this)
-        context.registerReceiver(downloadBroadcast, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
     }
 
     fun updateProgressStatus() {
@@ -107,10 +108,15 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
             }
 
             cursor.using {
-                val downloadStatus = getInt(DownloadManager.COLUMN_STATUS)
+                val newStatus = getInt(DownloadManager.COLUMN_STATUS)
+
+                if (isSameStatus(newStatus)) {
+                    return@using
+                }
+
                 val newProgressStatus: Progress
 
-                when (downloadStatus) {
+                when (newStatus) {
                     DownloadManager.STATUS_SUCCESSFUL -> {
                         unregisterDownloadObservers()
 
@@ -121,7 +127,9 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
                             Timber.e(errorMessage)
                             newProgressStatus = Progress.Error(Progress.ErrorCause.UNKNOWN, errorMessage)
                         } else {
-                            val uri = Uri.parse(getFilePath(photoRequest))
+                            val path = getFilePath(photoRequest)
+                            // todo: get app id from BuildConfig
+                            val uri = FileProvider.getUriForFile(context, "com.netchar.wallpaperify.fileprovider", File(path))
 
                             if (photoRequest.requestType == DownloadRequest.REQUEST_WALLPAPER) {
                                 forceScanForNewFiles(uri)
@@ -139,18 +147,24 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
                         newProgressStatus = Progress.Error(Progress.ErrorCause.STATUS_PAUSED)
                     }
                     DownloadManager.STATUS_RUNNING -> {
-                        val progress = getDownloadProgress(cursor)
+                        val progress = getDownloadProgress(this)
                         newProgressStatus = Progress.Downloading(progress)
                     }
                     else -> {
-                        newProgressStatus = Progress.Unknown(downloadStatus.toString())
+                        newProgressStatus = Progress.Unknown(newStatus.toString())
                     }
                 }
 
                 notifyProgress(newProgressStatus)
+
+                lastProgressStatus = newStatus
             }
         }
     }
+
+    private fun isSameStatus(downloadStatus: Int) = lastProgressStatus == downloadStatus
+
+    private var lastProgressStatus: Int = -2
 
     override fun cancel() {
         // todo: check how it will work with remove
