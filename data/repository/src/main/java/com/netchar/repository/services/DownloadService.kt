@@ -135,7 +135,8 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
 
     private fun deleteSafe(file: File) {
         try {
-            file.delete()
+            val result = file.delete()
+            Timber.d("File deleted: $result")
         } catch (ex: IOException) {
             Timber.e(ex)
         } catch (ex: SecurityException) {
@@ -205,11 +206,23 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
                 }
                 DownloadManager.STATUS_FAILED -> {
                     unregisterDownloadObservers()
-                    newProgressStatus = Progress.Error(Progress.ErrorCause.STATUS_FAILED)
+                    val errorCause = when (getInt(DownloadManager.COLUMN_REASON)) {
+                        DownloadManager.ERROR_CANNOT_RESUME -> Progress.ErrorCause.CANNOT_RESUME
+                        DownloadManager.ERROR_DEVICE_NOT_FOUND -> Progress.ErrorCause.DEVICE_NOT_FOUND
+                        DownloadManager.ERROR_FILE_ALREADY_EXISTS -> Progress.ErrorCause.FILE_ALREADY_EXISTS
+                        DownloadManager.ERROR_FILE_ERROR -> Progress.ErrorCause.FILE_ERROR
+                        DownloadManager.ERROR_HTTP_DATA_ERROR -> Progress.ErrorCause.HTTP_DATA_ERROR
+                        DownloadManager.ERROR_INSUFFICIENT_SPACE -> Progress.ErrorCause.INSUFFICIENT_SPACE
+                        DownloadManager.ERROR_TOO_MANY_REDIRECTS -> Progress.ErrorCause.TOO_MANY_REDIRECTS
+                        DownloadManager.ERROR_UNHANDLED_HTTP_CODE -> Progress.ErrorCause.UNHANDLED_HTTP_CODE
+                        DownloadManager.ERROR_UNKNOWN -> Progress.ErrorCause.UNKNOWN
+                        else -> Progress.ErrorCause.UNKNOWN
+                    }
+                    newProgressStatus = Progress.Error(errorCause)
                 }
                 DownloadManager.STATUS_PAUSED -> {
                     unregisterDownloadObservers()
-                    newProgressStatus = Progress.Error(Progress.ErrorCause.STATUS_PAUSED)
+                    newProgressStatus = Progress.Error(Progress.ErrorCause.UNEXPECTED_PAUSE)
                 }
                 DownloadManager.STATUS_RUNNING -> {
                     val progress = getDownloadProgress(this)

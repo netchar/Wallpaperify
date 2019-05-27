@@ -58,6 +58,7 @@
     <string name="message_download_success">Download successful</string>
     <string name="message_dialog_photo_already_exists">This photo already downloaded. Would you like to override existing one?</string>
     <string name="label_override">Override</string>
+    <string name="message_error_download_not_enough_space">Not enough space to store the image.</string>
 
     <string-array name="array_photos_ordering_spinner">
         <item>Sort by latest</item>

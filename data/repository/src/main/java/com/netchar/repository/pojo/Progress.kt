@@ -19,8 +19,18 @@ package com.netchar.repository.pojo
 import android.net.Uri
 
 sealed class Progress {
+
     enum class ErrorCause {
-        UNKNOWN, STATUS_FAILED, STATUS_PAUSED
+        UNKNOWN,
+        UNEXPECTED_PAUSE,
+        CANNOT_RESUME,
+        DEVICE_NOT_FOUND,
+        FILE_ALREADY_EXISTS,
+        FILE_ERROR ,
+        HTTP_DATA_ERROR,
+        INSUFFICIENT_SPACE,
+        TOO_MANY_REDIRECTS,
+        UNHANDLED_HTTP_CODE
     }
 
     data class Success(val fileUri: Uri) : Progress()

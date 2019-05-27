@@ -165,7 +165,7 @@ class PhotoDetailsViewModel @Inject constructor(
             }
             is Progress.Downloading -> {
                 val currentValue = _downloadDialog.value
-                if (currentValue == null || !currentValue.isCanceled || currentValue.isCanceled) {
+                if (currentValue == null || !currentValue.isShown || currentValue.isCanceled) {
                     _downloadDialog.value = DialogState.show()
                 }
 
@@ -176,8 +176,8 @@ class PhotoDetailsViewModel @Inject constructor(
 
                 when (progress.cause) {
                     Progress.ErrorCause.UNKNOWN -> _error.value = Message(R.string.message_error_unknown)
-                    Progress.ErrorCause.STATUS_FAILED -> _error.value = Message(R.string.message_error_download_failed)
-                    Progress.ErrorCause.STATUS_PAUSED -> _error.value = Message(R.string.message_error_download_failed)
+                    Progress.ErrorCause.INSUFFICIENT_SPACE -> _error.value = Message(R.string.message_error_download_not_enough_space)
+                    else -> _error.value = Message(R.string.message_error_download_failed)
                 }
             }
             is Progress.FileExist -> {
