@@ -1,3 +1,19 @@
+/*
+ * Copyright © 2019 Eugene Glushankov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.netchar.repository.services
 
 import android.app.DownloadManager
@@ -44,23 +60,30 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
             downloadManager = context.getSystemService<DownloadManager>() ?: throw IllegalStateException("Unable to get DownloadManager")
 
             val uri = downloadRequest.url.toUri()
-            val notificationVisibility = getNotificationVisibilityMode(downloadRequest)
 
-            val request = DownloadManager.Request(uri).apply {
-                setTitle(downloadRequest.fullFileName)
-                setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, downloadRequest.fullFileName)
-                setVisibleInDownloadsUi(true)
-                setNotificationVisibility(notificationVisibility)
-                setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
-                allowScanningByMediaScanner()
+            val file = File(getFilePath(downloadRequest))
+
+            if (file.exists()) {
+                val existingFileUri = getUriForFile(file)
+                notifyProgress(Progress.FileExist(existingFileUri))
+            } else {
+                val notificationVisibility = getNotificationVisibilityMode(downloadRequest)
+
+                val request = DownloadManager.Request(uri).apply {
+                    setTitle(downloadRequest.fullFileName)
+                    setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, downloadRequest.fullFileName)
+                    setVisibleInDownloadsUi(true)
+                    setNotificationVisibility(notificationVisibility)
+                    setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
+                    allowScanningByMediaScanner()
+                }
+
+                currentRequestedDownloadId = downloadManager.enqueue(request)
+                downloads[currentRequestedDownloadId] = downloadRequest
+
+                unregisterDownloadObservers()
+                registerDownloadObservers(currentRequestedDownloadId)
             }
-
-            currentRequestedDownloadId = downloadManager.enqueue(request)
-            downloads[currentRequestedDownloadId] = downloadRequest
-
-            unregisterDownloadObservers()
-            registerDownloadObservers(currentRequestedDownloadId)
-
         } catch (ex: IllegalStateException) {
             Timber.e(ex)
             notifyProgress(Progress.Unknown(ex.localizedMessage))
@@ -128,8 +151,7 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
                             newProgressStatus = Progress.Error(Progress.ErrorCause.UNKNOWN, errorMessage)
                         } else {
                             val path = getFilePath(photoRequest)
-                            // todo: get app id from BuildConfig
-                            val uri = FileProvider.getUriForFile(context, "com.netchar.wallpaperify.fileprovider", File(path))
+                            val uri = getUriForFile(path)
 
                             if (photoRequest.requestType == DownloadRequest.REQUEST_WALLPAPER) {
                                 forceScanForNewFiles(uri)
@@ -162,6 +184,15 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
         }
     }
 
+    private fun getUriForFile(filePath: String): Uri {
+        val file = File(filePath)
+        return getUriForFile(file)
+    }
+
+    private fun getUriForFile(file: File): Uri {
+        return FileProvider.getUriForFile(context, "com.netchar.wallpaperify.fileprovider", file)
+    }
+
     private fun isSameStatus(downloadStatus: Int) = lastProgressStatus == downloadStatus
 
     private var lastProgressStatus: Int = -2
@@ -171,6 +202,7 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
         unregisterDownloadObservers()
         downloadManager.remove(currentRequestedDownloadId)
         downloads.remove(currentRequestedDownloadId)
+        notifyProgress(Progress.Canceled)
     }
 
     private fun notifyProgress(progress: Progress) {
@@ -187,15 +219,6 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
         val result = (100.0 * soFar / total).toInt()
         return result.coerceIn(0..100).toFloat()
     }
-
-//    private fun getPhotoUri(context: Context, currentRequestedDownloadId: Long): Uri {
-//        val request = downloads[currentRequestedDownloadId] ?: throw IllegalAccessException("Request for enqueueId: $currentRequestedDownloadId not found.")
-//
-//        val path = getFilePath(request)
-//        // todo: get app id from BuildConfig
-//        val uri = FileProvider.getUriForFile(context, "com.netchar.wallpaperify.fileprovider", File(path))
-//        return uri
-//    }
 
     private fun getFilePath(request: DownloadRequest): String {
         return "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)}${File.separator}${request.fullFileName}"

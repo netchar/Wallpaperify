@@ -95,9 +95,9 @@ class PhotoDetailsFragment : BaseFragment() {
     private fun initViews() {
         photo_details_iv_photo.transitionName = safeArguments.imageTransitionName
         Glide.with(this)
-            .load(safeArguments.photoUrl)
-            .listener(photoTransitionRequestListener)
-            .into(photo_details_iv_photo)
+                .load(safeArguments.photoUrl)
+                .listener(photoTransitionRequestListener)
+                .into(photo_details_iv_photo)
     }
 
     private fun startShimmer() {
@@ -117,11 +117,11 @@ class PhotoDetailsFragment : BaseFragment() {
             TransitionManager.beginDelayedTransition(photo_details_constraint_main, autoTransition)
 
             Glide.with(this)
-                .load(photo.user.profileImage.small)
-                .transform(CircleCrop())
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .error(R.drawable.ic_person)
-                .into(photo_details_author_img)
+                    .load(photo.user.profileImage.small)
+                    .transform(CircleCrop())
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .error(R.drawable.ic_person)
+                    .into(photo_details_author_img)
 
             photo_details_tv_photo_by.text = getString(R.string.collection_item_author_prefix, photo.user.name)
             photo_details_tv_description.text = photo.description
@@ -141,24 +141,29 @@ class PhotoDetailsFragment : BaseFragment() {
         })
 
         viewModel.downloading.observe(viewLifecycleOwner, Observer { downloading ->
-            handleDownloadDialog(downloading)
+            if (downloading) {
+                downloadDialog.show(childFragmentManager, DownloadDialogFragment::class.java.simpleName)
+            } else {
+                downloadDialog.isDownloadFinished = true
+                downloadDialog.dismiss()
+            }
         })
+
+        viewModel.downloadCanceled.observe(viewLifecycleOwner, Observer {
+            downloadDialog.isDownloadFinished = false
+            downloadDialog.dismiss()
+        })
+
 
         viewModel.downloadProgress.observe(viewLifecycleOwner, Observer { progress ->
             if (progress > 0) {
                 downloadDialog.setProgress(progress)
             }
         })
-    }
 
-    private fun handleDownloadDialog(downloading: Boolean) {
-        if (downloading) {
-            downloadDialog.show(childFragmentManager, DownloadDialogFragment::class.java.simpleName)
-        } else {
-            downloadDialog.isDownloadFinished = true
-            //todo: find out how not to close dialog before loading progressSoFar completed
-            downloadDialog.dismiss()
-        }
+        viewModel.toast.observe(viewLifecycleOwner, Observer { message ->
+            message.messageRes?.let { toast(it) }
+        })
     }
 
     private fun handleShimmer(loading: Boolean) {

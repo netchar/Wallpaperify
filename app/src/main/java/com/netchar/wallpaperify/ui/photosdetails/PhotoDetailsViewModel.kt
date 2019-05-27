@@ -43,13 +43,14 @@ class PhotoDetailsViewModel @Inject constructor(
     private val _loading = MutableLiveData<Boolean>()
     private val _error = MutableLiveData<Message>()
     private val _downloading = MediatorLiveData<Boolean>()
+    private val _downloadCanceled = MediatorLiveData<Boolean>()
     private val _downloadProgress = MutableLiveData<Float>()
     private val _downloadRequest = MutableLiveData<Event<PhotoPOJO>>()
+    private val _toast = MutableLiveData<Message>()
 
     private val repoLiveData = Transformations.switchMap(_photoId) { id ->
         repo.getPhoto(id, scope).getLiveData()
     }
-
 
     private val downloadProgressLiveData = Transformations.switchMap(_downloadRequest) { photo ->
         repo.download(photo.peekContent())
@@ -73,7 +74,11 @@ class PhotoDetailsViewModel @Inject constructor(
 
     val downloading: LiveData<Boolean> get() = _downloading
 
+    val downloadCanceled: LiveData<Boolean> get() = _downloadCanceled
+
     val downloadProgress: LiveData<Float> get() = _downloadProgress
+
+    val toast: LiveData<Message> get() = _toast
 
     fun fetchPhoto(id: String) {
         _photoId.value = id
@@ -82,12 +87,10 @@ class PhotoDetailsViewModel @Inject constructor(
     fun downloadImage() {
         _photo.value?.let {
             _downloadRequest.value = Event(it)
-            _downloading.value = true
         }
     }
 
     fun cancelDownloading() {
-        _downloading.value = false
         repo.cancelDownload()
     }
 
@@ -110,18 +113,33 @@ class PhotoDetailsViewModel @Inject constructor(
             is Progress.Success -> {
                 _downloading.value = false
             }
-            is Progress.Error -> {
-                _downloading.value = false
-                _error.value = when (progress.cause) {
-                    Progress.ErrorCause.UNKNOWN -> Message(R.string.message_error_unknown)
-                    Progress.ErrorCause.STATUS_FAILED -> Message(R.string.message_error_download_failed)
-                    Progress.ErrorCause.STATUS_PAUSED -> Message(R.string.message_error_download_failed)
-                }
-            }
             is Progress.Downloading -> {
+                if (isDownloadNotStarted()) {
+                    _downloading.value = true
+                }
+
                 _downloadProgress.value = progress.progressSoFar
             }
+            is Progress.Error -> {
+                _downloading.value = false
+                when (progress.cause) {
+                    Progress.ErrorCause.UNKNOWN -> _error.value = Message(R.string.message_error_unknown)
+                    Progress.ErrorCause.STATUS_FAILED -> _error.value = Message(R.string.message_error_download_failed)
+                    Progress.ErrorCause.STATUS_PAUSED -> _error.value = Message(R.string.message_error_download_failed)
+                }
+            }
+            is Progress.FileExist -> {
+                _toast.value = Message(R.string.message_error_photo_exists)
+            }
+            is Progress.Canceled -> {
+                _toast.value = Message(R.string.message_canceled)
+            }
         }
+    }
+
+    private fun isDownloadNotStarted(): Boolean {
+        val currentValue = _downloading.value
+        return currentValue == null || !currentValue
     }
 
     private fun getErrorMessage(response: Resource.Error): Message {
