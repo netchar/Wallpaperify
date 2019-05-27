@@ -16,14 +16,16 @@
 
 package com.netchar.repository.services
 
-import androidx.lifecycle.LiveData
-import com.netchar.repository.pojo.Progress
+import android.os.Handler
+import android.os.Message
+import com.netchar.common.utils.weak
 
-interface IDownloadService {
-    @Throws(IllegalStateException::class)
-    fun download(request: DownloadRequest): LiveData<Progress>
+class DownloadProgressHandler(service: DownloadService) : Handler() {
+    private val downloadService by weak(service)
 
-    fun cancel()
-
-    fun unregisterDownloadObservers()
+    override fun handleMessage(msg: Message) {
+        if (msg.what == DownloadService.DOWNLOAD_MANAGER_MESSAGE_ID) {
+            downloadService?.updateProgressStatus()
+        }
+    }
 }

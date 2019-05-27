@@ -22,7 +22,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.netchar.common.base.BaseViewModel
 import com.netchar.common.utils.CoroutineDispatchers
-import com.netchar.common.utils.Event
 import com.netchar.common.utils.SingleLiveData
 import com.netchar.remote.enums.Cause
 import com.netchar.repository.photos.IPhotosRepository
@@ -30,32 +29,44 @@ import com.netchar.repository.pojo.Message
 import com.netchar.repository.pojo.PhotoPOJO
 import com.netchar.repository.pojo.Progress
 import com.netchar.repository.pojo.Resource
+import com.netchar.repository.services.DownloadRequest
 import com.netchar.wallpaperify.R
 import javax.inject.Inject
 
+data class DialogState(val show: Boolean, val closeReason: Int = 0) {
+    companion object Reason {
+        private const val CLOSE_REASON_COMPLETED = -1
+        private const val CLOSE_REASON_CANCELED = -2
+
+        fun show() = DialogState(true)
+        fun hide() = DialogState(false, CLOSE_REASON_COMPLETED)
+        fun cancel() = DialogState(false, CLOSE_REASON_CANCELED)
+    }
+
+    val isShown get() = show
+    val isCanceled get() = closeReason == CLOSE_REASON_CANCELED
+}
 
 class PhotoDetailsViewModel @Inject constructor(
         coroutineDispatchers: CoroutineDispatchers,
         private val repo: IPhotosRepository
 ) : BaseViewModel(coroutineDispatchers) {
-
-    data class DownloadStatus(val downloading: Boolean, val isCancelled: Boolean)
-
     private val _photoId = MutableLiveData<String>()
     private val _photo = MediatorLiveData<PhotoPOJO>()
     private val _loading = MutableLiveData<Boolean>()
     private val _error = SingleLiveData<Message>()
-    private val _downloading = MediatorLiveData<DownloadStatus>()
+    private val _downloadDialog = MediatorLiveData<DialogState>()
     private val _downloadProgress = MutableLiveData<Float>()
-    private val _downloadRequest = MutableLiveData<Event<PhotoPOJO>>()
+    private val _downloadRequest = MutableLiveData<DownloadRequest>()
     private val _toast = SingleLiveData<Message>()
+    private val _overrideDialog = SingleLiveData<DialogState>()
 
     private val repoLiveData = Transformations.switchMap(_photoId) { id ->
         repo.getPhoto(id, scope).getLiveData()
     }
 
-    private val downloadProgressLiveData = Transformations.switchMap(_downloadRequest) { photo ->
-        repo.download(photo.peekContent())
+    private val downloadProgressLiveData = Transformations.switchMap(_downloadRequest) { request ->
+        repo.download(request)
     }
 
     init {
@@ -63,7 +74,7 @@ class PhotoDetailsViewModel @Inject constructor(
             proceedResponse(response)
         }
 
-        _downloading.addSource(downloadProgressLiveData) { progress ->
+        _downloadDialog.addSource(downloadProgressLiveData) { progress ->
             proceedProgress(progress)
         }
     }
@@ -74,7 +85,9 @@ class PhotoDetailsViewModel @Inject constructor(
 
     val loading: LiveData<Boolean> get() = _loading
 
-    val downloading: LiveData<DownloadStatus> get() = _downloading
+    val downloadDialog: LiveData<DialogState> get() = _downloadDialog
+
+    val overrideDialog: LiveData<DialogState> get() = _overrideDialog
 
     val downloadProgress: LiveData<Float> get() = _downloadProgress
 
@@ -84,9 +97,35 @@ class PhotoDetailsViewModel @Inject constructor(
         _photoId.value = id
     }
 
-    fun downloadImage() {
+    fun downloadImage(forceOverride: Boolean = false) {
         _photo.value?.let {
-            _downloadRequest.value = Event(it)
+            val request = DownloadRequest(
+                    url = it.urls.raw,
+                    fileName = it.id,
+                    fileQuality = "raw",
+                    fileExtension = "jpg",
+                    requestType = DownloadRequest.REQUEST_DOWNLOAD,
+                    forceOverride = forceOverride
+            )
+            _downloadRequest.value = request
+        }
+    }
+
+    fun overrideDownloadedPhoto() {
+        _overrideDialog.value = DialogState.hide()
+        downloadImage(true)
+    }
+
+    fun setWallpaper() {
+        _photo.value?.let {
+            val request = DownloadRequest(
+                    url = it.urls.raw,
+                    fileName = it.id,
+                    fileQuality = "raw",
+                    fileExtension = "jpg",
+                    requestType = DownloadRequest.REQUEST_WALLPAPER
+            )
+            _downloadRequest.value = request
         }
     }
 
@@ -111,18 +150,30 @@ class PhotoDetailsViewModel @Inject constructor(
     private fun proceedProgress(progress: Progress) {
         when (progress) {
             is Progress.Success -> {
-                _downloading.value = DownloadStatus(downloading = false, isCancelled = false)
-                _toast.value = Message(R.string.message_download_success)
+                _downloadRequest.value?.let {
+                    when (it.requestType) {
+                        DownloadRequest.REQUEST_DOWNLOAD -> {
+                            _downloadDialog.value = DialogState.hide()
+                            _toast.value = Message(R.string.message_download_success)
+                        }
+                        DownloadRequest.REQUEST_WALLPAPER -> {
+                            _downloadDialog.value = DialogState.hide()
+                            //todo: set wallpaper
+                        }
+                    }
+                }
             }
             is Progress.Downloading -> {
-                if (isDownloadNotStarted()) {
-                    _downloading.value = DownloadStatus(downloading = true, isCancelled = false)
+                val currentValue = _downloadDialog.value
+                if (currentValue == null || !currentValue.isCanceled || currentValue.isCanceled) {
+                    _downloadDialog.value = DialogState.show()
                 }
 
                 _downloadProgress.value = progress.progressSoFar
             }
             is Progress.Error -> {
-                _downloading.value = DownloadStatus(downloading = false, isCancelled = false)
+                _downloadDialog.value = DialogState.hide()
+
                 when (progress.cause) {
                     Progress.ErrorCause.UNKNOWN -> _error.value = Message(R.string.message_error_unknown)
                     Progress.ErrorCause.STATUS_FAILED -> _error.value = Message(R.string.message_error_download_failed)
@@ -130,18 +181,22 @@ class PhotoDetailsViewModel @Inject constructor(
                 }
             }
             is Progress.FileExist -> {
-                _toast.value = Message(R.string.message_error_photo_exists)
+                _downloadRequest.value?.let {
+                    when (it.requestType) {
+                        DownloadRequest.REQUEST_DOWNLOAD -> {
+                            _overrideDialog.value = DialogState.show()
+                        }
+                        DownloadRequest.REQUEST_WALLPAPER -> {
+                            //todo: set wallpaper
+                        }
+                    }
+                }
             }
             is Progress.Canceled -> {
-                _downloading.value = DownloadStatus(downloading = false, isCancelled = true)
+                _downloadDialog.value = DialogState.cancel()
                 _toast.value = Message(R.string.message_canceled)
             }
         }
-    }
-
-    private fun isDownloadNotStarted(): Boolean {
-        val currentValue = _downloading.value
-        return currentValue == null || !currentValue.downloading || currentValue.isCancelled
     }
 
     private fun getErrorMessage(response: Resource.Error): Message {

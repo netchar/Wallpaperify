@@ -21,6 +21,7 @@ import com.netchar.remote.apirequest.ApiRequest
 import com.netchar.repository.IBoundResource
 import com.netchar.repository.pojo.PhotoPOJO
 import com.netchar.repository.pojo.Progress
+import com.netchar.repository.services.DownloadRequest
 import kotlinx.coroutines.CoroutineScope
 
 interface IPhotosRepository {
@@ -28,7 +29,7 @@ interface IPhotosRepository {
 
     fun getPhoto(id: String, scope: CoroutineScope): IBoundResource<PhotoPOJO>
 
-    fun download(photo: PhotoPOJO): LiveData<Progress>
+    fun download(request: DownloadRequest): LiveData<Progress>
 
     fun cancelDownload()
 

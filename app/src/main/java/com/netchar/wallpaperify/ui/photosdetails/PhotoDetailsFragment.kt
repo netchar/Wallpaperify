@@ -16,6 +16,7 @@
 
 package com.netchar.wallpaperify.ui.photosdetails
 
+import android.app.AlertDialog
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -140,23 +141,40 @@ class PhotoDetailsFragment : BaseFragment() {
             handleShimmer(loading)
         })
 
-        viewModel.downloading.observe(viewLifecycleOwner, Observer { status ->
-            if (status.downloading) {
+        viewModel.downloadDialog.observe(viewLifecycleOwner, Observer { dialogState ->
+            if (dialogState.show) {
                 downloadDialog.show(childFragmentManager, DownloadDialogFragment::class.java.simpleName)
             } else {
-                downloadDialog.isDownloadFinished = !status.downloading && !status.isCancelled
+                downloadDialog.isDownloadFinished = !dialogState.isCanceled
                 downloadDialog.dismiss()
             }
         })
 
         viewModel.downloadProgress.observe(viewLifecycleOwner, Observer { progress ->
-            if (progress > 0) {
+            if (progress > 0 && downloadDialog.isVisible) {
                 downloadDialog.setProgress(progress)
             }
         })
 
         viewModel.toast.observe(viewLifecycleOwner, Observer { message ->
             message.messageRes?.let { toast(it) }
+        })
+
+        val overrideDialog = AlertDialog.Builder(activity).apply {
+            setTitle(getString(R.string.message_dialog_error_title_photo_exists))
+            setMessage(getString(R.string.message_dialog_photo_already_exists))
+            setPositiveButton(getString(R.string.label_override)) { _, _ ->
+                viewModel.overrideDownloadedPhoto()
+            }
+            setNegativeButton(getString(R.string.label_cancel), null)
+        }.create()
+
+        viewModel.overrideDialog.observe(viewLifecycleOwner, Observer { dialogState ->
+            if (dialogState.show) {
+                overrideDialog.show()
+            } else {
+                overrideDialog.dismiss()
+            }
         })
     }
 

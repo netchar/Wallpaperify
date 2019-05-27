@@ -16,14 +16,10 @@
 
 package com.netchar.repository.services
 
-import androidx.lifecycle.LiveData
-import com.netchar.repository.pojo.Progress
+import android.database.ContentObserver
 
-interface IDownloadService {
-    @Throws(IllegalStateException::class)
-    fun download(request: DownloadRequest): LiveData<Progress>
-
-    fun cancel()
-
-    fun unregisterDownloadObservers()
+class DownloadChangeObserver(private val handler: DownloadProgressHandler) : ContentObserver(handler) {
+    override fun onChange(selfChange: Boolean) {
+        handler.sendEmptyMessage(DownloadService.DOWNLOAD_MANAGER_MESSAGE_ID)
+    }
 }

@@ -25,7 +25,7 @@ import com.netchar.repository.IBoundResource
 import com.netchar.repository.NetworkBoundResource
 import com.netchar.repository.pojo.PhotoPOJO
 import com.netchar.repository.pojo.Progress
-import com.netchar.repository.services.DownloadService
+import com.netchar.repository.services.DownloadRequest
 import com.netchar.repository.services.IDownloadService
 import com.netchar.repository.utils.Mapper
 import kotlinx.coroutines.CoroutineScope
@@ -63,14 +63,7 @@ class PhotosRepository @Inject constructor(
         }.launchIn(scope)
     }
 
-    override fun download(photo: PhotoPOJO): LiveData<Progress> {
-        val request = DownloadService.DownloadRequest(
-                url = photo.urls.raw,
-                fileName = photo.id,
-                fileQuality = "raw",
-                fileExtension = "jpg",
-                requestType = DownloadService.DownloadRequest.REQUEST_DOWNLOAD
-        )
+    override fun download(request: DownloadRequest): LiveData<Progress> {
         return downloadService.download(request)
     }
 
