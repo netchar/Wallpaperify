@@ -16,6 +16,7 @@
 
 package com.netchar.wallpaperify.ui.photosdetails
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -51,6 +52,7 @@ class PhotoDetailsViewModel @Inject constructor(
         coroutineDispatchers: CoroutineDispatchers,
         private val repo: IPhotosRepository
 ) : BaseViewModel(coroutineDispatchers) {
+
     private val _photoId = MutableLiveData<String>()
     private val _photo = MediatorLiveData<PhotoPOJO>()
     private val _loading = MutableLiveData<Boolean>()
@@ -60,6 +62,7 @@ class PhotoDetailsViewModel @Inject constructor(
     private val _downloadRequest = MutableLiveData<DownloadRequest>()
     private val _toast = SingleLiveData<Message>()
     private val _overrideDialog = SingleLiveData<DialogState>()
+    private val _wallpaper = SingleLiveData<Uri>()
 
     private val repoLiveData = Transformations.switchMap(_photoId) { id ->
         repo.getPhoto(id, scope).getLiveData()
@@ -93,6 +96,8 @@ class PhotoDetailsViewModel @Inject constructor(
 
     val toast: LiveData<Message> get() = _toast
 
+    val wallpaper: LiveData<Uri> get() = _wallpaper
+
     fun fetchPhoto(id: String) {
         _photoId.value = id
     }
@@ -116,7 +121,7 @@ class PhotoDetailsViewModel @Inject constructor(
         downloadImage(true)
     }
 
-    fun setWallpaper() {
+    fun downloadWallpaper() {
         _photo.value?.let {
             val request = DownloadRequest(
                     url = it.urls.raw,
@@ -158,7 +163,7 @@ class PhotoDetailsViewModel @Inject constructor(
                         }
                         DownloadRequest.REQUEST_WALLPAPER -> {
                             _downloadDialog.value = DialogState.hide()
-                            //todo: set wallpaper
+                            _wallpaper.value = progress.fileUri
                         }
                     }
                 }
@@ -187,7 +192,7 @@ class PhotoDetailsViewModel @Inject constructor(
                             _overrideDialog.value = DialogState.show()
                         }
                         DownloadRequest.REQUEST_WALLPAPER -> {
-                            //todo: set wallpaper
+                            _wallpaper.value = progress.fileUri
                         }
                     }
                 }

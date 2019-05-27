@@ -121,6 +121,7 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
             setDestinationInExternalPublicDir("${Environment.DIRECTORY_PICTURES}${File.separator}$DOWNLOAD_MANGER_FILE_SUB_DIR", fileName)
             setVisibleInDownloadsUi(true)
             setNotificationVisibility(notificationMode)
+            setMimeType("image/*")
             setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
             allowScanningByMediaScanner()
         }

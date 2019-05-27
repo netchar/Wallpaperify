@@ -17,8 +17,11 @@
 package com.netchar.wallpaperify.ui.photosdetails
 
 import android.app.AlertDialog
+import android.app.WallpaperManager
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.view.animation.OvershootInterpolator
@@ -45,6 +48,7 @@ import com.netchar.common.utils.getThemeAttrColor
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_photo_details.*
+import timber.log.Timber
 import javax.inject.Inject
 
 class PhotoDetailsFragment : BaseFragment() {
@@ -96,9 +100,9 @@ class PhotoDetailsFragment : BaseFragment() {
     private fun initViews() {
         photo_details_iv_photo.transitionName = safeArguments.imageTransitionName
         Glide.with(this)
-                .load(safeArguments.photoUrl)
-                .listener(photoTransitionRequestListener)
-                .into(photo_details_iv_photo)
+            .load(safeArguments.photoUrl)
+            .listener(photoTransitionRequestListener)
+            .into(photo_details_iv_photo)
     }
 
     private fun startShimmer() {
@@ -118,11 +122,11 @@ class PhotoDetailsFragment : BaseFragment() {
             TransitionManager.beginDelayedTransition(photo_details_constraint_main, autoTransition)
 
             Glide.with(this)
-                    .load(photo.user.profileImage.small)
-                    .transform(CircleCrop())
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .error(R.drawable.ic_person)
-                    .into(photo_details_author_img)
+                .load(photo.user.profileImage.small)
+                .transform(CircleCrop())
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .error(R.drawable.ic_person)
+                .into(photo_details_author_img)
 
             photo_details_tv_photo_by.text = getString(R.string.collection_item_author_prefix, photo.user.name)
             photo_details_tv_description.text = photo.description
@@ -176,6 +180,37 @@ class PhotoDetailsFragment : BaseFragment() {
                 overrideDialog.dismiss()
             }
         })
+
+        viewModel.wallpaper.observe(viewLifecycleOwner, Observer { uri ->
+            setWallpaper(uri)
+        })
+    }
+
+    private fun setWallpaper(uri: Uri) {
+        try {
+            Timber.d("Set wallpaper via WallpaperManager. Uri: $uri")
+            val wallpaperManager = WallpaperManager.getInstance(this.context)
+            wallpaperManager.getCropAndSetWallpaperIntent(uri)
+                .apply {
+                    setDataAndType(uri, "image/*")
+                    putExtra("mimeType", "image/*")
+                }.also {
+                    startActivityForResult(it, 13451)
+                }
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            Timber.d("Set wallpaper via Chooser. Uri: $uri")
+
+            val intent = Intent(Intent.ACTION_ATTACH_DATA).apply {
+                addCategory(Intent.CATEGORY_DEFAULT)
+                setDataAndType(uri, "image/*")
+                putExtra("mimeType", "image/*")
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+            }
+            startActivity(Intent.createChooser(intent, getString(R.string.titile_set_wallpaper_as)))
+        }
     }
 
     private fun handleShimmer(loading: Boolean) {
@@ -286,11 +321,7 @@ class PhotoDetailsFragment : BaseFragment() {
             when (it.id) {
                 R.id.photo_details_floating_download,
                 R.id.photo_details_floating_label_download -> {
-
-                    runWithPermissions(
-                            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            android.Manifest.permission.READ_EXTERNAL_STORAGE
-                    ) {
+                    runWithPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE) {
                         viewModel.downloadImage()
                     }
                 }
@@ -300,7 +331,9 @@ class PhotoDetailsFragment : BaseFragment() {
                 }
                 R.id.photo_details_floating_wallpaper,
                 R.id.photo_details_floating_label_wallpaper -> {
-                    toast("Wallpaper")
+                    runWithPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE) {
+                        viewModel.downloadWallpaper()
+                    }
                 }
             }
 
