@@ -29,6 +29,7 @@ import android.widget.TextView
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.transition.AutoTransition
 import androidx.transition.Transition
 import androidx.transition.TransitionInflater
@@ -48,6 +49,7 @@ import com.netchar.common.utils.getThemeAttrColor
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_photo_details.*
+import kotlinx.android.synthetic.main.fragment_photo_details.view.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -84,20 +86,28 @@ class PhotoDetailsFragment : BaseFragment() {
         sharedElementEnterTransition = getEnterTransitionAnimation()
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        return if (view == null) {
+            val newView = super.onCreateView(inflater, container, savedInstanceState)
+            setTransparentStatusBars()
+            disableToolbarTitle()
+            initFabs(newView)
+            initViews(newView)
+            newView
+        } else {
+            view as View
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        applyWindowsInsets(view)
         viewModel = injectViewModel(viewModelFactory)
-
-        setTransparentStatusBars()
-        applyWindowsInsets()
-        disableToolbarTitle()
-        initFabs()
-        initViews()
         observe()
     }
 
-    private fun initViews() {
+    private fun initViews(v: View) = with(v) {
         photo_details_iv_photo.transitionName = safeArguments.imageTransitionName
         Glide.with(this)
             .load(safeArguments.photoUrl)
@@ -182,6 +192,7 @@ class PhotoDetailsFragment : BaseFragment() {
         })
 
         viewModel.wallpaper.observe(viewLifecycleOwner, Observer { uri ->
+            // todo: find out why some times it's calling multiple times.
             setWallpaper(uri)
         })
     }
@@ -282,7 +293,7 @@ class PhotoDetailsFragment : BaseFragment() {
         }
     }
 
-    private fun applyWindowsInsets() {
+    private fun applyWindowsInsets(v: View) = with(v) {
         photo_details_coordinator.setOnApplyWindowInsetsListener { _, windowInsets ->
             fragmentToolbar?.updatePadding(top = windowInsets.systemWindowInsetTop, bottom = 0)
             photo_details_constraint_bottom_panel.updateLayoutParams<ViewGroup.MarginLayoutParams> { bottomMargin = windowInsets.systemWindowInsetBottom }
@@ -291,10 +302,10 @@ class PhotoDetailsFragment : BaseFragment() {
     }
 
     // todo: create custom control
-    private fun initFabs() {
-        photo_details_floating_download.alpha = 0f
-        photo_details_floating_raw.alpha = 0f
-        photo_details_floating_wallpaper.alpha = 0f
+    private fun initFabs(v: View) = with(v) {
+        v.photo_details_floating_download.alpha = 0f
+        v.photo_details_floating_raw.alpha = 0f
+        v.photo_details_floating_wallpaper.alpha = 0f
 
         photo_details_floating_label_download.alpha = 0f
         photo_details_floating_label_raw.alpha = 0f
@@ -327,7 +338,12 @@ class PhotoDetailsFragment : BaseFragment() {
                 }
                 R.id.photo_details_floating_raw,
                 R.id.photo_details_floating_label_raw -> {
-                    toast("Raw")
+                    val photo = viewModel.photo.value
+                    if (photo != null) {
+                        val action = PhotoDetailsFragmentDirections.actionPhotoDetailsFragmentToPhotoRawFragment()
+                        action.photoUrl = photo.urls.raw
+                        findNavController().navigate(action)
+                    }
                 }
                 R.id.photo_details_floating_wallpaper,
                 R.id.photo_details_floating_label_wallpaper -> {
