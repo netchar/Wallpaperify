@@ -55,6 +55,7 @@
     <string name="message_error_unknown">Unknown error. Try again later.</string>
     <string name="message_error_download_failed">Failed to download image. Try again later.</string>
     <string name="message_error_photo_exists">Photo already exists.</string>
+    <string name="message_download_success">Download successfuly</string>
 
     <string-array name="array_photos_ordering_spinner">
         <item>Sort by latest</item>

@@ -52,15 +52,15 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
     private val handler by lazy { DownloadProgressHandler(this) }
     private val contentObserver by lazy { DownloadChangeObserver(handler) }
 
-    private val _progress: MutableLiveData<Progress> = MutableLiveData()
+    private lateinit var _progress: MutableLiveData<Progress>
 
     @Throws(IllegalStateException::class)
     override fun download(downloadRequest: DownloadRequest): LiveData<Progress> {
         try {
             downloadManager = context.getSystemService<DownloadManager>() ?: throw IllegalStateException("Unable to get DownloadManager")
+            _progress = MutableLiveData()
 
             val uri = downloadRequest.url.toUri()
-
             val file = File(getFilePath(downloadRequest))
 
             if (file.exists()) {
@@ -71,7 +71,7 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
 
                 val request = DownloadManager.Request(uri).apply {
                     setTitle(downloadRequest.fullFileName)
-                    setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, downloadRequest.fullFileName)
+                    setDestinationInExternalPublicDir("${Environment.DIRECTORY_PICTURES}${File.separator}$DOWNLOAD_MANGER_FILE_SUB_DIR", downloadRequest.fullFileName)
                     setVisibleInDownloadsUi(true)
                     setNotificationVisibility(notificationVisibility)
                     setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
@@ -132,15 +132,15 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
 
             cursor.using {
                 val newStatus = getInt(DownloadManager.COLUMN_STATUS)
-
-                if (isSameStatus(newStatus)) {
-                    return@using
-                }
-
                 val newProgressStatus: Progress
 
                 when (newStatus) {
                     DownloadManager.STATUS_SUCCESSFUL -> {
+//
+//                        if (isSameStatus(newStatus)) {
+//                            return@using
+//                        }
+
                         unregisterDownloadObservers()
 
                         val photoRequest = downloads[currentRequestedDownloadId]
@@ -198,7 +198,6 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
     private var lastProgressStatus: Int = -2
 
     override fun cancel() {
-        // todo: check how it will work with remove
         unregisterDownloadObservers()
         downloadManager.remove(currentRequestedDownloadId)
         downloads.remove(currentRequestedDownloadId)
@@ -221,7 +220,7 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
     }
 
     private fun getFilePath(request: DownloadRequest): String {
-        return "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)}${File.separator}${request.fullFileName}"
+        return "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)}${File.separator}$DOWNLOAD_MANGER_FILE_SUB_DIR${File.separator}${request.fullFileName}"
     }
 
     data class DownloadRequest(
@@ -241,6 +240,7 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
 
     companion object {
         const val DOWNLOAD_MANAGER_MESSAGE_ID = 800
+        const val DOWNLOAD_MANGER_FILE_SUB_DIR = "Wallpaperify"
     }
 }
 

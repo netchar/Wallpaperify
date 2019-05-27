@@ -140,20 +140,14 @@ class PhotoDetailsFragment : BaseFragment() {
             handleShimmer(loading)
         })
 
-        viewModel.downloading.observe(viewLifecycleOwner, Observer { downloading ->
-            if (downloading) {
+        viewModel.downloading.observe(viewLifecycleOwner, Observer { status ->
+            if (status.downloading) {
                 downloadDialog.show(childFragmentManager, DownloadDialogFragment::class.java.simpleName)
             } else {
-                downloadDialog.isDownloadFinished = true
+                downloadDialog.isDownloadFinished = !status.downloading && !status.isCancelled
                 downloadDialog.dismiss()
             }
         })
-
-        viewModel.downloadCanceled.observe(viewLifecycleOwner, Observer {
-            downloadDialog.isDownloadFinished = false
-            downloadDialog.dismiss()
-        })
-
 
         viewModel.downloadProgress.observe(viewLifecycleOwner, Observer { progress ->
             if (progress > 0) {

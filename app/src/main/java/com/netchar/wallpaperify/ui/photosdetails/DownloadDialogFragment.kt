@@ -17,10 +17,12 @@
 package com.netchar.wallpaperify.ui.photosdetails
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
 import com.netchar.wallpaperify.R
 import kotlinx.android.synthetic.main.view_dialog_download.*
 
@@ -38,10 +40,10 @@ class DownloadDialogFragment : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = View.inflate(context, R.layout.view_dialog_download, null)
         return AlertDialog.Builder(activity!!)
-            .setTitle(getString(R.string.title_downloading))
-            .setNegativeButton(getString(R.string.label_cancel), null)
-            .setView(view)
-            .create()
+                .setTitle(getString(R.string.title_downloading))
+                .setNegativeButton(getString(R.string.label_cancel), null)
+                .setView(view)
+                .create()
     }
 
     fun setProgress(progress: Float) {
@@ -52,13 +54,23 @@ class DownloadDialogFragment : DialogFragment() {
         }
     }
 
-    override fun dismiss() {
-        super.dismiss()
+    override fun show(manager: FragmentManager?, tag: String?) {
+        if (!isAdded) {
+            super.show(manager, tag)
+        }
+    }
 
+    override fun onCancel(dialog: DialogInterface?) {
+        super.onCancel(dialog)
         if (!isDownloadFinished) {
             onDialogCancel?.invoke()
         }
-
         isDownloadFinished = false
+    }
+
+    override fun dismiss() {
+        if (isAdded) {
+            super.dismiss()
+        }
     }
 }
