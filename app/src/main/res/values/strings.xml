@@ -46,6 +46,21 @@
     <string name="photo_details_floating_label_title_wallpaper">Set As Wallpaper</string>
     <string name="photo_details_floating_label_title_download">Download</string>
 
+    <string name="photo_details_dialog_progress_status">%1$s%% completed</string>
+    <string name="error_download_unable_to_start_downloading">Unable to download photo. Try again later.</string>
+    <string name="title_downloading">Downloading…</string>
+    <string name="label_cancel">Cancel</string>
+    <string name="message_canceled">Canceled</string>
+    <string name="download_dialog_progress_info_initial_state">Calculating…</string>
+    <string name="message_error_unknown">Unknown error. Try again later.</string>
+    <string name="message_error_download_failed">Failed to download image. Try again later.</string>
+    <string name="message_dialog_error_title_photo_exists">Photo already exists.</string>
+    <string name="message_download_success">Download successful</string>
+    <string name="message_dialog_photo_already_exists">This photo already downloaded. Would you like to override existing one?</string>
+    <string name="label_override">Override</string>
+    <string name="message_error_download_not_enough_space">Not enough space to store the image.</string>
+    <string name="titile_set_wallpaper_as">Set as:</string>
+
     <string-array name="array_photos_ordering_spinner">
         <item>Sort by latest</item>
         <item>Sort by oldest</item>

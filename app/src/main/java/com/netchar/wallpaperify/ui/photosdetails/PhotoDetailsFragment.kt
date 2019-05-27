@@ -16,8 +16,12 @@
 
 package com.netchar.wallpaperify.ui.photosdetails
 
+import android.app.AlertDialog
+import android.app.WallpaperManager
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.view.animation.OvershootInterpolator
@@ -25,6 +29,7 @@ import android.widget.TextView
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.lifecycle.Observer
+import androidx.transition.AutoTransition
 import androidx.transition.Transition
 import androidx.transition.TransitionInflater
 import androidx.transition.TransitionManager
@@ -36,18 +41,21 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.livinglifetechway.quickpermissions_kotlin.runWithPermissions
 import com.netchar.common.base.BaseFragment
 import com.netchar.common.extensions.*
 import com.netchar.common.utils.getThemeAttrColor
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_photo_details.*
+import timber.log.Timber
 import javax.inject.Inject
 
 class PhotoDetailsFragment : BaseFragment() {
 
     private var isMenuOpen: Boolean = false
-    private var interpolator = OvershootInterpolator()
+    private val interpolator = OvershootInterpolator()
+    private val autoTransition = AutoTransition().apply { duration = 100 }
     private val initialFabTranslationY = 100f
     private val initialFabLabelTranslationX = 100f
 
@@ -60,6 +68,12 @@ class PhotoDetailsFragment : BaseFragment() {
 
     private val safeArguments: PhotoDetailsFragmentArgs by lazy {
         PhotoDetailsFragmentArgs.fromBundle(arguments!!)
+    }
+
+    private val downloadDialog: DownloadDialogFragment by lazy {
+        DownloadDialogFragment().apply {
+            onDialogCancel = { viewModel.cancelDownloading() }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,7 +103,6 @@ class PhotoDetailsFragment : BaseFragment() {
             .load(safeArguments.photoUrl)
             .listener(photoTransitionRequestListener)
             .into(photo_details_iv_photo)
-
     }
 
     private fun startShimmer() {
@@ -105,7 +118,8 @@ class PhotoDetailsFragment : BaseFragment() {
 
     private fun observe() {
         viewModel.photo.observe(viewLifecycleOwner, Observer { photo ->
-            TransitionManager.beginDelayedTransition(photo_details_constraint_main)
+
+            TransitionManager.beginDelayedTransition(photo_details_constraint_main, autoTransition)
 
             Glide.with(this)
                 .load(photo.user.profileImage.small)
@@ -124,18 +138,89 @@ class PhotoDetailsFragment : BaseFragment() {
         })
 
         viewModel.error.observe(viewLifecycleOwner, Observer { error ->
-            showToast(getStringSafe(error.messageRes))
+            toast(getStringSafe(error.messageRes))
         })
 
         viewModel.loading.observe(viewLifecycleOwner, Observer { loading ->
-            TransitionManager.beginDelayedTransition(photo_details_constraint_main)
+            handleShimmer(loading)
+        })
 
-            if (loading) {
-                startShimmer()
+        viewModel.downloadDialog.observe(viewLifecycleOwner, Observer { dialogState ->
+            if (dialogState.show) {
+                downloadDialog.show(childFragmentManager, DownloadDialogFragment::class.java.simpleName)
             } else {
-                stopShimmer()
+                downloadDialog.isDownloadFinished = !dialogState.isCanceled
+                downloadDialog.dismiss()
             }
         })
+
+        viewModel.downloadProgress.observe(viewLifecycleOwner, Observer { progress ->
+            if (progress > 0 && downloadDialog.dialog?.isShowing == true) {
+                downloadDialog.setProgress(progress)
+            }
+        })
+
+        viewModel.toast.observe(viewLifecycleOwner, Observer { message ->
+            message.messageRes?.let { toast(it) }
+        })
+
+        val overrideDialog = AlertDialog.Builder(activity).apply {
+            setTitle(getString(R.string.message_dialog_error_title_photo_exists))
+            setMessage(getString(R.string.message_dialog_photo_already_exists))
+            setPositiveButton(getString(R.string.label_override)) { _, _ ->
+                viewModel.overrideDownloadedPhoto()
+            }
+            setNegativeButton(getString(R.string.label_cancel), null)
+        }.create()
+
+        viewModel.overrideDialog.observe(viewLifecycleOwner, Observer { dialogState ->
+            if (dialogState.show) {
+                overrideDialog.show()
+            } else {
+                overrideDialog.dismiss()
+            }
+        })
+
+        viewModel.wallpaper.observe(viewLifecycleOwner, Observer { uri ->
+            setWallpaper(uri)
+        })
+    }
+
+    private fun setWallpaper(uri: Uri) {
+        try {
+            Timber.d("Set wallpaper via WallpaperManager. Uri: $uri")
+            val wallpaperManager = WallpaperManager.getInstance(this.context)
+            wallpaperManager.getCropAndSetWallpaperIntent(uri)
+                .apply {
+                    setDataAndType(uri, "image/*")
+                    putExtra("mimeType", "image/*")
+                }.also {
+                    startActivityForResult(it, 13451)
+                }
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            Timber.d("Set wallpaper via Chooser. Uri: $uri")
+
+            val intent = Intent(Intent.ACTION_ATTACH_DATA).apply {
+                addCategory(Intent.CATEGORY_DEFAULT)
+                setDataAndType(uri, "image/*")
+                putExtra("mimeType", "image/*")
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+            }
+            startActivity(Intent.createChooser(intent, getString(R.string.titile_set_wallpaper_as)))
+        }
+    }
+
+    private fun handleShimmer(loading: Boolean) {
+        TransitionManager.beginDelayedTransition(photo_details_constraint_main, autoTransition)
+
+        if (loading) {
+            startShimmer()
+        } else {
+            stopShimmer()
+        }
     }
 
     private fun disableToolbarTitle() {
@@ -148,12 +233,10 @@ class PhotoDetailsFragment : BaseFragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.photo_details_share_menu_item -> {
-                showToast("Share")
-            }
+        return when (item.itemId) {
+            R.id.photo_details_share_menu_item -> consume { toast("Share") }
+            else -> super.onOptionsItemSelected(item)
         }
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onBackPressed(): Boolean {
@@ -207,6 +290,7 @@ class PhotoDetailsFragment : BaseFragment() {
         }
     }
 
+    // todo: create custom control
     private fun initFabs() {
         photo_details_floating_download.alpha = 0f
         photo_details_floating_raw.alpha = 0f
@@ -237,15 +321,19 @@ class PhotoDetailsFragment : BaseFragment() {
             when (it.id) {
                 R.id.photo_details_floating_download,
                 R.id.photo_details_floating_label_download -> {
-                    showToast("Download")
+                    runWithPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE) {
+                        viewModel.downloadImage()
+                    }
                 }
                 R.id.photo_details_floating_raw,
                 R.id.photo_details_floating_label_raw -> {
-                    showToast("Raw")
+                    toast("Raw")
                 }
                 R.id.photo_details_floating_wallpaper,
                 R.id.photo_details_floating_label_wallpaper -> {
-                    showToast("Wallpaper")
+                    runWithPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE) {
+                        viewModel.downloadWallpaper()
+                    }
                 }
             }
 

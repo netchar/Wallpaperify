@@ -1,8 +1,22 @@
+/*
+ * Copyright © 2019 Eugene Glushankov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.netchar.wallpaperify.ui.collections
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -12,8 +26,8 @@ import com.netchar.common.base.BaseFragment
 import com.netchar.common.extensions.*
 import com.netchar.common.poweradapter.adapter.EndlessRecyclerAdapter
 import com.netchar.common.poweradapter.adapter.EndlessRecyclerDataSource
-import com.netchar.models.Collection
-import com.netchar.models.uimodel.ErrorMessage
+import com.netchar.repository.pojo.CollectionPOJO
+import com.netchar.repository.pojo.ErrorMessage
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_collections.*
@@ -68,11 +82,11 @@ class CollectionsFragment : BaseFragment() {
 
         viewModel.error.observe(viewLifecycleOwner, Observer {
             dataSource.showRetryItem()
-            showSnackbar(getStringSafe(it.errorMessage.messageRes), Snackbar.LENGTH_LONG)
+            snack(getStringSafe(it.errorMessage.messageRes), Snackbar.LENGTH_LONG)
         })
 
         viewModel.toast.observe(viewLifecycleOwner, Observer {
-            showToast(getStringSafe(it.messageRes))
+            toast(getStringSafe(it.messageRes))
         })
 
         viewModel.errorPlaceholder.observe(viewLifecycleOwner, Observer {
@@ -98,9 +112,9 @@ class CollectionsFragment : BaseFragment() {
         collections_recycler.adapter = null
     }
 
-    private fun onItemClick(model: Collection) {
+    private fun onItemClick(model: CollectionPOJO) {
         findNavController().navigate(R.id.collectionDetailsFragment)
     }
 }
 
-fun List<Collection>.asRecyclerItems() = map { CollectionRecyclerItem(it) }
+fun List<CollectionPOJO>.asRecyclerItems() = map { CollectionRecyclerItem(it) }

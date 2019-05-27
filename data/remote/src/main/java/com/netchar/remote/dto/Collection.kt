@@ -1,0 +1,129 @@
+/*
+ * Copyright © 2019 Eugene Glushankov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.netchar.remote.dto
+
+
+import com.squareup.moshi.Json
+
+/*
+{
+    "id": 296,
+    "title": "I like a man with a beard.",
+    "description": "Yeah even Santa...",
+    "published_at": "2016-01-27T18:47:13-05:00",
+    "updated_at": "2016-07-10T11:00:01-05:00",
+    "curated": false,
+    "total_photos": 12,
+    "private": false,
+    "share_key": "312d188df257b957f8b86d2ce20e4766",
+    "cover_photo": {
+      "id": "C-mxLOk6ANs",
+      "width": 5616,
+      "height": 3744,
+      "color": "#E4C6A2",
+      "likes": 12,
+      "liked_by_user": false,
+      "description": "A man drinking a coffee.",
+      "user": {
+        "id": "xlt1-UPW7FE",
+        "username": "lionsdenpro",
+        "name": "Greg Raines",
+        "portfolio_url": "https://example.com/",
+        "bio": "Just an everyday Greg",
+        "location": "Montreal",
+        "total_likes": 5,
+        "total_photos": 10,
+        "total_collections": 13,
+        "profile_image": {
+          "small": "https://images.unsplash.com/profile-1449546653256-0faea3006d34?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=32&w=32",
+          "medium": "https://images.unsplash.com/profile-1449546653256-0faea3006d34?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=64&w=64",
+          "large": "https://images.unsplash.com/profile-1449546653256-0faea3006d34?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=128&w=128"
+        },
+        "links": {
+          "self": "https://api.unsplash.com/users/lionsdenpro",
+          "html": "https://unsplash.com/lionsdenpro",
+          "photos": "https://api.unsplash.com/users/lionsdenpro/photos",
+          "likes": "https://api.unsplash.com/users/lionsdenpro/likes",
+          "portfolio": "https://api.unsplash.com/users/lionsdenpro/portfolio"
+        }
+      },
+      "urls": {
+        "raw": "https://images.unsplash.com/photo-1449614115178-cb924f730780",
+        "full": "https://images.unsplash.com/photo-1449614115178-cb924f730780?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy",
+        "regular": "https://images.unsplash.com/photo-1449614115178-cb924f730780?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&w=1080&fit=max",
+        "small": "https://images.unsplash.com/photo-1449614115178-cb924f730780?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&w=400&fit=max",
+        "thumb": "https://images.unsplash.com/photo-1449614115178-cb924f730780?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&w=200&fit=max"
+      },
+      "links": {
+        "self": "https://api.unsplash.com/photos/C-mxLOk6ANs",
+        "html": "https://unsplash.com/photos/C-mxLOk6ANs",
+        "download": "https://unsplash.com/photos/C-mxLOk6ANs/download"
+      }
+    },
+    "user": {
+      "id": "IFcEhJqem0Q",
+      "updated_at": "2016-07-10T11:00:01-05:00",
+      "username": "fableandfolk",
+      "name": "Annie Spratt",
+      "portfolio_url": "http://mammasaurus.co.uk",
+      "bio": "Follow me on Twitter &amp; Instagram @anniespratt\r\nEmail me at hello@fableandfolk.com",
+      "location": "New Forest National Park, UK",
+      "total_likes": 0,
+      "total_photos": 273,
+      "total_collections": 36,
+      "profile_image": {
+        "small": "https://images.unsplash.com/profile-1450003783594-db47c765cea3?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=32&w=32",
+        "medium": "https://images.unsplash.com/profile-1450003783594-db47c765cea3?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=64&w=64",
+        "large": "https://images.unsplash.com/profile-1450003783594-db47c765cea3?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=128&w=128"
+      },
+      "links": {
+        "self": "https://api.unsplash.com/users/fableandfolk",
+        "html": "https://unsplash.com/fableandfolk",
+        "photos": "https://api.unsplash.com/users/fableandfolk/photos",
+        "likes": "https://api.unsplash.com/users/fableandfolk/likes",
+        "portfolio": "https://api.unsplash.com/users/fableandfolk/portfolio"
+      }
+    },
+    "links": {
+      "self": "https://api.unsplash.com/collections/296",
+      "html": "https://unsplash.com/collections/296",
+      "photos": "https://api.unsplash.com/collections/296/photos",
+      "related": "https://api.unsplash.com/collections/296/related"
+    }
+  },
+ */
+
+data class Collection(
+        val id: Int = 0,
+        val title: String = "",
+        val description: String? = "",
+        @field:Json(name = "published_at")
+        val publishedAt: String = "",
+        @field:Json(name = "updated_at")
+        val updatedAt: String = "",
+        val curated: Boolean = false,
+        @field:Json(name = "total_photos")
+        val totalPhotos: Int = 0,
+        @field:Json(name = "private")
+        val isPrivate: Boolean = false,
+        @field:Json(name = "share_key")
+        val shareKey: String = "",
+        @field:Json(name = "cover_photo")
+        val coverPhoto: Photo = Photo(),
+        val user: User = User(),
+        val links: CollectionLinks = CollectionLinks()
+)
