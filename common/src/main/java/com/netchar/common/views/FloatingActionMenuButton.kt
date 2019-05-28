@@ -22,6 +22,7 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.OvershootInterpolator
 import android.widget.TextView
 import androidx.annotation.ColorRes
@@ -44,12 +45,6 @@ class FloatingActionMenuButton @JvmOverloads constructor(
         attrs: AttributeSet? = null,
         defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
-    interface OnMenuOptionsListener {
-        fun onOpenMenuOptions()
-
-        fun onCloseMenuOptions()
-    }
-
     private var menuTranslationTimeOpen = DEFAULT_TRANSLATION_TIME
     private var menuTranslationTimeHide = DEFAULT_TRANSLATION_TIME
     private var mainFabRotationTime = DEFAULT_TRANSLATION_TIME
@@ -66,10 +61,12 @@ class FloatingActionMenuButton @JvmOverloads constructor(
 
     private var optionFabContainers = LinkedList<View>()
     private var optionFabActions = ArrayList<() -> Unit>()
-    private var isMenuOpen = false
     private val interpolator = OvershootInterpolator()
     private val initialFabTranslationY = 100f
     private val initialFabLabelTranslationX = 100f
+
+    private var onMenuOptionsListener: OnMenuOptionsListener? = null
+    private var overlay: View? = null
 
     private lateinit var inflater: LayoutInflater
     private lateinit var mainFabAction: () -> Unit
@@ -96,8 +93,6 @@ class FloatingActionMenuButton @JvmOverloads constructor(
         init()
     }
 
-    var onMenuOptionsListener: OnMenuOptionsListener? = null
-
     private fun init() {
         inflater = LayoutInflater.from(context).also {
             it.inflate(R.layout.view_fab_container, this, true)
@@ -109,7 +104,7 @@ class FloatingActionMenuButton @JvmOverloads constructor(
         fab.setOnClickListener {
             if (isMenuOpen) {
                 onMenuOptionsListener?.onCloseMenuOptions()
-                closeFabOptions()
+                closeFabMenu()
             } else {
                 if (hasFabOptions()) {
                     onMenuOptionsListener?.onOpenMenuOptions()
@@ -148,6 +143,24 @@ class FloatingActionMenuButton @JvmOverloads constructor(
         return this
     }
 
+    fun setupWithOverlay(overlay: View) {
+        this.overlay = overlay.apply {
+            toGone()
+            alpha = 0f
+            isClickable = true
+            setOnClickListener {
+                closeFabMenu()
+            }
+        }
+    }
+
+    fun setOnMenuOptionsListener(listener: OnMenuOptionsListener) {
+        onMenuOptionsListener = listener
+    }
+
+    var isMenuOpen = false
+        private set
+
     fun addFabOption(optionIcon: Int, optionTitle: String?, optionAction: () -> Unit): FloatingActionMenuButton {
         val optionFabContainer = inflater.inflate(R.layout.view_fab_menu_item, this, false)
         val optionFab = optionFabContainer.fab_menu_option
@@ -175,7 +188,7 @@ class FloatingActionMenuButton @JvmOverloads constructor(
 
         optionFabContainer.tag = optionPosition
         optionFabContainer.setOnClickListener { view ->
-            closeFabOptions()
+            closeFabMenu()
             optionFabActions[view.tag as Int]()
         }
 
@@ -194,19 +207,27 @@ class FloatingActionMenuButton @JvmOverloads constructor(
         optionFabContainer.updatePadding(right = paddingRight)
     }
 
-    private fun openFabMenu() {
+    fun openFabMenu() {
         isMenuOpen = true
         animateRotationMainFab(fab, mainFabRotationDegrees.toFloat())
         optionFabContainers.forEach { container ->
             animateFabMenuItemOpen(container.fab_menu_option, container.fab_menu_title, container)
         }
+
+        overlay?.fabOverlayAction {
+            animate().withStartAction { toVisible() }.alpha(1f).setDuration(menuTranslationTimeOpen.toLong()).start()
+        }
     }
 
-    private fun closeFabOptions() {
+    fun closeFabMenu() {
         isMenuOpen = false
         animateRotationMainFab(fab, 0f)
         optionFabContainers.forEach { container ->
             animateFabMenuItemClose(container.fab_menu_option, container.fab_menu_title, container)
+        }
+
+        overlay?.fabOverlayAction {
+            animate().withEndAction { toGone() }.alpha(0f).setDuration(menuTranslationTimeHide.toLong()).start()
         }
     }
 
@@ -233,5 +254,18 @@ class FloatingActionMenuButton @JvmOverloads constructor(
         optionFabContainer.fab_menu_option.alpha = 0f
         optionFabContainer.fab_menu_title.alpha = 0f
         optionFabContainer.fab_menu_title.translationX = initialFabLabelTranslationX
+    }
+
+    interface OnMenuOptionsListener {
+        fun onOpenMenuOptions()
+
+        fun onCloseMenuOptions()
+    }
+}
+
+private inline fun View?.fabOverlayAction(action: View.() -> Unit) = this?.let {
+    val p = it.parent
+    if (p is ViewGroup) {
+        action()
     }
 }

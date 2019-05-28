@@ -24,8 +24,6 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
-import android.view.animation.OvershootInterpolator
-import android.widget.TextView
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.lifecycle.Observer
@@ -41,7 +39,7 @@ import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.livinglifetechway.quickpermissions_kotlin.runWithPermissions
 import com.netchar.common.base.BaseFragment
 import com.netchar.common.extensions.*
 import com.netchar.common.utils.getThemeAttrColor
@@ -53,12 +51,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class PhotoDetailsFragment : BaseFragment() {
-
-    private var isMenuOpen: Boolean = false
-    private val interpolator = OvershootInterpolator()
     private val autoTransition = AutoTransition().apply { duration = 70 }
-    private val initialFabTranslationY = 100f
-    private val initialFabLabelTranslationX = 100f
     private var viewGroup: ViewGroup? = null
 
     @Inject
@@ -86,14 +79,12 @@ class PhotoDetailsFragment : BaseFragment() {
         sharedElementEnterTransition = getEnterTransitionAnimation()
     }
 
-    /*
-        Should play enter animation only on view creating and return ready view on Pop()
-     */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        // Should play enter animation only on view creating and return ready view on Pop()
         var view = viewGroup
         return if (view == null) {
             view = super.onCreateView(inflater, container, savedInstanceState) as ViewGroup
-            initFabs(view)
+            initFab(view)
             initViews(view)
             view.also { viewGroup = it }
         } else {
@@ -101,16 +92,21 @@ class PhotoDetailsFragment : BaseFragment() {
         }
     }
 
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        viewModel = injectViewModel(viewModelFactory)
-
-        setTransparentStatusBars()
-        disableToolbarTitle()
-        applyWindowsInsets(view)
-        observe()
+    private fun initFab(v: View) = with(v) {
+        photo_details_fab.setupWithOverlay(fab_overlay)
+        photo_details_fab.addFabOption(R.drawable.ic_aspect_ratio, getString(R.string.photo_details_floating_label_title_raw)) {
+            navigateToOriginalPhoto()
+        }
+        photo_details_fab.addFabOption(R.drawable.ic_wallpaper, getString(R.string.photo_details_floating_label_title_wallpaper)) {
+            runWithPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE) {
+                viewModel.downloadWallpaper()
+            }
+        }
+        photo_details_fab.addFabOption(R.drawable.ic_file_download, getString(R.string.photo_details_floating_label_title_download)) {
+            runWithPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE) {
+                viewModel.downloadImage()
+            }
+        }
     }
 
     private fun initViews(v: View) = with(v) {
@@ -124,15 +120,30 @@ class PhotoDetailsFragment : BaseFragment() {
                 .into(photo_details_iv_photo)
     }
 
-    private fun startShimmer() {
-        photo_details_loading_shimmer.toVisible()
-        photo_details_loading_shimmer.startShimmer()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel = injectViewModel(viewModelFactory)
+
+        setTransparentStatusBars()
+        hideToolbarTitle()
+        applyWindowsInsets(view)
+        observe()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    private fun setTransparentStatusBars() {
+        activity?.let {
+            it.window.statusBarColor = Color.TRANSPARENT
+            it.window.navigationBarColor = Color.TRANSPARENT
+        }
+    }
 
-        restoreStatusBarsThemeColors()
+    private fun applyWindowsInsets(v: View) = with(v) {
+        photo_details_coordinator.setOnApplyWindowInsetsListener { _, windowInsets ->
+            fragmentToolbar?.updatePadding(top = windowInsets.systemWindowInsetTop, bottom = 0)
+            photo_details_constraint_bottom_panel.updateLayoutParams<ViewGroup.MarginLayoutParams> { bottomMargin = windowInsets.systemWindowInsetBottom }
+            windowInsets.consumeSystemWindowInsets()
+        }
     }
 
     private fun observe() {
@@ -183,15 +194,6 @@ class PhotoDetailsFragment : BaseFragment() {
             message.messageRes?.let { toast(it) }
         })
 
-        val overrideDialog = AlertDialog.Builder(activity).apply {
-            setTitle(getString(R.string.message_dialog_error_title_photo_exists))
-            setMessage(getString(R.string.message_dialog_photo_already_exists))
-            setPositiveButton(getString(R.string.label_override)) { _, _ ->
-                viewModel.overrideDownloadedPhoto()
-            }
-            setNegativeButton(getString(R.string.label_cancel), null)
-        }.create()
-
         viewModel.overrideDialog.observe(viewLifecycleOwner, Observer { dialogState ->
             if (dialogState.show) {
                 overrideDialog.show()
@@ -204,6 +206,12 @@ class PhotoDetailsFragment : BaseFragment() {
             // todo: find out why some times it's calling multiple times.
             setWallpaper(uri)
         })
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        restoreStatusBarsThemeColors()
     }
 
     private fun setWallpaper(uri: Uri) {
@@ -243,10 +251,6 @@ class PhotoDetailsFragment : BaseFragment() {
         }
     }
 
-    private fun disableToolbarTitle() {
-        fragmentToolbar?.title = ""
-    }
-
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_photo_details, menu)
         super.onCreateOptionsMenu(menu, inflater)
@@ -260,9 +264,8 @@ class PhotoDetailsFragment : BaseFragment() {
     }
 
     override fun onBackPressed(): Boolean {
-
-        if (isMenuOpen) {
-//            closeMenu()
+        if (photo_details_fab.isMenuOpen) {
+            photo_details_fab.closeFabMenu()
             return true
         }
 
@@ -301,102 +304,6 @@ class PhotoDetailsFragment : BaseFragment() {
         }
     }
 
-    private fun setTransparentStatusBars() {
-        activity?.let {
-            it.window.statusBarColor = Color.TRANSPARENT
-            it.window.navigationBarColor = Color.TRANSPARENT
-        }
-    }
-
-    private fun applyWindowsInsets(v: View) = with(v) {
-        photo_details_coordinator.setOnApplyWindowInsetsListener { _, windowInsets ->
-            fragmentToolbar?.updatePadding(top = windowInsets.systemWindowInsetTop, bottom = 0)
-            photo_details_constraint_bottom_panel.updateLayoutParams<ViewGroup.MarginLayoutParams> { bottomMargin = windowInsets.systemWindowInsetBottom }
-            windowInsets.consumeSystemWindowInsets()
-        }
-    }
-
-    // todo: create custom control
-    private fun initFabs(v: View) = with(v) {
-        photo_details_fab.addFabOption(R.drawable.ic_file_download, "Download") {
-            toast("download")
-        }
-        photo_details_fab.addFabOption(R.drawable.ic_wallpaper, "Wallpaper") {
-            toast("Wallpaper")
-        }
-        photo_details_fab.addFabOption(R.drawable.ic_aspect_ratio, "Raw") {
-            toast("Raw")
-        }
-
-
-//        photo_details_floating_download.alpha = 0f
-//        photo_details_floating_raw.alpha = 0f
-//        photo_details_floating_wallpaper.alpha = 0f
-//
-//        photo_details_floating_label_download.alpha = 0f
-//        photo_details_floating_label_raw.alpha = 0f
-//        photo_details_floating_label_wallpaper.alpha = 0f
-//
-//        photo_details_floating_label_download.translationX = initialFabLabelTranslationX
-//        photo_details_floating_label_raw.translationX = initialFabLabelTranslationX
-//        photo_details_floating_label_wallpaper.translationX = initialFabLabelTranslationX
-//
-//        photo_details_floating_download.translationY = initialFabTranslationY
-//        photo_details_floating_raw.translationY = initialFabTranslationY
-//        photo_details_floating_wallpaper.translationY = initialFabTranslationY
-//
-//        photo_details_floating_download.toGone()
-//        photo_details_floating_raw.toGone()
-//        photo_details_floating_wallpaper.toGone()
-//
-//        photo_details_floating_label_download.toGone()
-//        photo_details_floating_label_raw.toGone()
-//        photo_details_floating_label_wallpaper.toGone()
-//
-//        val fabClickListener = View.OnClickListener {
-//
-//            when (it.id) {
-//                R.id.photo_details_floating_download,
-//                R.id.photo_details_floating_label_download -> {
-//                    runWithPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE) {
-//                        viewModel.downloadImage()
-//                    }
-//                }
-//                R.id.photo_details_floating_raw,
-//                R.id.photo_details_floating_label_raw -> {
-//                    navigateToOriginalPhoto()
-//                }
-//                R.id.photo_details_floating_wallpaper,
-//                R.id.photo_details_floating_label_wallpaper -> {
-//                    runWithPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE) {
-//                        viewModel.downloadWallpaper()
-//                    }
-//                }
-//            }
-//
-//            closeMenu()
-//        }
-//
-//        photo_details_floating_download.setOnClickListener(fabClickListener)
-//        photo_details_floating_raw.setOnClickListener(fabClickListener)
-//        photo_details_floating_wallpaper.setOnClickListener(fabClickListener)
-//
-//        photo_details_floating_label_download.setOnClickListener(fabClickListener)
-//        photo_details_floating_label_raw.setOnClickListener(fabClickListener)
-//        photo_details_floating_label_wallpaper.setOnClickListener(fabClickListener)
-//
-//        photo_details_floating_main.setOnClickListener {
-//            if (isMenuOpen) {
-//                closeMenu()
-//            } else {
-//                openMenu()
-//            }
-//        }
-
-//        fab_overlay.setOnClickListener { closeMenu() }
-        fab_overlay.toGone()
-    }
-
     private fun navigateToOriginalPhoto() {
         val photo = viewModel.photo.value
         if (photo != null) {
@@ -406,49 +313,9 @@ class PhotoDetailsFragment : BaseFragment() {
         }
     }
 
-//    private fun openMenu() {
-//        isMenuOpen = !isMenuOpen
-//
-//        animateRotateMainFab(180f)
-//        animateFabMenuItemOpen(photo_details_floating_download, photo_details_floating_label_download)
-//        animateFabMenuItemOpen(photo_details_floating_raw, photo_details_floating_label_raw)
-//        animateFabMenuItemOpen(photo_details_floating_wallpaper, photo_details_floating_label_wallpaper)
-//        animateOverlayShow()
-//    }
-
-//    private fun closeMenu() {
-//        isMenuOpen = !isMenuOpen
-//
-//        animateRotateMainFab(0f)
-//        animateFabMenuItemClose(photo_details_floating_download, photo_details_floating_label_download)
-//        animateFabMenuItemClose(photo_details_floating_raw, photo_details_floating_label_raw)
-//        animateFabMenuItemClose(photo_details_floating_wallpaper, photo_details_floating_label_wallpaper)
-//        animateOverlayHide()
-//    }
-
-    private fun animateOverlayShow() {
-        TransitionManager.beginDelayedTransition(photo_details_constraint_main)
-        fab_overlay.toVisible()
-    }
-
-//
-//    private fun animateRotateMainFab(angle: Float) {
-//        photo_details_floating_main.animate().setInterpolator(interpolator).rotation(angle).setDuration(300).start()
-//    }
-
-    private fun animateOverlayHide() {
-        TransitionManager.beginDelayedTransition(photo_details_constraint_main)
-        fab_overlay.toGone()
-    }
-
-    private fun animateFabMenuItemOpen(fab: FloatingActionButton, label: TextView) {
-        fab.animate().withStartAction { fab.toVisible() }.translationY(0f).alpha(1f).setInterpolator(interpolator).setDuration(300).start()
-        label.animate().withStartAction { label.toVisible() }.setStartDelay(0).translationX(0f).alpha(1f).setInterpolator(interpolator).setDuration(300).start()
-    }
-
-    private fun animateFabMenuItemClose(fab: FloatingActionButton, label: TextView) {
-        fab.animate().withEndAction { fab.toGone() }.translationY(initialFabTranslationY).alpha(0f).setInterpolator(interpolator).setDuration(300).start()
-        label.animate().withEndAction { label.toGone() }.translationX(initialFabLabelTranslationX).alpha(0f).setInterpolator(interpolator).setDuration(300).start()
+    private fun startShimmer() {
+        photo_details_loading_shimmer.toVisible()
+        photo_details_loading_shimmer.startShimmer()
     }
 
     private fun stopShimmer() {
@@ -466,5 +333,16 @@ class PhotoDetailsFragment : BaseFragment() {
             startPostponedEnterTransition()
             return false
         }
+    }
+
+    private val overrideDialog: AlertDialog by lazy {
+        AlertDialog.Builder(activity).apply {
+            setTitle(getString(R.string.message_dialog_error_title_photo_exists))
+            setMessage(getString(R.string.message_dialog_photo_already_exists))
+            setPositiveButton(getString(R.string.label_override)) { _, _ ->
+                viewModel.overrideDownloadedPhoto()
+            }
+            setNegativeButton(getString(R.string.label_cancel), null)
+        }.create()
     }
 }

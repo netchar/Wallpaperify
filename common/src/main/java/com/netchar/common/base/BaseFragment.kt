@@ -124,5 +124,9 @@ abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
         }
         return animation
     }
+
+    protected fun hideToolbarTitle() {
+        fragmentToolbar?.title = ""
+    }
 }
 
