@@ -20,10 +20,17 @@ import android.app.DownloadManager
 import android.content.Context
 import android.content.res.Resources
 import android.database.Cursor
-import androidx.annotation.StringRes
+import android.graphics.drawable.Drawable
+import android.net.Uri
+import android.util.DisplayMetrics
+import androidx.annotation.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.net.toUri
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
@@ -32,7 +39,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.netchar.common.base.BaseFragment
 import java.io.File
 
-
+//todo: fix this mess
 fun File.notExist() = !this.exists()
 
 inline fun <reified TViewModel : ViewModel> AppCompatActivity.injectViewModel(factory: ViewModelProvider.Factory): TViewModel {
@@ -92,3 +99,65 @@ inline fun DrawerLayout.consume(f: () -> Unit): Boolean {
 }
 
 fun File.toFileProviderUri(context: Context) = FileProvider.getUriForFile(context, "com.netchar.wallpaperify.fileprovider", this)
+
+@JvmOverloads @Dimension(unit = Dimension.PX) fun Number.dpToPx(
+        metrics: DisplayMetrics = Resources.getSystem().displayMetrics
+): Float {
+    return toFloat() * metrics.density
+}
+
+@JvmOverloads @Dimension(unit = Dimension.DP) fun Number.pxToDp(
+        metrics: DisplayMetrics = Resources.getSystem().displayMetrics
+): Float {
+    return toFloat() / metrics.density
+}
+
+@ColorInt fun Context.getColorCompat(@ColorRes colorRes: Int): Int {
+    return ContextCompat.getColor(this, colorRes)
+}
+
+fun Context.getDrawableCompat(@DrawableRes drawableRes: Int): Drawable {
+    return AppCompatResources.getDrawable(this, drawableRes)!!
+}
+
+@CheckResult fun Drawable.tint(@ColorInt color: Int): Drawable {
+    val tintedDrawable = DrawableCompat.wrap(this).mutate()
+    DrawableCompat.setTint(tintedDrawable, color)
+    return tintedDrawable
+}
+
+@CheckResult
+fun Drawable.tint(context: Context, @ColorRes color: Int): Drawable {
+    return tint(context.getColorCompat(color))
+}
+
+//fun Context.openWebPage(url: String): Boolean {
+//    // Format the URI properly.
+//    val uri = url.toWebUri()
+//
+//    // Try using Chrome Custom Tabs.
+//    try {
+//        val intent = CustomTabsIntent.Builder()
+//                .setToolbarColor(getColorCompat(R.color.colorPrimary))
+//                .setShowTitle(true)
+//                .build()
+//        intent.launchUrl(this, uri)
+//        return true
+//    } catch (ignored: Exception) {}
+//
+//    // Fall back to launching a default web browser intent.
+//    try {
+//        val intent = Intent(Intent.ACTION_VIEW, uri)
+//        if (intent.resolveActivity(packageManager) != null) {
+//            startActivity(intent)
+//            return true
+//        }
+//    } catch (ignored: Exception) {}
+//
+//    // We were unable to show the web page.
+//    return false
+//}
+
+fun String.toWebUri(): Uri {
+    return (if (startsWith("http://") || startsWith("https://")) this else "https://$this").toUri()
+}

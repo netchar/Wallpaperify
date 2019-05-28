@@ -42,7 +42,6 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.livinglifetechway.quickpermissions_kotlin.runWithPermissions
 import com.netchar.common.base.BaseFragment
 import com.netchar.common.extensions.*
 import com.netchar.common.utils.getThemeAttrColor
@@ -57,7 +56,7 @@ class PhotoDetailsFragment : BaseFragment() {
 
     private var isMenuOpen: Boolean = false
     private val interpolator = OvershootInterpolator()
-    private val autoTransition = AutoTransition().apply { duration = 100 }
+    private val autoTransition = AutoTransition().apply { duration = 70 }
     private val initialFabTranslationY = 100f
     private val initialFabLabelTranslationX = 100f
     private var viewGroup: ViewGroup? = null
@@ -87,7 +86,9 @@ class PhotoDetailsFragment : BaseFragment() {
         sharedElementEnterTransition = getEnterTransitionAnimation()
     }
 
-
+    /*
+        Should play enter animation only on view creating and return ready view on Pop()
+     */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         var view = viewGroup
         return if (view == null) {
@@ -261,7 +262,7 @@ class PhotoDetailsFragment : BaseFragment() {
     override fun onBackPressed(): Boolean {
 
         if (isMenuOpen) {
-            closeMenu()
+//            closeMenu()
             return true
         }
 
@@ -287,7 +288,7 @@ class PhotoDetailsFragment : BaseFragment() {
             TransitionManager.beginDelayedTransition(photo_details_coordinator, contentTransition)
 
             photo_details_bottom_panel_background_overlay.toVisible()
-            photo_details_floating_main.toVisible()
+//            photo_details_floating_main.toVisible()
             fragmentToolbar?.toVisible()
         }
         return imageTransition
@@ -317,71 +318,82 @@ class PhotoDetailsFragment : BaseFragment() {
 
     // todo: create custom control
     private fun initFabs(v: View) = with(v) {
-        photo_details_floating_download.alpha = 0f
-        photo_details_floating_raw.alpha = 0f
-        photo_details_floating_wallpaper.alpha = 0f
-
-        photo_details_floating_label_download.alpha = 0f
-        photo_details_floating_label_raw.alpha = 0f
-        photo_details_floating_label_wallpaper.alpha = 0f
-
-        photo_details_floating_label_download.translationX = initialFabLabelTranslationX
-        photo_details_floating_label_raw.translationX = initialFabLabelTranslationX
-        photo_details_floating_label_wallpaper.translationX = initialFabLabelTranslationX
-
-        photo_details_floating_download.translationY = initialFabTranslationY
-        photo_details_floating_raw.translationY = initialFabTranslationY
-        photo_details_floating_wallpaper.translationY = initialFabTranslationY
-
-        photo_details_floating_download.toGone()
-        photo_details_floating_raw.toGone()
-        photo_details_floating_wallpaper.toGone()
-
-        photo_details_floating_label_download.toGone()
-        photo_details_floating_label_raw.toGone()
-        photo_details_floating_label_wallpaper.toGone()
-
-        val fabClickListener = View.OnClickListener {
-
-            when (it.id) {
-                R.id.photo_details_floating_download,
-                R.id.photo_details_floating_label_download -> {
-                    runWithPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE) {
-                        viewModel.downloadImage()
-                    }
-                }
-                R.id.photo_details_floating_raw,
-                R.id.photo_details_floating_label_raw -> {
-                    navigateToOriginalPhoto()
-                }
-                R.id.photo_details_floating_wallpaper,
-                R.id.photo_details_floating_label_wallpaper -> {
-                    runWithPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE) {
-                        viewModel.downloadWallpaper()
-                    }
-                }
-            }
-
-            closeMenu()
+        photo_details_fab.addFabOption(R.drawable.ic_file_download, "Download") {
+            toast("download")
+        }
+        photo_details_fab.addFabOption(R.drawable.ic_wallpaper, "Wallpaper") {
+            toast("Wallpaper")
+        }
+        photo_details_fab.addFabOption(R.drawable.ic_aspect_ratio, "Raw") {
+            toast("Raw")
         }
 
-        photo_details_floating_download.setOnClickListener(fabClickListener)
-        photo_details_floating_raw.setOnClickListener(fabClickListener)
-        photo_details_floating_wallpaper.setOnClickListener(fabClickListener)
 
-        photo_details_floating_label_download.setOnClickListener(fabClickListener)
-        photo_details_floating_label_raw.setOnClickListener(fabClickListener)
-        photo_details_floating_label_wallpaper.setOnClickListener(fabClickListener)
+//        photo_details_floating_download.alpha = 0f
+//        photo_details_floating_raw.alpha = 0f
+//        photo_details_floating_wallpaper.alpha = 0f
+//
+//        photo_details_floating_label_download.alpha = 0f
+//        photo_details_floating_label_raw.alpha = 0f
+//        photo_details_floating_label_wallpaper.alpha = 0f
+//
+//        photo_details_floating_label_download.translationX = initialFabLabelTranslationX
+//        photo_details_floating_label_raw.translationX = initialFabLabelTranslationX
+//        photo_details_floating_label_wallpaper.translationX = initialFabLabelTranslationX
+//
+//        photo_details_floating_download.translationY = initialFabTranslationY
+//        photo_details_floating_raw.translationY = initialFabTranslationY
+//        photo_details_floating_wallpaper.translationY = initialFabTranslationY
+//
+//        photo_details_floating_download.toGone()
+//        photo_details_floating_raw.toGone()
+//        photo_details_floating_wallpaper.toGone()
+//
+//        photo_details_floating_label_download.toGone()
+//        photo_details_floating_label_raw.toGone()
+//        photo_details_floating_label_wallpaper.toGone()
+//
+//        val fabClickListener = View.OnClickListener {
+//
+//            when (it.id) {
+//                R.id.photo_details_floating_download,
+//                R.id.photo_details_floating_label_download -> {
+//                    runWithPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE) {
+//                        viewModel.downloadImage()
+//                    }
+//                }
+//                R.id.photo_details_floating_raw,
+//                R.id.photo_details_floating_label_raw -> {
+//                    navigateToOriginalPhoto()
+//                }
+//                R.id.photo_details_floating_wallpaper,
+//                R.id.photo_details_floating_label_wallpaper -> {
+//                    runWithPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE) {
+//                        viewModel.downloadWallpaper()
+//                    }
+//                }
+//            }
+//
+//            closeMenu()
+//        }
+//
+//        photo_details_floating_download.setOnClickListener(fabClickListener)
+//        photo_details_floating_raw.setOnClickListener(fabClickListener)
+//        photo_details_floating_wallpaper.setOnClickListener(fabClickListener)
+//
+//        photo_details_floating_label_download.setOnClickListener(fabClickListener)
+//        photo_details_floating_label_raw.setOnClickListener(fabClickListener)
+//        photo_details_floating_label_wallpaper.setOnClickListener(fabClickListener)
+//
+//        photo_details_floating_main.setOnClickListener {
+//            if (isMenuOpen) {
+//                closeMenu()
+//            } else {
+//                openMenu()
+//            }
+//        }
 
-        photo_details_floating_main.setOnClickListener {
-            if (isMenuOpen) {
-                closeMenu()
-            } else {
-                openMenu()
-            }
-        }
-
-        fab_overlay.setOnClickListener { closeMenu() }
+//        fab_overlay.setOnClickListener { closeMenu() }
         fab_overlay.toGone()
     }
 
@@ -394,34 +406,34 @@ class PhotoDetailsFragment : BaseFragment() {
         }
     }
 
-    private fun openMenu() {
-        isMenuOpen = !isMenuOpen
+//    private fun openMenu() {
+//        isMenuOpen = !isMenuOpen
+//
+//        animateRotateMainFab(180f)
+//        animateFabMenuItemOpen(photo_details_floating_download, photo_details_floating_label_download)
+//        animateFabMenuItemOpen(photo_details_floating_raw, photo_details_floating_label_raw)
+//        animateFabMenuItemOpen(photo_details_floating_wallpaper, photo_details_floating_label_wallpaper)
+//        animateOverlayShow()
+//    }
 
-        animateRotateMainFab(180f)
-        animateFabMenuItemOpen(photo_details_floating_download, photo_details_floating_label_download)
-        animateFabMenuItemOpen(photo_details_floating_raw, photo_details_floating_label_raw)
-        animateFabMenuItemOpen(photo_details_floating_wallpaper, photo_details_floating_label_wallpaper)
-        animateOverlayShow()
-    }
-
-    private fun closeMenu() {
-        isMenuOpen = !isMenuOpen
-
-        animateRotateMainFab(0f)
-        animateFabMenuItemClose(photo_details_floating_download, photo_details_floating_label_download)
-        animateFabMenuItemClose(photo_details_floating_raw, photo_details_floating_label_raw)
-        animateFabMenuItemClose(photo_details_floating_wallpaper, photo_details_floating_label_wallpaper)
-        animateOverlayHide()
-    }
+//    private fun closeMenu() {
+//        isMenuOpen = !isMenuOpen
+//
+//        animateRotateMainFab(0f)
+//        animateFabMenuItemClose(photo_details_floating_download, photo_details_floating_label_download)
+//        animateFabMenuItemClose(photo_details_floating_raw, photo_details_floating_label_raw)
+//        animateFabMenuItemClose(photo_details_floating_wallpaper, photo_details_floating_label_wallpaper)
+//        animateOverlayHide()
+//    }
 
     private fun animateOverlayShow() {
         TransitionManager.beginDelayedTransition(photo_details_constraint_main)
         fab_overlay.toVisible()
     }
-
-    private fun animateRotateMainFab(angle: Float) {
-        photo_details_floating_main.animate().setInterpolator(interpolator).rotation(angle).setDuration(300).start()
-    }
+//
+//    private fun animateRotateMainFab(angle: Float) {
+//        photo_details_floating_main.animate().setInterpolator(interpolator).rotation(angle).setDuration(300).start()
+//    }
 
     private fun animateOverlayHide() {
         TransitionManager.beginDelayedTransition(photo_details_constraint_main)

@@ -29,15 +29,15 @@
         </targets>
     </transitionSet>
 
-    <transitionSet
-        android:duration="@android:integer/config_shortAnimTime"
-        android:interpolator="@android:interpolator/fast_out_slow_in"
-        android:transitionOrdering="sequential">
+    <!--<transitionSet-->
+        <!--android:duration="@android:integer/config_shortAnimTime"-->
+        <!--android:interpolator="@android:interpolator/fast_out_slow_in"-->
+        <!--android:transitionOrdering="sequential">-->
 
-        <transition class="com.transitionseverywhere.extra.Scale" />
-        <targets>
-            <target android:targetId="@+id/photo_details_floating_main"/>
-        </targets>
-    </transitionSet>
+        <!--<transition class="com.transitionseverywhere.extra.Scale" />-->
+        <!--<targets>-->
+            <!--<target android:targetId="@+id/photo_details_floating_main"/>-->
+        <!--</targets>-->
+    <!--</transitionSet>-->
 
 </transitionSet>
