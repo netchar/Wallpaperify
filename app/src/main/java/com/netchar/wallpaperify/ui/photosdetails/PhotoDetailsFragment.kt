@@ -29,6 +29,7 @@ import android.widget.TextView
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.transition.AutoTransition
 import androidx.transition.Transition
 import androidx.transition.TransitionInflater
@@ -48,6 +49,7 @@ import com.netchar.common.utils.getThemeAttrColor
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_photo_details.*
+import kotlinx.android.synthetic.main.fragment_photo_details.view.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -58,6 +60,7 @@ class PhotoDetailsFragment : BaseFragment() {
     private val autoTransition = AutoTransition().apply { duration = 100 }
     private val initialFabTranslationY = 100f
     private val initialFabLabelTranslationX = 100f
+    private var viewGroup: ViewGroup? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -84,25 +87,40 @@ class PhotoDetailsFragment : BaseFragment() {
         sharedElementEnterTransition = getEnterTransitionAnimation()
     }
 
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        var view = viewGroup
+        return if (view == null) {
+            view = super.onCreateView(inflater, container, savedInstanceState) as ViewGroup
+            initFabs(view)
+            initViews(view)
+            view.also { viewGroup = it }
+        } else {
+            view
+        }
+    }
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = injectViewModel(viewModelFactory)
 
         setTransparentStatusBars()
-        applyWindowsInsets()
         disableToolbarTitle()
-        initFabs()
-        initViews()
+        applyWindowsInsets(view)
         observe()
     }
 
-    private fun initViews() {
+    private fun initViews(v: View) = with(v) {
+        photo_details_iv_photo.setOnClickListener {
+            navigateToOriginalPhoto()
+        }
         photo_details_iv_photo.transitionName = safeArguments.imageTransitionName
         Glide.with(this)
-            .load(safeArguments.photoUrl)
-            .listener(photoTransitionRequestListener)
-            .into(photo_details_iv_photo)
+                .load(safeArguments.photoUrl)
+                .listener(photoTransitionRequestListener)
+                .into(photo_details_iv_photo)
     }
 
     private fun startShimmer() {
@@ -122,11 +140,11 @@ class PhotoDetailsFragment : BaseFragment() {
             TransitionManager.beginDelayedTransition(photo_details_constraint_main, autoTransition)
 
             Glide.with(this)
-                .load(photo.user.profileImage.small)
-                .transform(CircleCrop())
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .error(R.drawable.ic_person)
-                .into(photo_details_author_img)
+                    .load(photo.user.profileImage.small)
+                    .transform(CircleCrop())
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .error(R.drawable.ic_person)
+                    .into(photo_details_author_img)
 
             photo_details_tv_photo_by.text = getString(R.string.collection_item_author_prefix, photo.user.name)
             photo_details_tv_description.text = photo.description
@@ -182,6 +200,7 @@ class PhotoDetailsFragment : BaseFragment() {
         })
 
         viewModel.wallpaper.observe(viewLifecycleOwner, Observer { uri ->
+            // todo: find out why some times it's calling multiple times.
             setWallpaper(uri)
         })
     }
@@ -191,12 +210,12 @@ class PhotoDetailsFragment : BaseFragment() {
             Timber.d("Set wallpaper via WallpaperManager. Uri: $uri")
             val wallpaperManager = WallpaperManager.getInstance(this.context)
             wallpaperManager.getCropAndSetWallpaperIntent(uri)
-                .apply {
-                    setDataAndType(uri, "image/*")
-                    putExtra("mimeType", "image/*")
-                }.also {
-                    startActivityForResult(it, 13451)
-                }
+                    .apply {
+                        setDataAndType(uri, "image/*")
+                        putExtra("mimeType", "image/*")
+                    }.also {
+                        startActivityForResult(it, 13451)
+                    }
         } catch (ex: Exception) {
             ex.printStackTrace()
             Timber.d("Set wallpaper via Chooser. Uri: $uri")
@@ -249,6 +268,12 @@ class PhotoDetailsFragment : BaseFragment() {
         return false
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        viewGroup?.removeAllViews()
+        viewGroup = null
+    }
+
     private fun getEnterTransitionAnimation(): Transition {
         val imageTransition: Transition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
         imageTransition.duration = 250
@@ -282,7 +307,7 @@ class PhotoDetailsFragment : BaseFragment() {
         }
     }
 
-    private fun applyWindowsInsets() {
+    private fun applyWindowsInsets(v: View) = with(v) {
         photo_details_coordinator.setOnApplyWindowInsetsListener { _, windowInsets ->
             fragmentToolbar?.updatePadding(top = windowInsets.systemWindowInsetTop, bottom = 0)
             photo_details_constraint_bottom_panel.updateLayoutParams<ViewGroup.MarginLayoutParams> { bottomMargin = windowInsets.systemWindowInsetBottom }
@@ -291,7 +316,7 @@ class PhotoDetailsFragment : BaseFragment() {
     }
 
     // todo: create custom control
-    private fun initFabs() {
+    private fun initFabs(v: View) = with(v) {
         photo_details_floating_download.alpha = 0f
         photo_details_floating_raw.alpha = 0f
         photo_details_floating_wallpaper.alpha = 0f
@@ -327,7 +352,7 @@ class PhotoDetailsFragment : BaseFragment() {
                 }
                 R.id.photo_details_floating_raw,
                 R.id.photo_details_floating_label_raw -> {
-                    toast("Raw")
+                    navigateToOriginalPhoto()
                 }
                 R.id.photo_details_floating_wallpaper,
                 R.id.photo_details_floating_label_wallpaper -> {
@@ -358,6 +383,15 @@ class PhotoDetailsFragment : BaseFragment() {
 
         fab_overlay.setOnClickListener { closeMenu() }
         fab_overlay.toGone()
+    }
+
+    private fun navigateToOriginalPhoto() {
+        val photo = viewModel.photo.value
+        if (photo != null) {
+            val action = PhotoDetailsFragmentDirections.actionPhotoDetailsFragmentToPhotoRawFragment()
+            action.photoUrl = photo.urls.raw
+            findNavController().navigate(action)
+        }
     }
 
     private fun openMenu() {

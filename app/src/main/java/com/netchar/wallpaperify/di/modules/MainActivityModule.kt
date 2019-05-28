@@ -3,6 +3,7 @@ package com.netchar.wallpaperify.di.modules
 import com.netchar.wallpaperify.ui.about.AboutFragment
 import com.netchar.wallpaperify.ui.collections.CollectionsFragment
 import com.netchar.wallpaperify.ui.home.HomeFragment
+import com.netchar.wallpaperify.ui.photorawview.PhotoRawFragment
 import com.netchar.wallpaperify.ui.photos.PhotosFragment
 import com.netchar.wallpaperify.ui.photosdetails.PhotoDetailsFragment
 import com.netchar.wallpaperify.ui.settings.SettingsFragment
@@ -29,4 +30,7 @@ abstract class MainActivityModule {
 
     @ContributesAndroidInjector
     abstract fun contributeAboutFragment(): AboutFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributePhotoRawFragment(): PhotoRawFragment
 }
