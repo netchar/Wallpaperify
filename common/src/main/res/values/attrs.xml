@@ -19,15 +19,8 @@
         <!-- animations -->
         <attr name="menu_translation_time_open" format="integer" />
         <attr name="menu_translation_time_hide" format="integer" />
-        <attr name="menu_time_fade_in" format="integer" />
-        <attr name="menu_time_fade_out" format="integer" />
         <attr name="main_fab_rotation_time" format="integer" />
         <attr name="main_fab_rotation_degrees" format="integer" />
-
-        <!-- offsets -->
-        <attr name="main_fab_margin_right" format="dimension" />
-        <attr name="main_fab_margin_bottom" format="dimension" />
-        <attr name="option_fab_margin" format="dimension" />
 
         <!-- main fab -->
         <attr name="main_fab_color_background" format="integer" />

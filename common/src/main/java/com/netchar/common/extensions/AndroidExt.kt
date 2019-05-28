@@ -100,19 +100,20 @@ inline fun DrawerLayout.consume(f: () -> Unit): Boolean {
 
 fun File.toFileProviderUri(context: Context) = FileProvider.getUriForFile(context, "com.netchar.wallpaperify.fileprovider", this)
 
-@JvmOverloads @Dimension(unit = Dimension.PX) fun Number.dpToPx(
-        metrics: DisplayMetrics = Resources.getSystem().displayMetrics
-): Float {
+@JvmOverloads
+@Dimension(unit = Dimension.PX)
+fun Number.dpToPx(metrics: DisplayMetrics = Resources.getSystem().displayMetrics): Float {
     return toFloat() * metrics.density
 }
 
-@JvmOverloads @Dimension(unit = Dimension.DP) fun Number.pxToDp(
-        metrics: DisplayMetrics = Resources.getSystem().displayMetrics
-): Float {
+@JvmOverloads
+@Dimension(unit = Dimension.DP)
+fun Number.pxToDp(metrics: DisplayMetrics = Resources.getSystem().displayMetrics): Float {
     return toFloat() / metrics.density
 }
 
-@ColorInt fun Context.getColorCompat(@ColorRes colorRes: Int): Int {
+@ColorInt
+fun Context.getColorCompat(@ColorRes colorRes: Int): Int {
     return ContextCompat.getColor(this, colorRes)
 }
 
@@ -120,7 +121,8 @@ fun Context.getDrawableCompat(@DrawableRes drawableRes: Int): Drawable {
     return AppCompatResources.getDrawable(this, drawableRes)!!
 }
 
-@CheckResult fun Drawable.tint(@ColorInt color: Int): Drawable {
+@CheckResult
+fun Drawable.tint(@ColorInt color: Int): Drawable {
     val tintedDrawable = DrawableCompat.wrap(this).mutate()
     DrawableCompat.setTint(tintedDrawable, color)
     return tintedDrawable

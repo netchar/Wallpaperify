@@ -11,7 +11,7 @@
     android:focusable="true"
     android:gravity="center_vertical|end"
     android:orientation="horizontal"
-    android:padding="8dp"
+    android:padding="10dp"
     android:visibility="gone"
     tools:visibility="visible">
 
@@ -23,14 +23,17 @@
         android:background="@drawable/bg_fab_label"
         android:duplicateParentState="true"
         android:elevation="2dp"
-        android:focusable="true"
+        android:clickable="false"
+        android:focusable="false"
         android:padding="6dp"
         android:stateListAnimator="@animator/selector_animator_background" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_menu_mini"
+        android:id="@+id/fab_menu_option"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:stateListAnimator="@animator/selector_animator_background"
+        android:clickable="false"
+        android:duplicateParentState="true"
+        android:focusable="false"
         app:fabSize="mini" />
 </LinearLayout>

@@ -430,6 +430,7 @@ class PhotoDetailsFragment : BaseFragment() {
         TransitionManager.beginDelayedTransition(photo_details_constraint_main)
         fab_overlay.toVisible()
     }
+
 //
 //    private fun animateRotateMainFab(angle: Float) {
 //        photo_details_floating_main.animate().setInterpolator(interpolator).rotation(angle).setDuration(300).start()

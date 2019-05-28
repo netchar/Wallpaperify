@@ -8,19 +8,6 @@
                 android:propertyName="translationZ"
                 android:valueTo="2dp"
                 android:valueType="floatType" />
-
-            <objectAnimator
-                android:duration="150"
-                android:propertyName="scaleX"
-                android:valueTo="1.05"
-                android:valueType="floatType" />
-
-            <objectAnimator
-                android:duration="150"
-                android:propertyName="scaleY"
-                android:valueTo="1.05"
-                android:valueType="floatType" />
-
         </set>
     </item>
 
@@ -30,18 +17,6 @@
                 android:duration="150"
                 android:propertyName="translationZ"
                 android:valueTo="0dp"
-                android:valueType="floatType" />
-
-            <objectAnimator
-                android:duration="150"
-                android:propertyName="scaleX"
-                android:valueTo="1"
-                android:valueType="floatType" />
-
-            <objectAnimator
-                android:duration="150"
-                android:propertyName="scaleY"
-                android:valueTo="1"
                 android:valueType="floatType" />
         </set>
     </item>
