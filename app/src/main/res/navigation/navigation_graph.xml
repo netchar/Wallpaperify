@@ -73,7 +73,9 @@
         android:id="@+id/action_global_photoDetailsFragment"
         app:destination="@id/photoDetailsFragment"
         app:enterAnim="@anim/anim_fragment_details_enter"
-        app:exitAnim="@anim/anim_fragment_details_exit" />
+        app:exitAnim="@anim/anim_fragment_details_exit"
+        app:popEnterAnim="@anim/anim_fragment_details_pop_enter"
+        app:popExitAnim="@anim/anim_fragment_details_pop_exit" />
     <fragment
         android:id="@+id/photoRawFragment"
         android:name="com.netchar.wallpaperify.ui.photorawview.PhotoRawFragment"

@@ -28,6 +28,7 @@ import android.view.animation.AnimationUtils
 import androidx.annotation.CheckResult
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.ViewCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -113,9 +114,15 @@ abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
         } else {
             animation = AnimationUtils.loadAnimation(activity, nextAnim)
             animation.setAnimationListener(object : Animation.AnimationListener {
+                private var startZ = 0f
+
                 override fun onAnimationStart(animation: Animation) {
                     view?.setLayerType(View.LAYER_TYPE_HARDWARE, null)
                     activity?.window?.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                    view?.apply {
+                        startZ = ViewCompat.getTranslationZ(this)
+                        ViewCompat.setTranslationZ(this, 1f)
+                    }
                 }
 
                 override fun onAnimationRepeat(animation: Animation) {}
@@ -123,11 +130,41 @@ abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
                 override fun onAnimationEnd(animation: Animation) {
                     view?.setLayerType(View.LAYER_TYPE_NONE, null)
                     activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                    view?.apply {
+                        this.postDelayed({ ViewCompat.setTranslationZ(this, startZ) }, 100)
+                    }
                 }
             })
         }
         return animation
     }
+
+//    override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {
+//        if (nextAnim == R.anim.slide_enter) {
+//            val nextAnimation = AnimationUtils.loadAnimation(context, nextAnim)
+//            nextAnimation.setAnimationListener(object : Animation.AnimationListener {
+//                private var startZ = 0f
+//                override fun onAnimationStart(animation: Animation) {
+//                    view?.apply {
+//                        startZ = ViewCompat.getTranslationZ(this)
+//                        ViewCompat.setTranslationZ(this, 1f)
+//                    }
+//                }
+//
+//                override fun onAnimationEnd(animation: Animation) {
+//                    // Short delay required to prevent flicker since other Fragment wasn't removed just yet.
+//                    view?.apply {
+//                        this.postDelayed({ ViewCompat.setTranslationZ(this, startZ) }, 100)
+//                    }
+//                }
+//
+//                override fun onAnimationRepeat(animation: Animation) {}
+//            })
+//            return nextAnimation
+//        } else {
+//            return null
+//        }
+//    }
 
     protected fun hideToolbarTitle() {
         fragmentToolbar?.title = ""

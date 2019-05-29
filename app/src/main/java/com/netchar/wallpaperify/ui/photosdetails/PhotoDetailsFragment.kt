@@ -122,6 +122,7 @@ class PhotoDetailsFragment : BaseFragment() {
         }
 
         val shimmer = ShimmerFactory.getShimmer(autoStart = true)
+        v.background = shimmer
         photo_details_iv_photo.background = shimmer
         photo_details_iv_photo.transitionName = safeArguments.imageTransitionName
 
@@ -137,14 +138,14 @@ class PhotoDetailsFragment : BaseFragment() {
 
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                         shimmer.stopShimmer()
-                        photo_details_iv_photo.background = null
+                        v.background = null
                         startEnterAnimation()
                         return false
                     }
 
                     override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                         shimmer.stopShimmer()
-                        photo_details_iv_photo.background = null
+                        v.background = null
                         startEnterAnimation()
                         return false
                     }
