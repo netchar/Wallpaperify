@@ -114,12 +114,14 @@ abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
             animation = AnimationUtils.loadAnimation(activity, nextAnim)
             animation.setAnimationListener(object : Animation.AnimationListener {
                 override fun onAnimationStart(animation: Animation) {
+                    view?.setLayerType(View.LAYER_TYPE_HARDWARE, null)
                     activity?.window?.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 }
 
                 override fun onAnimationRepeat(animation: Animation) {}
 
                 override fun onAnimationEnd(animation: Animation) {
+                    view?.setLayerType(View.LAYER_TYPE_NONE, null)
                     activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 }
             })

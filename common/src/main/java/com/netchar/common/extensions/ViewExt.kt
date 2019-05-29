@@ -17,6 +17,9 @@
 package com.netchar.common.extensions
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.BitmapDrawable
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
@@ -124,4 +127,13 @@ fun View.requestApplyInsetsWhenAttached() {
             override fun onViewDetachedFromWindow(v: View) = Unit
         })
     }
+}
+
+fun View.getScreenshot(): Bitmap? {
+    val b = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    val c = Canvas(b)
+    layout(0, 0, width, height)
+    draw(c)
+    BitmapDrawable(resources, b)
+    return b
 }

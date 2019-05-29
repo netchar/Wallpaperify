@@ -19,13 +19,13 @@ package com.netchar.wallpaperify.ui.photos
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.netchar.common.base.BaseFragment
-import com.netchar.common.base.callbacs.IOnDropdownSelectedListener
 import com.netchar.common.extensions.*
 import com.netchar.common.poweradapter.adapter.EndlessRecyclerAdapter
 import com.netchar.common.poweradapter.adapter.EndlessRecyclerDataSource
@@ -74,18 +74,6 @@ class PhotosFragment : BaseFragment() {
         latest_swipe.setOnRefreshListener {
             viewModel.refresh()
         }
-        photos_filter_spinner.setOnDropdownItemSelectedListener(object : IOnDropdownSelectedListener {
-            override fun onDropdownItemSelected(position: Int, id: Long) {
-                val newOrder = ApiRequest.Order.getBy(position)
-                val oldOrder = viewModel.ordering.value
-
-                if (oldOrder.isNullOrSame(newOrder)) {
-                    return
-                }
-
-                viewModel.orderBy(newOrder)
-            }
-        })
     }
 
     private fun onLoadMoreItems() {
@@ -117,7 +105,7 @@ class PhotosFragment : BaseFragment() {
         })
 
         viewModel.ordering.observe(viewLifecycleOwner, Observer {
-            photos_filter_spinner.setSelection(it.ordinal)
+            //            photos_filter_spinner.setSelection(it.ordinal)
         })
     }
 
@@ -141,15 +129,21 @@ class PhotosFragment : BaseFragment() {
     }
 
     private fun onItemClick(model: PhotoPOJO, imageView: ImageView) {
+
+        val toolbar = activity!!.findViewById<Toolbar>(R.id.toolbar)
         val extras = FragmentNavigatorExtras(
-                imageView to imageView.transitionName
+//                imageView to imageView.transitionName,
+                toolbar to toolbar.transitionName
         )
-        val action = HomeFragmentDirections.actionGlobalPhotoDetailsFragment(model.urls.regular, imageView.transitionName)
+        val action = HomeFragmentDirections.actionGlobalPhotoDetailsFragment(model.urls.regular, "")
         action.photoId = model.id
         action.photoDescription = model.description ?: ""
         findNavController().navigate(action, extras)
     }
+
 }
+
 // todo: create pojo object
 fun ApiRequest.Order?.isNullOrSame(newOrder: ApiRequest.Order) = this == null || this == newOrder
+
 fun List<PhotoPOJO>.asRecyclerItems() = map { PhotoRecyclerItem(it) }

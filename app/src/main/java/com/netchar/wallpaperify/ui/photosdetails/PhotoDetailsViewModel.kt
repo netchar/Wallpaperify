@@ -103,10 +103,13 @@ class PhotoDetailsViewModel @Inject constructor(
     }
 
     fun downloadImage(forceOverride: Boolean = false) {
-        _photo.value?.let {
+        val photo = _photo.value
+        if (photo == null) {
+            _error.value = Message(R.string.message_error_photo_details_not_loaded)
+        } else {
             val request = DownloadRequest(
-                    url = it.urls.raw,
-                    fileName = it.id,
+                    url = photo.urls.raw,
+                    fileName = photo.id,
                     fileQuality = "raw",
                     fileExtension = "jpg",
                     requestType = DownloadRequest.REQUEST_DOWNLOAD,
@@ -122,10 +125,13 @@ class PhotoDetailsViewModel @Inject constructor(
     }
 
     fun downloadWallpaper() {
-        _photo.value?.let {
+        val photo = _photo.value
+        if (photo == null) {
+            _error.value = Message(R.string.message_error_photo_details_not_loaded)
+        } else {
             val request = DownloadRequest(
-                    url = it.urls.raw,
-                    fileName = it.id,
+                    url = photo.urls.raw,
+                    fileName = photo.id,
                     fileQuality = "raw",
                     fileExtension = "jpg",
                     requestType = DownloadRequest.REQUEST_WALLPAPER

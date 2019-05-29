@@ -74,14 +74,12 @@ class PhotoDetailsFragment : BaseFragment() {
     val durationMedium by lazy(LazyThreadSafetyMode.NONE) { resources.getInteger(android.R.integer.config_shortAnimTime).toLong() }
     val durationLong by lazy(LazyThreadSafetyMode.NONE) { resources.getInteger(android.R.integer.config_shortAnimTime).toLong() }
     val interpolatorLinear by lazy(LazyThreadSafetyMode.NONE) { LinearInterpolator() }
-    val shimmer by lazy(LazyThreadSafetyMode.NONE) { ShimmerFactory.getShimmer(autoStart = true) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setHasOptionsMenu(true)
-//        postponeEnterTransition()
-//        sharedElementEnterTransition = startEnterAnimation()
+        sharedElementEnterTransition = inflateTransition(android.R.transition.move)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -123,11 +121,14 @@ class PhotoDetailsFragment : BaseFragment() {
             navigateToOriginalPhoto()
         }
 
+        val shimmer = ShimmerFactory.getShimmer(autoStart = true)
         photo_details_iv_photo.background = shimmer
-//        photo_details_iv_photo.transitionName = safeArguments.imageTransitionName
+        photo_details_iv_photo.transitionName = safeArguments.imageTransitionName
+
         if (safeArguments.photoDescription.isEmpty()) {
             photo_details_shimmer_description.toGone()
         }
+
         photo_details_constraint_bottom_panel.alpha = 0f
 
         Glide.with(this)
@@ -303,7 +304,7 @@ class PhotoDetailsFragment : BaseFragment() {
     private fun startEnterAnimation() {
         val contentTransition = inflateTransition(R.transition.photo_details_transition_content_enter)
         contentTransition.onTransitionEnd {
-            viewModel.fetchPhoto(safeArguments.photoId)
+            //            viewModel.fetchPhoto(safeArguments.photoId)
         }
 
         TransitionManager.beginDelayedTransition(photo_details_coordinator, contentTransition)
@@ -328,10 +329,12 @@ class PhotoDetailsFragment : BaseFragment() {
     }
 
     private fun stopShimmer() {
-        photo_details_loading_shimmer.animate().withEndAction {
-            photo_details_loading_shimmer.toGone()
-            photo_details_loading_shimmer.stopShimmer()
-        }.alpha(0f).setDuration(durationShort).start()
+        photo_details_loading_shimmer?.let {
+            it.animate().withEndAction {
+                it.toGone()
+                it.stopShimmer()
+            }.alpha(0f).setDuration(durationShort).start()
+        }
     }
 
     private val overrideDialog: AlertDialog by lazy {
