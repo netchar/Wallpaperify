@@ -14,4 +14,27 @@
         <attr name="drawableBottomVector" format="reference" />
         <attr name="drawableTint" format="reference|color" />
     </declare-styleable>
+
+    <declare-styleable name="FloatingActionMenuButton">
+        <!-- animations -->
+        <attr name="menu_translation_time_open" format="integer" />
+        <attr name="menu_translation_time_hide" format="integer" />
+        <attr name="main_fab_rotation_time" format="integer" />
+        <attr name="main_fab_rotation_degrees" format="integer" />
+
+        <!-- main fab -->
+        <attr name="main_fab_color_background" format="integer" />
+        <attr name="main_fab_color_icon" format="integer" />
+        <attr name="main_fab_icon_start" format="reference" />
+        <attr name="main_fab_icon_end" format="reference" />
+
+        <!-- option fab -->
+        <attr name="option_fab_color_background" format="integer" />
+        <attr name="option_fab_color_icon" format="integer" />
+
+        <!-- option fab title -->
+        <attr name="option_fab_text_size" format="dimension" />
+        <attr name="option_fab_text_color" format="integer" />
+        <attr name="option_fab_text_background" format="reference" />
+    </declare-styleable>
 </resources>

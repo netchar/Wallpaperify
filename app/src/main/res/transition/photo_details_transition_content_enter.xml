@@ -18,7 +18,7 @@
     android:transitionOrdering="sequential">
 
     <transitionSet
-        android:duration="@android:integer/config_shortAnimTime"
+        android:duration="@android:integer/config_mediumAnimTime"
         android:interpolator="@android:interpolator/fast_out_slow_in"
         android:transitionOrdering="sequential">
 
@@ -30,13 +30,12 @@
     </transitionSet>
 
     <transitionSet
-        android:duration="@android:integer/config_shortAnimTime"
-        android:interpolator="@android:interpolator/fast_out_slow_in"
-        android:transitionOrdering="sequential">
+        android:duration="@android:integer/config_mediumAnimTime"
+        android:interpolator="@android:interpolator/fast_out_slow_in">
 
         <transition class="com.transitionseverywhere.extra.Scale" />
         <targets>
-            <target android:targetId="@+id/photo_details_floating_main"/>
+            <target android:targetId="@+id/photo_details_fab"/>
         </targets>
     </transitionSet>
 

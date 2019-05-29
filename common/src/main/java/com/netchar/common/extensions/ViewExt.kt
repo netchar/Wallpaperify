@@ -70,8 +70,7 @@ fun Fragment.toast(message: String, length: Int = Toast.LENGTH_LONG) {
 }
 
 fun Fragment.toast(@StringRes message: Int, length: Int = Toast.LENGTH_LONG) {
-    val message = getStringSafe(message)
-    toast(message, length)
+    toast(getStringSafe(message), length)
 }
 
 fun FragmentActivity.toast(message: String, length: Int = Toast.LENGTH_LONG) {
