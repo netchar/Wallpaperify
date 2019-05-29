@@ -104,6 +104,6 @@ class CollectionRenderer(private val glide: RequestManager, val onClickListener:
     }
 
     private fun getPhotoColor(stringColor: String): Int = fetchedColors.getOrPut(stringColor) {
-        stringColor.parseColor(0x40, getThemeAttrColor(App.get(), R.attr.colorPrimary))
+        stringColor.parseColor(0x40, App.get().getThemeAttrColor(R.attr.colorPrimary))
     }
 }

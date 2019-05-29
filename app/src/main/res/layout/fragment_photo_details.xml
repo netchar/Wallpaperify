@@ -30,7 +30,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="#80000000"
-            android:visibility="gone"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -176,116 +176,6 @@
             android:layout_height="match_parent"
             android:background="#35ffffff" />
 
-        <!--<com.google.android.material.floatingactionbutton.FloatingActionButton-->
-        <!--android:id="@+id/photo_details_floating_download"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginBottom="8dp"-->
-        <!--android:src="@drawable/ic_file_download"-->
-        <!--android:tint="#000"-->
-        <!--android:visibility="visible"-->
-        <!--app:backgroundTint="#FFF"-->
-        <!--app:fabSize="mini"-->
-        <!--app:layout_constraintBottom_toTopOf="@+id/photo_details_floating_main"-->
-        <!--app:layout_constraintEnd_toEndOf="@+id/photo_details_floating_main"-->
-        <!--app:layout_constraintStart_toStartOf="@+id/photo_details_floating_main" />-->
-
-        <!--<TextView-->
-        <!--android:id="@+id/photo_details_floating_label_download"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginEnd="24dp"-->
-        <!--android:background="@drawable/bg_fab_label"-->
-        <!--android:clickable="true"-->
-        <!--android:elevation="2dp"-->
-        <!--android:focusable="true"-->
-        <!--android:foreground="?attr/selectableItemBackground"-->
-        <!--android:padding="6dp"-->
-        <!--android:text="@string/photo_details_floating_label_title_download"-->
-        <!--android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"-->
-        <!--app:layout_constraintBottom_toBottomOf="@+id/photo_details_floating_download"-->
-        <!--app:layout_constraintEnd_toStartOf="@+id/photo_details_floating_download"-->
-        <!--app:layout_constraintTop_toTopOf="@+id/photo_details_floating_download" />-->
-
-        <!--<com.google.android.material.floatingactionbutton.FloatingActionButton-->
-        <!--android:id="@+id/photo_details_floating_raw"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginBottom="16dp"-->
-        <!--android:src="@drawable/ic_aspect_ratio"-->
-        <!--android:tint="#000"-->
-        <!--android:visibility="visible"-->
-        <!--app:backgroundTint="#FFF"-->
-        <!--app:fabSize="mini"-->
-        <!--app:layout_constraintBottom_toTopOf="@+id/photo_details_floating_download"-->
-        <!--app:layout_constraintEnd_toEndOf="@+id/photo_details_floating_main"-->
-        <!--app:layout_constraintStart_toStartOf="@+id/photo_details_floating_main" />-->
-
-        <!--<TextView-->
-        <!--android:id="@+id/photo_details_floating_label_raw"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginEnd="24dp"-->
-        <!--android:background="@drawable/bg_fab_label"-->
-        <!--android:clickable="true"-->
-        <!--android:elevation="2dp"-->
-        <!--android:focusable="true"-->
-        <!--android:foreground="?attr/selectableItemBackground"-->
-        <!--android:padding="6dp"-->
-        <!--android:text="@string/photo_details_floating_label_title_raw"-->
-        <!--android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"-->
-        <!--app:layout_constraintBottom_toBottomOf="@+id/photo_details_floating_raw"-->
-        <!--app:layout_constraintEnd_toStartOf="@+id/photo_details_floating_raw"-->
-        <!--app:layout_constraintTop_toTopOf="@+id/photo_details_floating_raw" />-->
-
-        <!--<com.google.android.material.floatingactionbutton.FloatingActionButton-->
-        <!--android:id="@+id/photo_details_floating_wallpaper"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginBottom="16dp"-->
-        <!--android:cropToPadding="false"-->
-        <!--android:src="@drawable/ic_wallpaper"-->
-        <!--android:tint="#000"-->
-        <!--android:visibility="visible"-->
-        <!--app:backgroundTint="#FFF"-->
-        <!--app:fabSize="mini"-->
-        <!--app:layout_constraintBottom_toTopOf="@+id/photo_details_floating_raw"-->
-        <!--app:layout_constraintEnd_toEndOf="@+id/photo_details_floating_main"-->
-        <!--app:layout_constraintStart_toStartOf="@+id/photo_details_floating_main" />-->
-
-        <!--<TextView-->
-        <!--android:id="@+id/photo_details_floating_label_wallpaper"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginEnd="24dp"-->
-        <!--android:background="@drawable/bg_fab_label"-->
-        <!--android:clickable="true"-->
-        <!--android:elevation="2dp"-->
-        <!--android:focusable="true"-->
-        <!--android:foreground="?attr/selectableItemBackground"-->
-        <!--android:padding="6dp"-->
-        <!--android:text="@string/photo_details_floating_label_title_wallpaper"-->
-        <!--android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"-->
-        <!--app:layout_constraintBottom_toBottomOf="@+id/photo_details_floating_wallpaper"-->
-        <!--app:layout_constraintEnd_toStartOf="@+id/photo_details_floating_wallpaper"-->
-        <!--app:layout_constraintTop_toTopOf="@+id/photo_details_floating_wallpaper" />-->
-
-
-        <!--<com.google.android.material.floatingactionbutton.FloatingActionButton-->
-        <!--android:id="@+id/photo_details_floating_main"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:src="@drawable/ic_expand_more"-->
-        <!--android:tint="#000"-->
-        <!--android:visibility="invisible"-->
-        <!--app:backgroundTint="#FFF"-->
-        <!--app:fabSize="normal"-->
-        <!--app:layout_constraintBottom_toTopOf="@+id/photo_details_constraint_bottom_panel"-->
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintTop_toTopOf="@+id/photo_details_constraint_bottom_panel"-->
-        <!--app:useCompatPadding="true"-->
-        <!--tools:visibility="visible" />-->
-
         <com.netchar.common.views.FloatingActionMenuButton
             android:id="@+id/photo_details_fab"
             android:layout_width="wrap_content"
@@ -293,6 +183,8 @@
             app:layout_constraintBottom_toTopOf="@+id/photo_details_constraint_bottom_panel"
             app:layout_constraintEnd_toEndOf="parent"
             app:main_fab_color_background="@color/white"
+            android:visibility="invisible"
+            tools:visibility="visible"
             app:main_fab_icon_start="@drawable/ic_expand_more" />
 
 

@@ -17,14 +17,11 @@
 package com.netchar.wallpaperify.ui.photos
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
-import androidx.transition.TransitionInflater
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.netchar.common.base.BaseFragment
@@ -61,11 +58,6 @@ class PhotosFragment : BaseFragment() {
 
     private val adapter: EndlessRecyclerAdapter by lazy {
         EndlessRecyclerAdapter(dataSource)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        exitTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.fade)
-        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -154,6 +146,7 @@ class PhotosFragment : BaseFragment() {
         )
         val action = HomeFragmentDirections.actionGlobalPhotoDetailsFragment(model.urls.regular, imageView.transitionName)
         action.photoId = model.id
+        action.photoDescription = model.description ?: ""
         findNavController().navigate(action, extras)
     }
 }

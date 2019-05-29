@@ -17,6 +17,7 @@
 package com.netchar.common.base
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -35,6 +36,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.netchar.common.R
 import com.netchar.common.extensions.setSupportActionBar
 import com.netchar.common.utils.Injector
+import com.netchar.common.utils.getThemeAttrColor
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject
@@ -127,6 +129,14 @@ abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
 
     protected fun hideToolbarTitle() {
         fragmentToolbar?.title = ""
+    }
+
+    fun setTransparentStatusBars(transparent: Boolean) {
+        activity?.let {
+            val color = if (transparent) Color.TRANSPARENT else it.getThemeAttrColor(android.R.attr.statusBarColor)
+            it.window.statusBarColor = color
+            it.window.navigationBarColor = color
+        }
     }
 }
 

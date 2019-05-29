@@ -20,17 +20,16 @@ import android.app.AlertDialog
 import android.app.WallpaperManager
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
+import android.view.animation.LinearInterpolator
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import androidx.transition.AutoTransition
-import androidx.transition.Transition
-import androidx.transition.TransitionInflater
 import androidx.transition.TransitionManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -42,16 +41,16 @@ import com.bumptech.glide.request.target.Target
 import com.livinglifetechway.quickpermissions_kotlin.runWithPermissions
 import com.netchar.common.base.BaseFragment
 import com.netchar.common.extensions.*
-import com.netchar.common.utils.getThemeAttrColor
+import com.netchar.common.utils.ShimmerFactory
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_photo_details.*
 import kotlinx.android.synthetic.main.fragment_photo_details.view.*
+import kotlinx.android.synthetic.main.view_photo_details_shimmer.view.*
 import timber.log.Timber
 import javax.inject.Inject
 
 class PhotoDetailsFragment : BaseFragment() {
-    private val autoTransition = AutoTransition().apply { duration = 70 }
     private var viewGroup: ViewGroup? = null
 
     @Inject
@@ -61,29 +60,36 @@ class PhotoDetailsFragment : BaseFragment() {
 
     override val layoutResId: Int = R.layout.fragment_photo_details
 
-    private val safeArguments: PhotoDetailsFragmentArgs by lazy {
+    private val safeArguments: PhotoDetailsFragmentArgs by lazy(LazyThreadSafetyMode.NONE) {
         PhotoDetailsFragmentArgs.fromBundle(arguments!!)
     }
 
-    private val downloadDialog: DownloadDialogFragment by lazy {
+    private val downloadDialog: DownloadDialogFragment by lazy(LazyThreadSafetyMode.NONE) {
         DownloadDialogFragment().apply {
             onDialogCancel = { viewModel.cancelDownloading() }
         }
     }
 
+    val durationShort by lazy(LazyThreadSafetyMode.NONE) { resources.getInteger(android.R.integer.config_shortAnimTime).toLong() }
+    val durationMedium by lazy(LazyThreadSafetyMode.NONE) { resources.getInteger(android.R.integer.config_shortAnimTime).toLong() }
+    val durationLong by lazy(LazyThreadSafetyMode.NONE) { resources.getInteger(android.R.integer.config_shortAnimTime).toLong() }
+    val interpolatorLinear by lazy(LazyThreadSafetyMode.NONE) { LinearInterpolator() }
+    val shimmer by lazy(LazyThreadSafetyMode.NONE) { ShimmerFactory.getShimmer(autoStart = true) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setHasOptionsMenu(true)
-        postponeEnterTransition()
-        sharedElementEnterTransition = getEnterTransitionAnimation()
+//        postponeEnterTransition()
+//        sharedElementEnterTransition = startEnterAnimation()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Should play enter animation only on view creating and return ready view on Pop()
-        var view = viewGroup
+        var view: ViewGroup? = viewGroup
         return if (view == null) {
             view = super.onCreateView(inflater, container, savedInstanceState) as ViewGroup
+            (view as View).background = ColorDrawable(Color.TRANSPARENT)
             initFab(view)
             initViews(view)
             view.also { viewGroup = it }
@@ -93,6 +99,9 @@ class PhotoDetailsFragment : BaseFragment() {
     }
 
     private fun initFab(v: View) = with(v) {
+        photo_details_fab.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        val translationY = (photo_details_fab.measuredHeight / 2f) + 5.dpToPx()
+        photo_details_fab.translationY = translationY
         photo_details_fab.setupWithOverlay(fab_overlay)
         photo_details_fab.addFabOption(R.drawable.ic_aspect_ratio, getString(R.string.photo_details_floating_label_title_raw)) {
             navigateToOriginalPhoto()
@@ -113,10 +122,32 @@ class PhotoDetailsFragment : BaseFragment() {
         photo_details_iv_photo.setOnClickListener {
             navigateToOriginalPhoto()
         }
-        photo_details_iv_photo.transitionName = safeArguments.imageTransitionName
+
+        photo_details_iv_photo.background = shimmer
+//        photo_details_iv_photo.transitionName = safeArguments.imageTransitionName
+        if (safeArguments.photoDescription.isEmpty()) {
+            photo_details_shimmer_description.toGone()
+        }
+        photo_details_constraint_bottom_panel.alpha = 0f
+
         Glide.with(this)
                 .load(safeArguments.photoUrl)
-                .listener(photoTransitionRequestListener)
+                .listener(object : RequestListener<Drawable> {
+
+                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                        shimmer.stopShimmer()
+                        photo_details_iv_photo.background = null
+                        startEnterAnimation()
+                        return false
+                    }
+
+                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                        shimmer.stopShimmer()
+                        photo_details_iv_photo.background = null
+                        startEnterAnimation()
+                        return false
+                    }
+                })
                 .into(photo_details_iv_photo)
     }
 
@@ -125,17 +156,10 @@ class PhotoDetailsFragment : BaseFragment() {
 
         viewModel = injectViewModel(viewModelFactory)
 
-        setTransparentStatusBars()
+        setTransparentStatusBars(true)
         hideToolbarTitle()
         applyWindowsInsets(view)
         observe()
-    }
-
-    private fun setTransparentStatusBars() {
-        activity?.let {
-            it.window.statusBarColor = Color.TRANSPARENT
-            it.window.navigationBarColor = Color.TRANSPARENT
-        }
     }
 
     private fun applyWindowsInsets(v: View) = with(v) {
@@ -148,9 +172,6 @@ class PhotoDetailsFragment : BaseFragment() {
 
     private fun observe() {
         viewModel.photo.observe(viewLifecycleOwner, Observer { photo ->
-
-            TransitionManager.beginDelayedTransition(photo_details_constraint_main, autoTransition)
-
             Glide.with(this)
                     .load(photo.user.profileImage.small)
                     .transform(CircleCrop())
@@ -164,7 +185,10 @@ class PhotoDetailsFragment : BaseFragment() {
             photo_details_tv_total_downloads.text = photo.downloads.toString()
 
             photo_details_tv_description.goneIfEmpty()
-            photo_details_constraint_bottom_panel.toVisible()
+
+            photo_details_constraint_bottom_panel.animate().withStartAction {
+                photo_details_constraint_bottom_panel.toVisible()
+            }.alpha(1f).setDuration(750).start()
         })
 
         viewModel.error.observe(viewLifecycleOwner, Observer { error ->
@@ -211,7 +235,7 @@ class PhotoDetailsFragment : BaseFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
 
-        restoreStatusBarsThemeColors()
+        setTransparentStatusBars(false)
     }
 
     private fun setWallpaper(uri: Uri) {
@@ -242,8 +266,6 @@ class PhotoDetailsFragment : BaseFragment() {
     }
 
     private fun handleShimmer(loading: Boolean) {
-        TransitionManager.beginDelayedTransition(photo_details_constraint_main, autoTransition)
-
         if (loading) {
             startShimmer()
         } else {
@@ -278,30 +300,17 @@ class PhotoDetailsFragment : BaseFragment() {
         viewGroup = null
     }
 
-    private fun getEnterTransitionAnimation(): Transition {
-        val imageTransition: Transition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
-        imageTransition.duration = 250
-        imageTransition.onTransitionEnd {
-
-            val contentTransition = inflateTransition(R.transition.photo_details_transition_content_enter)
-            contentTransition.onTransitionEnd {
-                viewModel.fetchPhoto(safeArguments.photoId)
-            }
-
-            TransitionManager.beginDelayedTransition(photo_details_coordinator, contentTransition)
-
-            photo_details_bottom_panel_background_overlay.toVisible()
-//            photo_details_floating_main.toVisible()
-            fragmentToolbar?.toVisible()
+    private fun startEnterAnimation() {
+        val contentTransition = inflateTransition(R.transition.photo_details_transition_content_enter)
+        contentTransition.onTransitionEnd {
+            viewModel.fetchPhoto(safeArguments.photoId)
         }
-        return imageTransition
-    }
 
-    private fun restoreStatusBarsThemeColors() {
-        activity?.let {
-            it.window.statusBarColor = getThemeAttrColor(it, android.R.attr.statusBarColor)
-            it.window.navigationBarColor = getThemeAttrColor(it, android.R.attr.navigationBarColor)
-        }
+        TransitionManager.beginDelayedTransition(photo_details_coordinator, contentTransition)
+
+        photo_details_bottom_panel_background_overlay.toVisible()
+        photo_details_fab.toVisible()
+        fragmentToolbar?.toVisible()
     }
 
     private fun navigateToOriginalPhoto() {
@@ -319,20 +328,10 @@ class PhotoDetailsFragment : BaseFragment() {
     }
 
     private fun stopShimmer() {
-        photo_details_loading_shimmer.toGone()
-        photo_details_loading_shimmer.stopShimmer()
-    }
-
-    private val photoTransitionRequestListener = object : RequestListener<Drawable> {
-        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-            startPostponedEnterTransition()
-            return false
-        }
-
-        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-            startPostponedEnterTransition()
-            return false
-        }
+        photo_details_loading_shimmer.animate().withEndAction {
+            photo_details_loading_shimmer.toGone()
+            photo_details_loading_shimmer.stopShimmer()
+        }.alpha(0f).setDuration(durationShort).start()
     }
 
     private val overrideDialog: AlertDialog by lazy {
