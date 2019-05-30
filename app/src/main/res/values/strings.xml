@@ -63,6 +63,7 @@
     <string name="fragment_title_photo_raw">Original Photo</string>
     <string name="message_error_photo_details_not_loaded">Unable to download since photo details were not loaded. Try again later.</string>
     <string name="message_error_photo_details_unable_to_open_original">Unable to open original photo since details were not loaded. Try again later.</string>
+    <string name="photos_menu_option_filter">Filter</string>
 
     <string-array name="array_photos_ordering_spinner">
         <item>Sort by latest</item>

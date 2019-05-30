@@ -17,6 +17,9 @@
 package com.netchar.wallpaperify.ui.photos
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
@@ -74,6 +77,28 @@ class PhotosFragment : BaseFragment() {
         latest_swipe.setOnRefreshListener {
             viewModel.refresh()
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_photos_filter, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.photos_menu_filter_option -> consume {
+                showFilterDialog()
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun showFilterDialog() {
+        val currentSortBy = viewModel.ordering.value
+        val filterDialog = PhotosFilterDialogFragment.getInstance(currentSortBy)
+        filterDialog.listener = { options ->
+            options.sortBy?.let { sortBy -> viewModel.orderBy(sortBy) }
+        }
+        filterDialog.show(childFragmentManager, filterDialog::class.java.simpleName)
     }
 
     private fun onLoadMoreItems() {
