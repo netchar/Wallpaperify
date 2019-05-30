@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<transitionSet xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="450"
+    android:transitionOrdering="together">
+
+    <transition
+        class="com.transitionseverywhere.extra.Scale"
+        android:interpolator="@android:interpolator/overshoot">
+        <targets>
+            <target android:targetId="@+id/photo_details_fab" />
+        </targets>
+    </transition>
+
+</transitionSet>

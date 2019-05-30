@@ -25,7 +25,8 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
-import android.view.animation.LinearInterpolator
+import android.view.animation.Animation
+import androidx.core.view.ViewCompat
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.lifecycle.Observer
@@ -70,16 +71,10 @@ class PhotoDetailsFragment : BaseFragment() {
         }
     }
 
-    val durationShort by lazy(LazyThreadSafetyMode.NONE) { resources.getInteger(android.R.integer.config_shortAnimTime).toLong() }
-    val durationMedium by lazy(LazyThreadSafetyMode.NONE) { resources.getInteger(android.R.integer.config_shortAnimTime).toLong() }
-    val durationLong by lazy(LazyThreadSafetyMode.NONE) { resources.getInteger(android.R.integer.config_shortAnimTime).toLong() }
-    val interpolatorLinear by lazy(LazyThreadSafetyMode.NONE) { LinearInterpolator() }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setHasOptionsMenu(true)
-        sharedElementEnterTransition = inflateTransition(android.R.transition.move)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -116,37 +111,30 @@ class PhotoDetailsFragment : BaseFragment() {
         }
     }
 
-    private fun initViews(v: View) = with(v) {
+    private fun initViews(contentView: View) = with(contentView) {
+        val shimmer = ShimmerFactory.getShimmer(autoStart = true)
+
+        contentView.background = shimmer
         photo_details_iv_photo.setOnClickListener {
             navigateToOriginalPhoto()
         }
-
-        val shimmer = ShimmerFactory.getShimmer(autoStart = true)
-        v.background = shimmer
-        photo_details_iv_photo.background = shimmer
-        photo_details_iv_photo.transitionName = safeArguments.imageTransitionName
 
         if (safeArguments.photoDescription.isEmpty()) {
             photo_details_shimmer_description.toGone()
         }
 
-        photo_details_constraint_bottom_panel.alpha = 0f
-
         Glide.with(this)
                 .load(safeArguments.photoUrl)
                 .listener(object : RequestListener<Drawable> {
-
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                         shimmer.stopShimmer()
-                        v.background = null
-                        startEnterAnimation()
+                        contentView.background = null
                         return false
                     }
 
                     override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                         shimmer.stopShimmer()
-                        v.background = null
-                        startEnterAnimation()
+                        contentView.background = null
                         return false
                     }
                 })
@@ -185,12 +173,11 @@ class PhotoDetailsFragment : BaseFragment() {
             photo_details_tv_description.text = photo.description
             photo_details_tv_likes.text = photo.likes.toString()
             photo_details_tv_total_downloads.text = photo.downloads.toString()
-
             photo_details_tv_description.goneIfEmpty()
+            photo_details_constraint_bottom_panel.run { animate().withStartAction { toVisible() }.alpha(1f).setDuration(450).start() }
 
-            photo_details_constraint_bottom_panel.animate().withStartAction {
-                photo_details_constraint_bottom_panel.toVisible()
-            }.alpha(1f).setDuration(750).start()
+            TransitionManager.beginDelayedTransition(photo_details_coordinator, inflateTransition(R.transition.photo_details_fab_transition))
+            photo_details_fab.toVisible()
         })
 
         viewModel.error.observe(viewLifecycleOwner, Observer { error ->
@@ -198,7 +185,9 @@ class PhotoDetailsFragment : BaseFragment() {
         })
 
         viewModel.loading.observe(viewLifecycleOwner, Observer { loading ->
-            handleShimmer(loading)
+            if (!loading) {
+                stopShimmer()
+            }
         })
 
         viewModel.downloadDialog.observe(viewLifecycleOwner, Observer { dialogState ->
@@ -267,14 +256,6 @@ class PhotoDetailsFragment : BaseFragment() {
         }
     }
 
-    private fun handleShimmer(loading: Boolean) {
-        if (loading) {
-            startShimmer()
-        } else {
-            stopShimmer()
-        }
-    }
-
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_photo_details, menu)
         super.onCreateOptionsMenu(menu, inflater)
@@ -303,16 +284,17 @@ class PhotoDetailsFragment : BaseFragment() {
     }
 
     private fun startEnterAnimation() {
+
         val contentTransition = inflateTransition(R.transition.photo_details_transition_content_enter)
         contentTransition.onTransitionEnd {
-            //            viewModel.fetchPhoto(safeArguments.photoId)
+            viewModel.fetchPhoto(safeArguments.photoId)
         }
 
         TransitionManager.beginDelayedTransition(photo_details_coordinator, contentTransition)
 
         photo_details_bottom_panel_background_overlay.toVisible()
-        photo_details_fab.toVisible()
         fragmentToolbar?.toVisible()
+        startShimmer()
     }
 
     private fun navigateToOriginalPhoto() {
@@ -334,7 +316,7 @@ class PhotoDetailsFragment : BaseFragment() {
             it.animate().withEndAction {
                 it.toGone()
                 it.stopShimmer()
-            }.alpha(0f).setDuration(durationShort).start()
+            }.alpha(0f).setDuration(350).start()
         }
     }
 
@@ -347,5 +329,52 @@ class PhotoDetailsFragment : BaseFragment() {
             }
             setNegativeButton(getString(R.string.label_cancel), null)
         }.create()
+    }
+
+    /**
+     * Temporary workaround.
+     *
+     * Navigation library exit transition have an incorrect Z ordering
+     * When a FragmentTransaction is executed, the FragmentManger removes the current fragment view
+     * and adds the new fragment view to the container. Normally when a view is removed, it won't be
+     * drawn. However, when removing a View, if there is an animation currently playing on it, ViewGroup
+     * will add it to a special list of disappearing views
+     * (https://android.googlesource.com/platform/frameworks/base/+/refs/heads/master/core/java/android/view/ViewGroup.java#4713)
+     *
+     * During dispatchDraw, ViewGroup draws disappearing views at the end
+     * (https://android.googlesource.com/platform/frameworks/base/+/refs/heads/master/core/java/android/view/ViewGroup.java#3531)
+     * This ignore the original z order of views and always draws exiting views on top.
+     *
+     * This behavior makes it impossible to do a modal animation where a new Fragment slides up
+     * over the existing content because the existing content will be drawn on top of the new Fragment.
+     *
+     * However, there is no such problem when popping the modal because you want the exiting fragment
+     * to draw on top.
+     *
+     * Issue already tracked by google: https://issuetracker.google.com/issues/79443865
+     */
+    override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {
+        val animation: Animation? = super.onCreateAnimation(transit, enter, nextAnim)
+
+        view?.let {
+            if (nextAnim == R.anim.anim_fragment_details_enter || nextAnim == R.anim.anim_fragment_details_pop_exit) {
+                ViewCompat.setTranslationZ(it, 1f)
+                animation?.setAnimationListener(object : Animation.AnimationListener {
+                    override fun onAnimationRepeat(animation: Animation?) {}
+
+                    override fun onAnimationEnd(animation: Animation?) {
+                        if (enter) {
+                            startEnterAnimation()
+                        }
+                    }
+
+                    override fun onAnimationStart(animation: Animation?) {
+                    }
+                })
+            } else {
+                ViewCompat.setTranslationZ(it, 0f)
+            }
+        }
+        return animation
     }
 }
