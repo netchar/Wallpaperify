@@ -22,6 +22,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.netchar.common.extensions.withArgs
 import com.netchar.remote.apirequest.ApiRequest
 import com.netchar.repository.pojo.FilterOptions
 import com.netchar.wallpaperify.R
@@ -38,11 +39,14 @@ class PhotosFilterDialogFragment : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         arguments?.let {
-            val sorted = it.getSerializable(KEY_SORT_BY) as ApiRequest.Order
-            val checkId = orderToResourceIdMap[sorted]
-            if (checkId != null) {
-                photos_filter_chipgroup_sort.check(checkId)
+            if (it.containsKey(KEY_SORT_BY)) {
+                val sorted = it.getSerializable(KEY_SORT_BY) as ApiRequest.Order
+                val checkId = orderToResourceIdMap[sorted]
+                if (checkId != null) {
+                    photos_filter_chipgroup_sort.check(checkId)
+                }
             }
         }
 
@@ -77,11 +81,9 @@ class PhotosFilterDialogFragment : BottomSheetDialogFragment() {
                 ApiRequest.Order.POPULAR to R.id.photos_filter_sort_option_popular
         )
 
-        fun getInstance(sortBy: ApiRequest.Order? = null) = PhotosFilterDialogFragment().apply {
+        fun getInstance(sortBy: ApiRequest.Order? = null) = PhotosFilterDialogFragment().withArgs {
             sortBy?.let {
-                arguments = Bundle().apply {
-                    putSerializable(KEY_SORT_BY, sortBy)
-                }
+                putSerializable(KEY_SORT_BY, sortBy)
             }
         }
     }

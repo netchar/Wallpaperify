@@ -20,4 +20,4 @@ fun Transition.onTransitionEnd(action: () -> Unit) {
     })
 }
 
-fun BaseFragment.inflateTransition(transitionResId: Int) = TransitionInflater.from(context).inflateTransition(transitionResId)
+fun BaseFragment.inflateTransition(transitionResId: Int): Transition = TransitionInflater.from(context).inflateTransition(transitionResId)

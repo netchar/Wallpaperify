@@ -84,7 +84,7 @@ class FloatingActionMenuButton @JvmOverloads constructor(
 
             optionFabColorBackground = getResourceId(R.styleable.FloatingActionMenuButton_option_fab_color_background, optionFabColorBackground)
             optionFabColorIconRes = getResourceId(R.styleable.FloatingActionMenuButton_option_fab_color_icon, optionFabColorIconRes)
-            optionFabTextSize = getDimensionPixelSize(R.styleable.FloatingActionMenuButton_option_fab_text_size, optionFabTextSize.dpToPx().toInt()).toFloat()
+            optionFabTextSize = getDimensionPixelSize(R.styleable.FloatingActionMenuButton_option_fab_text_size, context.dip(optionFabTextSize)).toFloat()
             optionFabTextColorRes = getResourceId(R.styleable.FloatingActionMenuButton_option_fab_text_color, optionFabTextColorRes)
             optionFabTextBackground = getResourceId(R.styleable.FloatingActionMenuButton_option_fab_text_background, optionFabTextBackground)
         }

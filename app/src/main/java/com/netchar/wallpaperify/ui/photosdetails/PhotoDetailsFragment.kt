@@ -90,7 +90,7 @@ class PhotoDetailsFragment : BaseFragment() {
 
     private fun initFab(v: View) = with(v) {
         photo_details_fab.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        val translationY = (photo_details_fab.measuredHeight / 2f) + 5.dpToPx()
+        val translationY = (photo_details_fab.measuredHeight / 2f) + dip(5)
         photo_details_fab.translationY = translationY
         photo_details_fab.setupWithOverlay(fab_overlay)
         photo_details_fab.addFabOption(R.drawable.ic_aspect_ratio, getString(R.string.photo_details_floating_label_title_raw)) {

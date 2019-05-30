@@ -18,11 +18,10 @@ package com.netchar.common.extensions
 
 import android.app.DownloadManager
 import android.content.Context
-import android.content.res.Resources
 import android.database.Cursor
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.util.DisplayMetrics
+import android.os.Bundle
 import androidx.annotation.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
@@ -38,6 +37,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.netchar.common.base.BaseFragment
 import java.io.File
+
 
 //todo: fix this mess
 fun File.notExist() = !this.exists()
@@ -59,10 +59,6 @@ inline fun <reified TViewModel : ViewModel> injectViewModelOf(context: Fragment,
 }
 
 fun BaseFragment.setSupportActionBar(toolbar: Toolbar) = (activity as AppCompatActivity).setSupportActionBar(toolbar)
-
-val Int.dp get() = (this / Resources.getSystem().displayMetrics.density).toInt()
-
-val Int.px get() = (this * Resources.getSystem().displayMetrics.density).toInt()
 
 fun Fragment.getStringSafe(@StringRes res: Int?): String = res?.let { getString(it) } ?: ""
 
@@ -100,18 +96,6 @@ inline fun DrawerLayout.consume(f: () -> Unit): Boolean {
 
 fun File.toFileProviderUri(context: Context) = FileProvider.getUriForFile(context, "com.netchar.wallpaperify.fileprovider", this)
 
-@JvmOverloads
-@Dimension(unit = Dimension.PX)
-fun Number.dpToPx(metrics: DisplayMetrics = Resources.getSystem().displayMetrics): Float {
-    return toFloat() * metrics.density
-}
-
-@JvmOverloads
-@Dimension(unit = Dimension.DP)
-fun Number.pxToDp(metrics: DisplayMetrics = Resources.getSystem().displayMetrics): Float {
-    return toFloat() / metrics.density
-}
-
 @ColorInt
 fun Context.getColorCompat(@ColorRes colorRes: Int): Int {
     return ContextCompat.getColor(this, colorRes)
@@ -133,6 +117,7 @@ fun Drawable.tint(context: Context, @ColorRes color: Int): Drawable {
     return tint(context.getColorCompat(color))
 }
 
+//todo: implement custom tabs
 //fun Context.openWebPage(url: String): Boolean {
 //    // Format the URI properly.
 //    val uri = url.toWebUri()
@@ -162,4 +147,8 @@ fun Drawable.tint(context: Context, @ColorRes color: Int): Drawable {
 
 fun String.toWebUri(): Uri {
     return (if (startsWith("http://") || startsWith("https://")) this else "https://$this").toUri()
+}
+
+inline fun <T : Fragment> T.withArgs(argsBuilder: Bundle.() -> Unit): T = this.apply {
+    arguments = Bundle().apply(argsBuilder)
 }
