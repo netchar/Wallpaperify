@@ -59,7 +59,6 @@
     <string name="message_dialog_photo_already_exists">This photo already downloaded. Would you like to override existing one?</string>
     <string name="label_override">Override</string>
     <string name="message_error_download_not_enough_space">Not enough space to store the image.</string>
-    <string name="titile_set_wallpaper_as">Set as:</string>
     <string name="message_error_failed_to_load_image">Failed to load image.</string>
     <string name="fragment_title_photo_raw">Original Photo</string>
     <string name="message_error_photo_details_not_loaded">Unable to download since photo details were not loaded. Try again later.</string>

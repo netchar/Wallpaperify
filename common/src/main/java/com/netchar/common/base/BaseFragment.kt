@@ -124,10 +124,18 @@ abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
                 override fun onAnimationEnd(animation: Animation) {
                     view?.setLayerType(View.LAYER_TYPE_NONE, null)
                     activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+
+                    if (enter) {
+                        onEnterAnimationComplete()
+                    }
                 }
             })
         }
         return animation
+    }
+
+    protected open fun onEnterAnimationComplete() {
+
     }
 
     protected fun hideToolbarTitle() {

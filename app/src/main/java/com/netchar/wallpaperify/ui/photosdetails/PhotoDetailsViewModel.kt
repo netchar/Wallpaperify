@@ -16,12 +16,12 @@
 
 package com.netchar.wallpaperify.ui.photosdetails
 
-import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.netchar.common.base.BaseViewModel
+import com.netchar.common.services.WallpaperApplierService
 import com.netchar.common.utils.CoroutineDispatchers
 import com.netchar.common.utils.SingleLiveData
 import com.netchar.remote.enums.Cause
@@ -50,6 +50,7 @@ data class DialogState(val show: Boolean, val closeReason: Int = 0) {
 
 class PhotoDetailsViewModel @Inject constructor(
         coroutineDispatchers: CoroutineDispatchers,
+        private val wallpaperService: WallpaperApplierService,
         private val repo: IPhotosRepository
 ) : BaseViewModel(coroutineDispatchers) {
 
@@ -62,7 +63,7 @@ class PhotoDetailsViewModel @Inject constructor(
     private val _downloadRequest = MutableLiveData<DownloadRequest>()
     private val _toast = SingleLiveData<Message>()
     private val _overrideDialog = SingleLiveData<DialogState>()
-    private val _wallpaper = SingleLiveData<Uri>()
+//    private val _wallpaper = SingleLiveData<Uri>()
 
     private val repoLiveData = Transformations.switchMap(_photoId) { id ->
         repo.getPhoto(id, scope).getLiveData()
@@ -96,7 +97,7 @@ class PhotoDetailsViewModel @Inject constructor(
 
     val toast: LiveData<Message> get() = _toast
 
-    val wallpaper: LiveData<Uri> get() = _wallpaper
+//    val wallpaper: LiveData<Uri> get() = _wallpaper
 
     fun fetchPhoto(id: String) {
         _photoId.value = id
@@ -169,7 +170,8 @@ class PhotoDetailsViewModel @Inject constructor(
                         }
                         DownloadRequest.REQUEST_WALLPAPER -> {
                             _downloadDialog.value = DialogState.hide()
-                            _wallpaper.value = progress.fileUri
+                            wallpaperService.setWallpaper(progress.fileUri)
+//                            _wallpaper.value = progress.fileUri
                         }
                     }
                 }
@@ -198,7 +200,8 @@ class PhotoDetailsViewModel @Inject constructor(
                             _overrideDialog.value = DialogState.show()
                         }
                         DownloadRequest.REQUEST_WALLPAPER -> {
-                            _wallpaper.value = progress.fileUri
+                            wallpaperService.setWallpaper(progress.fileUri)
+//                            _wallpaper.value = progress.fileUri
                         }
                     }
                 }

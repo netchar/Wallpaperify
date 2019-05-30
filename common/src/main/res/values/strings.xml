@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">common</string>
     <string name="load_more_label_retry">Retry</string>
+    <string name="title_chooser_set_wallpaper_as">Set as:</string>
 </resources>

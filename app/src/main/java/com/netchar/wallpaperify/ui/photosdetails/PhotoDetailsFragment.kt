@@ -17,12 +17,9 @@
 package com.netchar.wallpaperify.ui.photosdetails
 
 import android.app.AlertDialog
-import android.app.WallpaperManager
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.view.animation.Animation
@@ -48,7 +45,6 @@ import com.netchar.wallpaperify.di.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_photo_details.*
 import kotlinx.android.synthetic.main.fragment_photo_details.view.*
 import kotlinx.android.synthetic.main.view_photo_details_shimmer.view.*
-import timber.log.Timber
 import javax.inject.Inject
 
 class PhotoDetailsFragment : BaseFragment() {
@@ -216,44 +212,12 @@ class PhotoDetailsFragment : BaseFragment() {
                 overrideDialog.dismiss()
             }
         })
-
-        viewModel.wallpaper.observe(viewLifecycleOwner, Observer { uri ->
-            // todo: find out why some times it's calling multiple times.
-            setWallpaper(uri)
-        })
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
 
         setTransparentStatusBars(false)
-    }
-
-    private fun setWallpaper(uri: Uri) {
-        try {
-            Timber.d("Set wallpaper via WallpaperManager. Uri: $uri")
-            val wallpaperManager = WallpaperManager.getInstance(this.context)
-            wallpaperManager.getCropAndSetWallpaperIntent(uri)
-                    .apply {
-                        setDataAndType(uri, "image/*")
-                        putExtra("mimeType", "image/*")
-                    }.also {
-                        startActivityForResult(it, 13451)
-                    }
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-            Timber.d("Set wallpaper via Chooser. Uri: $uri")
-
-            val intent = Intent(Intent.ACTION_ATTACH_DATA).apply {
-                addCategory(Intent.CATEGORY_DEFAULT)
-                setDataAndType(uri, "image/*")
-                putExtra("mimeType", "image/*")
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-            }
-            startActivity(Intent.createChooser(intent, getString(R.string.titile_set_wallpaper_as)))
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -281,6 +245,10 @@ class PhotoDetailsFragment : BaseFragment() {
         super.onDestroy()
         viewGroup?.removeAllViews()
         viewGroup = null
+    }
+
+    override fun onEnterAnimationComplete() {
+        startEnterAnimation()
     }
 
     private fun startEnterAnimation() {
@@ -359,18 +327,6 @@ class PhotoDetailsFragment : BaseFragment() {
         view?.let {
             if (nextAnim == R.anim.anim_fragment_details_enter || nextAnim == R.anim.anim_fragment_details_pop_exit) {
                 ViewCompat.setTranslationZ(it, 1f)
-                animation?.setAnimationListener(object : Animation.AnimationListener {
-                    override fun onAnimationRepeat(animation: Animation?) {}
-
-                    override fun onAnimationEnd(animation: Animation?) {
-                        if (enter) {
-                            startEnterAnimation()
-                        }
-                    }
-
-                    override fun onAnimationStart(animation: Animation?) {
-                    }
-                })
             } else {
                 ViewCompat.setTranslationZ(it, 0f)
             }

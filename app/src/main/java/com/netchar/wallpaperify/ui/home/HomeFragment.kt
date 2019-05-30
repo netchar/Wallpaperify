@@ -40,7 +40,6 @@ class HomeFragment : BaseFragment() {
 
         applyWindowInsetsForToolbarOnly()
 
-
         pager.adapter = HomeFragmentPagerAdapter(childFragmentManager).also {
             it.addFragment(PhotosFragment(), getString(R.string.photos_fragment_title))
             it.addFragment(CollectionsFragment(), getString(R.string.collections_fragment_title))
