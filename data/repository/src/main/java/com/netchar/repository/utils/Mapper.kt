@@ -32,7 +32,8 @@ object Mapper {
                 downloads = photo.downloads,
                 description = photo.description,
                 user = map(photo.user),
-                urls = map(photo.urls)
+                urls = map(photo.urls),
+                links = map(photo.links)
         )
     }
 

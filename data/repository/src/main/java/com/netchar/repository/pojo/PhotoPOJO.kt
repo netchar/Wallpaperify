@@ -16,6 +16,8 @@
 
 package com.netchar.repository.pojo
 
+import com.netchar.common.UNSPLASH_UTM_PARAMETERS
+
 data class PhotoPOJO(
         val id: String = "",
         val width: Int = 0,
@@ -25,5 +27,8 @@ data class PhotoPOJO(
         val downloads: Int = 0,
         val description: String? = "",
         val user: UserPOJO = UserPOJO(),
-        val urls: UrlsPOJO = UrlsPOJO()
-)
+        val urls: UrlsPOJO = UrlsPOJO(),
+        val links: LinksPOJO = LinksPOJO()
+) {
+    val shareLink = links.html + UNSPLASH_UTM_PARAMETERS
+}

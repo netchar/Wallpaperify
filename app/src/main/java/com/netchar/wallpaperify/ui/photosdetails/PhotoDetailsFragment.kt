@@ -40,6 +40,7 @@ import com.livinglifetechway.quickpermissions_kotlin.runWithPermissions
 import com.netchar.common.base.BaseFragment
 import com.netchar.common.extensions.*
 import com.netchar.common.utils.ShimmerFactory
+import com.netchar.common.utils.share
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_photo_details.*
@@ -120,21 +121,21 @@ class PhotoDetailsFragment : BaseFragment() {
         }
 
         Glide.with(this)
-                .load(safeArguments.photoUrl)
-                .listener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                        shimmer.stopShimmer()
-                        contentView.background = null
-                        return false
-                    }
+            .load(safeArguments.photoUrl)
+            .listener(object : RequestListener<Drawable> {
+                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                    shimmer.stopShimmer()
+                    contentView.background = null
+                    return false
+                }
 
-                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                        shimmer.stopShimmer()
-                        contentView.background = null
-                        return false
-                    }
-                })
-                .into(photo_details_iv_photo)
+                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                    shimmer.stopShimmer()
+                    contentView.background = null
+                    return false
+                }
+            })
+            .into(photo_details_iv_photo)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -159,11 +160,11 @@ class PhotoDetailsFragment : BaseFragment() {
     private fun observe() {
         viewModel.photo.observe(viewLifecycleOwner, Observer { photo ->
             Glide.with(this)
-                    .load(photo.user.profileImage.small)
-                    .transform(CircleCrop())
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .error(R.drawable.ic_person)
-                    .into(photo_details_author_img)
+                .load(photo.user.profileImage.small)
+                .transform(CircleCrop())
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .error(R.drawable.ic_person)
+                .into(photo_details_author_img)
 
             photo_details_tv_photo_by.text = getString(R.string.collection_item_author_prefix, photo.user.name)
             photo_details_tv_description.text = photo.description
@@ -227,7 +228,11 @@ class PhotoDetailsFragment : BaseFragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.photo_details_share_menu_item -> consume { toast("Share") }
+            R.id.photo_details_share_menu_item -> consume {
+                viewModel.photo.value?.let {
+                    activity?.share(it.shareLink, "Photo by ${it.user.name}")
+                }
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -252,7 +257,6 @@ class PhotoDetailsFragment : BaseFragment() {
     }
 
     private fun startEnterAnimation() {
-
         val contentTransition = inflateTransition(R.transition.photo_details_transition_content_enter)
         contentTransition.onTransitionEnd {
             viewModel.fetchPhoto(safeArguments.photoId)

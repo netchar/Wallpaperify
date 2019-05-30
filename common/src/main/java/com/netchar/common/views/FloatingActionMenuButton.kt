@@ -22,7 +22,6 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.animation.OvershootInterpolator
 import android.widget.TextView
 import androidx.annotation.ColorRes
@@ -214,7 +213,7 @@ class FloatingActionMenuButton @JvmOverloads constructor(
             animateFabMenuItemOpen(container.fab_menu_option, container.fab_menu_title, container)
         }
 
-        overlay?.fabOverlayAction {
+        overlay?.run {
             animate().withStartAction { toVisible() }.alpha(1f).setDuration(menuTranslationTimeOpen.toLong()).start()
         }
     }
@@ -226,7 +225,7 @@ class FloatingActionMenuButton @JvmOverloads constructor(
             animateFabMenuItemClose(container.fab_menu_option, container.fab_menu_title, container)
         }
 
-        overlay?.fabOverlayAction {
+        overlay?.run {
             animate().withEndAction { toGone() }.alpha(0f).setDuration(menuTranslationTimeHide.toLong()).start()
         }
     }
@@ -260,12 +259,5 @@ class FloatingActionMenuButton @JvmOverloads constructor(
         fun onOpenMenuOptions()
 
         fun onCloseMenuOptions()
-    }
-}
-
-private inline fun View?.fabOverlayAction(action: View.() -> Unit) = this?.let {
-    val p = it.parent
-    if (p is ViewGroup) {
-        action()
     }
 }
