@@ -40,3 +40,8 @@ fun Spannable.withClickableSpan(clickablePart: String, onClickListener: () -> Un
     )
     return this
 }
+
+//inline fun <reified C : Collection<T>, reified T : Any> Moshi.collectionAdapter(): JsonAdapter<C> {
+//    val parametrizedType = Types.newParameterizedType(C::class.java, T::class.java)
+//    return this.adapter<C>(parametrizedType)
+//}
