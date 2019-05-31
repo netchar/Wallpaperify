@@ -22,9 +22,7 @@ import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.*
 import android.view.animation.Animation
-import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
-import androidx.core.text.italic
 import androidx.core.text.underline
 import androidx.core.view.ViewCompat
 import androidx.core.view.updateLayoutParams
@@ -173,21 +171,13 @@ class PhotoDetailsFragment : BaseFragment() {
 
 
             val photoByText = buildSpannedString {
-                append(getString(R.string.photo_details_author_prefix))
-                bold {
-                    italic {
-                        underline { append(photo.user.name) }.withClickableSpan(photo.user.name) {
-                            context?.openWebPage(photo.user.links.profileLink)
-                        }
-                    }
+                append("${getString(R.string.photo_details_author_prefix)} ")
+                underline { append(photo.user.name) }.withClickableSpan(photo.user.name) {
+                    context?.openWebPage(photo.user.links.profileLink)
                 }
                 append(" ${getString(R.string.photos_details_author_middle_part)} ")
-                bold {
-                    italic {
-                        underline { append(getString(R.string.label_unsplash)) }.withClickableSpan(getString(R.string.label_unsplash)) {
-                            context?.openWebPage(UNSPLASH_URL + UNSPLASH_UTM_PARAMETERS)
-                        }
-                    }
+                underline { append(getString(R.string.label_unsplash)) }.withClickableSpan(getString(R.string.label_unsplash)) {
+                    context?.openWebPage(UNSPLASH_URL + UNSPLASH_UTM_PARAMETERS)
                 }
             }
 
