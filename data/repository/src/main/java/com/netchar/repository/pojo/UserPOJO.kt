@@ -20,5 +20,6 @@ data class UserPOJO(
         val id: String = "",
         val username: String = "",
         val name: String = "",
-        val profileImage: ProfileImagePOJO = ProfileImagePOJO()
+        val profileImage: ProfileImagePOJO = ProfileImagePOJO(),
+        val links: LinksPOJO = LinksPOJO()
 )

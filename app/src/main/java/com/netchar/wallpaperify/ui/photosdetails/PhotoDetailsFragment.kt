@@ -19,8 +19,13 @@ package com.netchar.wallpaperify.ui.photosdetails
 import android.app.AlertDialog
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import android.view.*
 import android.view.animation.Animation
+import androidx.core.text.bold
+import androidx.core.text.buildSpannedString
+import androidx.core.text.italic
+import androidx.core.text.underline
 import androidx.core.view.ViewCompat
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
@@ -35,6 +40,8 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.livinglifetechway.quickpermissions_kotlin.runWithPermissions
+import com.netchar.common.UNSPLASH_URL
+import com.netchar.common.UNSPLASH_UTM_PARAMETERS
 import com.netchar.common.base.BaseFragment
 import com.netchar.common.extensions.*
 import com.netchar.common.utils.ShimmerFactory
@@ -164,7 +171,28 @@ class PhotoDetailsFragment : BaseFragment() {
                     .error(R.drawable.ic_person)
                     .into(photo_details_author_img)
 
-            photo_details_tv_photo_by.text = getString(R.string.collection_item_author_prefix, photo.user.name)
+
+            val photoByText = buildSpannedString {
+                append(getString(R.string.photo_details_author_prefix))
+                bold {
+                    italic {
+                        underline { append(photo.user.name) }.withClickableSpan(photo.user.name) {
+                            context?.openWebPage(photo.user.links.profileLink)
+                        }
+                    }
+                }
+                append(" ${getString(R.string.photos_details_author_middle_part)} ")
+                bold {
+                    italic {
+                        underline { append(getString(R.string.label_unsplash)) }.withClickableSpan(getString(R.string.label_unsplash)) {
+                            context?.openWebPage(UNSPLASH_URL + UNSPLASH_UTM_PARAMETERS)
+                        }
+                    }
+                }
+            }
+
+            photo_details_tv_photo_by.text = photoByText
+            photo_details_tv_photo_by.movementMethod = LinkMovementMethod.getInstance()
             photo_details_tv_description.text = photo.description
             photo_details_tv_likes.text = photo.likes.toString()
             photo_details_tv_total_downloads.text = photo.downloads.toString()
@@ -227,7 +255,7 @@ class PhotoDetailsFragment : BaseFragment() {
         return when (item.itemId) {
             R.id.photo_details_share_menu_item -> consume {
                 viewModel.photo.value?.let {
-                    activity?.share(it.shareLink, "Photo by ${it.user.name}")
+                    activity?.share(it.photoShareLink, "Photo by ${it.user.name}")
                 }
             }
             else -> super.onOptionsItemSelected(item)

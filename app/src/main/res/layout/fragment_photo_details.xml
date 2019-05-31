@@ -104,6 +104,8 @@
                 android:layout_marginEnd="8dp"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                 android:textColor="#FFF"
+                android:textColorHighlight="@android:color/white"
+                android:textColorLink="@color/color_selector_link"
                 app:layout_constraintBottom_toBottomOf="@+id/photo_details_author_img"
                 app:layout_constraintEnd_toStartOf="@+id/photo_details_tv_likes"
                 app:layout_constraintStart_toEndOf="@+id/photo_details_author_img"

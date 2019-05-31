@@ -30,5 +30,6 @@ data class PhotoPOJO(
         val urls: UrlsPOJO = UrlsPOJO(),
         val links: LinksPOJO = LinksPOJO()
 ) {
-    val shareLink = links.html + UNSPLASH_UTM_PARAMETERS
+    val photoShareLink = links.html + UNSPLASH_UTM_PARAMETERS
+
 }

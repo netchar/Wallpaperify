@@ -42,7 +42,8 @@ object Mapper {
                 id = user.id,
                 username = user.username,
                 name = user.name,
-                profileImage = map(user.profileImage)
+                profileImage = map(user.profileImage),
+                links = map(user.links)
         )
     }
 
@@ -72,6 +73,12 @@ object Mapper {
                 downloadLocation = links.downloadLocation,
                 photos = "",
                 related = ""
+        )
+    }
+
+    fun map(links: UserLinks): LinksPOJO {
+        return LinksPOJO(
+                html = links.html
         )
     }
 

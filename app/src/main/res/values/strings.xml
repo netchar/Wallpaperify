@@ -66,5 +66,8 @@
     <string name="photos_filter_sort_option_label_latest">Latest</string>
     <string name="photos_filter_sort_option_label_oldest">Oldest</string>
     <string name="photos_filter_sort_option_label_popular">Popular</string>
+    <string name="photo_details_author_prefix">by</string>
+    <string name="photos_details_author_middle_part">on</string>
+    <string name="label_unsplash">Unsplash</string>
 
 </resources>
