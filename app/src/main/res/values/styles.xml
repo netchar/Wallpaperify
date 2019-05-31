@@ -30,4 +30,10 @@
         <item name="android:fontFamily">@font/pacifico</item>
     </style>
 
+    <style name="Widget.AppTheme.BottomSheet" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:statusBarColor">#80000000</item>
+        <item name="android:navigationBarColor">#AFAFAF</item>
+    </style>
+
 </resources>

@@ -24,7 +24,6 @@
     <string name="navigation_bottom_bar_title_trending">Trending</string>
     <string name="navigation_bottom_bar_title_collections">Collections</string>
 
-
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_fragment_trending">Trending</string>
     <string name="trending_fragment_title">Trending</string>
@@ -40,16 +39,35 @@
     <string name="error_message_try_again_later">Something goes wrong. Try again later.</string>
     <string name="collection_item_author_prefix">by %1$s</string>
     <string name="collection_item_photo_count_postfix">%1$d Photos</string>
-    <string name="label_prompt_photos_filter">Sort by</string>
     <string name="photo_details_menu_share">Share photo</string>
     <string name="photo_details_floating_label_title_raw">Original Photo</string>
     <string name="photo_details_floating_label_title_wallpaper">Set As Wallpaper</string>
     <string name="photo_details_floating_label_title_download">Download</string>
 
-    <string-array name="array_photos_ordering_spinner">
-        <item>Sort by latest</item>
-        <item>Sort by oldest</item>
-        <item>Sort by popular</item>
-    </string-array>
+    <string name="photo_details_dialog_progress_status">%1$s%% completed</string>
+    <string name="error_download_unable_to_start_downloading">Unable to download photo. Try again later.</string>
+    <string name="title_downloading">Downloading…</string>
+    <string name="label_cancel">Cancel</string>
+    <string name="label_override">Override</string>
+    <string name="message_canceled">Canceled</string>
+    <string name="download_dialog_progress_info_initial_state">Calculating…</string>
+    <string name="message_error_unknown">Unknown error. Try again later.</string>
+    <string name="message_error_download_failed">Failed to download image. Try again later.</string>
+    <string name="message_dialog_error_title_photo_exists">Photo already exists.</string>
+    <string name="message_download_success">Download successful</string>
+    <string name="message_dialog_photo_already_exists">This photo already downloaded. Would you like to override existing one?</string>
+    <string name="message_error_download_not_enough_space">Not enough space to store the image.</string>
+    <string name="message_error_failed_to_load_image">Failed to load image.</string>
+    <string name="fragment_title_photo_raw">Original Photo</string>
+    <string name="message_error_photo_details_not_loaded">Unable to download since photo details were not loaded. Try again later.</string>
+    <string name="message_error_photo_details_unable_to_open_original">Unable to open original photo since details were not loaded. Try again later.</string>
+    <string name="photos_menu_option_filter">Filter</string>
+    <string name="photos_filter_title_sort_by">Sort by:</string>
+    <string name="photos_filter_sort_option_label_latest">Latest</string>
+    <string name="photos_filter_sort_option_label_oldest">Oldest</string>
+    <string name="photos_filter_sort_option_label_popular">Popular</string>
+    <string name="photo_details_author_prefix">by</string>
+    <string name="photos_details_author_middle_part">on</string>
+    <string name="label_unsplash">Unsplash</string>
 
 </resources>

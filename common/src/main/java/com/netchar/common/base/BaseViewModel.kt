@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.netchar.common.utils.CoroutineDispatchers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 
 
 /**
@@ -12,7 +13,11 @@ import kotlinx.coroutines.SupervisorJob
  */
 
 open class BaseViewModel(dispatchers: CoroutineDispatchers) : ViewModel() {
-    val job = SupervisorJob()
+    protected val job = SupervisorJob()
     protected val scope = CoroutineScope(job + dispatchers.main)
 
+    override fun onCleared() {
+        super.onCleared()
+        scope.cancel()
+    }
 }

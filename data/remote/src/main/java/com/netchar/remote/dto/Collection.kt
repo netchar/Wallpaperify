@@ -110,7 +110,7 @@ import com.squareup.moshi.Json
 data class Collection(
         val id: Int = 0,
         val title: String = "",
-        val description: String = "",
+        val description: String? = "",
         @field:Json(name = "published_at")
         val publishedAt: String = "",
         @field:Json(name = "updated_at")

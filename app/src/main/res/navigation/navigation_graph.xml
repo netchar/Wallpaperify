@@ -34,6 +34,17 @@
             android:name="photoId"
             app:argType="string"
             android:defaultValue='""' />
+        <action
+            android:id="@+id/action_photoDetailsFragment_to_photoRawFragment"
+            app:destination="@id/photoRawFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <argument
+            android:name="photoDescription"
+            android:defaultValue='""'
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/collectionDetailsFragment"
@@ -61,5 +72,17 @@
     <action
         android:id="@+id/action_global_photoDetailsFragment"
         app:destination="@id/photoDetailsFragment"
-        app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        app:enterAnim="@anim/anim_fragment_details_enter"
+        app:exitAnim="@anim/anim_fragment_details_exit"
+        app:popEnterAnim="@anim/anim_fragment_details_pop_enter"
+        app:popExitAnim="@anim/anim_fragment_details_pop_exit" />
+    <fragment
+        android:id="@+id/photoRawFragment"
+        android:name="com.netchar.wallpaperify.ui.photorawview.PhotoRawFragment"
+        android:label="@string/fragment_title_photo_raw">
+        <argument
+            android:name="photoUrl"
+            android:defaultValue='""'
+            app:argType="string" />
+    </fragment>
 </navigation>

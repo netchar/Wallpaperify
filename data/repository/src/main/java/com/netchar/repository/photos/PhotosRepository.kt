@@ -16,6 +16,7 @@
 
 package com.netchar.repository.photos
 
+import androidx.lifecycle.LiveData
 import com.netchar.common.utils.CoroutineDispatchers
 import com.netchar.remote.api.PhotosApi
 import com.netchar.remote.apirequest.ApiRequest
@@ -23,20 +24,19 @@ import com.netchar.remote.dto.Photo
 import com.netchar.repository.IBoundResource
 import com.netchar.repository.NetworkBoundResource
 import com.netchar.repository.pojo.PhotoPOJO
+import com.netchar.repository.pojo.Progress
+import com.netchar.repository.services.DownloadRequest
+import com.netchar.repository.services.IDownloadService
 import com.netchar.repository.utils.Mapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import retrofit2.Response
 import javax.inject.Inject
 
-/**
- * Created by Netchar on 21.03.2019.
- * e.glushankov@gmail.com
- */
-
 class PhotosRepository @Inject constructor(
+        private val dispatchers: CoroutineDispatchers,
         private val api: PhotosApi,
-        private val dispatchers: CoroutineDispatchers
+        private var downloadService: IDownloadService
 ) : IPhotosRepository {
 
     override fun getPhotos(request: ApiRequest.Photos, scope: CoroutineScope): IBoundResource<List<PhotoPOJO>> {
@@ -61,6 +61,18 @@ class PhotosRepository @Inject constructor(
                 return api.getPhotoAsync(id)
             }
         }.launchIn(scope)
+    }
+
+    override fun download(request: DownloadRequest): LiveData<Progress> {
+        return downloadService.download(request)
+    }
+
+    override fun cancelDownload() {
+        downloadService.cancel()
+    }
+
+    override fun unregisterDownloadObservers() {
+        downloadService.unregisterDownloadObservers()
     }
 }
 

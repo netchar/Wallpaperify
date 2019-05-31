@@ -19,7 +19,7 @@ package com.netchar.repository.pojo
 data class CollectionPOJO(
         val id: Int = 0,
         val title: String = "",
-        val description: String = "",
+        val description: String? = "",
         val publishedAt: String = "",
         val updatedAt: String = "",
         val curated: Boolean = false,

@@ -1,9 +1,9 @@
 <scheme name="eTheme copy" version="142" parent_scheme="Darcula">
   <metaInfo>
-    <property name="created">2019-02-21T17:41:18</property>
+    <property name="created">2019-05-27T13:19:34</property>
     <property name="ide">AndroidStudio</property>
-    <property name="ideVersion">3.3.1.0</property>
-    <property name="modified">2019-02-21T17:41:28</property>
+    <property name="ideVersion">3.4.1.0</property>
+    <property name="modified">2019-05-27T13:20:01</property>
     <property name="originalScheme">eTheme copy</property>
   </metaInfo>
   <attributes>
@@ -17,6 +17,12 @@
     <option name="DEFAULT_CLASS_NAME">
       <value>
         <option name="FOREGROUND" value="54cda4" />
+      </value>
+    </option>
+    <option name="DEFAULT_CONSTANT">
+      <value>
+        <option name="FOREGROUND" value="c0c38a" />
+        <option name="FONT_TYPE" value="3" />
       </value>
     </option>
     <option name="DEFAULT_INSTANCE_FIELD">
@@ -34,6 +40,7 @@
         <option name="FOREGROUND" value="dcdcdc" />
       </value>
     </option>
+    <option name="DEFAULT_STATIC_FIELD" baseAttributes="DEFAULT_IDENTIFIER" />
     <option name="DEFAULT_STATIC_METHOD">
       <value>
         <option name="FOREGROUND" value="ebbe55" />
@@ -128,6 +135,31 @@
         <option name="FOREGROUND" value="a9b7c6" />
         <option name="EFFECT_COLOR" value="46494b" />
         <option name="EFFECT_TYPE" value="4" />
+      </value>
+    </option>
+    <option name="LOGCAT_DEBUG_OUTPUT">
+      <value>
+        <option name="FOREGROUND" value="6897bb" />
+      </value>
+    </option>
+    <option name="LOGCAT_ERROR_OUTPUT">
+      <value>
+        <option name="FOREGROUND" value="ff6b68" />
+      </value>
+    </option>
+    <option name="LOGCAT_INFO_OUTPUT">
+      <value>
+        <option name="FOREGROUND" value="6a8759" />
+      </value>
+    </option>
+    <option name="LOGCAT_WARNING_OUTPUT">
+      <value>
+        <option name="FOREGROUND" value="bbb529" />
+      </value>
+    </option>
+    <option name="Line comment">
+      <value>
+        <option name="FOREGROUND" value="b98461" />
       </value>
     </option>
     <option name="STATIC_FINAL_FIELD_ATTRIBUTES">

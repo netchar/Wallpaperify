@@ -1,4 +1,4 @@
-package com.netchar.remote
+package com.netchar.repository.pojo
 
 import com.netchar.remote.enums.Cause
 import com.netchar.remote.enums.HttpResult

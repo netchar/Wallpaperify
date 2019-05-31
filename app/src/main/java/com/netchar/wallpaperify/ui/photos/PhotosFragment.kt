@@ -17,22 +17,21 @@
 package com.netchar.wallpaperify.ui.photos
 
 import android.os.Bundle
-import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
-import androidx.transition.TransitionInflater
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.netchar.common.base.BaseFragment
-import com.netchar.common.base.callbacs.IOnDropdownSelectedListener
 import com.netchar.common.extensions.*
 import com.netchar.common.poweradapter.adapter.EndlessRecyclerAdapter
 import com.netchar.common.poweradapter.adapter.EndlessRecyclerDataSource
-import com.netchar.remote.apirequest.ApiRequest
 import com.netchar.repository.pojo.ErrorMessage
 import com.netchar.repository.pojo.PhotoPOJO
 import com.netchar.wallpaperify.R
@@ -63,11 +62,6 @@ class PhotosFragment : BaseFragment() {
         EndlessRecyclerAdapter(dataSource)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        exitTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.fade)
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = injectViewModel(viewModelFactory)
@@ -82,18 +76,28 @@ class PhotosFragment : BaseFragment() {
         latest_swipe.setOnRefreshListener {
             viewModel.refresh()
         }
-        photos_filter_spinner.setOnDropdownItemSelectedListener(object : IOnDropdownSelectedListener {
-            override fun onDropdownItemSelected(position: Int, id: Long) {
-                val newOrder = ApiRequest.Order.getBy(position)
-                val oldOrder = viewModel.ordering.value
+    }
 
-                if (oldOrder.isNullOrSame(newOrder)) {
-                    return
-                }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_photos_filter, menu)
+    }
 
-                viewModel.orderBy(newOrder)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.photos_menu_filter_option -> consume {
+                showFilterDialog()
             }
-        })
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun showFilterDialog() {
+        val currentSortBy = viewModel.ordering.value
+        val filterDialog = PhotosFilterDialogFragment.getInstance(currentSortBy)
+        filterDialog.listener = { options ->
+            options.sortBy?.let { sortBy -> viewModel.orderBy(sortBy) }
+        }
+        filterDialog.show(childFragmentManager, filterDialog::class.java.simpleName)
     }
 
     private fun onLoadMoreItems() {
@@ -113,19 +117,15 @@ class PhotosFragment : BaseFragment() {
 
         viewModel.error.observe(viewLifecycleOwner, Observer {
             dataSource.showRetryItem()
-            showSnackbar(getStringSafe(it.errorMessage.messageRes), Snackbar.LENGTH_LONG)
+            snack(getStringSafe(it.errorMessage.messageRes), Snackbar.LENGTH_LONG)
         })
 
         viewModel.toast.observe(viewLifecycleOwner, Observer {
-            showToast(getStringSafe(it.messageRes))
+            toast(getStringSafe(it.messageRes))
         })
 
         viewModel.errorPlaceholder.observe(viewLifecycleOwner, Observer {
             toggleError(it)
-        })
-
-        viewModel.ordering.observe(viewLifecycleOwner, Observer {
-            photos_filter_spinner.setSelection(it.ordinal)
         })
     }
 
@@ -149,14 +149,16 @@ class PhotosFragment : BaseFragment() {
     }
 
     private fun onItemClick(model: PhotoPOJO, imageView: ImageView) {
+
+        val toolbar = activity!!.findViewById<Toolbar>(R.id.toolbar)
         val extras = FragmentNavigatorExtras(
-                imageView to imageView.transitionName
+                toolbar to toolbar.transitionName
         )
-        val action = HomeFragmentDirections.actionGlobalPhotoDetailsFragment(model.urls.regular, imageView.transitionName)
+        val action = HomeFragmentDirections.actionGlobalPhotoDetailsFragment(model.urls.regular, "")
         action.photoId = model.id
+        action.photoDescription = model.description ?: ""
         findNavController().navigate(action, extras)
     }
 }
-// todo: create pojo object
-fun ApiRequest.Order?.isNullOrSame(newOrder: ApiRequest.Order) = this == null || this == newOrder
+
 fun List<PhotoPOJO>.asRecyclerItems() = map { PhotoRecyclerItem(it) }

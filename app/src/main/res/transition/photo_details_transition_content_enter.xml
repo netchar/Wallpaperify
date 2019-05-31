@@ -17,27 +17,14 @@
 <transitionSet xmlns:android="http://schemas.android.com/apk/res/android"
     android:transitionOrdering="sequential">
 
-    <transitionSet
-        android:duration="@android:integer/config_shortAnimTime"
-        android:interpolator="@android:interpolator/fast_out_slow_in"
-        android:transitionOrdering="sequential">
-
-        <autoTransition />
+    <autoTransition
+        android:duration="350"
+        android:interpolator="@android:interpolator/fast_out_slow_in">
         <targets>
-            <target android:targetId="@+id/toolbar"/>
-            <target android:targetId="@+id/photo_details_bottom_panel_background_overlay"/>
+            <target android:targetId="@+id/toolbar" />
+            <target android:targetId="@+id/photo_details_bottom_panel_background_overlay" />
+            <target android:targetId="@+id/photo_details_loading_shimmer" />
         </targets>
-    </transitionSet>
-
-    <transitionSet
-        android:duration="@android:integer/config_shortAnimTime"
-        android:interpolator="@android:interpolator/fast_out_slow_in"
-        android:transitionOrdering="sequential">
-
-        <transition class="com.transitionseverywhere.extra.Scale" />
-        <targets>
-            <target android:targetId="@+id/photo_details_floating_main"/>
-        </targets>
-    </transitionSet>
+    </autoTransition>
 
 </transitionSet>

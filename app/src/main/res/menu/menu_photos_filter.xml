@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/photos_menu_filter_option"
+        android:icon="@drawable/ic_filter_list"
+        android:title="@string/photos_menu_option_filter"
+        app:showAsAction="always" />
+</menu>

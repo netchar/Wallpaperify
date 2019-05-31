@@ -19,7 +19,6 @@ package com.netchar.wallpaperify.ui.photos
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.netchar.common.utils.CoroutineDispatchers
-import com.netchar.remote.Resource
 import com.netchar.remote.apirequest.ApiRequest
 import com.netchar.remote.apirequest.Paging
 import com.netchar.remote.enums.Cause
@@ -27,6 +26,7 @@ import com.netchar.repository.photos.IPhotosRepository
 import com.netchar.repository.pojo.ErrorMessage
 import com.netchar.repository.pojo.Message
 import com.netchar.repository.pojo.PhotoPOJO
+import com.netchar.repository.pojo.Resource
 import com.netchar.wallpaperify.ui.InstantTaskExecutorExtension
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers

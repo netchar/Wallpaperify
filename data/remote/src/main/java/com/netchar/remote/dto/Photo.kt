@@ -98,7 +98,7 @@ data class Photo(
         val downloads: Int = 0,
         @field:Json(name = "liked_by_user")
         val likedByUser: Boolean = false,
-        val description: String = "",
+        val description: String? = "",
         val user: User = User(),
         @field:Json(name = "current_user_collections")
         val currentUserCollections: List<CurrentUserCollection> = listOf(),
