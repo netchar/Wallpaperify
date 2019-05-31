@@ -17,8 +17,6 @@
 package com.netchar.wallpaperify.ui.photosdetails
 
 import android.app.AlertDialog
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.*
@@ -46,6 +44,7 @@ import com.netchar.wallpaperify.di.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_photo_details.*
 import kotlinx.android.synthetic.main.fragment_photo_details.view.*
 import kotlinx.android.synthetic.main.view_photo_details_shimmer.view.*
+import timber.log.Timber
 import javax.inject.Inject
 
 class PhotoDetailsFragment : BaseFragment() {
@@ -79,8 +78,6 @@ class PhotoDetailsFragment : BaseFragment() {
         var view: ViewGroup? = viewGroup
         return if (view == null) {
             view = super.onCreateView(inflater, container, savedInstanceState) as ViewGroup
-            (view as View).background = ColorDrawable(Color.TRANSPARENT)
-            initFab(view)
             initViews(view)
             view.also { viewGroup = it }
         } else {
@@ -88,7 +85,7 @@ class PhotoDetailsFragment : BaseFragment() {
         }
     }
 
-    private fun initFab(v: View) = with(v) {
+    private fun initFabMenu(viewContainer: View) = with(viewContainer) {
         photo_details_fab.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
         val translationY = (photo_details_fab.measuredHeight / 2f) + dip(5)
         photo_details_fab.translationY = translationY
@@ -109,8 +106,9 @@ class PhotoDetailsFragment : BaseFragment() {
     }
 
     private fun initViews(contentView: View) = with(contentView) {
-        val shimmer = ShimmerFactory.getShimmer(autoStart = true)
+        initFabMenu(contentView)
 
+        val shimmer = ShimmerFactory.getShimmer(autoStart = true)
         contentView.background = shimmer
         photo_details_iv_photo.setOnClickListener {
             navigateToOriginalPhoto()
@@ -121,21 +119,21 @@ class PhotoDetailsFragment : BaseFragment() {
         }
 
         Glide.with(this)
-            .load(safeArguments.photoUrl)
-            .listener(object : RequestListener<Drawable> {
-                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                    shimmer.stopShimmer()
-                    contentView.background = null
-                    return false
-                }
+                .load(safeArguments.photoUrl)
+                .listener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                        shimmer.stopShimmer()
+                        contentView.background = null
+                        return false
+                    }
 
-                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                    shimmer.stopShimmer()
-                    contentView.background = null
-                    return false
-                }
-            })
-            .into(photo_details_iv_photo)
+                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                        shimmer.stopShimmer()
+                        contentView.background = null
+                        return false
+                    }
+                })
+                .into(photo_details_iv_photo)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -160,11 +158,11 @@ class PhotoDetailsFragment : BaseFragment() {
     private fun observe() {
         viewModel.photo.observe(viewLifecycleOwner, Observer { photo ->
             Glide.with(this)
-                .load(photo.user.profileImage.small)
-                .transform(CircleCrop())
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .error(R.drawable.ic_person)
-                .into(photo_details_author_img)
+                    .load(photo.user.profileImage.small)
+                    .transform(CircleCrop())
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .error(R.drawable.ic_person)
+                    .into(photo_details_author_img)
 
             photo_details_tv_photo_by.text = getString(R.string.collection_item_author_prefix, photo.user.name)
             photo_details_tv_description.text = photo.description
@@ -217,7 +215,6 @@ class PhotoDetailsFragment : BaseFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-
         setTransparentStatusBars(false)
     }
 
@@ -257,24 +254,32 @@ class PhotoDetailsFragment : BaseFragment() {
     }
 
     private fun startEnterAnimation() {
-        val contentTransition = inflateTransition(R.transition.photo_details_transition_content_enter)
-        contentTransition.onTransitionEnd {
-            viewModel.fetchPhoto(safeArguments.photoId)
+        photo_details_coordinator?.run {
+            val contentTransition = inflateTransition(R.transition.photo_details_transition_content_enter)
+            contentTransition.onTransitionEnd {
+                viewModel.fetchPhoto(safeArguments.photoId)
+            }
+
+            TransitionManager.beginDelayedTransition(photo_details_coordinator, contentTransition)
+
+            photo_details_bottom_panel_background_overlay.toVisible()
+            fragmentToolbar?.toVisible()
+            startShimmer()
         }
-
-        TransitionManager.beginDelayedTransition(photo_details_coordinator, contentTransition)
-
-        photo_details_bottom_panel_background_overlay.toVisible()
-        fragmentToolbar?.toVisible()
-        startShimmer()
     }
 
     private fun navigateToOriginalPhoto() {
         val photo = viewModel.photo.value
+
         if (photo != null) {
             val action = PhotoDetailsFragmentDirections.actionPhotoDetailsFragmentToPhotoRawFragment()
             action.photoUrl = photo.urls.raw
-            findNavController().navigate(action)
+
+            try {
+                findNavController().navigate(action)
+            } catch (ex: IllegalArgumentException) {
+                Timber.e(ex)
+            }
         }
     }
 

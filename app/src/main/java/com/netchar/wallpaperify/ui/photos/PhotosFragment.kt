@@ -32,7 +32,6 @@ import com.netchar.common.base.BaseFragment
 import com.netchar.common.extensions.*
 import com.netchar.common.poweradapter.adapter.EndlessRecyclerAdapter
 import com.netchar.common.poweradapter.adapter.EndlessRecyclerDataSource
-import com.netchar.remote.apirequest.ApiRequest
 import com.netchar.repository.pojo.ErrorMessage
 import com.netchar.repository.pojo.PhotoPOJO
 import com.netchar.wallpaperify.R
@@ -128,10 +127,6 @@ class PhotosFragment : BaseFragment() {
         viewModel.errorPlaceholder.observe(viewLifecycleOwner, Observer {
             toggleError(it)
         })
-
-        viewModel.ordering.observe(viewLifecycleOwner, Observer {
-            //            photos_filter_spinner.setSelection(it.ordinal)
-        })
     }
 
     private fun toggleError(error: ErrorMessage) {
@@ -157,7 +152,6 @@ class PhotosFragment : BaseFragment() {
 
         val toolbar = activity!!.findViewById<Toolbar>(R.id.toolbar)
         val extras = FragmentNavigatorExtras(
-//                imageView to imageView.transitionName,
                 toolbar to toolbar.transitionName
         )
         val action = HomeFragmentDirections.actionGlobalPhotoDetailsFragment(model.urls.regular, "")
@@ -165,10 +159,6 @@ class PhotosFragment : BaseFragment() {
         action.photoDescription = model.description ?: ""
         findNavController().navigate(action, extras)
     }
-
 }
-
-// todo: create pojo object
-fun ApiRequest.Order?.isNullOrSame(newOrder: ApiRequest.Order) = this == null || this == newOrder
 
 fun List<PhotoPOJO>.asRecyclerItems() = map { PhotoRecyclerItem(it) }

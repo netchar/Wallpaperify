@@ -24,7 +24,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.netchar.wallpaperify.R
-import kotlinx.android.synthetic.main.view_dialog_download.*
+import kotlinx.android.synthetic.main.dialog_download.*
 
 
 class DownloadDialogFragment : DialogFragment() {
@@ -38,7 +38,7 @@ class DownloadDialogFragment : DialogFragment() {
         }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val view = View.inflate(context, R.layout.view_dialog_download, null)
+        val view = View.inflate(context, R.layout.dialog_download, null)
         return AlertDialog.Builder(activity!!)
                 .setTitle(getString(R.string.title_downloading))
                 .setNegativeButton(getString(R.string.label_cancel), null)
