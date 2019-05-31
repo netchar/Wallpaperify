@@ -19,11 +19,15 @@ package com.netchar.common.exceptions
 import android.content.Context
 import android.os.Build
 import androidx.core.os.ConfigurationCompat
+import com.netchar.common.utils.getVersionCode
+import com.netchar.common.utils.getVersionName
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
-class UncaughtExceptionHandler private constructor(context: Context) : Thread.UncaughtExceptionHandler {
+class UncaughtExceptionHandler private constructor(
+        val context: Context
+) : Thread.UncaughtExceptionHandler {
     private val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm", ConfigurationCompat.getLocales(context.resources.configuration)[0])
     private val previousHandler: Thread.UncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
 
@@ -48,6 +52,8 @@ class UncaughtExceptionHandler private constructor(context: Context) : Thread.Un
             appendln("SDK: " + Build.VERSION.SDK_INT)
             appendln("Release: " + Build.VERSION.RELEASE)
             appendln("Incremental: " + Build.VERSION.INCREMENTAL)
+            appendln("Version Name: " + context.getVersionName())
+            appendln("Version Code: " + context.getVersionCode())
         }.also { Timber.e(it.toString()) }
 
         previousHandler.uncaughtException(thread, exception)
