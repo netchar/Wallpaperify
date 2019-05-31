@@ -63,7 +63,6 @@ class PhotoDetailsViewModel @Inject constructor(
     private val _downloadRequest = MutableLiveData<DownloadRequest>()
     private val _toast = SingleLiveData<Message>()
     private val _overrideDialog = SingleLiveData<DialogState>()
-//    private val _wallpaper = SingleLiveData<Uri>()
 
     private val repoLiveData = Transformations.switchMap(_photoId) { id ->
         repo.getPhoto(id, scope).getLiveData()
@@ -96,8 +95,6 @@ class PhotoDetailsViewModel @Inject constructor(
     val downloadProgress: LiveData<Float> get() = _downloadProgress
 
     val toast: LiveData<Message> get() = _toast
-
-//    val wallpaper: LiveData<Uri> get() = _wallpaper
 
     fun fetchPhoto(id: String) {
         _photoId.value = id
@@ -171,7 +168,6 @@ class PhotoDetailsViewModel @Inject constructor(
                         DownloadRequest.REQUEST_WALLPAPER -> {
                             _downloadDialog.value = DialogState.hide()
                             wallpaperService.setWallpaper(progress.fileUri)
-//                            _wallpaper.value = progress.fileUri
                         }
                     }
                 }
@@ -201,7 +197,6 @@ class PhotoDetailsViewModel @Inject constructor(
                         }
                         DownloadRequest.REQUEST_WALLPAPER -> {
                             wallpaperService.setWallpaper(progress.fileUri)
-//                            _wallpaper.value = progress.fileUri
                         }
                     }
                 }
