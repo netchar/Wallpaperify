@@ -32,26 +32,23 @@
 
         <com.google.android.material.chip.Chip
             android:id="@+id/photos_filter_sort_option_latest"
-            style="@style/Widget.MaterialComponents.Chip.Filter"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
             android:text="@string/photos_filter_sort_option_label_latest" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/photos_filter_sort_option_oldest"
-            style="@style/Widget.MaterialComponents.Chip.Filter"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
             android:text="@string/photos_filter_sort_option_label_oldest" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/photos_filter_sort_option_popular"
-            style="@style/Widget.MaterialComponents.Chip.Filter"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
             android:text="@string/photos_filter_sort_option_label_popular" />
     </com.google.android.material.chip.ChipGroup>
 

@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:indeterminate="true"
-        android:indeterminateTint="@color/white" />
+        android:indeterminateTint="@android:color/white" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"

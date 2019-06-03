@@ -126,7 +126,7 @@
                 app:compoundDrawableHeight="16dp"
                 app:compoundDrawableWidth="16dp"
                 app:drawableStartVector="@drawable/ic_thumb_up"
-                app:drawableTint="@color/white"
+                app:drawableTint="@android:color/white"
                 app:layout_constraintBottom_toBottomOf="@+id/photo_details_tv_photo_by"
                 app:layout_constraintEnd_toStartOf="@+id/photo_details_tv_total_downloads"
                 app:layout_constraintTop_toTopOf="@+id/photo_details_tv_photo_by" />
@@ -145,7 +145,7 @@
                 app:compoundDrawableHeight="18dp"
                 app:compoundDrawableWidth="18dp"
                 app:drawableStartVector="@drawable/ic_file_download"
-                app:drawableTint="@color/white"
+                app:drawableTint="@android:color/white"
                 app:layout_constraintBottom_toBottomOf="@+id/photo_details_tv_likes"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/photo_details_tv_likes" />
@@ -186,7 +186,7 @@
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/photo_details_constraint_bottom_panel"
             app:layout_constraintEnd_toEndOf="parent"
-            app:main_fab_color_background="@color/white"
+            app:main_fab_color_background="@android:color/white"
             app:main_fab_icon_start="@drawable/ic_expand_more"
             tools:visibility="visible" />
 

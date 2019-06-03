@@ -9,18 +9,15 @@
         android:id="@+id/home_appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:fitsSystemWindows="true">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
             android:transitionName="toolbar_transition"
             app:layout_scrollFlags="scroll|enterAlways"
-            android:fitsSystemWindows="true"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            android:fitsSystemWindows="true" />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"

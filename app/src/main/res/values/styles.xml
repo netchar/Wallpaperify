@@ -1,39 +1,32 @@
 <resources>
+    <!--Components-->
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Base.Theme">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
-
-    <style name="AppTheme.NoActionBar" parent="Base.Theme.NoActionBar">
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-    </style>
-
-    <style name="AppTheme.NoActionBar.SemiTransparentSystemBar">
-        <item name="android:statusBarColor">#80000000</item>
-        <item name="android:navigationBarColor">#80000000</item>
-    </style>
-
-    <style name="AppTheme.NoActionBar.TransparentSystemBar">
-        <item name="android:statusBarColor">#00000000</item>
-        <item name="android:navigationBarColor">#00000000</item>
-    </style>
-
-    <style name="AppTheme.AppBarOverlay" parent="Base.Theme.AppBarOverlay" />
-
-    <style name="AppTheme.PopupOverlay" parent="Base.Theme.PopupOverlay" />
-
-    <style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-        <item name="android:fontFamily">@font/pacifico</item>
-    </style>
-
-    <style name="Widget.AppTheme.BottomSheet" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:statusBarColor">#80000000</item>
+    <!--Bottom Sheets-->
+    <style name="ThemeOverlay.AppTheme.BottomSheetDialog" parent="ThemeOverlay.BottomSheetDialog.Base">
         <item name="android:navigationBarColor">#AFAFAF</item>
+    </style>
+
+    <style name="ThemeOverlay.BottomSheetDialog.Base" parent="ThemeOverlay.MaterialComponents.DayNight.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowAnimationStyle">@style/Animation.MyTheme.BottomSheet.Modal</item>
+    </style>
+
+    <!--Navigation Drawer-->
+    <style name="Widget.MyTheme.NavigationView" parent="Widget.MaterialComponents.NavigationView">
+        <item name="itemTextAppearance">?textAppearanceBody2</item>
+    </style>
+
+    <!--Toolbar-->
+    <style name="Widget.MyTheme.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
+        <item name="android:background">@color/color_background</item>
+        <item name="titleTextColor">@color/color_on_background</item>
+    </style>
+
+    <!--TabLayout-->
+    <style name="Widget.MyTheme.TabLayout" parent="Widget.MaterialComponents.TabLayout">
+        <item name="android:elevation">4dp</item>
+        <item name="tabTextColor">@color/tab_text_color_selector</item>
     </style>
 
 </resources>

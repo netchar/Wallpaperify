@@ -54,13 +54,13 @@ class DownloadDialogFragment : DialogFragment() {
         }
     }
 
-    override fun show(manager: FragmentManager?, tag: String?) {
+    override fun show(manager: FragmentManager, tag: String?) {
         if (!isAdded) {
             super.show(manager, tag)
         }
     }
 
-    override fun onCancel(dialog: DialogInterface?) {
+    override fun onCancel(dialog: DialogInterface) {
         super.onCancel(dialog)
         if (!isDownloadFinished) {
             onDialogCancel?.invoke()

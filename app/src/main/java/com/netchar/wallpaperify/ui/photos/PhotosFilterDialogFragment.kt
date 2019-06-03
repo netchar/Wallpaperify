@@ -63,15 +63,12 @@ class PhotosFilterDialogFragment : BottomSheetDialogFragment() {
         }
     }
 
-    override fun getTheme(): Int {
-        return R.style.Widget_AppTheme_BottomSheet
-    }
-
-//    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-//        return BottomSheetDialog(requireContext(), theme)
+//    override fun getTheme(): Int {
+//        return R.style.Widget_AppTheme_BottomSheet
 //    }
 
-    override fun onDismiss(dialog: DialogInterface?) {
+
+    override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         options?.let {
             listener?.invoke(it)

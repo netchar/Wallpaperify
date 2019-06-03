@@ -144,9 +144,8 @@ abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
 
     fun setTransparentStatusBars(transparent: Boolean) {
         activity?.let {
-            val color = if (transparent) Color.TRANSPARENT else it.getThemeAttrColor(android.R.attr.statusBarColor)
-            it.window.statusBarColor = color
-            it.window.navigationBarColor = color
+            it.window.statusBarColor = if (transparent) Color.TRANSPARENT else it.getThemeAttrColor(android.R.attr.statusBarColor)
+            it.window.navigationBarColor = if (transparent) Color.TRANSPARENT else it.getThemeAttrColor(android.R.attr.navigationBarColor)
         }
     }
 }

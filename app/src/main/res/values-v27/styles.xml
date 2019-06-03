@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Widget.AppTheme.BottomSheet" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:statusBarColor">#80000000</item>
-        <item name="android:navigationBarColor">#ffffff</item>
+    <style name="ThemeOverlay.AppTheme.BottomSheetDialog" parent="ThemeOverlay.BottomSheetDialog.Base">
+        <item name="android:navigationBarColor">#fff</item>
         <item name="android:windowLightNavigationBar">true</item>
     </style>
 </resources>
