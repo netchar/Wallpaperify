@@ -23,6 +23,8 @@ import android.view.View
 import androidx.core.view.updatePadding
 import com.netchar.common.base.BaseFragment
 import com.netchar.common.extensions.getScreenshot
+import com.netchar.common.extensions.setLightStatusBar
+import com.netchar.common.extensions.setTransparentStatusBars
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.ui.collections.CollectionsFragment
 import com.netchar.wallpaperify.ui.photos.PhotosFragment
@@ -38,6 +40,8 @@ class HomeFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        activity.setTransparentStatusBars(false)
+        activity.setLightStatusBar(true)
         applyWindowInsetsForToolbarOnly()
 
         pager.adapter = HomeFragmentPagerAdapter(childFragmentManager).also {

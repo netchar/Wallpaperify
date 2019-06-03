@@ -16,13 +16,16 @@
 
 package com.netchar.common.extensions
 
+import android.app.Activity
 import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
 import android.database.Cursor
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import androidx.annotation.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
@@ -39,6 +42,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.netchar.common.R
 import com.netchar.common.base.BaseFragment
+import com.netchar.common.utils.getThemeAttrColor
 import java.io.File
 
 
@@ -128,12 +132,13 @@ fun Context.openWebPage(url: String): Boolean {
     // Try using Chrome Custom Tabs.
     try {
         val intent = CustomTabsIntent.Builder()
-                .setToolbarColor(getColorCompat(R.color.colorPrimary))
-                .setShowTitle(true)
-                .build()
+            .setToolbarColor(getColorCompat(R.color.colorPrimary))
+            .setShowTitle(true)
+            .build()
         intent.launchUrl(this, uri)
         return true
-    } catch (ignored: Exception) {}
+    } catch (ignored: Exception) {
+    }
 
     // Fall back to launching a default web browser intent.
     try {
@@ -142,7 +147,8 @@ fun Context.openWebPage(url: String): Boolean {
             startActivity(intent)
             return true
         }
-    } catch (ignored: Exception) {}
+    } catch (ignored: Exception) {
+    }
 
     // We were unable to show the web page.
     return false
@@ -155,3 +161,27 @@ fun String.toWebUri(): Uri {
 inline fun <T : Fragment> T.withArgs(argsBuilder: Bundle.() -> Unit): T = this.apply {
     arguments = Bundle().apply(argsBuilder)
 }
+
+fun Activity?.setTransparentStatusBars(transparent: Boolean) {
+    this?.let {
+        it.window.statusBarColor = if (transparent) Color.TRANSPARENT else it.getThemeAttrColor(android.R.attr.statusBarColor)
+        it.window.navigationBarColor = if (transparent) Color.TRANSPARENT else it.getThemeAttrColor(android.R.attr.navigationBarColor)
+    }
+}
+
+fun Activity?.setLightStatusBar(enable: Boolean) {
+    this?.let {
+        val systemUiVisibility = it.window.decorView.systemUiVisibility
+        if (enable) {
+            if (!systemUiVisibility.isFlagSet(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)) {
+                it.window.decorView.systemUiVisibility = systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            }
+        } else {
+            if (systemUiVisibility.isFlagSet(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)) {
+                it.window.decorView.systemUiVisibility = systemUiVisibility xor View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            }
+        }
+    }
+}
+
+private fun Int.isFlagSet(flag: Int) = (this and flag) == flag

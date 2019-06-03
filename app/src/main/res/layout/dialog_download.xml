@@ -4,20 +4,17 @@
     android:id="@+id/photo_details_dialog_download"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="@dimen/padding_content_default">
 
     <ProgressBar
         android:id="@+id/photo_details_dialog_pv_progress"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="0dp"
         android:layout_height="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"
         android:indeterminate="true"
         android:max="100"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,9 +22,7 @@
         android:id="@+id/photo_details_dialog_tv_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+        android:layout_marginTop="@dimen/margin_vertical_small"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/photo_details_dialog_pv_progress"
         app:layout_constraintTop_toBottomOf="@+id/photo_details_dialog_pv_progress" />

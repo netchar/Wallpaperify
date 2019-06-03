@@ -17,8 +17,8 @@
 
     <View
         android:id="@+id/photo_details_shimmer_author_img"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_marginStart="16dp"
         android:background="@drawable/bg_round_oval"
         app:layout_constraintBottom_toBottomOf="parent"

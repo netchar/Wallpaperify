@@ -52,6 +52,7 @@ import kotlinx.android.synthetic.main.view_photo_details_shimmer.view.*
 import timber.log.Timber
 import javax.inject.Inject
 
+
 class PhotoDetailsFragment : BaseFragment() {
     private var viewGroup: ViewGroup? = null
 
@@ -74,7 +75,7 @@ class PhotoDetailsFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        postponeEnterTransition()
         setHasOptionsMenu(true)
     }
 
@@ -124,29 +125,31 @@ class PhotoDetailsFragment : BaseFragment() {
         }
 
         Glide.with(this)
-                .load(safeArguments.photoUrl)
-                .listener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                        shimmer.stopShimmer()
-                        contentView.background = null
-                        return false
-                    }
+            .load(safeArguments.photoUrl)
+            .listener(object : RequestListener<Drawable> {
+                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                    shimmer.stopShimmer()
+                    contentView.background = null
+                    startPostponedEnterTransition()
+                    return false
+                }
 
-                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                        shimmer.stopShimmer()
-                        contentView.background = null
-                        return false
-                    }
-                })
-                .into(photo_details_iv_photo)
+                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                    shimmer.stopShimmer()
+                    contentView.background = null
+                    startPostponedEnterTransition()
+                    return false
+                }
+            })
+            .into(photo_details_iv_photo)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = injectViewModel(viewModelFactory)
-
-        setTransparentStatusBars(true)
+        activity.setTransparentStatusBars(true)
+        activity.setLightStatusBar(false)
         hideToolbarTitle()
         applyWindowsInsets(view)
         observe()
@@ -163,11 +166,11 @@ class PhotoDetailsFragment : BaseFragment() {
     private fun observe() {
         viewModel.photo.observe(viewLifecycleOwner, Observer { photo ->
             Glide.with(this)
-                    .load(photo.user.profileImage.small)
-                    .transform(CircleCrop())
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .error(R.drawable.ic_person)
-                    .into(photo_details_author_img)
+                .load(photo.user.profileImage.small)
+                .transform(CircleCrop())
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .error(R.drawable.ic_person)
+                .into(photo_details_author_img)
 
 
             val photoByText = buildSpannedString {
@@ -229,11 +232,6 @@ class PhotoDetailsFragment : BaseFragment() {
                 overrideDialog.dismiss()
             }
         })
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        setTransparentStatusBars(false)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

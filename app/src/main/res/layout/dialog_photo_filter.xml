@@ -5,15 +5,15 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:fitsSystemWindows="true"
-    android:padding="16dp">
+    android:padding="@dimen/margin_vertical_default">
 
     <TextView
         android:id="@+id/photos_filter_title_sort_by"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:text="@string/photos_filter_title_sort_by"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
+        android:textAppearance="@style/TextAppearance.AppTheme.Button"
+        android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -21,9 +21,8 @@
         android:id="@+id/photos_filter_chipgroup_sort"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        app:chipSpacing="8dp"
+        android:layout_marginTop="@dimen/margin_vertical_default"
+        app:chipSpacing="@dimen/padding_content_small"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
