@@ -9,22 +9,22 @@
     <style name="ThemeOverlay.BottomSheetDialog.Base" parent="ThemeOverlay.MaterialComponents.DayNight.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowAnimationStyle">@style/Animation.MyTheme.BottomSheet.Modal</item>
+        <item name="android:windowAnimationStyle">@style/Animation.AppTheme.BottomSheet.Modal</item>
     </style>
 
     <!--Navigation Drawer-->
-    <style name="Widget.MyTheme.NavigationView" parent="Widget.MaterialComponents.NavigationView">
+    <style name="Widget.AppTheme.NavigationView" parent="Widget.MaterialComponents.NavigationView">
         <item name="itemTextAppearance">?textAppearanceBody2</item>
     </style>
 
     <!--Toolbar-->
-    <style name="Widget.MyTheme.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
-        <item name="android:background">@color/color_background</item>
-        <item name="titleTextColor">@color/color_on_background</item>
+    <style name="Widget.AppTheme.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
+        <item name="android:background">?attr/colorSurface</item>
+        <item name="titleTextColor">?attr/colorOnSurface</item>
     </style>
 
     <!--TabLayout-->
-    <style name="Widget.MyTheme.TabLayout" parent="Widget.MaterialComponents.TabLayout">
+    <style name="Widget.AppTheme.TabLayout" parent="Widget.MaterialComponents.TabLayout">
         <item name="android:elevation">4dp</item>
         <item name="tabTextColor">@color/tab_text_color_selector</item>
     </style>
