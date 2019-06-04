@@ -1,20 +1,40 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="Base.Theme" parent="Theme.MaterialComponents.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+    <!--Components-->
+
+    <!--Bottom Sheets-->
+    <style name="ThemeOverlay.AppTheme.BottomSheetDialog" parent="ThemeOverlay.BottomSheetDialog.Base">
+        <item name="android:navigationBarColor">#AFAFAF</item>
     </style>
 
-    <style name="Base.Theme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+    <style name="ThemeOverlay.BottomSheetDialog.Base" parent="ThemeOverlay.MaterialComponents.DayNight.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowAnimationStyle">@style/Animation.AppTheme.BottomSheet.Modal</item>
     </style>
 
-    <style name="Base.Theme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <!--Navigation Drawer-->
+    <style name="Widget.AppTheme.NavigationView" parent="Widget.MaterialComponents.NavigationView">
+        <item name="itemTextAppearance">?textAppearanceBody2</item>
+    </style>
 
-    <style name="Base.Theme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <!--Toolbar-->
+    <style name="Widget.AppTheme.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
+        <item name="android:background">?attr/colorSurface</item>
+        <item name="titleTextColor">?attr/colorOnSurface</item>
+    </style>
+
+    <!--Toolbar-->
+    <style name="Widget.AppTheme.Toolbar.Transparent.Light" parent="Widget.MaterialComponents.Toolbar.Primary">
+        <item name="android:background">@drawable/layer_background_gradient_toolbar</item>
+        <item name="titleTextColor">?attr/colorOnPrimary</item>
+        <item name="android:popupTheme">@style/ThemeOverlay.MaterialComponents.Light</item>
+    </style>
+
+    <!--TabLayout-->
+    <style name="Widget.AppTheme.TabLayout" parent="Widget.MaterialComponents.TabLayout">
+        <item name="android:elevation">4dp</item>
+        <item name="tabTextColor">@color/tab_text_color_selector</item>
+    </style>
 
 </resources>
