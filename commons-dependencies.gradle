@@ -36,7 +36,9 @@ ext {
             room              : "2.0.0",
             swiperefreshlayout: "1.0.0",
             card              : "1.0.0",
-            core              : "1.0.2"
+            core              : "1.0.2",
+            browser           : "1.0.0",
+            work              : "2.0.1",
     ]
 
     versions.test = [
@@ -95,7 +97,9 @@ ext {
             ],
             swiperefreshlayout: "androidx.swiperefreshlayout:swiperefreshlayout:$versions.androidx.swiperefreshlayout",
             card              : "androidx.cardview:cardview:$versions.androidx.card",
-            core              : "androidx.core:core-ktx:$versions.androidx.core"
+            core              : "androidx.core:core-ktx:$versions.androidx.core",
+            browser           : "androidx.browser:browser:$versions.androidx.browser",
+            work              : "androidx.work:work-runtime-ktx:$versions.androidx.work"
     ]
 
     deps.timber = "com.jakewharton.timber:timber:$versions.timber"

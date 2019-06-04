@@ -35,6 +35,8 @@ dependencies {
     implementation deps.androidx.navigation.ui
     implementation deps.androidx.recyclerview
     implementation deps.androidx.card
+    implementation deps.androidx.core
+    implementation deps.androidx.browser
     implementation deps.shimmer
 
     // Dagger
@@ -58,6 +60,4 @@ dependencies {
 dependencies {
     testImplementation deps.test.runner
     testImplementation deps.test.espresso
-    implementation 'androidx.core:core-ktx:1.0.2'
-    implementation "androidx.browser:browser:1.0.0"
 }
