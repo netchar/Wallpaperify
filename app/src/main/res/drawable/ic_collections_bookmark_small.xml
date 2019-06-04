@@ -4,6 +4,7 @@
     <item
         android:width="16dp"
         android:height="16dp"
-        android:drawable="@drawable/ic_collections_bookmark" />
+        android:drawable="@drawable/ic_collections_bookmark"
+        android:tint="?colorOnSurface"/>
 
 </layer-list>

@@ -1,4 +1,28 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="nav_header_vertical_spacing">8dp</dimen>
+    <dimen name="nav_header_height">176dp</dimen>
+
+    <dimen name="margin_vertical_extra_large">32dp</dimen>
+    <dimen name="margin_vertical_large">24dp</dimen>
+    <dimen name="margin_vertical_default">16dp</dimen>
+    <dimen name="margin_vertical_small">8dp</dimen>
+    <dimen name="margin_vertical_extra_small">4dp</dimen>
+
+    <dimen name="margin_horizontal_extra_large">32dp</dimen>
+    <dimen name="margin_horizontal_large">24dp</dimen>
+    <dimen name="margin_horizontal_default">16dp</dimen>
+    <dimen name="margin_horizontal_small">8dp</dimen>
+    <dimen name="margin_horizontal_extra_small">4dp</dimen>
+
+    <dimen name="padding_content_default">16dp</dimen>
+    <dimen name="padding_content_small">8dp</dimen>
+    <dimen name="padding_content_extra_small">4dp</dimen>
+
+    <dimen name="photo_details_bottom_panel_min_height">120dp</dimen>
+
     <dimen name="recycler_load_more_min_height">55dp</dimen>
+
 </resources>

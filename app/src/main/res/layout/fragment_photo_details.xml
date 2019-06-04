@@ -29,7 +29,7 @@
             android:id="@+id/photo_details_bottom_panel_background_overlay"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="#80000000"
+            android:background="@color/color_semi_transparent"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -45,8 +45,8 @@
             android:clickable="true"
             android:clipToPadding="true"
             android:focusable="true"
-            android:minHeight="120dp"
-            android:paddingBottom="16dp"
+            android:minHeight="@dimen/photo_details_bottom_panel_min_height"
+            android:paddingBottom="@dimen/padding_content_default"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -57,14 +57,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.81" />
+                app:layout_constraintGuide_percent="0.80" />
 
             <TextView
                 android:id="@+id/photo_details_tv_description"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginStart="@dimen/padding_content_default"
+                android:layout_marginTop="@dimen/margin_vertical_small"
                 android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
@@ -81,13 +81,12 @@
                 app:layout_constraintHeight_min="50dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="asdadsasd"
                 tools:visibility="visible" />
 
             <ImageView
                 android:id="@+id/photo_details_author_img"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -126,7 +125,7 @@
                 app:compoundDrawableHeight="16dp"
                 app:compoundDrawableWidth="16dp"
                 app:drawableStartVector="@drawable/ic_thumb_up"
-                app:drawableTint="@color/white"
+                app:drawableTint="@android:color/white"
                 app:layout_constraintBottom_toBottomOf="@+id/photo_details_tv_photo_by"
                 app:layout_constraintEnd_toStartOf="@+id/photo_details_tv_total_downloads"
                 app:layout_constraintTop_toTopOf="@+id/photo_details_tv_photo_by" />
@@ -145,7 +144,7 @@
                 app:compoundDrawableHeight="18dp"
                 app:compoundDrawableWidth="18dp"
                 app:drawableStartVector="@drawable/ic_file_download"
-                app:drawableTint="@color/white"
+                app:drawableTint="@android:color/white"
                 app:layout_constraintBottom_toBottomOf="@+id/photo_details_tv_likes"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/photo_details_tv_likes" />
@@ -177,7 +176,7 @@
             android:id="@+id/fab_overlay"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#35ffffff" />
+            android:background="@color/background_fab_overlay" />
 
         <com.netchar.common.views.FloatingActionMenuButton
             android:id="@+id/photo_details_fab"
@@ -186,10 +185,13 @@
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/photo_details_constraint_bottom_panel"
             app:layout_constraintEnd_toEndOf="parent"
-            app:main_fab_color_background="@color/white"
+            app:main_fab_color_background="?colorSurface"
+            app:main_fab_color_icon="?colorOnSurface"
+            app:option_fab_color_background="?colorSurface"
+            app:option_fab_color_icon="?colorOnSurface"
+            app:option_fab_text_color="?colorOnSurface"
             app:main_fab_icon_start="@drawable/ic_expand_more"
             tools:visibility="visible" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

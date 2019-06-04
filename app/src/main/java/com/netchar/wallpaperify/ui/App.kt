@@ -1,8 +1,25 @@
+/*
+ * Copyright © 2019 Eugene Glushankov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.netchar.wallpaperify.ui
 
 import android.app.Activity
 import android.app.Application
 import com.jakewharton.threetenabp.AndroidThreeTen
+import com.netchar.common.exceptions.UncaughtExceptionHandler
 import com.netchar.common.utils.DebugTree
 import com.netchar.common.utils.ReleaseTree
 import com.netchar.wallpaperify.BuildConfig
@@ -38,13 +55,17 @@ class App : Application(), HasActivityInjector {
 
     override fun onCreate() {
         super.onCreate()
-        component.inject(this)
-        AndroidThreeTen.init(this)
+
         if (BuildConfig.DEBUG) {
             Timber.plant(DebugTree())
         } else {
             Timber.plant(ReleaseTree())
         }
+
+        Thread.setDefaultUncaughtExceptionHandler(UncaughtExceptionHandler.inContext(this))
+
+        component.inject(this)
+        AndroidThreeTen.init(this)
     }
 
     override fun activityInjector(): AndroidInjector<Activity> = activityInjector

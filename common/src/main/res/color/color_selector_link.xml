@@ -3,5 +3,5 @@
     android:enterFadeDuration="@android:integer/config_shortAnimTime"
     android:exitFadeDuration="@android:integer/config_shortAnimTime">
     <item android:color="#707070" android:state_pressed="true"/>
-    <item android:color="@color/white"/>
+    <item android:color="@android:color/white"/>
 </selector>

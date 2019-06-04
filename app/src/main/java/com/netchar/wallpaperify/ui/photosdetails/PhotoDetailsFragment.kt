@@ -44,6 +44,7 @@ import com.netchar.common.base.BaseFragment
 import com.netchar.common.extensions.*
 import com.netchar.common.utils.ShimmerFactory
 import com.netchar.common.utils.share
+import com.netchar.repository.pojo.PhotoPOJO
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_photo_details.*
@@ -51,6 +52,7 @@ import kotlinx.android.synthetic.main.fragment_photo_details.view.*
 import kotlinx.android.synthetic.main.view_photo_details_shimmer.view.*
 import timber.log.Timber
 import javax.inject.Inject
+
 
 class PhotoDetailsFragment : BaseFragment() {
     private var viewGroup: ViewGroup? = null
@@ -74,7 +76,7 @@ class PhotoDetailsFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        postponeEnterTransition()
         setHasOptionsMenu(true)
     }
 
@@ -88,6 +90,39 @@ class PhotoDetailsFragment : BaseFragment() {
         } else {
             view
         }
+    }
+
+    private fun initViews(contentView: View) = with(contentView) {
+        initFabMenu(contentView)
+
+        val shimmer = ShimmerFactory.getShimmer(autoStart = true)
+        contentView.background = shimmer
+        photo_details_iv_photo.setOnClickListener {
+            navigateToOriginalPhoto()
+        }
+
+        if (safeArguments.photoDescription.isEmpty()) {
+            photo_details_shimmer_description.toGone()
+        }
+
+        Glide.with(this)
+            .load(safeArguments.photoUrl)
+            .listener(object : RequestListener<Drawable> {
+                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                    shimmer.stopShimmer()
+                    contentView.background = null
+                    startPostponedEnterTransition()
+                    return false
+                }
+
+                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                    shimmer.stopShimmer()
+                    contentView.background = null
+                    startPostponedEnterTransition()
+                    return false
+                }
+            })
+            .into(photo_details_iv_photo)
     }
 
     private fun initFabMenu(viewContainer: View) = with(viewContainer) {
@@ -110,44 +145,13 @@ class PhotoDetailsFragment : BaseFragment() {
         }
     }
 
-    private fun initViews(contentView: View) = with(contentView) {
-        initFabMenu(contentView)
-
-        val shimmer = ShimmerFactory.getShimmer(autoStart = true)
-        contentView.background = shimmer
-        photo_details_iv_photo.setOnClickListener {
-            navigateToOriginalPhoto()
-        }
-
-        if (safeArguments.photoDescription.isEmpty()) {
-            photo_details_shimmer_description.toGone()
-        }
-
-        Glide.with(this)
-                .load(safeArguments.photoUrl)
-                .listener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                        shimmer.stopShimmer()
-                        contentView.background = null
-                        return false
-                    }
-
-                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                        shimmer.stopShimmer()
-                        contentView.background = null
-                        return false
-                    }
-                })
-                .into(photo_details_iv_photo)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = injectViewModel(viewModelFactory)
-
-        setTransparentStatusBars(true)
-        hideToolbarTitle()
+        activity.setTransparentStatusBars(true)
+        activity.setLightStatusBar(false)
+        activity.setDisplayShowTitleEnabled(false)
         applyWindowsInsets(view)
         observe()
     }
@@ -162,35 +166,7 @@ class PhotoDetailsFragment : BaseFragment() {
 
     private fun observe() {
         viewModel.photo.observe(viewLifecycleOwner, Observer { photo ->
-            Glide.with(this)
-                    .load(photo.user.profileImage.small)
-                    .transform(CircleCrop())
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .error(R.drawable.ic_person)
-                    .into(photo_details_author_img)
-
-
-            val photoByText = buildSpannedString {
-                append("${getString(R.string.photo_details_author_prefix)} ")
-                underline { append(photo.user.name) }.withClickableSpan(photo.user.name) {
-                    context?.openWebPage(photo.user.links.profileLink)
-                }
-                append(" ${getString(R.string.photos_details_author_middle_part)} ")
-                underline { append(getString(R.string.label_unsplash)) }.withClickableSpan(getString(R.string.label_unsplash)) {
-                    context?.openWebPage(UNSPLASH_URL + UNSPLASH_UTM_PARAMETERS)
-                }
-            }
-
-            photo_details_tv_photo_by.text = photoByText
-            photo_details_tv_photo_by.movementMethod = LinkMovementMethod.getInstance()
-            photo_details_tv_description.text = photo.description
-            photo_details_tv_likes.text = photo.likes.toString()
-            photo_details_tv_total_downloads.text = photo.downloads.toString()
-            photo_details_tv_description.goneIfEmpty()
-            photo_details_constraint_bottom_panel.run { animate().withStartAction { toVisible() }.alpha(1f).setDuration(450).start() }
-
-            TransitionManager.beginDelayedTransition(photo_details_coordinator, inflateTransition(R.transition.photo_details_fab_transition))
-            photo_details_fab.toVisible()
+            updateUiByPhotoDetails(photo)
         })
 
         viewModel.error.observe(viewLifecycleOwner, Observer { error ->
@@ -231,9 +207,36 @@ class PhotoDetailsFragment : BaseFragment() {
         })
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        setTransparentStatusBars(false)
+    private fun updateUiByPhotoDetails(photo: PhotoPOJO) {
+        Glide.with(this)
+                .load(photo.user.profileImage.small)
+                .transform(CircleCrop())
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .error(R.drawable.ic_person)
+                .into(photo_details_author_img)
+
+
+        val photoByText = buildSpannedString {
+            append("${getString(R.string.photo_details_author_prefix)} ")
+            underline { append(photo.user.name) }.withClickableSpan(photo.user.name) {
+                context?.openWebPage(photo.user.links.profileLink)
+            }
+            append(" ${getString(R.string.photos_details_author_middle_part)} ")
+            underline { append(getString(R.string.label_unsplash)) }.withClickableSpan(getString(R.string.label_unsplash)) {
+                context?.openWebPage(UNSPLASH_URL + UNSPLASH_UTM_PARAMETERS)
+            }
+        }
+
+        photo_details_tv_photo_by.text = photoByText
+        photo_details_tv_photo_by.movementMethod = LinkMovementMethod.getInstance()
+        photo_details_tv_description.text = photo.description
+        photo_details_tv_likes.text = photo.likes.toString()
+        photo_details_tv_total_downloads.text = photo.downloads.toString()
+        photo_details_tv_description.goneIfEmpty()
+        photo_details_constraint_bottom_panel.run { animate().withStartAction { toVisible() }.alpha(1f).setDuration(450).start() }
+
+        TransitionManager.beginDelayedTransition(photo_details_coordinator, inflateTransition(R.transition.photo_details_fab_transition))
+        photo_details_fab.toVisible()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
