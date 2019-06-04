@@ -25,13 +25,13 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.netchar.common.extensions.fitWidth
+import com.netchar.common.extensions.getThemeAttrColor
 import com.netchar.common.extensions.toGone
 import com.netchar.common.extensions.toVisible
 import com.netchar.common.poweradapter.item.IRecyclerItem
 import com.netchar.common.poweradapter.item.ItemRenderer
 import com.netchar.common.utils.ShimmerFactory
 import com.netchar.common.utils.formatDate
-import com.netchar.common.utils.getThemeAttrColor
 import com.netchar.common.utils.parseColor
 import com.netchar.repository.pojo.CollectionPOJO
 import com.netchar.repository.pojo.PhotoPOJO

@@ -18,6 +18,7 @@ package com.netchar.wallpaperify.ui
 
 import android.app.Activity
 import android.app.Application
+import androidx.appcompat.app.AppCompatDelegate
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.netchar.common.exceptions.UncaughtExceptionHandler
 import com.netchar.common.utils.DebugTree
@@ -48,9 +49,9 @@ class App : Application(), HasActivityInjector {
 
     val component: AppComponent by lazy {
         DaggerAppComponent.builder()
-            .context(this)
-            .buildPrefs(BuildPreferences())
-            .build()
+                .context(this)
+                .buildPrefs(BuildPreferences())
+                .build()
     }
 
     override fun onCreate() {
@@ -66,6 +67,8 @@ class App : Application(), HasActivityInjector {
 
         component.inject(this)
         AndroidThreeTen.init(this)
+        // todo: add setting screen option
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
     }
 
     override fun activityInjector(): AndroidInjector<Activity> = activityInjector

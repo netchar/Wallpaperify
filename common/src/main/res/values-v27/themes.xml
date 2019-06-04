@@ -5,8 +5,8 @@
     <!--Top level DayNight theme to be used in AndroidManifest.xml-->
     <style name="AppTheme.DayNight" parent="AppTheme.Common">
         <item name="android:windowLightStatusBar">true</item>
-        <item name="android:statusBarColor">?colorSurface</item>
-        <item name="android:navigationBarColor">@color/color_semi_transparent</item>
+        <item name="android:statusBarColor">@color/color_status_bar</item>
+        <item name="android:navigationBarColor">@color/color_navigation_bar</item>
     </style>
 
 </resources>

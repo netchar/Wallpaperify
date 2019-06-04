@@ -29,7 +29,7 @@
             android:id="@+id/photo_details_bottom_panel_background_overlay"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@color/color_semi_transparent"
+            android:background="@color/color_navigation_bar"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

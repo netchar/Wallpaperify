@@ -26,10 +26,10 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.netchar.common.extensions.fitWidth
+import com.netchar.common.extensions.getThemeAttrColor
 import com.netchar.common.poweradapter.item.IRecyclerItem
 import com.netchar.common.poweradapter.item.ItemRenderer
 import com.netchar.common.utils.ShimmerFactory
-import com.netchar.common.utils.getThemeAttrColor
 import com.netchar.common.utils.parseColor
 import com.netchar.repository.pojo.PhotoPOJO
 import com.netchar.wallpaperify.R

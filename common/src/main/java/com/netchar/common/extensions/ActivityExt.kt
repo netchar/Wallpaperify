@@ -20,7 +20,6 @@ import android.app.Activity
 import android.graphics.Color
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.netchar.common.utils.getThemeAttrColor
 
 
 fun Activity?.setDisplayShowTitleEnabled(enabled: Boolean) {
