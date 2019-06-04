@@ -23,6 +23,7 @@ import android.view.View
 import androidx.core.view.updatePadding
 import com.netchar.common.base.BaseFragment
 import com.netchar.common.extensions.getScreenshot
+import com.netchar.common.extensions.setDisplayShowTitleEnabled
 import com.netchar.common.extensions.setLightStatusBar
 import com.netchar.common.extensions.setTransparentStatusBars
 import com.netchar.wallpaperify.R
@@ -42,6 +43,7 @@ class HomeFragment : BaseFragment() {
 
         activity.setTransparentStatusBars(false)
         activity.setLightStatusBar(true)
+        activity.setDisplayShowTitleEnabled(false)
         applyWindowInsetsForToolbarOnly()
 
         pager.adapter = HomeFragmentPagerAdapter(childFragmentManager).also {

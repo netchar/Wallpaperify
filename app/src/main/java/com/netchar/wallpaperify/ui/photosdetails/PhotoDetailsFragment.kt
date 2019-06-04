@@ -151,7 +151,7 @@ class PhotoDetailsFragment : BaseFragment() {
         viewModel = injectViewModel(viewModelFactory)
         activity.setTransparentStatusBars(true)
         activity.setLightStatusBar(false)
-        hideToolbarTitle()
+        activity.setDisplayShowTitleEnabled(false)
         applyWindowsInsets(view)
         observe()
     }

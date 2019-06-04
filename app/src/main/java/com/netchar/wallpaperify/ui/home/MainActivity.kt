@@ -34,6 +34,7 @@ import com.netchar.wallpaperify.R
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity(), IDrawerActivity {
+
     companion object {
         private const val BACK_DOUBLE_TAP_TIMEOUT = 1000L
         private val topLevelFragmentsIds = setOf(R.id.homeFragment)
@@ -47,8 +48,8 @@ class MainActivity : BaseActivity(), IDrawerActivity {
 
     override val appBarConfiguration: AppBarConfiguration by lazy(LazyThreadSafetyMode.NONE) {
         AppBarConfiguration.Builder(topLevelFragmentsIds)
-            .setDrawerLayout(drawer_layout)
-            .build()
+                .setDrawerLayout(drawer_layout)
+                .build()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

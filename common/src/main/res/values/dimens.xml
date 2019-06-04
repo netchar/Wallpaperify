@@ -13,6 +13,8 @@
 
     <dimen name="padding_content_default">16dp</dimen>
     <dimen name="padding_content_small">8dp</dimen>
+    <dimen name="padding_content_extra_small">4dp</dimen>
+
     <dimen name="photo_details_bottom_panel_min_height">120dp</dimen>
 
     <dimen name="recycler_load_more_min_height">55dp</dimen>
