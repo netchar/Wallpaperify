@@ -22,6 +22,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.GravityCompat
 import androidx.core.view.forEach
+import androidx.core.view.updatePadding
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -57,9 +58,13 @@ class MainActivity : BaseActivity(), IDrawerActivity {
         drawer_navigation_view.setupWithNavController(navigationController)
         window.decorView.systemUiVisibility = window.decorView.systemUiVisibility or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 
+        drawer_layout.setOnApplyWindowInsetsListener { v, insets ->
+            drawer_navigation_view.updatePadding(top = insets.systemWindowInsetTop)
+            insets
+        }
+
         main_navigation_fragment.view?.setOnApplyWindowInsetsListener { view, insets ->
             var consumed = false
-
             (view as ViewGroup).forEach { child ->
                 // Dispatch the insets to the child
                 val childResult = child.dispatchApplyWindowInsets(insets)
