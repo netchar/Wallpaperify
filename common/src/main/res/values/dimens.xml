@@ -11,6 +11,12 @@
     <dimen name="margin_vertical_small">8dp</dimen>
     <dimen name="margin_vertical_extra_small">4dp</dimen>
 
+    <dimen name="margin_horizontal_extra_large">32dp</dimen>
+    <dimen name="margin_horizontal_large">24dp</dimen>
+    <dimen name="margin_horizontal_default">16dp</dimen>
+    <dimen name="margin_horizontal_small">8dp</dimen>
+    <dimen name="margin_horizontal_extra_small">4dp</dimen>
+
     <dimen name="padding_content_default">16dp</dimen>
     <dimen name="padding_content_small">8dp</dimen>
     <dimen name="padding_content_extra_small">4dp</dimen>
