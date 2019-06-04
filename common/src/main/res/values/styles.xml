@@ -37,4 +37,8 @@
         <item name="tabTextColor">@color/tab_text_color_selector</item>
     </style>
 
+    <style name="AppTheme.Preferences" parent="@style/PreferenceThemeOverlay.v14.Material">
+        <item name="android:layout">@layout/fragment_settings</item>
+    </style>
+
 </resources>

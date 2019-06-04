@@ -143,6 +143,7 @@ dependencies {
     implementation deps.transitionseverywhere
     implementation deps.quickpermissions
     implementation deps.photoview
+    implementation "androidx.preference:preference-ktx:1.1.0-alpha05"
 }
 
 dependencies {

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:key="advanced"
+        android:title="Appearance">
+
+        <SwitchPreference
+            android:icon="@drawable/ic_invert_colors"
+            android:key="parent"
+            android:title="Dark Theme" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="other"
+        android:title="Other">
+
+        <Preference
+            android:icon="@drawable/ic_cache"
+            android:summary="Size: 151 Mb"
+            android:title="Clear Cache" />
+
+        <Preference
+            android:selectable="false"
+            android:summary="1.0.0"
+            android:title="Build Version" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

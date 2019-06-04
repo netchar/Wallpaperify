@@ -135,9 +135,5 @@ abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
     protected open fun onEnterAnimationComplete() {
 
     }
-
-    protected fun hideToolbarTitle() {
-        fragmentToolbar?.title = ""
-    }
 }
 

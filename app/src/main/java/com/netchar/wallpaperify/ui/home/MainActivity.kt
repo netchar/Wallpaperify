@@ -38,7 +38,7 @@ class MainActivity : BaseActivity(), IDrawerActivity {
 
     companion object {
         private const val BACK_DOUBLE_TAP_TIMEOUT = 1000L
-        private val topLevelFragmentsIds = setOf(R.id.homeFragment)
+        private val topLevelFragmentsIds = setOf(R.id.homeFragment, R.id.settingsFragment)
     }
 
     override val layoutResId = R.layout.activity_main
