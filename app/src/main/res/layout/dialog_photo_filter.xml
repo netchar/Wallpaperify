@@ -12,8 +12,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/photos_filter_title_sort_by"
-        android:textAppearance="@style/TextAppearance.AppTheme.Button"
-        android:textSize="14sp"
+        android:textAppearance="@style/TextAppearance.AppTheme.Subtitle2"
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
