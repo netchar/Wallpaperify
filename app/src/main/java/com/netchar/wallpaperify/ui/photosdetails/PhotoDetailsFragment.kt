@@ -44,6 +44,7 @@ import com.netchar.common.base.BaseFragment
 import com.netchar.common.extensions.*
 import com.netchar.common.utils.ShimmerFactory
 import com.netchar.common.utils.share
+import com.netchar.repository.pojo.PhotoPOJO
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_photo_details.*
@@ -91,26 +92,6 @@ class PhotoDetailsFragment : BaseFragment() {
         }
     }
 
-    private fun initFabMenu(viewContainer: View) = with(viewContainer) {
-        photo_details_fab.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        val translationY = (photo_details_fab.measuredHeight / 2f) + dip(5)
-        photo_details_fab.translationY = translationY
-        photo_details_fab.setupWithOverlay(fab_overlay)
-        photo_details_fab.addFabOption(R.drawable.ic_aspect_ratio, getString(R.string.photo_details_floating_label_title_raw)) {
-            navigateToOriginalPhoto()
-        }
-        photo_details_fab.addFabOption(R.drawable.ic_wallpaper, getString(R.string.photo_details_floating_label_title_wallpaper)) {
-            runWithPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE) {
-                viewModel.downloadWallpaper()
-            }
-        }
-        photo_details_fab.addFabOption(R.drawable.ic_file_download, getString(R.string.photo_details_floating_label_title_download)) {
-            runWithPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE) {
-                viewModel.downloadImage()
-            }
-        }
-    }
-
     private fun initViews(contentView: View) = with(contentView) {
         initFabMenu(contentView)
 
@@ -144,6 +125,26 @@ class PhotoDetailsFragment : BaseFragment() {
             .into(photo_details_iv_photo)
     }
 
+    private fun initFabMenu(viewContainer: View) = with(viewContainer) {
+        photo_details_fab.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        val translationY = (photo_details_fab.measuredHeight / 2f) + dip(5)
+        photo_details_fab.translationY = translationY
+        photo_details_fab.setupWithOverlay(fab_overlay)
+        photo_details_fab.addFabOption(R.drawable.ic_aspect_ratio, getString(R.string.photo_details_floating_label_title_raw)) {
+            navigateToOriginalPhoto()
+        }
+        photo_details_fab.addFabOption(R.drawable.ic_wallpaper, getString(R.string.photo_details_floating_label_title_wallpaper)) {
+            runWithPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE) {
+                viewModel.downloadWallpaper()
+            }
+        }
+        photo_details_fab.addFabOption(R.drawable.ic_file_download, getString(R.string.photo_details_floating_label_title_download)) {
+            runWithPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE) {
+                viewModel.downloadImage()
+            }
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -165,35 +166,7 @@ class PhotoDetailsFragment : BaseFragment() {
 
     private fun observe() {
         viewModel.photo.observe(viewLifecycleOwner, Observer { photo ->
-            Glide.with(this)
-                .load(photo.user.profileImage.small)
-                .transform(CircleCrop())
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .error(R.drawable.ic_person)
-                .into(photo_details_author_img)
-
-
-            val photoByText = buildSpannedString {
-                append("${getString(R.string.photo_details_author_prefix)} ")
-                underline { append(photo.user.name) }.withClickableSpan(photo.user.name) {
-                    context?.openWebPage(photo.user.links.profileLink)
-                }
-                append(" ${getString(R.string.photos_details_author_middle_part)} ")
-                underline { append(getString(R.string.label_unsplash)) }.withClickableSpan(getString(R.string.label_unsplash)) {
-                    context?.openWebPage(UNSPLASH_URL + UNSPLASH_UTM_PARAMETERS)
-                }
-            }
-
-            photo_details_tv_photo_by.text = photoByText
-            photo_details_tv_photo_by.movementMethod = LinkMovementMethod.getInstance()
-            photo_details_tv_description.text = photo.description
-            photo_details_tv_likes.text = photo.likes.toString()
-            photo_details_tv_total_downloads.text = photo.downloads.toString()
-            photo_details_tv_description.goneIfEmpty()
-            photo_details_constraint_bottom_panel.run { animate().withStartAction { toVisible() }.alpha(1f).setDuration(450).start() }
-
-            TransitionManager.beginDelayedTransition(photo_details_coordinator, inflateTransition(R.transition.photo_details_fab_transition))
-            photo_details_fab.toVisible()
+            updateUiByPhotoDetails(photo)
         })
 
         viewModel.error.observe(viewLifecycleOwner, Observer { error ->
@@ -232,6 +205,38 @@ class PhotoDetailsFragment : BaseFragment() {
                 overrideDialog.dismiss()
             }
         })
+    }
+
+    private fun updateUiByPhotoDetails(photo: PhotoPOJO) {
+        Glide.with(this)
+                .load(photo.user.profileImage.small)
+                .transform(CircleCrop())
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .error(R.drawable.ic_person)
+                .into(photo_details_author_img)
+
+
+        val photoByText = buildSpannedString {
+            append("${getString(R.string.photo_details_author_prefix)} ")
+            underline { append(photo.user.name) }.withClickableSpan(photo.user.name) {
+                context?.openWebPage(photo.user.links.profileLink)
+            }
+            append(" ${getString(R.string.photos_details_author_middle_part)} ")
+            underline { append(getString(R.string.label_unsplash)) }.withClickableSpan(getString(R.string.label_unsplash)) {
+                context?.openWebPage(UNSPLASH_URL + UNSPLASH_UTM_PARAMETERS)
+            }
+        }
+
+        photo_details_tv_photo_by.text = photoByText
+        photo_details_tv_photo_by.movementMethod = LinkMovementMethod.getInstance()
+        photo_details_tv_description.text = photo.description
+        photo_details_tv_likes.text = photo.likes.toString()
+        photo_details_tv_total_downloads.text = photo.downloads.toString()
+        photo_details_tv_description.goneIfEmpty()
+        photo_details_constraint_bottom_panel.run { animate().withStartAction { toVisible() }.alpha(1f).setDuration(450).start() }
+
+        TransitionManager.beginDelayedTransition(photo_details_coordinator, inflateTransition(R.transition.photo_details_fab_transition))
+        photo_details_fab.toVisible()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

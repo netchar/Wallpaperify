@@ -51,7 +51,6 @@ class WallpaperApplierService(val context: Context) {
                 addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
             }
             val chooserIntent = Intent.createChooser(intent, context.getString(R.string.title_chooser_set_wallpaper_as))
-//            startActivity(context, chooserIntent, null)
             ContextCompat.startActivity(context, chooserIntent, null)
         }
     }

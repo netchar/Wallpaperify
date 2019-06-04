@@ -101,8 +101,8 @@ abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
     }
 
     /*
-        Disable touch events during fragment page transition animation. Since it
-        cause it's allows to add a view in parent with not yet detached view and cause IllegalStateException
+        Disable touch events during fragment page transition animation. Since it's
+        allows to add a view into parent with not yet detached view and cause IllegalStateException
      */
     override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {
         val animation: Animation?
