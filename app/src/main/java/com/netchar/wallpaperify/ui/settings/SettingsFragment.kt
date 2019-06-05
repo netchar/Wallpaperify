@@ -17,10 +17,13 @@
 package com.netchar.wallpaperify.ui.settings
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.bumptech.glide.Glide
@@ -28,18 +31,19 @@ import com.netchar.common.extensions.applyWindowInsets
 import com.netchar.common.extensions.asMb
 import com.netchar.common.extensions.directorySize
 import com.netchar.common.extensions.toast
-import com.netchar.common.utils.CoroutineDispatchers
 import com.netchar.common.utils.Injector
+import com.netchar.common.utils.getVersionName
 import com.netchar.common.utils.navigation.IToolbarNavigationBinder
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.modules.GlideApp
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import kotlinx.coroutines.*
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class SettingsFragment : PreferenceFragmentCompat(), CoroutineScope, HasSupportFragmentInjector {
+class SettingsFragment : PreferenceFragmentCompat(), CoroutineScope, HasSupportFragmentInjector, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private val job = Job()
     override val coroutineContext: CoroutineContext get() = Dispatchers.Main + job
@@ -52,9 +56,12 @@ class SettingsFragment : PreferenceFragmentCompat(), CoroutineScope, HasSupportF
 
     override fun supportFragmentInjector() = childFragmentInjector
 
+    private lateinit var activityContext: Context
+
     override fun onAttach(context: Context) {
         Injector.inject(this)
         super.onAttach(context)
+        activityContext = context
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -65,33 +72,66 @@ class SettingsFragment : PreferenceFragmentCompat(), CoroutineScope, HasSupportF
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val toolbar = view.findViewById<Toolbar>(R.id.toolbar).also { it.applyWindowInsets() }
 
-        val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
-
-        navigationBinder.bind(this, toolbar)
-        toolbar?.applyWindowInsets()
+        launch {
+            navigationBinder.bind(this@SettingsFragment, toolbar)
+        }
     }
 
     override fun onBindPreferences() {
         super.onBindPreferences()
-        val cachepref = findPreference<Preference>(getString(R.string.preference_key_cache))
-        cachepref?.summary = "Size: ${Glide.getPhotoCacheDir(context!!)?.directorySize()?.asMb()} MB"
+        setPreferencesSummary()
+    }
+
+    private fun setPreferencesSummary() {
+        val themePreference = findPreference<Preference>(getString(R.string.preference_option_key_theme))
+        val cachePreference = findPreference<Preference>(getString(R.string.preference_option_key_cache))
+        val buildPreference = findPreference<Preference>(getString(R.string.preference_option_key_build))
+
+        val cacheSizeMb = Glide.getPhotoCacheDir(activityContext)?.directorySize()?.asMb() ?: 0
+        cachePreference?.summary = "Size: $cacheSizeMb MB"
+        buildPreference?.summary = activityContext.getVersionName()
+        themePreference?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        preferenceManager.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
     }
 
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
         when (preference.key) {
-            getString(R.string.preference_key_cache) -> {
-                launch {
-                    withContext(CoroutineDispatchers().disk) {
-                        GlideApp.get(context!!).clearDiskCache()
-                    }
-                    preference.summary = "Size: ${Glide.getPhotoCacheDir(context!!)?.directorySize()?.asMb()} MB"
-                    toast("Cache cleared")
-                }
+            getString(R.string.preference_option_key_cache) -> launch {
+                clearCacheAsync()
+                toast(getString(R.string.preference_message_cache_cleared))
             }
         }
 
         return super.onPreferenceTreeClick(preference)
+    }
+
+    private suspend fun clearCacheAsync() = withContext(Dispatchers.IO) {
+        GlideApp.get(activityContext).clearDiskCache()
+    }
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
+        when (key) {
+            getString(R.string.preference_option_key_theme) -> {
+                val themeMode = sharedPreferences.getString(key, "")
+                if (themeMode.isNullOrEmpty()) {
+                    Timber.e("Unexpected state. Preferences does not contains: $key")
+                    return
+                }
+                val appCompatActivity = activity as AppCompatActivity
+                appCompatActivity.delegate.localNightMode = themeMode.toInt()
+            }
+        }
     }
 
     override fun onDestroy() {

@@ -66,7 +66,7 @@ fun Context.getVersionName(): String? {
     return try {
         val manager = packageManager
         val info = manager.getPackageInfo(packageName, 0)
-        "${info.versionName} Build ${PackageInfoCompat.getLongVersionCode(info)}"
+        info.versionName
     } catch (e: Exception) {
         null
     }

@@ -67,8 +67,28 @@
     <string name="photos_filter_sort_option_label_oldest">Oldest</string>
     <string name="photos_filter_sort_option_label_popular">Popular</string>
     <string name="photo_details_author_prefix">by</string>
-    <string name="photos_details_author_middle_part">on</string>
+    <string name="photo_details_author_middle_part">on</string>
     <string name="label_unsplash">Unsplash</string>
-    <string name="preference_key_cache">preference_key_cache</string>
+    <string name="preference_option_key_cache">preference_key_cache</string>
+    <string name="preference_message_cache_cleared">Cache is cleared</string>
+    <string name="preference_option_title_clear_cache">Clear Cache</string>
+    <string name="preference_option_title_build_version">Build Version</string>
+    <string name="preference_option_title_dark_theme">Theme</string>
+    <string name="preference_option_key_theme">preference_key_theme</string>
+    <string name="preference_option_key_build">preference_key_build</string>
+    <string name="preference_option_theme_dialog_title">Choose theme</string>
+    <string name="label_apply">Apply</string>
+
+    <string-array name="ThemeOptions">
+        <item>Light</item>
+        <item>Dark</item>
+        <item>Auto</item>
+    </string-array>
+
+    <string-array name="ThemeValues">
+        <item>1</item>
+        <item>2</item>
+        <item>-100</item>
+    </string-array>
 
 </resources>

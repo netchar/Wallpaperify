@@ -221,7 +221,7 @@ class PhotoDetailsFragment : BaseFragment() {
             underline { append(photo.user.name) }.withClickableSpan(photo.user.name) {
                 context?.openWebPage(photo.user.links.profileLink)
             }
-            append(" ${getString(R.string.photos_details_author_middle_part)} ")
+            append(" ${getString(R.string.photo_details_author_middle_part)} ")
             underline { append(getString(R.string.label_unsplash)) }.withClickableSpan(getString(R.string.label_unsplash)) {
                 context?.openWebPage(UNSPLASH_URL + UNSPLASH_UTM_PARAMETERS)
             }
