@@ -14,13 +14,8 @@
  * limitations under the License.
  */
 
-package com.netchar.common.extensions
+package com.netchar.repository.preferences
 
-import androidx.appcompat.widget.Toolbar
-import androidx.core.view.updatePadding
-
-fun Toolbar.applyWindowInsets() = setOnApplyWindowInsetsListener { toolbar, windowInsets ->
-    toolbar.updatePadding(top = windowInsets.systemWindowInsetTop, bottom = 0)
-    // consuming insets will stop propagating them to other children
-    windowInsets
+interface IPreferenceRepository {
+    val themeMode: Int
 }

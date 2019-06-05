@@ -38,7 +38,7 @@ class CollectionsViewModel @Inject constructor(
     private val listViewModel = BasicEndlessListViewModel<CollectionPOJO>()
 
     private val repositoryLiveData = Transformations.switchMap(request) { request ->
-        repository.getCollections(request, scope).getLiveData()
+        repository.getCollections(request, this).getLiveData()
     }
 
     init {

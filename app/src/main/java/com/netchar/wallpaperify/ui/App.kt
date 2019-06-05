@@ -23,6 +23,7 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 import com.netchar.common.exceptions.UncaughtExceptionHandler
 import com.netchar.common.utils.DebugTree
 import com.netchar.common.utils.ReleaseTree
+import com.netchar.repository.preferences.IPreferenceRepository
 import com.netchar.wallpaperify.BuildConfig
 import com.netchar.wallpaperify.di.AppComponent
 import com.netchar.wallpaperify.di.DaggerAppComponent
@@ -47,6 +48,9 @@ class App : Application(), HasActivityInjector {
     @Inject
     lateinit var activityInjector: DispatchingAndroidInjector<Activity>
 
+    @Inject
+    lateinit var preferences: IPreferenceRepository
+
     val component: AppComponent by lazy {
         DaggerAppComponent.builder()
                 .context(this)
@@ -67,8 +71,8 @@ class App : Application(), HasActivityInjector {
 
         component.inject(this)
         AndroidThreeTen.init(this)
-        // todo: add setting screen option
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
+        AppCompatDelegate.setDefaultNightMode(preferences.themeMode)
     }
 
     override fun activityInjector(): AndroidInjector<Activity> = activityInjector

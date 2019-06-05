@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package com.netchar.common.extensions
+package com.netchar.common.utils.navigation
 
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.updatePadding
+import androidx.fragment.app.Fragment
 
-fun Toolbar.applyWindowInsets() = setOnApplyWindowInsetsListener { toolbar, windowInsets ->
-    toolbar.updatePadding(top = windowInsets.systemWindowInsetTop, bottom = 0)
-    // consuming insets will stop propagating them to other children
-    windowInsets
+interface IToolbarNavigationBinder {
+    fun bind(fragment: Fragment, toolbar: Toolbar?)
 }

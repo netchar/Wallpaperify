@@ -47,8 +47,11 @@
     <string name="photo_details_dialog_progress_status">%1$s%% completed</string>
     <string name="error_download_unable_to_start_downloading">Unable to download photo. Try again later.</string>
     <string name="title_downloading">Downloading…</string>
+
     <string name="label_cancel">Cancel</string>
     <string name="label_override">Override</string>
+    <string name="label_apply">Apply</string>
+
     <string name="message_canceled">Canceled</string>
     <string name="download_dialog_progress_info_initial_state">Calculating…</string>
     <string name="message_error_unknown">Unknown error. Try again later.</string>
@@ -67,7 +70,24 @@
     <string name="photos_filter_sort_option_label_oldest">Oldest</string>
     <string name="photos_filter_sort_option_label_popular">Popular</string>
     <string name="photo_details_author_prefix">by</string>
-    <string name="photos_details_author_middle_part">on</string>
+    <string name="photo_details_author_middle_part">on</string>
     <string name="label_unsplash">Unsplash</string>
+
+    <string name="preference_option_title_clear_cache">Clear Cache</string>
+    <string name="preference_option_title_build_version">Build Version</string>
+    <string name="preference_option_title_dark_theme">Theme</string>
+    <string name="preference_option_theme_dialog_title">Choose theme</string>
+
+    <string-array name="ThemeOptions">
+        <item>Light</item>
+        <item>Dark</item>
+        <item>Auto</item>
+    </string-array>
+
+    <string-array name="ThemeValues">
+        <item>1</item>
+        <item>2</item>
+        <item>-100</item>
+    </string-array>
 
 </resources>

@@ -21,7 +21,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
-import androidx.core.view.updatePadding
 import com.google.android.material.appbar.AppBarLayout
 import com.netchar.common.base.BaseFragment
 import com.netchar.common.extensions.*
@@ -29,9 +28,14 @@ import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.ui.collections.CollectionsFragment
 import com.netchar.wallpaperify.ui.photos.PhotosFragment
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 import kotlin.math.absoluteValue
 
-class HomeFragment : BaseFragment() {
+class HomeFragment : BaseFragment(), CoroutineScope {
 
     override val layoutResId: Int = R.layout.fragment_home
 
@@ -46,29 +50,27 @@ class HomeFragment : BaseFragment() {
         toolbar.foreground.alpha = inColorCode
     }
 
+    private val job = Job()
+
+    override val coroutineContext: CoroutineContext get() = Dispatchers.Main + job
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         activity.setTransparentStatusBars(false)
         activity.setLightStatusBar(true)
         activity.setDisplayShowTitleEnabled(false)
-        applyWindowInsetsForToolbarOnly()
+        fragmentToolbar?.applyWindowInsets()
 
-        toolbar.foreground = ColorDrawable(view.context.getThemeAttrColor(R.attr.colorSurface))
-        home_appbar.addOnOffsetChangedListener(onAppBarScrollListener)
+        launch {
+            toolbar.foreground = ColorDrawable(view.context.getThemeAttrColor(R.attr.colorSurface))
+            home_appbar.addOnOffsetChangedListener(onAppBarScrollListener)
 
-        pager.adapter = HomeFragmentPagerAdapter(childFragmentManager).also {
-            it.addFragment(PhotosFragment(), getString(R.string.photos_fragment_title))
-            it.addFragment(CollectionsFragment(), getString(R.string.collections_fragment_title))
-        }
-        tabs.setupWithViewPager(pager)
-    }
-
-    private fun applyWindowInsetsForToolbarOnly() {
-        this.fragmentToolbar?.setOnApplyWindowInsetsListener { toolbar, windowInsets ->
-            toolbar.updatePadding(top = windowInsets.systemWindowInsetTop, bottom = 0)
-            // consuming insets will stop propagating them to other children
-            windowInsets.consumeSystemWindowInsets()
+            pager.adapter = HomeFragmentPagerAdapter(childFragmentManager).also {
+                it.addFragment(PhotosFragment(), getString(R.string.photos_fragment_title))
+                it.addFragment(CollectionsFragment(), getString(R.string.collections_fragment_title))
+            }
+            tabs.setupWithViewPager(pager)
         }
     }
 

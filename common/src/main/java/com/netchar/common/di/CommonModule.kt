@@ -17,8 +17,12 @@
 package com.netchar.common.di
 
 import android.content.Context
+import com.netchar.common.services.IPhotoCacheService
+import com.netchar.common.services.PhotoCacheService
 import com.netchar.common.services.WallpaperApplierService
 import com.netchar.common.utils.CoroutineDispatchers
+import com.netchar.common.utils.navigation.IToolbarNavigationBinder
+import com.netchar.common.utils.navigation.ToolbarNavigationBinder
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -35,4 +39,14 @@ object CommonModule {
     @Provides
     @Singleton
     fun providesWallpaperApplierService(context: Context): WallpaperApplierService = WallpaperApplierService(context)
+
+    @JvmStatic
+    @Provides
+    @Singleton
+    fun providesToolbarNavigationBinder(): IToolbarNavigationBinder = ToolbarNavigationBinder()
+
+    @JvmStatic
+    @Provides
+    @Singleton
+    fun providesPhotoCacheService(context: Context, coroutineDispatchers: CoroutineDispatchers): IPhotoCacheService = PhotoCacheService(context, coroutineDispatchers)
 }

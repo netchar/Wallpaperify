@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.netchar.common.extensions
+package com.netchar.common.services
 
-import androidx.appcompat.widget.Toolbar
-import androidx.core.view.updatePadding
+import java.io.File
 
-fun Toolbar.applyWindowInsets() = setOnApplyWindowInsetsListener { toolbar, windowInsets ->
-    toolbar.updatePadding(top = windowInsets.systemWindowInsetTop, bottom = 0)
-    // consuming insets will stop propagating them to other children
-    windowInsets
+interface IPhotoCacheService {
+    fun getCacheDirectory(): File?
+    suspend fun getCacheSizeMbAsync(): Long
+    suspend fun clearDiskCacheAsync()
+    fun clearMemory()
 }

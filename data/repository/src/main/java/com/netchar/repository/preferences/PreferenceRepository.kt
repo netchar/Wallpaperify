@@ -14,29 +14,18 @@
  * limitations under the License.
  */
 
-package com.netchar.local.di
+package com.netchar.repository.preferences
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.preference.PreferenceManager
 import com.netchar.common.di.AppPrefs
-import com.netchar.common.di.AuthPrefs
-import dagger.Module
-import dagger.Provides
-import javax.inject.Singleton
+import com.netchar.repository.R
+import javax.inject.Inject
 
-@Module
-object PreferencesModule {
+class PreferenceRepository @Inject constructor(
+        @AppPrefs private val defaultPreferences: SharedPreferences,
+        private val context: Context
+) : IPreferenceRepository {
 
-    @JvmStatic
-    @Provides
-    @Singleton
-    @AppPrefs
-    fun providePreferences(app: Context): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(app)
-
-    @JvmStatic
-    @Provides
-    @Singleton
-    @AuthPrefs
-    fun provideAuthPrefs(app: Context): SharedPreferences = app.getSharedPreferences("OAuth", Context.MODE_PRIVATE)
+    override val themeMode: Int get () = defaultPreferences.getString(context.getString(R.string.preference_option_key_theme), "")?.toInt() ?: 0
 }
