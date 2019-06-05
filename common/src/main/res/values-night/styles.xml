@@ -3,4 +3,8 @@
 <resources>
     <!--Toolbar-->
     <style name="Widget.AppTheme.Toolbar" parent="Widget.MaterialComponents.Toolbar.Surface"/>
+
+    <style name="ThemeOverlay.AppTheme.BottomSheetDialog" parent="ThemeOverlay.BottomSheetDialog.Base">
+        <item name="android:navigationBarColor">@color/color_dialog_navigation_bar</item>
+    </style>
 </resources>

@@ -18,6 +18,7 @@ package com.netchar.repository.preferences
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.appcompat.app.AppCompatDelegate
 import com.netchar.common.di.AppPrefs
 import com.netchar.repository.R
 import javax.inject.Inject
@@ -27,5 +28,15 @@ class PreferenceRepository @Inject constructor(
         private val context: Context
 ) : IPreferenceRepository {
 
-    override val themeMode: Int get () = defaultPreferences.getString(context.getString(R.string.preference_option_key_theme), "")?.toInt() ?: 0
+    override val themeMode: Int
+        get () {
+            val key = context.getString(R.string.preference_option_key_theme)
+            val preferenceValue = defaultPreferences.getString(key, "")
+
+            return if (preferenceValue.isNullOrEmpty()) {
+                AppCompatDelegate.MODE_NIGHT_NO
+            } else {
+                preferenceValue.toInt()
+            }
+        }
 }
