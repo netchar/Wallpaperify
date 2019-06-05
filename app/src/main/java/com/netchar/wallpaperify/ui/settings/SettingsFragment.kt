@@ -20,22 +20,22 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import com.bumptech.glide.Glide
 import com.netchar.common.extensions.applyWindowInsets
-import com.netchar.common.extensions.asMb
-import com.netchar.common.extensions.directorySize
+import com.netchar.common.extensions.getStringSafe
+import com.netchar.common.extensions.injectViewModel
 import com.netchar.common.extensions.toast
 import com.netchar.common.utils.Injector
 import com.netchar.common.utils.getVersionName
 import com.netchar.common.utils.navigation.IToolbarNavigationBinder
 import com.netchar.wallpaperify.R
-import com.netchar.wallpaperify.di.modules.GlideApp
+import com.netchar.wallpaperify.di.ViewModelFactory
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import kotlinx.coroutines.*
@@ -54,9 +54,14 @@ class SettingsFragment : PreferenceFragmentCompat(), CoroutineScope, HasSupportF
     @Inject
     lateinit var navigationBinder: IToolbarNavigationBinder
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
     override fun supportFragmentInjector() = childFragmentInjector
 
     private lateinit var activityContext: Context
+
+    private lateinit var viewModel: SettingsViewModel
 
     override fun onAttach(context: Context) {
         Injector.inject(this)
@@ -74,9 +79,25 @@ class SettingsFragment : PreferenceFragmentCompat(), CoroutineScope, HasSupportF
         super.onViewCreated(view, savedInstanceState)
         val toolbar = view.findViewById<Toolbar>(R.id.toolbar).also { it.applyWindowInsets() }
 
+        viewModel = injectViewModel(viewModelFactory)
+
         launch {
             navigationBinder.bind(this@SettingsFragment, toolbar)
         }
+
+        observe()
+    }
+
+    private fun observe() {
+        viewModel.cacheSize.observe(viewLifecycleOwner, Observer { cacheSizeMb ->
+            val cachePreference = findPreference<Preference>(getString(R.string.preference_option_key_cache))
+            cachePreference?.summary = "Size: $cacheSizeMb MB"
+        })
+
+        viewModel.toast.observe(viewLifecycleOwner, Observer { message ->
+            val toastMessage = getStringSafe(message.messageRes)
+            toast(toastMessage)
+        })
     }
 
     override fun onBindPreferences() {
@@ -86,11 +107,8 @@ class SettingsFragment : PreferenceFragmentCompat(), CoroutineScope, HasSupportF
 
     private fun setPreferencesSummary() {
         val themePreference = findPreference<Preference>(getString(R.string.preference_option_key_theme))
-        val cachePreference = findPreference<Preference>(getString(R.string.preference_option_key_cache))
         val buildPreference = findPreference<Preference>(getString(R.string.preference_option_key_build))
 
-        val cacheSizeMb = Glide.getPhotoCacheDir(activityContext)?.directorySize()?.asMb() ?: 0
-        cachePreference?.summary = "Size: $cacheSizeMb MB"
         buildPreference?.summary = activityContext.getVersionName()
         themePreference?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
     }
@@ -107,17 +125,10 @@ class SettingsFragment : PreferenceFragmentCompat(), CoroutineScope, HasSupportF
 
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
         when (preference.key) {
-            getString(R.string.preference_option_key_cache) -> launch {
-                clearCacheAsync()
-                toast(getString(R.string.preference_message_cache_cleared))
-            }
+            getString(R.string.preference_option_key_cache) -> viewModel.clearCacheAsync()
         }
 
         return super.onPreferenceTreeClick(preference)
-    }
-
-    private suspend fun clearCacheAsync() = withContext(Dispatchers.IO) {
-        GlideApp.get(activityContext).clearDiskCache()
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
@@ -128,8 +139,7 @@ class SettingsFragment : PreferenceFragmentCompat(), CoroutineScope, HasSupportF
                     Timber.e("Unexpected state. Preferences does not contains: $key")
                     return
                 }
-                val appCompatActivity = activity as AppCompatActivity
-                appCompatActivity.delegate.localNightMode = themeMode.toInt()
+                AppCompatDelegate.setDefaultNightMode(themeMode.toInt())
             }
         }
     }

@@ -16,9 +16,40 @@
 
 package com.netchar.wallpaperify.ui.settings
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.netchar.common.base.BaseViewModel
+import com.netchar.common.services.IPhotoCacheService
 import com.netchar.common.utils.CoroutineDispatchers
+import com.netchar.common.utils.SingleLiveData
+import com.netchar.repository.pojo.Message
+import com.netchar.wallpaperify.R
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SettingsViewModel(
-        coroutineDispatchers: CoroutineDispatchers
-) : BaseViewModel(coroutineDispatchers)
+class SettingsViewModel @Inject constructor(
+        coroutineDispatchers: CoroutineDispatchers,
+        private val cacheService: IPhotoCacheService
+) : BaseViewModel(coroutineDispatchers) {
+
+    private val _cacheSize: MutableLiveData<Long> = MutableLiveData()
+    private val _toast: SingleLiveData<Message> = SingleLiveData()
+
+    init {
+        fetchCacheSizeAsync()
+    }
+
+    val cacheSize: LiveData<Long> get() = _cacheSize
+
+    val toast: LiveData<Message> get() = _toast
+
+    fun clearCacheAsync() = launch {
+        cacheService.clearDiskCacheAsync()
+        fetchCacheSizeAsync()
+        _toast.value = Message(R.string.preference_message_cache_cleared)
+    }
+
+    private fun fetchCacheSizeAsync() = launch {
+        _cacheSize.value = cacheService.getCacheSizeMbAsync()
+    }
+}

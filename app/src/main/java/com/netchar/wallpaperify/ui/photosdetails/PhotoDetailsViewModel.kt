@@ -65,7 +65,7 @@ class PhotoDetailsViewModel @Inject constructor(
     private val _overrideDialog = SingleLiveData<DialogState>()
 
     private val repoLiveData = Transformations.switchMap(_photoId) { id ->
-        repo.getPhoto(id, scope).getLiveData()
+        repo.getPhoto(id, this).getLiveData()
     }
 
     private val downloadProgressLiveData = Transformations.switchMap(_downloadRequest) { request ->
@@ -210,7 +210,7 @@ class PhotoDetailsViewModel @Inject constructor(
 
     private fun getErrorMessage(response: Resource.Error): Message {
         return when (response.cause) {
-            Cause.NO_INTERNET_CONNECTION -> Message(R.string.error_message_no_internet)
+            Cause.NO_INTERNET_CONNECTION -> Message(R.string.message_error_no_internet)
             Cause.NOT_AUTHENTICATED, Cause.UNEXPECTED -> Message(R.string.error_message_try_again_later)
         }
     }

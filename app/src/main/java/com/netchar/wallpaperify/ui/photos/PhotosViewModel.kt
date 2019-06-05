@@ -46,7 +46,7 @@ class PhotosViewModel @Inject constructor(
     private val _ordering = MutableLiveData<ApiRequest.Order>()
 
     private val repositoryLiveData: LiveData<Resource<List<PhotoPOJO>>> = Transformations.switchMap(request) { request ->
-        repository.getPhotos(request, scope).getLiveData()
+        repository.getPhotos(request, this).getLiveData()
     }
 
     init {

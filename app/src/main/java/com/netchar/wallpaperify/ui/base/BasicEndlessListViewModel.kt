@@ -99,7 +99,7 @@ class BasicEndlessListViewModel<TModel> {
 
     private fun getErrorMessage(response: Resource.Error): ErrorMessage {
         return when (response.cause) {
-            Cause.NO_INTERNET_CONNECTION -> ErrorMessage(true, Message(R.string.error_message_no_internet), R.drawable.ic_no_internet_connection)
+            Cause.NO_INTERNET_CONNECTION -> ErrorMessage(true, Message(R.string.message_error_no_internet), R.drawable.ic_no_internet_connection)
             Cause.NOT_AUTHENTICATED, Cause.UNEXPECTED -> ErrorMessage(
                     true,
                     Message(R.string.error_message_try_again_later),

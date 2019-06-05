@@ -1,4 +1,9 @@
 <resources>
     <!--Error messages-->
-    <string name="error_message_no_internet">Please check you have an Internet connection and try again.</string>
+    <string name="message_error_no_internet">Please check you have an Internet connection and try again.</string>
+
+    <string name="preference_option_key_theme">preference_key_theme</string>
+    <string name="preference_option_key_cache">preference_key_cache</string>
+    <string name="preference_option_key_build">preference_key_build</string>
+    <string name="preference_message_cache_cleared">Cache is cleared</string>
 </resources>
