@@ -87,7 +87,7 @@
     <string-array name="ThemeValues">
         <item>1</item>
         <item>2</item>
-        <item>-100</item>
+        <item>-1</item>
     </string-array>
 
 </resources>

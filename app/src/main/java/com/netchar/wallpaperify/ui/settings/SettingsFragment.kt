@@ -24,7 +24,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.netchar.common.extensions.applyWindowInsets
@@ -106,11 +105,8 @@ class SettingsFragment : PreferenceFragmentCompat(), CoroutineScope, HasSupportF
     }
 
     private fun setPreferencesSummary() {
-        val themePreference = findPreference<Preference>(getString(R.string.preference_option_key_theme))
         val buildPreference = findPreference<Preference>(getString(R.string.preference_option_key_build))
-
-        buildPreference?.summary = activityContext.getVersionName()
-        themePreference?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
+        buildPreference?.summary = "${activityContext.getVersionName()}"
     }
 
     override fun onStart() {
