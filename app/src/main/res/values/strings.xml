@@ -69,5 +69,6 @@
     <string name="photo_details_author_prefix">by</string>
     <string name="photos_details_author_middle_part">on</string>
     <string name="label_unsplash">Unsplash</string>
+    <string name="preference_key_cache">preference_key_cache</string>
 
 </resources>

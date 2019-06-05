@@ -94,6 +94,14 @@ inline fun DrawerLayout.consume(f: () -> Unit): Boolean {
     return true
 }
 
+inline fun <T> Sequence<T>.sumByLong(selector: (T) -> Long): Long {
+    var sum = 0L
+    for (element in this) {
+        sum += selector(element)
+    }
+    return sum
+}
+
 //inline fun <reified C : Collection<T>, reified T : Any> Moshi.collectionAdapter(): JsonAdapter<C> {
 //    val parametrizedType = Types.newParameterizedType(C::class.java, T::class.java)
 //    return this.adapter<C>(parametrizedType)
