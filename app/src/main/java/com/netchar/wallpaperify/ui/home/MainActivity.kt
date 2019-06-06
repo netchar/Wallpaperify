@@ -55,6 +55,7 @@ class MainActivity : BaseActivity(), IDrawerActivity {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.AppTheme_DayNight)
         super.onCreate(savedInstanceState)
 
         drawer_navigation_view.setupWithNavController(navigationController)

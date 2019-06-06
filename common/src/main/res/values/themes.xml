@@ -5,6 +5,10 @@
     <style name="AppTheme.DayNight" parent="AppTheme.Common">
     </style>
 
+    <style name="AppTheme.Splash" parent="AppTheme.DayNight">
+        <item name="android:windowBackground">@drawable/bg_splash</item>
+    </style>
+
     <!--Base custom theme which will be shared between both light and dark theme variants-->
     <style name="AppTheme.Common" parent="AppTheme.Base">
         <!--Material color attributes -->
