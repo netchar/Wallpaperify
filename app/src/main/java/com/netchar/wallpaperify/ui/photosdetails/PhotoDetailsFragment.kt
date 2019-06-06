@@ -30,7 +30,6 @@ import androidx.core.view.updatePadding
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.transition.TransitionManager
-import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
@@ -48,6 +47,7 @@ import com.netchar.common.utils.share
 import com.netchar.repository.pojo.PhotoPOJO
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.ViewModelFactory
+import com.netchar.wallpaperify.di.modules.GlideApp
 import kotlinx.android.synthetic.main.fragment_photo_details.*
 import kotlinx.android.synthetic.main.fragment_photo_details.view.*
 import kotlinx.android.synthetic.main.view_photo_details_shimmer.view.*
@@ -75,9 +75,7 @@ class PhotoDetailsFragment : BaseFragment() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        postponeEnterTransition()
+    init {
         setHasOptionsMenu(true)
     }
 
@@ -106,24 +104,22 @@ class PhotoDetailsFragment : BaseFragment() {
             photo_details_shimmer_description.toGone()
         }
 
-        Glide.with(this)
-            .load(safeArguments.photoUrl)
-            .listener(object : RequestListener<Drawable> {
-                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                    shimmer.stopShimmer()
-                    contentView.background = null
-                    startPostponedEnterTransition()
-                    return false
-                }
+        GlideApp.with(this@PhotoDetailsFragment)
+                .load(safeArguments.photoUrl)
+                .listener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                        shimmer.stopShimmer()
+                        contentView.background = null
+                        return false
+                    }
 
-                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                    shimmer.stopShimmer()
-                    contentView.background = null
-                    startPostponedEnterTransition()
-                    return false
-                }
-            })
-            .into(photo_details_iv_photo)
+                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                        shimmer.stopShimmer()
+                        contentView.background = null
+                        return false
+                    }
+                })
+                .into(photo_details_iv_photo)
     }
 
     private fun initFabMenu(viewContainer: View) = with(viewContainer) {
@@ -215,7 +211,7 @@ class PhotoDetailsFragment : BaseFragment() {
     }
 
     private fun updateUiByPhotoDetails(photo: PhotoPOJO) {
-        Glide.with(this)
+        GlideApp.with(this)
                 .load(photo.user.profileImage.small)
                 .transform(CircleCrop())
                 .transition(DrawableTransitionOptions.withCrossFade())

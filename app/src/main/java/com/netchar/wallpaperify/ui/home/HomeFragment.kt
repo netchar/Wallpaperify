@@ -29,20 +29,11 @@ import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.ui.collections.CollectionsFragment
 import com.netchar.wallpaperify.ui.photos.PhotosFragment
 import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 import kotlin.math.absoluteValue
 
 
-class HomeFragment : BaseFragment(), CoroutineScope {
-
-    private val job = Job()
+class HomeFragment : BaseFragment() {
     private var viewScreenshot: Bitmap? = null
-
-    override val coroutineContext: CoroutineContext get() = Dispatchers.Main + job
 
     override val layoutResId: Int = R.layout.fragment_home
 
@@ -59,15 +50,13 @@ class HomeFragment : BaseFragment(), CoroutineScope {
         activity.setDisplayShowTitleEnabled(false)
         fragmentToolbar?.applyWindowInsets()
 
-        launch {
-            listenToolbarScrollToAlpha(view)
+        listenToolbarScrollToAlpha(view)
 
-            pager.adapter = HomeFragmentPagerAdapter(childFragmentManager).also {
-                it.addFragment(PhotosFragment(), getString(R.string.photos_fragment_title))
-                it.addFragment(CollectionsFragment(), getString(R.string.collections_fragment_title))
-            }
-            tabs.setupWithViewPager(pager)
+        pager.adapter = HomeFragmentPagerAdapter(childFragmentManager).also {
+            it.addFragment(PhotosFragment(), getString(R.string.photos_fragment_title))
+            it.addFragment(CollectionsFragment(), getString(R.string.collections_fragment_title))
         }
+        tabs.setupWithViewPager(pager)
     }
 
     private fun listenToolbarScrollToAlpha(view: View) {

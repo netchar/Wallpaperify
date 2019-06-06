@@ -37,15 +37,10 @@ import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.ViewModelFactory
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
-import kotlinx.coroutines.*
 import timber.log.Timber
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
-class SettingsFragment : PreferenceFragmentCompat(), CoroutineScope, HasSupportFragmentInjector, SharedPreferences.OnSharedPreferenceChangeListener {
-
-    private val job = Job()
-    override val coroutineContext: CoroutineContext get() = Dispatchers.Main + job
+class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector, SharedPreferences.OnSharedPreferenceChangeListener {
 
     @Inject
     lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
@@ -69,21 +64,15 @@ class SettingsFragment : PreferenceFragmentCompat(), CoroutineScope, HasSupportF
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        launch {
-            setPreferencesFromResource(R.xml.preferences, rootKey)
-        }
+        setPreferencesFromResource(R.xml.preferences, rootKey)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         val toolbar = view.findViewById<Toolbar>(R.id.toolbar).also { it.applyWindowInsets() }
-
         viewModel = injectViewModel(viewModelFactory)
-
-        launch {
-            navigationBinder.bind(this@SettingsFragment, toolbar)
-        }
-
+        navigationBinder.bind(this@SettingsFragment, toolbar)
         observe()
     }
 
@@ -138,10 +127,5 @@ class SettingsFragment : PreferenceFragmentCompat(), CoroutineScope, HasSupportF
                 ThemeUtils.applyDayNightMode(themeMode.toInt())
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        coroutineContext.cancelChildren()
     }
 }

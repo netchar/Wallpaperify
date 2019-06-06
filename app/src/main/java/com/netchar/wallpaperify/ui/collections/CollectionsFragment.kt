@@ -20,7 +20,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.netchar.common.base.BaseFragment
 import com.netchar.common.extensions.*
@@ -30,6 +29,7 @@ import com.netchar.repository.pojo.CollectionPOJO
 import com.netchar.repository.pojo.ErrorMessage
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.ViewModelFactory
+import com.netchar.wallpaperify.di.modules.GlideApp
 import kotlinx.android.synthetic.main.fragment_collections.*
 import javax.inject.Inject
 
@@ -43,7 +43,7 @@ class CollectionsFragment : BaseFragment() {
     override val layoutResId: Int = R.layout.fragment_collections
 
     private val dataSource: EndlessRecyclerDataSource by lazy {
-        val renderer = CollectionRenderer(Glide.with(this), ::onItemClick)
+        val renderer = CollectionRenderer(GlideApp.with(this), ::onItemClick)
         EndlessRecyclerDataSource(mutableListOf(renderer), ::onLoadMoreItems)
     }
 
