@@ -39,23 +39,12 @@ import kotlin.math.absoluteValue
 
 class HomeFragment : BaseFragment(), CoroutineScope {
 
-
-    override val layoutResId: Int = R.layout.fragment_home
-
+    private val job = Job()
     private var viewScreenshot: Bitmap? = null
 
-    private val onAppBarScrollListener = AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
-        updateToolbarForegroundAlpha(verticalOffset)
-    }
-
-    private fun updateToolbarForegroundAlpha(verticalOffset: Int) {
-        val inColorCode = (255 * verticalOffset.absoluteValue / 100).coerceIn(0..255)
-        toolbar.foreground.alpha = inColorCode
-    }
-
-    private val job = Job()
-
     override val coroutineContext: CoroutineContext get() = Dispatchers.Main + job
+
+    override val layoutResId: Int = R.layout.fragment_home
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -71,8 +60,7 @@ class HomeFragment : BaseFragment(), CoroutineScope {
         fragmentToolbar?.applyWindowInsets()
 
         launch {
-            toolbar.foreground = ColorDrawable(view.context.getThemeAttrColor(R.attr.colorSurface))
-            home_appbar.addOnOffsetChangedListener(onAppBarScrollListener)
+            listenToolbarScrollToAlpha(view)
 
             pager.adapter = HomeFragmentPagerAdapter(childFragmentManager).also {
                 it.addFragment(PhotosFragment(), getString(R.string.photos_fragment_title))
@@ -80,6 +68,11 @@ class HomeFragment : BaseFragment(), CoroutineScope {
             }
             tabs.setupWithViewPager(pager)
         }
+    }
+
+    private fun listenToolbarScrollToAlpha(view: View) {
+        toolbar.foreground = ColorDrawable(view.context.getThemeAttrColor(R.attr.colorSurface))
+        home_appbar.addOnOffsetChangedListener(onAppBarScrollListener)
     }
 
     override fun onPause() {
@@ -92,5 +85,14 @@ class HomeFragment : BaseFragment(), CoroutineScope {
         home_container.background = BitmapDrawable(resources, viewScreenshot)
         viewScreenshot = null
         super.onDestroyView()
+    }
+
+    private val onAppBarScrollListener = AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+        updateToolbarForegroundAlpha(verticalOffset)
+    }
+
+    private fun updateToolbarForegroundAlpha(verticalOffset: Int) {
+        val inColorCode = (255 * verticalOffset.absoluteValue / 100).coerceIn(0..255)
+        toolbar.foreground.alpha = inColorCode
     }
 }

@@ -50,7 +50,7 @@
         <item name="toolbarStyle">@style/Widget.AppTheme.Toolbar</item>
         <item name="tabStyle">@style/Widget.AppTheme.TabLayout</item>
         <item name="preferenceTheme">@style/AppTheme.Preferences</item>
-
+        <item name="appBarLayoutStyle">@style/Widget.AppTheme.AppBarLayout</item>
     </style>
 
     <style name="AppTheme.Base" parent="Theme.MaterialComponents.DayNight.NoActionBar">
