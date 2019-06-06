@@ -20,7 +20,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -31,6 +30,7 @@ import com.netchar.common.extensions.getStringSafe
 import com.netchar.common.extensions.injectViewModel
 import com.netchar.common.extensions.toast
 import com.netchar.common.utils.Injector
+import com.netchar.common.utils.ThemeUtils
 import com.netchar.common.utils.getVersionName
 import com.netchar.common.utils.navigation.IToolbarNavigationBinder
 import com.netchar.wallpaperify.R
@@ -135,7 +135,7 @@ class SettingsFragment : PreferenceFragmentCompat(), CoroutineScope, HasSupportF
                     Timber.e("Unexpected state. Preferences does not contains: $key")
                     return
                 }
-                AppCompatDelegate.setDefaultNightMode(themeMode.toInt())
+                ThemeUtils.applyDayNightMode(themeMode.toInt())
             }
         }
     }

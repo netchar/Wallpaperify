@@ -21,7 +21,6 @@
     <color name="color_on_surface">#ffffff</color>
     <color name="color_on_error">#000000</color>
 
-    <color name="color_status_bar">#30ffffff</color>
     <color name="color_navigation_bar">#80000000</color>
     <color name="color_dialog_navigation_bar">@color/color_navigation_bar</color>
 

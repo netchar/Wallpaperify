@@ -43,6 +43,7 @@ import com.netchar.common.UNSPLASH_UTM_PARAMETERS
 import com.netchar.common.base.BaseFragment
 import com.netchar.common.extensions.*
 import com.netchar.common.utils.ShimmerFactory
+import com.netchar.common.utils.ThemeUtils
 import com.netchar.common.utils.share
 import com.netchar.repository.pojo.PhotoPOJO
 import com.netchar.wallpaperify.R
@@ -149,8 +150,14 @@ class PhotoDetailsFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = injectViewModel(viewModelFactory)
+
+        context?.let {
+            if (ThemeUtils.isDayThemeEnabled(it)) {
+                activity.setLightStatusBar(false)
+            }
+        }
+
         activity.setTransparentStatusBars(true)
-        activity.setLightStatusBar(false)
         activity.setDisplayShowTitleEnabled(false)
         applyWindowsInsets(view)
         observe()

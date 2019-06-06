@@ -4,7 +4,7 @@
 
     <!--Bottom Sheets-->
     <style name="ThemeOverlay.AppTheme.BottomSheetDialog" parent="ThemeOverlay.BottomSheetDialog.Base">
-        <item name="android:navigationBarColor">#AFAFAF</item>
+        <item name="android:navigationBarColor">@color/color_dialog_navigation_bar</item>
     </style>
 
     <style name="ThemeOverlay.BottomSheetDialog.Base" parent="ThemeOverlay.MaterialComponents.DayNight.BottomSheetDialog">

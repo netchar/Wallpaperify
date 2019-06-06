@@ -3,8 +3,6 @@
 <resources>
     <!--Top level DayNight theme to be used in AndroidManifest.xml-->
     <style name="AppTheme.DayNight" parent="AppTheme.Common">
-        <item name="android:statusBarColor">@color/color_status_bar</item>
-        <item name="android:navigationBarColor">@color/color_navigation_bar</item>
     </style>
 
     <!--Base custom theme which will be shared between both light and dark theme variants-->
@@ -57,6 +55,8 @@
 
     <style name="AppTheme.Base" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@color/transparent</item>
+        <item name="android:navigationBarColor">@color/color_navigation_bar</item>
 
         <!--Remap legacy AppCompat attributes to MaterialComponent attributes-->
         <item name="colorPrimaryDark">?colorPrimaryVariant</item>

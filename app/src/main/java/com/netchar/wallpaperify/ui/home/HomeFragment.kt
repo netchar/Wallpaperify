@@ -24,6 +24,7 @@ import android.view.View
 import com.google.android.material.appbar.AppBarLayout
 import com.netchar.common.base.BaseFragment
 import com.netchar.common.extensions.*
+import com.netchar.common.utils.ThemeUtils
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.ui.collections.CollectionsFragment
 import com.netchar.wallpaperify.ui.photos.PhotosFragment
@@ -35,7 +36,9 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.absoluteValue
 
+
 class HomeFragment : BaseFragment(), CoroutineScope {
+
 
     override val layoutResId: Int = R.layout.fragment_home
 
@@ -57,8 +60,13 @@ class HomeFragment : BaseFragment(), CoroutineScope {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        context?.let {
+            if (ThemeUtils.isDayThemeEnabled(it)) {
+                activity.setLightStatusBar(true)
+            }
+        }
+
         activity.setTransparentStatusBars(false)
-        activity.setLightStatusBar(true)
         activity.setDisplayShowTitleEnabled(false)
         fragmentToolbar?.applyWindowInsets()
 
