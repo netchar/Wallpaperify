@@ -29,7 +29,6 @@ fun Activity?.setDisplayShowTitleEnabled(enabled: Boolean) {
 
 fun Activity?.setTransparentStatusBars(transparent: Boolean) {
     this?.let {
-        it.window.statusBarColor = if (transparent) Color.TRANSPARENT else it.getThemeAttrColor(android.R.attr.statusBarColor)
         it.window.navigationBarColor = if (transparent) Color.TRANSPARENT else it.getThemeAttrColor(android.R.attr.navigationBarColor)
     }
 }

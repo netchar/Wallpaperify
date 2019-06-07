@@ -12,6 +12,7 @@ import com.netchar.common.base.BaseFragment
 import com.netchar.common.extensions.*
 import com.netchar.common.poweradapter.adapter.EndlessRecyclerAdapter
 import com.netchar.common.poweradapter.adapter.EndlessRecyclerDataSource
+import com.netchar.common.utils.ThemeUtils
 import com.netchar.repository.pojo.PhotoPOJO
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.ViewModelFactory
@@ -39,10 +40,19 @@ class CollectionDetailsFragment : BaseFragment() {
         EndlessRecyclerAdapter(dataSource)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sharedElementEnterTransition = inflateTransition(android.R.transition.move)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = injectViewModel(viewModelFactory)
+        if (ThemeUtils.isDayThemeEnabled(baseContext)) {
+            activity.setLightStatusBar(false)
+        }
+        activity.setDisplayShowTitleEnabled(false)
         setupViews()
         observe()
     }
@@ -67,16 +77,17 @@ class CollectionDetailsFragment : BaseFragment() {
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(collection_details_img_author)
 
-//            collection_details_img_cover_photo.transitionName = safeArguments.transitionModel.imageTransitionName
+            collection_details_img_cover_photo.transitionName = safeArguments.transitionModel.imageTransitionName
             GlideApp.with(this)
                 .load(safeArguments.coverPhotoUrl)
+                .transition(DrawableTransitionOptions.withCrossFade())
                 .into(collection_details_img_cover_photo)
 
-//            collection_details_txt_author.transitionName = safeArguments.transitionModel.authorNameViewTransitionName
+            collection_details_txt_author.transitionName = safeArguments.transitionModel.authorNameViewTransitionName
             collection_details_txt_author.text = safeArguments.authorName
-//            collection_details_tv_photos_count.transitionName = safeArguments.transitionModel.totalCountViewTransitionName
+            collection_details_tv_photos_count.transitionName = safeArguments.transitionModel.totalCountViewTransitionName
             collection_details_tv_photos_count.text = getString(R.string.collection_item_photo_count_postfix, safeArguments.totalPhotos)
-//            collection_details_txt_title.transitionName = safeArguments.transitionModel.titleViewTransitionName
+            collection_details_txt_title.transitionName = safeArguments.transitionModel.titleViewTransitionName
             collection_details_txt_title.text = safeArguments.collectionTitle
             collection_details_txt_title.goneIfEmpty()
             collection_details_txt_description.text = safeArguments.collectionDescription

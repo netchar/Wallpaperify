@@ -93,10 +93,10 @@
         <action
             android:id="@+id/action_homeFragment_to_collectionDetailsFragment"
             app:destination="@id/collectionDetailsFragment"
-            app:enterAnim="@anim/anim_fragment_details_enter"
-            app:exitAnim="@anim/anim_fragment_details_exit"
-            app:popEnterAnim="@anim/anim_fragment_details_pop_enter"
-            app:popExitAnim="@anim/anim_fragment_details_pop_exit" />
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <action
         android:id="@+id/action_global_photoDetailsFragment"
