@@ -61,7 +61,7 @@ fun Context.openWebPage(url: String): Boolean {
     // Try using Chrome Custom Tabs.
     try {
         val intent = CustomTabsIntent.Builder()
-                .setToolbarColor(getColorCompat(R.color.color_primary))
+            .setToolbarColor(getColorCompat(R.color.color_surface))
                 .setShowTitle(true)
                 .build()
         intent.launchUrl(this, uri)

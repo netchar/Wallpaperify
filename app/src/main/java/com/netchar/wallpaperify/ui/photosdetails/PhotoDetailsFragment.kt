@@ -37,8 +37,6 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.livinglifetechway.quickpermissions_kotlin.runWithPermissions
-import com.netchar.common.UNSPLASH_URL
-import com.netchar.common.UNSPLASH_UTM_PARAMETERS
 import com.netchar.common.base.BaseFragment
 import com.netchar.common.extensions.*
 import com.netchar.common.utils.ShimmerFactory
@@ -224,12 +222,9 @@ class PhotoDetailsFragment : BaseFragment() {
             underline { append(photo.user.name) }.withClickableSpan(photo.user.name) {
                 context?.openWebPage(photo.user.links.profileLink)
             }
-            append(" ${getString(R.string.photo_details_author_middle_part)} ")
-            underline { append(getString(R.string.label_unsplash)) }.withClickableSpan(getString(R.string.label_unsplash)) {
-                context?.openWebPage(UNSPLASH_URL + UNSPLASH_UTM_PARAMETERS)
-            }
         }
 
+        photo_details_author_img.setOnClickListener { context?.openWebPage(photo.user.links.profileLink) }
         photo_details_tv_photo_by.text = photoByText
         photo_details_tv_photo_by.movementMethod = LinkMovementMethod.getInstance()
         photo_details_tv_description.text = photo.description
