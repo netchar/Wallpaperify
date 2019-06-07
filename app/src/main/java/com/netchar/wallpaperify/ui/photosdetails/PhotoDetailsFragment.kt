@@ -17,6 +17,7 @@
 package com.netchar.wallpaperify.ui.photosdetails
 
 import android.app.AlertDialog
+import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
@@ -63,6 +64,8 @@ class PhotoDetailsFragment : BaseFragment() {
 
     override val layoutResId: Int = R.layout.fragment_photo_details
 
+    private lateinit var baseContext: Context
+
     private val safeArguments: PhotoDetailsFragmentArgs by lazy(LazyThreadSafetyMode.NONE) {
         PhotoDetailsFragmentArgs.fromBundle(arguments!!)
     }
@@ -77,6 +80,11 @@ class PhotoDetailsFragment : BaseFragment() {
         setHasOptionsMenu(true)
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        baseContext = context
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Should play enter animation only on view creating and return ready view on Pop()
         var view: ViewGroup? = viewGroup
@@ -87,6 +95,21 @@ class PhotoDetailsFragment : BaseFragment() {
         } else {
             view
         }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel = injectViewModel(viewModelFactory)
+
+        if (ThemeUtils.isDayThemeEnabled(baseContext)) {
+            activity.setLightStatusBar(false)
+        }
+
+        activity.setTransparentStatusBars(true)
+        activity.setDisplayShowTitleEnabled(false)
+        applyWindowsInsets(view)
+        observe()
     }
 
     private fun initViews(contentView: View) = with(contentView) {
@@ -103,21 +126,21 @@ class PhotoDetailsFragment : BaseFragment() {
         }
 
         GlideApp.with(this@PhotoDetailsFragment)
-                .load(safeArguments.photoUrl)
-                .listener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                        shimmer.stopShimmer()
-                        contentView.background = null
-                        return false
-                    }
+            .load(safeArguments.photoUrl)
+            .listener(object : RequestListener<Drawable> {
+                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                    shimmer.stopShimmer()
+                    contentView.background = null
+                    return false
+                }
 
-                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                        shimmer.stopShimmer()
-                        contentView.background = null
-                        return false
-                    }
-                })
-                .into(photo_details_iv_photo)
+                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                    shimmer.stopShimmer()
+                    contentView.background = null
+                    return false
+                }
+            })
+            .into(photo_details_iv_photo)
     }
 
     private fun initFabMenu(viewContainer: View) = with(viewContainer) {
@@ -138,23 +161,6 @@ class PhotoDetailsFragment : BaseFragment() {
                 viewModel.downloadImage()
             }
         }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        viewModel = injectViewModel(viewModelFactory)
-
-        context?.let {
-            if (ThemeUtils.isDayThemeEnabled(it)) {
-                activity.setLightStatusBar(false)
-            }
-        }
-
-        activity.setTransparentStatusBars(true)
-        activity.setDisplayShowTitleEnabled(false)
-        applyWindowsInsets(view)
-        observe()
     }
 
     private fun applyWindowsInsets(v: View) = with(v) {
@@ -190,9 +196,7 @@ class PhotoDetailsFragment : BaseFragment() {
         })
 
         viewModel.downloadProgress.observe(viewLifecycleOwner, Observer { progress ->
-            if (progress > 0 && downloadDialog.dialog?.isShowing == true) {
-                downloadDialog.setProgress(progress)
-            }
+            updateProgress(progress)
         })
 
         viewModel.toast.observe(viewLifecycleOwner, Observer { message ->
@@ -208,13 +212,19 @@ class PhotoDetailsFragment : BaseFragment() {
         })
     }
 
+    private fun updateProgress(progress: Float) {
+        if (progress > 0 && downloadDialog.dialog?.isShowing == true) {
+            downloadDialog.setProgress(progress)
+        }
+    }
+
     private fun updateUiByPhotoDetails(photo: PhotoPOJO) {
         GlideApp.with(this)
-                .load(photo.user.profileImage.small)
-                .transform(CircleCrop())
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .error(R.drawable.ic_person)
-                .into(photo_details_author_img)
+            .load(photo.user.profileImage.small)
+            .transform(CircleCrop())
+            .transition(DrawableTransitionOptions.withCrossFade())
+            .error(R.drawable.ic_person)
+            .into(photo_details_author_img)
 
 
         val photoByText = buildSpannedString {
@@ -231,7 +241,7 @@ class PhotoDetailsFragment : BaseFragment() {
         photo_details_tv_likes.text = photo.likes.toString()
         photo_details_tv_total_downloads.text = photo.downloads.toString()
         photo_details_tv_description.goneIfEmpty()
-        photo_details_constraint_bottom_panel.run { animate().withStartAction { toVisible() }.alpha(1f).setDuration(450).start() }
+        photo_details_constraint_bottom_panel.run { animate().withStartAction { toVisible() }.alpha(1f).setDuration(250).start() }
 
         TransitionManager.beginDelayedTransition(photo_details_coordinator, inflateTransition(R.transition.photo_details_fab_transition))
         photo_details_fab.toVisible()
@@ -243,14 +253,15 @@ class PhotoDetailsFragment : BaseFragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
+        when (item.itemId) {
             R.id.photo_details_share_menu_item -> consume {
                 viewModel.photo.value?.let {
                     activity?.share(it.photoShareLink, "Photo by ${it.user.name}")
                 }
             }
-            else -> super.onOptionsItemSelected(item)
         }
+
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onBackPressed(): Boolean {
@@ -312,7 +323,7 @@ class PhotoDetailsFragment : BaseFragment() {
             it.animate().withEndAction {
                 it.toGone()
                 it.stopShimmer()
-            }.alpha(0f).setDuration(350).start()
+            }.alpha(0f).setDuration(150).start()
         }
     }
 

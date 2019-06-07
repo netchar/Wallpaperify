@@ -40,10 +40,10 @@ class DownloadDialogFragment : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = View.inflate(context, R.layout.dialog_download, null)
         return AlertDialog.Builder(activity!!)
-                .setTitle(getString(R.string.title_downloading))
+            .setTitle(getString(R.string.title_downloading))
             .setNegativeButton(getString(R.string.label_cancel)) { dialog, _ -> dialog.cancel() }
-                .setView(view)
-                .create()
+            .setView(view)
+            .create()
     }
 
     fun setProgress(progress: Float) {
@@ -55,9 +55,10 @@ class DownloadDialogFragment : DialogFragment() {
     }
 
     override fun show(manager: FragmentManager, tag: String?) {
-        if (!isAdded) {
-            super.show(manager, tag)
+        if (isAdded) {
+            return
         }
+        super.show(manager, tag)
     }
 
     override fun onCancel(dialog: DialogInterface) {
