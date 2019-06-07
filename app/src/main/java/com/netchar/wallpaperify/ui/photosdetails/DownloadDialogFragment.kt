@@ -41,7 +41,7 @@ class DownloadDialogFragment : DialogFragment() {
         val view = View.inflate(context, R.layout.dialog_download, null)
         return AlertDialog.Builder(activity!!)
                 .setTitle(getString(R.string.title_downloading))
-                .setNegativeButton(getString(R.string.label_cancel), null)
+            .setNegativeButton(getString(R.string.label_cancel)) { dialog, _ -> dialog.cancel() }
                 .setView(view)
                 .create()
     }
