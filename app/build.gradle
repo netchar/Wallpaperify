@@ -100,6 +100,7 @@ dependencies {
     implementation deps.androidx.swiperefreshlayout
     implementation deps.androidx.card
     implementation deps.androidx.core
+    implementation deps.androidx.preferences
 
     implementation deps.shimmer
 
@@ -143,7 +144,6 @@ dependencies {
     implementation deps.transitionseverywhere
     implementation deps.quickpermissions
     implementation deps.photoview
-    implementation "androidx.preference:preference-ktx:1.1.0-alpha05"
 }
 
 dependencies {
