@@ -30,6 +30,7 @@ import com.netchar.repository.pojo.ErrorMessage
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.ViewModelFactory
 import com.netchar.wallpaperify.di.modules.GlideApp
+import com.netchar.wallpaperify.ui.home.HomeFragmentDirections
 import kotlinx.android.synthetic.main.fragment_collections.*
 import javax.inject.Inject
 
@@ -113,7 +114,16 @@ class CollectionsFragment : BaseFragment() {
     }
 
     private fun onItemClick(model: CollectionPOJO) {
-        findNavController().navigate(R.id.collectionDetailsFragment)
+        val action = HomeFragmentDirections.actionHomeFragmentToCollectionDetailsFragment(
+                model.id,
+                model.coverPhoto.urls.regular,
+                model.user.profileImage.large,
+                model.user.name,
+                model.totalPhotos,
+                model.title,
+                model.description
+        )
+        findNavController().navigate(action)
     }
 }
 

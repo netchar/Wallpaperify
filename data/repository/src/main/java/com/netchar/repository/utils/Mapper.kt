@@ -97,7 +97,7 @@ object Mapper {
         return CollectionPOJO(
                 id = collection.id,
                 title = collection.title,
-                description = collection.description,
+                description = collection.description ?: "",
                 publishedAt = collection.publishedAt,
                 updatedAt = collection.updatedAt,
                 curated = collection.curated,

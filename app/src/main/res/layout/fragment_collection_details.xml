@@ -1,12 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/collection_details_coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/collection_details_constraint"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent">
 
-</FrameLayout>
+        <ImageView
+            android:id="@+id/collection_details_img_cover_photo"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:cropToPadding="true"
+            android:scaleType="centerCrop"
+            app:layout_constraintDimensionRatio="H,16:9"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+        <View
+            android:id="@+id/row_collection_gradient_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@drawable/layer_background_gradient"
+            app:layout_constraintBottom_toBottomOf="@+id/collection_details_img_cover_photo"
+            app:layout_constraintEnd_toStartOf="@+id/collection_details_img_cover_photo"
+            app:layout_constraintStart_toStartOf="@+id/collection_details_img_cover_photo"
+            app:layout_constraintTop_toTopOf="@+id/collection_details_img_cover_photo" />
+
+        <ImageView
+            android:id="@+id/collection_details_img_author"
+            android:layout_width="76dp"
+            android:layout_height="76dp"
+            app:layout_constraintBottom_toBottomOf="@+id/collection_details_img_cover_photo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/collection_details_img_cover_photo"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/collection_details_txt_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:textAppearance="@style/TextAppearance.AppTheme.Body2"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@+id/collection_details_img_cover_photo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/collection_details_txt_title"
+            tools:text="The showing of two or more pictures blended or composed into one photo. Not caused by alcoholic beverages or vision" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/collection_details_recycler"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="24dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/collection_details_txt_author"
+            tools:listitem="@layout/row_photo" />
+
+        <TextView
+            android:id="@+id/collection_details_txt_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:textAppearance="@style/TextAppearance.AppTheme.Subtitle1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/collection_details_img_author"
+            tools:text="Sandy Harrmony" />
+
+        <TextView
+            android:id="@+id/collection_details_txt_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:textAppearance="@style/TextAppearance.AppTheme.Headline6"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@+id/collection_details_txt_description"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/collection_details_img_cover_photo"
+            tools:text="Flowers Contained" />
+
+        <com.netchar.common.views.CompoundDrawableTextView
+            android:id="@+id/collection_details_tv_photos_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:drawablePadding="4dp"
+            android:gravity="center_vertical"
+            android:minHeight="24dp"
+            android:textAppearance="@style/TextAppearance.AppTheme.Caption"
+            android:textColor="@color/white"
+            app:compoundDrawableHeight="16dp"
+            app:compoundDrawableWidth="16dp"
+            app:drawableLeftCompat="@drawable/ic_collections_bookmark"
+            app:drawableTint="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/collection_details_img_cover_photo"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="12 photos" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

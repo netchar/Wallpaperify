@@ -20,9 +20,11 @@ import com.netchar.common.utils.CoroutineDispatchers
 import com.netchar.remote.api.CollectionsApi
 import com.netchar.remote.apirequest.ApiRequest
 import com.netchar.remote.dto.Collection
+import com.netchar.remote.dto.Photo
 import com.netchar.repository.IBoundResource
 import com.netchar.repository.NetworkBoundResource
 import com.netchar.repository.pojo.CollectionPOJO
+import com.netchar.repository.pojo.PhotoPOJO
 import com.netchar.repository.utils.Mapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -45,6 +47,19 @@ class CollectionRepository @Inject constructor(
 
             override fun getApiCallAsync(): Deferred<Response<List<Collection>>> {
                 return collectionsApi.getCollectionsAsync(request.page, request.perPage)
+            }
+        }.launchIn(scope)
+    }
+
+    override fun getCollectionPhotos(request: ApiRequest.Collection, scope: CoroutineScope): IBoundResource<List<PhotoPOJO>> {
+        return object : NetworkBoundResource<List<PhotoPOJO>, List<Photo>>(coroutineDispatchers) {
+
+            override fun mapToPOJO(data: List<Photo>): List<PhotoPOJO> {
+                return data.map { Mapper.map(it) }
+            }
+
+            override fun getApiCallAsync(): Deferred<Response<List<Photo>>> {
+                return collectionsApi.getCollectionPhotosAsync(request.id, request.page, request.perPage)
             }
         }.launchIn(scope)
     }

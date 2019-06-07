@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.netchar.common.di.ViewModelKey
 import com.netchar.wallpaperify.di.ViewModelFactory
+import com.netchar.wallpaperify.ui.collectiondetails.CollectionDetailsViewModel
 import com.netchar.wallpaperify.ui.collections.CollectionsViewModel
 import com.netchar.wallpaperify.ui.photos.PhotosViewModel
 import com.netchar.wallpaperify.ui.photosdetails.PhotoDetailsViewModel
@@ -50,6 +51,11 @@ abstract class ViewModelBindingModule {
     @IntoMap
     @ViewModelKey(SettingsViewModel::class)
     abstract fun bindSettingsViewModel(viewModel: SettingsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(CollectionDetailsViewModel::class)
+    abstract fun bindCollectionDetailsViewModel(viewModel: CollectionDetailsViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory
