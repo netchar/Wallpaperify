@@ -40,10 +40,8 @@ class HomeFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        context?.let {
-            if (ThemeUtils.isDayThemeEnabled(it)) {
-                activity.setLightStatusBar(true)
-            }
+        if (ThemeUtils.isDayThemeEnabled(baseContext)) {
+            activity.setLightStatusBar(true)
         }
 
         activity.setTransparentStatusBars(false)

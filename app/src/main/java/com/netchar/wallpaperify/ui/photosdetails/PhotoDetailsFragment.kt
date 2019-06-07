@@ -17,7 +17,6 @@
 package com.netchar.wallpaperify.ui.photosdetails
 
 import android.app.AlertDialog
-import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
@@ -64,8 +63,6 @@ class PhotoDetailsFragment : BaseFragment() {
 
     override val layoutResId: Int = R.layout.fragment_photo_details
 
-    private lateinit var baseContext: Context
-
     private val safeArguments: PhotoDetailsFragmentArgs by lazy(LazyThreadSafetyMode.NONE) {
         PhotoDetailsFragmentArgs.fromBundle(arguments!!)
     }
@@ -78,11 +75,6 @@ class PhotoDetailsFragment : BaseFragment() {
 
     init {
         setHasOptionsMenu(true)
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        baseContext = context
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -249,7 +241,6 @@ class PhotoDetailsFragment : BaseFragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_photo_details, menu)
-        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

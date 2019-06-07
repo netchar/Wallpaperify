@@ -83,12 +83,13 @@ class PhotosFragment : BaseFragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
+        when (item.itemId) {
             R.id.photos_menu_filter_option -> consume {
                 showFilterDialog()
             }
-            else -> super.onOptionsItemSelected(item)
         }
+
+        return super.onOptionsItemSelected(item)
     }
 
     private fun showFilterDialog() {

@@ -49,9 +49,12 @@ abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
 
     protected var fragmentToolbar: Toolbar? = null
 
+    protected lateinit var baseContext: Context
+
     override fun onAttach(context: Context) {
         Injector.inject(this)
         super.onAttach(context)
+        baseContext = context
     }
 
     override fun supportFragmentInjector() = childFragmentInjector
