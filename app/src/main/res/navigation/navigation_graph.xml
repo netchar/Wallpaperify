@@ -68,6 +68,9 @@
         <argument
             android:name="collectionDescription"
             app:argType="string" />
+        <argument
+            android:name="transitionModel"
+            app:argType="com.netchar.wallpaperify.ui.collections.CollectionDetailsTransitionModel" />
     </fragment>
     <fragment
         android:id="@+id/photosFragment"
@@ -89,7 +92,11 @@
         android:label="@string/home_fragment_title">
         <action
             android:id="@+id/action_homeFragment_to_collectionDetailsFragment"
-            app:destination="@id/collectionDetailsFragment" />
+            app:destination="@id/collectionDetailsFragment"
+            app:enterAnim="@anim/anim_fragment_details_enter"
+            app:exitAnim="@anim/anim_fragment_details_exit"
+            app:popEnterAnim="@anim/anim_fragment_details_pop_enter"
+            app:popExitAnim="@anim/anim_fragment_details_pop_exit" />
     </fragment>
     <action
         android:id="@+id/action_global_photoDetailsFragment"

@@ -67,12 +67,16 @@ class CollectionDetailsFragment : BaseFragment() {
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(collection_details_img_author)
 
+//            collection_details_img_cover_photo.transitionName = safeArguments.transitionModel.imageTransitionName
             GlideApp.with(this)
                 .load(safeArguments.coverPhotoUrl)
                 .into(collection_details_img_cover_photo)
 
+//            collection_details_txt_author.transitionName = safeArguments.transitionModel.authorNameViewTransitionName
             collection_details_txt_author.text = safeArguments.authorName
+//            collection_details_tv_photos_count.transitionName = safeArguments.transitionModel.totalCountViewTransitionName
             collection_details_tv_photos_count.text = getString(R.string.collection_item_photo_count_postfix, safeArguments.totalPhotos)
+//            collection_details_txt_title.transitionName = safeArguments.transitionModel.titleViewTransitionName
             collection_details_txt_title.text = safeArguments.collectionTitle
             collection_details_txt_title.goneIfEmpty()
             collection_details_txt_description.text = safeArguments.collectionDescription

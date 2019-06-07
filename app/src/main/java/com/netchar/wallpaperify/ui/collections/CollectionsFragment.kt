@@ -16,9 +16,14 @@
 
 package com.netchar.wallpaperify.ui.collections
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.netchar.common.base.BaseFragment
@@ -31,6 +36,7 @@ import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.ViewModelFactory
 import com.netchar.wallpaperify.di.modules.GlideApp
 import com.netchar.wallpaperify.ui.home.HomeFragmentDirections
+import kotlinx.android.parcel.Parcelize
 import kotlinx.android.synthetic.main.fragment_collections.*
 import javax.inject.Inject
 
@@ -113,7 +119,7 @@ class CollectionsFragment : BaseFragment() {
         collections_recycler.adapter = null
     }
 
-    private fun onItemClick(model: CollectionPOJO) {
+    private fun onItemClick(model: CollectionPOJO, imageView: ImageView, authorNameView: TextView, photosCountView: TextView, titleView: TextView) {
         val action = HomeFragmentDirections.actionHomeFragmentToCollectionDetailsFragment(
                 model.id,
                 model.coverPhoto.urls.regular,
@@ -121,10 +127,27 @@ class CollectionsFragment : BaseFragment() {
                 model.user.name,
                 model.totalPhotos,
                 model.title,
-                model.description
+                model.description,
+                CollectionDetailsTransitionModel(imageView.transitionName, authorNameView.transitionName, photosCountView.transitionName, titleView.transitionName)
         )
-        findNavController().navigate(action)
+
+        val extras = FragmentNavigatorExtras(
+                imageView to imageView.transitionName,
+                authorNameView to authorNameView.transitionName,
+                photosCountView to photosCountView.transitionName,
+                titleView to titleView.transitionName
+        )
+        findNavController().navigate(action, extras)
     }
 }
 
 fun List<CollectionPOJO>.asRecyclerItems() = map { CollectionRecyclerItem(it) }
+
+@SuppressLint("ParcelCreator")
+@Parcelize
+data class CollectionDetailsTransitionModel(
+        val imageTransitionName: String,
+        val authorNameViewTransitionName: String,
+        val totalCountViewTransitionName: String,
+        val titleViewTransitionName: String
+) : Parcelable
