@@ -23,7 +23,6 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.OvershootInterpolator
-import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -36,6 +35,7 @@ import kotlinx.android.synthetic.main.view_fab_container.view.*
 import kotlinx.android.synthetic.main.view_fab_menu_item.view.*
 import java.util.*
 import kotlin.collections.ArrayList
+
 
 private const val DEFAULT_TRANSLATION_TIME = 250
 
@@ -210,7 +210,7 @@ class FloatingActionMenuButton @JvmOverloads constructor(
         isMenuOpen = true
         animateRotationMainFab(fab, mainFabRotationDegrees.toFloat())
         optionFabContainers.forEach { container ->
-            animateFabMenuItemOpen(container.fab_menu_option, container.fab_menu_title, container)
+            animateFabMenuItemOpen(container.fab_menu_option, container.fab_menu_title_container, container)
         }
 
         overlay?.run {
@@ -222,7 +222,7 @@ class FloatingActionMenuButton @JvmOverloads constructor(
         isMenuOpen = false
         animateRotationMainFab(fab, 0f)
         optionFabContainers.forEach { container ->
-            animateFabMenuItemClose(container.fab_menu_option, container.fab_menu_title, container)
+            animateFabMenuItemClose(container.fab_menu_option, container.fab_menu_title_container, container)
         }
 
         overlay?.run {
@@ -230,14 +230,14 @@ class FloatingActionMenuButton @JvmOverloads constructor(
         }
     }
 
-    private fun animateFabMenuItemOpen(fab: FloatingActionButton, label: TextView, container: View) {
+    private fun animateFabMenuItemOpen(fab: FloatingActionButton, label: View, container: View) {
         val openAnimTime = menuTranslationTimeOpen.toLong()
         container.animate().withStartAction { container.toVisible() }.translationY(0f).alpha(1f).setInterpolator(interpolator).setDuration(openAnimTime).start()
         label.animate().translationX(0f).alpha(1f).setInterpolator(interpolator).setDuration(openAnimTime).start()
         fab.animate().alpha(1f).setInterpolator(interpolator).setDuration(openAnimTime).start()
     }
 
-    private fun animateFabMenuItemClose(fab: FloatingActionButton, label: TextView, container: View) {
+    private fun animateFabMenuItemClose(fab: FloatingActionButton, label: View, container: View) {
         val closeAnimTime = menuTranslationTimeHide.toLong()
         container.animate().withEndAction { container.toGone() }.translationY(initialFabTranslationY).alpha(0f).setInterpolator(interpolator).setDuration(closeAnimTime).start()
         label.animate().translationX(initialFabLabelTranslationX).alpha(0f).setInterpolator(interpolator).setDuration(closeAnimTime).start()
@@ -251,8 +251,8 @@ class FloatingActionMenuButton @JvmOverloads constructor(
     private fun setInitialAnimationState(optionFabContainer: View) {
         optionFabContainer.translationY = initialFabTranslationY
         optionFabContainer.fab_menu_option.alpha = 0f
-        optionFabContainer.fab_menu_title.alpha = 0f
-        optionFabContainer.fab_menu_title.translationX = initialFabLabelTranslationX
+        optionFabContainer.fab_menu_title_container.alpha = 0f
+        optionFabContainer.fab_menu_title_container.translationX = initialFabLabelTranslationX
     }
 
     interface OnMenuOptionsListener {

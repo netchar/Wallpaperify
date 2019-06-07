@@ -19,6 +19,7 @@ package com.netchar.wallpaperify.ui.home
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowInsets
 import android.widget.Toast
 import androidx.core.view.GravityCompat
 import androidx.core.view.forEach
@@ -54,9 +55,11 @@ class MainActivity : BaseActivity(), IDrawerActivity {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.AppTheme_DayNight)
         super.onCreate(savedInstanceState)
+
         drawer_navigation_view.setupWithNavController(navigationController)
-        window.decorView.systemUiVisibility = window.decorView.systemUiVisibility or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+        enableDrawContentUnderStatusBars()
 
         drawer_layout.setOnApplyWindowInsetsListener { v, insets ->
             drawer_navigation_view.updatePadding(top = insets.systemWindowInsetTop)
@@ -64,19 +67,7 @@ class MainActivity : BaseActivity(), IDrawerActivity {
         }
 
         main_navigation_fragment.view?.setOnApplyWindowInsetsListener { view, insets ->
-            var consumed = false
-            (view as ViewGroup).forEach { child ->
-                // Dispatch the insets to the child
-                val childResult = child.dispatchApplyWindowInsets(insets)
-                // If the child consumed the insets, record it
-                if (childResult.isConsumed) {
-                    consumed = true
-                }
-            }
-
-            // If any of the children consumed the insets, return
-            // an appropriate value
-            if (consumed) insets.consumeSystemWindowInsets() else insets
+            propagateInsetsDownToAllChildren(view, insets)
         }
     }
 
@@ -102,6 +93,27 @@ class MainActivity : BaseActivity(), IDrawerActivity {
             this.finishAffinity()
         }
     }
+
+    private fun propagateInsetsDownToAllChildren(view: View?, insets: WindowInsets): WindowInsets? {
+        var consumed = false
+        (view as ViewGroup).forEach { child ->
+            // Dispatch the insets to the child
+            val childResult = child.dispatchApplyWindowInsets(insets)
+            // If the child consumed the insets, record it
+            if (childResult.isConsumed) {
+                consumed = true
+            }
+        }
+
+        // If any of the children consumed the insets, return
+        // an appropriate value
+        return if (consumed) insets.consumeSystemWindowInsets() else insets
+    }
+
+    private fun enableDrawContentUnderStatusBars() {
+        window.decorView.systemUiVisibility = window.decorView.systemUiVisibility or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+    }
+
 
     private fun isBackPressedFromFragment(): Boolean {
         val currentFragment = main_navigation_fragment.childFragmentManager.primaryNavigationFragment

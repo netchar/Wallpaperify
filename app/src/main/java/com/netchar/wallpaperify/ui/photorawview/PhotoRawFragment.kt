@@ -20,7 +20,6 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.updatePadding
-import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -29,6 +28,7 @@ import com.bumptech.glide.request.target.Target
 import com.netchar.common.base.BaseFragment
 import com.netchar.common.extensions.toast
 import com.netchar.wallpaperify.R
+import com.netchar.wallpaperify.di.modules.GlideApp
 import kotlinx.android.synthetic.main.fragment_photo_raw.*
 
 class PhotoRawFragment : BaseFragment() {
@@ -42,7 +42,7 @@ class PhotoRawFragment : BaseFragment() {
             val safeArgs = PhotoRawFragmentArgs.fromBundle(it)
 
             photo_raw_progress.show()
-            Glide.with(this)
+            GlideApp.with(this)
                 .load(safeArgs.photoUrl)
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .listener(object : RequestListener<Drawable> {

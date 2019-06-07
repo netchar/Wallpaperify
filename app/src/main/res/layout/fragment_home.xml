@@ -9,7 +9,6 @@
         android:id="@+id/home_appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?colorSurface"
         android:fitsSystemWindows="true">
 
         <androidx.appcompat.widget.Toolbar

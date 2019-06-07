@@ -24,54 +24,42 @@ import android.view.View
 import com.google.android.material.appbar.AppBarLayout
 import com.netchar.common.base.BaseFragment
 import com.netchar.common.extensions.*
+import com.netchar.common.utils.ThemeUtils
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.ui.collections.CollectionsFragment
 import com.netchar.wallpaperify.ui.photos.PhotosFragment
 import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 import kotlin.math.absoluteValue
 
-class HomeFragment : BaseFragment(), CoroutineScope {
 
-    override val layoutResId: Int = R.layout.fragment_home
-
+class HomeFragment : BaseFragment() {
     private var viewScreenshot: Bitmap? = null
 
-    private val onAppBarScrollListener = AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
-        updateToolbarForegroundAlpha(verticalOffset)
-    }
-
-    private fun updateToolbarForegroundAlpha(verticalOffset: Int) {
-        val inColorCode = (255 * verticalOffset.absoluteValue / 100).coerceIn(0..255)
-        toolbar.foreground.alpha = inColorCode
-    }
-
-    private val job = Job()
-
-    override val coroutineContext: CoroutineContext get() = Dispatchers.Main + job
+    override val layoutResId: Int = R.layout.fragment_home
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if (ThemeUtils.isDayThemeEnabled(baseContext)) {
+            activity.setLightStatusBar(true)
+        }
+
         activity.setTransparentStatusBars(false)
-        activity.setLightStatusBar(true)
         activity.setDisplayShowTitleEnabled(false)
         fragmentToolbar?.applyWindowInsets()
 
-        launch {
-            toolbar.foreground = ColorDrawable(view.context.getThemeAttrColor(R.attr.colorSurface))
-            home_appbar.addOnOffsetChangedListener(onAppBarScrollListener)
+        listenToolbarScrollToAlpha(view)
 
-            pager.adapter = HomeFragmentPagerAdapter(childFragmentManager).also {
-                it.addFragment(PhotosFragment(), getString(R.string.photos_fragment_title))
-                it.addFragment(CollectionsFragment(), getString(R.string.collections_fragment_title))
-            }
-            tabs.setupWithViewPager(pager)
+        pager.adapter = HomeFragmentPagerAdapter(childFragmentManager).also {
+            it.addFragment(PhotosFragment(), getString(R.string.photos_fragment_title))
+            it.addFragment(CollectionsFragment(), getString(R.string.collections_fragment_title))
         }
+        tabs.setupWithViewPager(pager)
+    }
+
+    private fun listenToolbarScrollToAlpha(view: View) {
+        toolbar.foreground = ColorDrawable(view.context.getThemeAttrColor(R.attr.colorSurface))
+        home_appbar.addOnOffsetChangedListener(onAppBarScrollListener)
     }
 
     override fun onPause() {
@@ -84,5 +72,14 @@ class HomeFragment : BaseFragment(), CoroutineScope {
         home_container.background = BitmapDrawable(resources, viewScreenshot)
         viewScreenshot = null
         super.onDestroyView()
+    }
+
+    private val onAppBarScrollListener = AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+        updateToolbarForegroundAlpha(verticalOffset)
+    }
+
+    private fun updateToolbarForegroundAlpha(verticalOffset: Int) {
+        val inColorCode = (255 * verticalOffset.absoluteValue / 100).coerceIn(0..255)
+        toolbar.foreground.alpha = inColorCode
     }
 }

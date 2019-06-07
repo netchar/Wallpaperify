@@ -26,7 +26,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
-import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.netchar.common.base.BaseFragment
 import com.netchar.common.extensions.*
@@ -36,6 +35,7 @@ import com.netchar.repository.pojo.ErrorMessage
 import com.netchar.repository.pojo.PhotoPOJO
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.ViewModelFactory
+import com.netchar.wallpaperify.di.modules.GlideApp
 import com.netchar.wallpaperify.ui.home.HomeFragmentDirections
 import kotlinx.android.synthetic.main.fragment_photos.*
 import javax.inject.Inject
@@ -54,7 +54,7 @@ class PhotosFragment : BaseFragment() {
     override val layoutResId: Int = R.layout.fragment_photos
 
     private val dataSource: EndlessRecyclerDataSource by lazy {
-        val photoRenderer = PhotosRenderer(Glide.with(this), ::onItemClick)
+        val photoRenderer = PhotosRenderer(GlideApp.with(this), ::onItemClick)
         EndlessRecyclerDataSource(mutableListOf(photoRenderer), ::onLoadMoreItems)
     }
 
@@ -83,12 +83,13 @@ class PhotosFragment : BaseFragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
+        when (item.itemId) {
             R.id.photos_menu_filter_option -> consume {
                 showFilterDialog()
             }
-            else -> super.onOptionsItemSelected(item)
         }
+
+        return super.onOptionsItemSelected(item)
     }
 
     private fun showFilterDialog() {

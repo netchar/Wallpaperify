@@ -34,7 +34,7 @@
     <string name="photos_fragment_title">Photos</string>
     <string name="about_fragment_title">About</string>
     <string name="support_development_fragment_title">Support Development</string>
-    <string name="home_fragment_title">Wallpaperify</string>
+    <string name="home_fragment_title">""</string>
     <string name="latest_message_data_updated">Updated</string>
     <string name="error_message_try_again_later">Something goes wrong. Try again later.</string>
     <string name="collection_item_author_prefix">by %1$s</string>
@@ -87,7 +87,7 @@
     <string-array name="ThemeValues">
         <item>1</item>
         <item>2</item>
-        <item>-100</item>
+        <item>-1</item>
     </string-array>
 
 </resources>

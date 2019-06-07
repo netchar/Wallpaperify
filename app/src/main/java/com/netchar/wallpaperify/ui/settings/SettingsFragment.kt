@@ -20,11 +20,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.netchar.common.extensions.applyWindowInsets
@@ -32,21 +30,17 @@ import com.netchar.common.extensions.getStringSafe
 import com.netchar.common.extensions.injectViewModel
 import com.netchar.common.extensions.toast
 import com.netchar.common.utils.Injector
+import com.netchar.common.utils.ThemeUtils
 import com.netchar.common.utils.getVersionName
 import com.netchar.common.utils.navigation.IToolbarNavigationBinder
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.ViewModelFactory
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
-import kotlinx.coroutines.*
 import timber.log.Timber
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
-class SettingsFragment : PreferenceFragmentCompat(), CoroutineScope, HasSupportFragmentInjector, SharedPreferences.OnSharedPreferenceChangeListener {
-
-    private val job = Job()
-    override val coroutineContext: CoroutineContext get() = Dispatchers.Main + job
+class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector, SharedPreferences.OnSharedPreferenceChangeListener {
 
     @Inject
     lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
@@ -70,21 +64,15 @@ class SettingsFragment : PreferenceFragmentCompat(), CoroutineScope, HasSupportF
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        launch {
-            setPreferencesFromResource(R.xml.preferences, rootKey)
-        }
+        setPreferencesFromResource(R.xml.preferences, rootKey)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         val toolbar = view.findViewById<Toolbar>(R.id.toolbar).also { it.applyWindowInsets() }
-
         viewModel = injectViewModel(viewModelFactory)
-
-        launch {
-            navigationBinder.bind(this@SettingsFragment, toolbar)
-        }
-
+        navigationBinder.bind(this@SettingsFragment, toolbar)
         observe()
     }
 
@@ -106,11 +94,8 @@ class SettingsFragment : PreferenceFragmentCompat(), CoroutineScope, HasSupportF
     }
 
     private fun setPreferencesSummary() {
-        val themePreference = findPreference<Preference>(getString(R.string.preference_option_key_theme))
         val buildPreference = findPreference<Preference>(getString(R.string.preference_option_key_build))
-
-        buildPreference?.summary = activityContext.getVersionName()
-        themePreference?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
+        buildPreference?.summary = "${activityContext.getVersionName()}"
     }
 
     override fun onStart() {
@@ -139,13 +124,8 @@ class SettingsFragment : PreferenceFragmentCompat(), CoroutineScope, HasSupportF
                     Timber.e("Unexpected state. Preferences does not contains: $key")
                     return
                 }
-                AppCompatDelegate.setDefaultNightMode(themeMode.toInt())
+                ThemeUtils.applyDayNightMode(themeMode.toInt())
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        coroutineContext.cancelChildren()
     }
 }

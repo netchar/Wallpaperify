@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
         android:title="Appearance">
@@ -12,7 +13,7 @@
             android:entries="@array/ThemeOptions"
             android:entryValues="@array/ThemeValues"
             android:key="@string/preference_option_key_theme"
-            android:positiveButtonText="@string/label_apply"
+            app:useSimpleSummaryProvider="true"
             android:title="@string/preference_option_title_dark_theme"/>
 
     </PreferenceCategory>

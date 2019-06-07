@@ -37,6 +37,8 @@ dependencies {
     implementation deps.androidx.card
     implementation deps.androidx.core
     implementation deps.androidx.browser
+    implementation deps.androidx.preferences
+
     implementation deps.shimmer
 
     // Dagger
@@ -55,8 +57,6 @@ dependencies {
 
     // ThreeTen
     implementation deps.threetenabp
-
-    implementation "androidx.preference:preference-ktx:1.1.0-alpha05"
 }
 
 dependencies {

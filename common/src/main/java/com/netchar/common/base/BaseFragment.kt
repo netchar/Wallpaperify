@@ -49,9 +49,12 @@ abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
 
     protected var fragmentToolbar: Toolbar? = null
 
+    protected lateinit var baseContext: Context
+
     override fun onAttach(context: Context) {
         Injector.inject(this)
         super.onAttach(context)
+        baseContext = context
     }
 
     override fun supportFragmentInjector() = childFragmentInjector
@@ -84,19 +87,27 @@ abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
             animation.setAnimationListener(object : Animation.AnimationListener {
 
                 override fun onAnimationStart(animation: Animation) {
-                    view?.setLayerType(View.LAYER_TYPE_HARDWARE, null)
-                    activity?.window?.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                    disableTouches()
                 }
 
                 override fun onAnimationRepeat(animation: Animation) {}
 
                 override fun onAnimationEnd(animation: Animation) {
-                    view?.setLayerType(View.LAYER_TYPE_NONE, null)
-                    activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                    enableTouches()
 
                     if (enter) {
                         onEnterAnimationComplete()
                     }
+                }
+
+                private fun enableTouches() {
+                    view?.setLayerType(View.LAYER_TYPE_NONE, null)
+                    activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                }
+
+                private fun disableTouches() {
+                    view?.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+                    activity?.window?.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 }
             })
         }
