@@ -245,7 +245,7 @@ class PhotoDetailsFragment : BaseFragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.photo_details_share_menu_item -> consume {
+            R.id.menu_item_share -> consume {
                 viewModel.photo.value?.let {
                     activity?.share(it.photoShareLink, "Photo by ${it.user.name}")
                 }

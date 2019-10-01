@@ -42,6 +42,7 @@ class CollectionDetailsViewModel @Inject constructor(
         requestPhotos(listViewModel.paging.fromStart())
     }
 
+    //todo: check if all photos loaded
     fun loadMore() {
         requestPhotos(listViewModel.paging.nextPage())
     }

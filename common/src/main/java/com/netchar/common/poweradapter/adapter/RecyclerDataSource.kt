@@ -23,19 +23,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.netchar.common.poweradapter.item.IRecyclerItem
 import com.netchar.common.poweradapter.item.ItemRenderer
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.withContext
 import java.lang.ref.WeakReference
 import kotlin.coroutines.CoroutineContext
-
-/**
- * Created by Netchar on 02.04.2019.
- * e.glushankov@gmail.com
- */
 
 open class RecyclerDataSource(private val renderers: List<ItemRenderer>) : CoroutineScope {
     protected val data = mutableListOf<IRecyclerItem>()
@@ -50,10 +42,12 @@ open class RecyclerDataSource(private val renderers: List<ItemRenderer>) : Corou
         RecyclerDiffCallback()
     }
 
+    @ObsoleteCoroutinesApi
     private val updateActor = actor<List<IRecyclerItem>>(capacity = CONFLATED) {
         for (list in channel) internalUpdate(list)
     }
 
+    @ObsoleteCoroutinesApi
     @MainThread
     open fun setData(newData: List<IRecyclerItem>) {
         updateActor.offer(newData)

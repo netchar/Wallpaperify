@@ -1,12 +1,13 @@
 package com.netchar.wallpaperify.ui.collectiondetails
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.bumptech.glide.load.resource.bitmap.CircleCrop
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.material.snackbar.Snackbar
 import com.netchar.common.base.BaseFragment
 import com.netchar.common.extensions.*
@@ -40,6 +41,10 @@ class CollectionDetailsFragment : BaseFragment() {
         EndlessRecyclerAdapter(dataSource)
     }
 
+    init {
+        setHasOptionsMenu(true)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedElementEnterTransition = inflateTransition(android.R.transition.move)
@@ -63,30 +68,43 @@ class CollectionDetailsFragment : BaseFragment() {
         collection_details_recycler.detachAdapter()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_collection_details, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_item_share -> {
+                toast("share")
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     private fun setupViews() {
 
         arguments?.let { bundle ->
             val safeArguments = CollectionDetailsFragmentArgs.fromBundle(bundle)
 
-            collection_details_recycler.setHasFixedSize(true)
-            collection_details_recycler.adapter = adapter
+//            collection_details_recycler.setHasFixedSize(true)
+//            collection_details_recycler.adapter = adapter
 
-            GlideApp.with(this)
-                .load(safeArguments.authorPhotoUrl)
-                .transform(CircleCrop())
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .into(collection_details_img_author)
+//            GlideApp.with(this)
+//                .load(safeArguments.authorPhotoUrl)
+//                .transform(CircleCrop())
+//                .transition(DrawableTransitionOptions.withCrossFade())
+//                .into(collection_details_img_author)
 
-            collection_details_img_cover_photo.transitionName = safeArguments.transitionModel.imageTransitionName
-            GlideApp.with(this)
-                .load(safeArguments.coverPhotoUrl)
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .into(collection_details_img_cover_photo)
-
-            collection_details_txt_author.transitionName = safeArguments.transitionModel.authorNameViewTransitionName
-            collection_details_txt_author.text = safeArguments.authorName
-            collection_details_tv_photos_count.transitionName = safeArguments.transitionModel.totalCountViewTransitionName
-            collection_details_tv_photos_count.text = getString(R.string.collection_item_photo_count_postfix, safeArguments.totalPhotos)
+//            collection_details_img_cover_photo.transitionName = safeArguments.transitionModel.imageTransitionName
+//            GlideApp.with(this)
+//                .load(safeArguments.coverPhotoUrl)
+//                .transition(DrawableTransitionOptions.withCrossFade())
+//                .into(collection_details_img_cover_photo)
+//
+//            collection_details_txt_author.transitionName = safeArguments.transitionModel.authorNameViewTransitionName
+//            collection_details_txt_author.text = safeArguments.authorName
+//            collection_details_tv_photos_count.transitionName = safeArguments.transitionModel.totalCountViewTransitionName
+//            collection_details_tv_photos_count.text = getString(R.string.collection_item_photo_count_postfix, safeArguments.totalPhotos)
             collection_details_txt_title.transitionName = safeArguments.transitionModel.titleViewTransitionName
             collection_details_txt_title.text = safeArguments.collectionTitle
             collection_details_txt_title.goneIfEmpty()

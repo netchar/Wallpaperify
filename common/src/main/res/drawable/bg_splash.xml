@@ -9,6 +9,6 @@
     <item
         android:width="150dp"
         android:height="150dp"
-        android:drawable="@drawable/ic_logo_leaf"
+        android:drawable="@drawable/ic_splash_logo_leaf"
         android:gravity="center" />
 </layer-list>
