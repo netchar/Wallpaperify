@@ -27,7 +27,7 @@ ext {
 
     versions.androidx = [
             appcompat         : "1.0.2",
-            constraintlayout  : "1.1.3",
+            constraintlayout  : "2.0.0-beta2",
             material          : "1.1.0-alpha07",
             legacy            : "1.0.0",
             lifecycle         : "2.0.0",

@@ -128,7 +128,7 @@ class CollectionsFragment : BaseFragment() {
                 model.totalPhotos,
                 model.title,
                 model.description,
-                CollectionDetailsTransitionModel(imageView.transitionName, authorNameView.transitionName, photosCountView.transitionName, titleView.transitionName)
+                CollectionDetailsTransitionModel(imageView.transitionName, authorNameView.transitionName, photosCountView.transitionName)
         )
 
         val extras = FragmentNavigatorExtras(
@@ -146,7 +146,6 @@ fun List<CollectionPOJO>.asRecyclerItems() = map { CollectionRecyclerItem(it) }
 @SuppressLint("ParcelCreator")
 @Parcelize
 data class CollectionDetailsTransitionModel(
-        val imageTransitionName: String,
         val authorNameViewTransitionName: String,
         val totalCountViewTransitionName: String,
         val titleViewTransitionName: String

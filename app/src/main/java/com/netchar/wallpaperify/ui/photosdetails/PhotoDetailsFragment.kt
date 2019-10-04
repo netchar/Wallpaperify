@@ -40,7 +40,6 @@ import com.livinglifetechway.quickpermissions_kotlin.runWithPermissions
 import com.netchar.common.base.BaseFragment
 import com.netchar.common.extensions.*
 import com.netchar.common.utils.ShimmerFactory
-import com.netchar.common.utils.ThemeUtils
 import com.netchar.common.utils.share
 import com.netchar.repository.pojo.PhotoPOJO
 import com.netchar.wallpaperify.R
@@ -93,11 +92,6 @@ class PhotoDetailsFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = injectViewModel(viewModelFactory)
-
-        if (ThemeUtils.isDayThemeEnabled(baseContext)) {
-            activity.setLightStatusBar(false)
-        }
-
         activity.setTransparentStatusBars(true)
         activity.setDisplayShowTitleEnabled(false)
         applyWindowsInsets(view)

@@ -6,14 +6,16 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
+import androidx.core.view.updatePadding
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.material.snackbar.Snackbar
 import com.netchar.common.base.BaseFragment
 import com.netchar.common.extensions.*
 import com.netchar.common.poweradapter.adapter.EndlessRecyclerAdapter
 import com.netchar.common.poweradapter.adapter.EndlessRecyclerDataSource
-import com.netchar.common.utils.ThemeUtils
 import com.netchar.repository.pojo.PhotoPOJO
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.ViewModelFactory
@@ -54,12 +56,16 @@ class CollectionDetailsFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = injectViewModel(viewModelFactory)
-        if (ThemeUtils.isDayThemeEnabled(baseContext)) {
-            activity.setLightStatusBar(false)
-        }
         activity.setDisplayShowTitleEnabled(false)
+
+        applyWindowsInsets()
         setupViews()
         observe()
+    }
+
+    private fun applyWindowsInsets() = collection_details_coordinator.setOnApplyWindowInsetsListener { _, windowInsets ->
+        fragmentToolbar?.updatePadding(top = windowInsets.systemWindowInsetTop, bottom = 0)
+        windowInsets.consumeSystemWindowInsets()
     }
 
     override fun onDestroyView() {
@@ -82,38 +88,27 @@ class CollectionDetailsFragment : BaseFragment() {
     }
 
     private fun setupViews() {
-
         arguments?.let { bundle ->
             val safeArguments = CollectionDetailsFragmentArgs.fromBundle(bundle)
+            with(safeArguments) {
+                GlideApp.with(this@CollectionDetailsFragment)
+                    .load(authorPhotoUrl)
+                    .transform(CircleCrop())
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .into(collection_details_img_author)
 
-//            collection_details_recycler.setHasFixedSize(true)
-//            collection_details_recycler.adapter = adapter
+                collection_details_recycler.setHasFixedSize(true)
+                collection_details_recycler.adapter = adapter
+                collection_details_txt_author.text = getString(R.string.collection_item_author_prefix, authorName)
+                collection_details_txt_photos_count.text = getString(R.string.collection_item_photo_count_postfix, totalPhotos)
+                collection_details_txt_title.text = collectionTitle
+                collection_details_txt_title.goneIfEmpty()
+                collection_details_txt_description.text = collectionDescription
+                collection_details_txt_description.goneIfEmpty()
 
-//            GlideApp.with(this)
-//                .load(safeArguments.authorPhotoUrl)
-//                .transform(CircleCrop())
-//                .transition(DrawableTransitionOptions.withCrossFade())
-//                .into(collection_details_img_author)
 
-//            collection_details_img_cover_photo.transitionName = safeArguments.transitionModel.imageTransitionName
-//            GlideApp.with(this)
-//                .load(safeArguments.coverPhotoUrl)
-//                .transition(DrawableTransitionOptions.withCrossFade())
-//                .into(collection_details_img_cover_photo)
-//
-//            collection_details_txt_author.transitionName = safeArguments.transitionModel.authorNameViewTransitionName
-//            collection_details_txt_author.text = safeArguments.authorName
-//            collection_details_tv_photos_count.transitionName = safeArguments.transitionModel.totalCountViewTransitionName
-//            collection_details_tv_photos_count.text = getString(R.string.collection_item_photo_count_postfix, safeArguments.totalPhotos)
-            collection_details_txt_title.transitionName = safeArguments.transitionModel.titleViewTransitionName
-            collection_details_txt_title.text = safeArguments.collectionTitle
-            collection_details_txt_title.goneIfEmpty()
-            collection_details_txt_description.text = safeArguments.collectionDescription
-            collection_details_txt_description.goneIfEmpty()
-            collection_details_recycler.setHasFixedSize(true)
-            collection_details_recycler.adapter = adapter
-
-            viewModel.setCollectionId(safeArguments.collectionId)
+                viewModel.setCollectionId(collectionId)
+            }
         }
     }
 

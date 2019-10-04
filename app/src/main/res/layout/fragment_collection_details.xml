@@ -6,222 +6,117 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-
-        android:id="@+id/collection_details_recycler"
+    <androidx.constraintlayout.motion.widget.MotionLayout
+        android:id="@+id/collection_details_motion_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-        tools:listitem="@layout/row_photo" />
+        app:layoutDescription="@xml/collection_details_motion_scene">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/main.appbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/main.collapsing"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleMarginEnd="64dp"
-            app:expandedTitleMarginStart="48dp"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            android:layout_height="wrap_content"
+            android:elevation="2dp"
+            android:gravity="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
+            <TextView
+                android:id="@+id/collection_details_txt_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/transparent"
-                android:fitsSystemWindows="true"
-                app:layout_collapseMode="pin" />
+                android:layout_marginEnd="16dp"
+                android:gravity="center"
+                android:textAppearance="@style/TextAppearance.AppTheme.Headline6"
+                android:textColor="?colorOnSurface"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Flowers Contained" />
+        </androidx.appcompat.widget.Toolbar>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/collection_details_constraint"
-                android:layout_width="match_parent"
-                android:layout_height="200dp">
-
-                <TextView
-                    android:id="@+id/collection_details_txt_title"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textAppearance="@style/TextAppearance.AppTheme.Headline6"
-                    android:textColor="@color/black"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="Flowers Contained" />
-
-                <TextView
-                    android:id="@+id/collection_details_txt_description"
-                    style="@style/Widget.AppCompat.TextView"
-                    android:layout_width="379dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginEnd="24dp"
-                    android:gravity="center"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"
-                    android:textAppearance="@style/TextAppearance.AppTheme.Body2"
-                    android:textColor="@color/black"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/collection_details_txt_title"
-                    tools:text="The showing of two or more pictures blended or composed into one photo. Not caused by alcoholic beverages or vision" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
-    <!--        android:id="@+id/collection_details_constraint"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:visibility="gone"-->
-    <!--        android:layout_height="match_parent">-->
-
-    <!--        &lt;!&ndash;<ImageView&ndash;&gt;-->
-    <!--            &lt;!&ndash;android:id="@+id/collection_details_img_cover_photo"&ndash;&gt;-->
-    <!--            &lt;!&ndash;android:layout_width="0dp"&ndash;&gt;-->
-    <!--            &lt;!&ndash;android:layout_height="0dp"&ndash;&gt;-->
-    <!--            &lt;!&ndash;android:foreground="@drawable/layer_background_gradient"&ndash;&gt;-->
-    <!--            &lt;!&ndash;android:scaleType="centerCrop"&ndash;&gt;-->
-    <!--            &lt;!&ndash;app:layout_constraintDimensionRatio="H,16:9"&ndash;&gt;-->
-    <!--            &lt;!&ndash;app:layout_constraintEnd_toEndOf="parent"&ndash;&gt;-->
-    <!--            &lt;!&ndash;app:layout_constraintHorizontal_bias="0.0"&ndash;&gt;-->
-    <!--            &lt;!&ndash;app:layout_constraintStart_toStartOf="parent"&ndash;&gt;-->
-    <!--            &lt;!&ndash;app:layout_constraintTop_toTopOf="parent"&ndash;&gt;-->
-    <!--            &lt;!&ndash;tools:srcCompat="@tools:sample/backgrounds/scenic" />&ndash;&gt;-->
-
-    <!--        <View-->
-    <!--            android:id="@+id/collection_details_img_cover_photo"-->
-    <!--            android:layout_width="0dp"-->
-    <!--            android:layout_height="0dp"-->
-    <!--            android:background="@color/white"-->
-    <!--            app:layout_constraintDimensionRatio="H,16:9"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintHorizontal_bias="0.0"-->
-    <!--            app:layout_constraintStart_toStartOf="parent"-->
-    <!--            app:layout_constraintTop_toTopOf="parent"-->
-    <!--            tools:srcCompat="@tools:sample/backgrounds/scenic"-->
-    <!--            tools:visibility="visible" />-->
-
-    <!--&lt;!&ndash;        <androidx.appcompat.widget.Toolbar&ndash;&gt;-->
-    <!--&lt;!&ndash;            android:id="@+id/toolbar"&ndash;&gt;-->
-    <!--&lt;!&ndash;            android:layout_width="0dp"&ndash;&gt;-->
-    <!--&lt;!&ndash;            android:layout_height="wrap_content"&ndash;&gt;-->
-    <!--&lt;!&ndash;            android:background="@color/transparent"&ndash;&gt;-->
-    <!--&lt;!&ndash;            android:fitsSystemWindows="true"&ndash;&gt;-->
-    <!--&lt;!&ndash;            app:layout_constraintEnd_toEndOf="parent"&ndash;&gt;-->
-    <!--&lt;!&ndash;            app:layout_constraintStart_toStartOf="parent"&ndash;&gt;-->
-    <!--&lt;!&ndash;            app:layout_constraintTop_toTopOf="@+id/collection_details_img_cover_photo" />&ndash;&gt;-->
+        <ImageView
+            android:id="@+id/collection_details_img_cover_photo"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="?colorSurface"
+            android:scaleType="centerCrop"
+            android:src="@drawable/bg_header" />
 
 
-    <!--        <ImageView-->
-    <!--            android:id="@+id/collection_details_img_author"-->
-    <!--            android:layout_width="48dp"-->
-    <!--            android:layout_height="48dp"-->
-    <!--            android:layout_marginEnd="8dp"-->
-    <!--            app:layout_constraintEnd_toEndOf="@+id/collection_details_txt_description"-->
-    <!--            app:layout_constraintTop_toBottomOf="@+id/collection_details_txt_description"-->
-    <!--            tools:srcCompat="@tools:sample/avatars"-->
-    <!--            tools:visibility="visible" />-->
+        <TextView
+            android:id="@+id/collection_details_txt_description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:gravity="center"
+            android:lineSpacingExtra="2sp"
+            android:padding="16dp"
+            android:textAppearance="@style/TextAppearance.AppTheme.Body1"
+            android:textColor="?colorOnSurface"
+            android:textSize="13sp"
+            tools:layout_editor_absoluteY="56dp"
+            tools:text="The showing of two or more pictures blended or composed into one photo. Not caused by alcoholic beverages or vision" />
 
-    <!--        <TextView-->
-    <!--            android:id="@+id/collection_details_txt_title"-->
-    <!--            android:layout_width="0dp"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_marginStart="55dp"-->
-    <!--            android:layout_marginTop="37dp"-->
-    <!--            android:layout_marginEnd="55dp"-->
-    <!--            android:gravity="center"-->
-    <!--            android:textAppearance="@style/TextAppearance.AppTheme.Headline6"-->
-    <!--            android:textColor="@color/black"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintHorizontal_bias="0.0"-->
-    <!--            app:layout_constraintStart_toStartOf="@+id/toolbar"-->
-    <!--            app:layout_constraintTop_toTopOf="@+id/toolbar"-->
-    <!--            tools:text="Flowers Contained" />-->
+        <ImageView
+            android:id="@+id/collection_details_img_author"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            tools:srcCompat="@tools:sample/avatars" />
 
-    <!--&lt;!&ndash;        <androidx.recyclerview.widget.RecyclerView&ndash;&gt;-->
-    <!--&lt;!&ndash;            android:id="@+id/collection_details_recycler"&ndash;&gt;-->
-    <!--&lt;!&ndash;            android:layout_width="0dp"&ndash;&gt;-->
-    <!--&lt;!&ndash;            android:layout_height="0dp"&ndash;&gt;-->
-    <!--&lt;!&ndash;            android:visibility="visible"&ndash;&gt;-->
-    <!--&lt;!&ndash;            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"&ndash;&gt;-->
-    <!--&lt;!&ndash;            app:layout_constraintBottom_toBottomOf="parent"&ndash;&gt;-->
-    <!--&lt;!&ndash;            app:layout_constraintEnd_toEndOf="parent"&ndash;&gt;-->
-    <!--&lt;!&ndash;            app:layout_constraintHorizontal_bias="0.0"&ndash;&gt;-->
-    <!--&lt;!&ndash;            app:layout_constraintStart_toStartOf="parent"&ndash;&gt;-->
-    <!--&lt;!&ndash;            app:layout_constraintTop_toBottomOf="@+id/collection_details_img_cover_photo"&ndash;&gt;-->
-    <!--&lt;!&ndash;            tools:listitem="@layout/row_photo" />&ndash;&gt;-->
+        <TextView
+            android:id="@+id/collection_details_txt_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center|center_horizontal"
+            android:padding="2dp"
+            android:textAppearance="@style/TextAppearance.AppTheme.Subtitle2"
+            android:textColor="?colorOnSurface"
+            android:textSize="12sp"
+            tools:text="by Sandy Harrmony" />
 
-    <!--        <TextView-->
-    <!--            android:id="@+id/collection_details_txt_author"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_marginEnd="16dp"-->
-    <!--            android:gravity="center|center_horizontal"-->
-    <!--            android:textAppearance="@style/TextAppearance.AppTheme.Subtitle2"-->
-    <!--            app:layout_constraintBottom_toBottomOf="@+id/collection_details_img_author"-->
-    <!--            app:layout_constraintEnd_toStartOf="@+id/collection_details_img_author"-->
-    <!--            app:layout_constraintTop_toTopOf="@+id/collection_details_img_author"-->
-    <!--            tools:text="Sandy Harrmony" />-->
+        <com.netchar.common.views.CompoundDrawableTextView
+            android:id="@+id/collection_details_txt_photos_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="4dp"
+            android:gravity="center_vertical"
+            android:minHeight="24dp"
+            android:textAppearance="@style/TextAppearance.AppTheme.Subtitle2"
+            android:textColor="?colorOnSurface"
+            android:textSize="10sp"
+            app:compoundDrawableHeight="16dp"
+            app:compoundDrawableWidth="16dp"
+            app:drawableLeftCompat="@drawable/ic_collections_bookmark"
+            app:drawableTint="?colorOnSurface"
+            tools:text="12 photos" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/collection_details_recycler"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/collection_details_img_cover_photo"
+            tools:listitem="@layout/row_photo" />
 
-    <!--        <com.netchar.common.views.CompoundDrawableTextView-->
-    <!--            android:id="@+id/collection_details_tv_photos_count"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_marginEnd="8dp"-->
-    <!--            android:layout_marginBottom="8dp"-->
-    <!--            android:drawablePadding="4dp"-->
-    <!--            android:gravity="center_vertical"-->
-    <!--            android:minHeight="24dp"-->
-    <!--            android:textAppearance="@style/TextAppearance.AppTheme.Caption"-->
-    <!--            android:textColor="@color/white"-->
-    <!--            android:visibility="gone"-->
-    <!--            app:compoundDrawableHeight="16dp"-->
-    <!--            app:compoundDrawableWidth="16dp"-->
-    <!--            app:drawableLeftCompat="@drawable/ic_collections_bookmark"-->
-    <!--            app:drawableTint="@color/white"-->
-    <!--            app:layout_constraintBottom_toBottomOf="@+id/collection_details_img_cover_photo"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            tools:text="12 photos" />-->
-
-    <!--        <androidx.constraintlayout.widget.Guideline-->
-    <!--            android:id="@+id/guideline2"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:orientation="horizontal"-->
-    <!--            app:layout_constraintGuide_begin="72dp" />-->
-
-    <!--        <TextView-->
-    <!--            android:id="@+id/collection_details_txt_description"-->
-    <!--            style="@style/Widget.AppCompat.TextView"-->
-    <!--            android:layout_width="379dp"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_marginStart="24dp"-->
-    <!--            android:layout_marginTop="24dp"-->
-    <!--            android:layout_marginEnd="24dp"-->
-    <!--            android:gravity="center"-->
-    <!--            android:paddingStart="8dp"-->
-    <!--            android:paddingEnd="8dp"-->
-    <!--            android:textAppearance="@style/TextAppearance.AppTheme.Body2"-->
-    <!--            android:textColor="@color/black"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintStart_toStartOf="parent"-->
-    <!--            app:layout_constraintTop_toBottomOf="@+id/collection_details_txt_title"-->
-    <!--            tools:text="The showing of two or more pictures blended or composed into one photo. Not caused by alcoholic beverages or vision" />-->
+        <Space
+            android:id="@+id/collection_details_space_image"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:elevation="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/collection_details_img_author" />
 
 
-    <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+    </androidx.constraintlayout.motion.widget.MotionLayout>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
