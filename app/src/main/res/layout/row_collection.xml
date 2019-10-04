@@ -19,25 +19,24 @@
             android:id="@+id/row_collection_image"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:adjustViewBounds="true"
-            android:cropToPadding="true"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="H,16:9"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:foreground="@drawable/layer_background_gradient"
             app:srcCompat="@mipmap/ic_launcher_round" />
 
-        <View
-            android:id="@+id/row_collection_gradient_overlay"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:background="@drawable/layer_background_gradient"
-            app:layout_constraintBottom_toBottomOf="@+id/row_collection_image"
-            app:layout_constraintEnd_toStartOf="@+id/row_collection_image"
-            app:layout_constraintStart_toStartOf="@+id/row_collection_image"
-            app:layout_constraintTop_toTopOf="@+id/row_collection_image" />
+        <!--<View-->
+        <!--android:id="@+id/row_collection_gradient_overlay"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:background="@drawable/layer_background_gradient"-->
+        <!--app:layout_constraintBottom_toBottomOf="@+id/row_collection_image"-->
+        <!--app:layout_constraintEnd_toStartOf="@+id/row_collection_image"-->
+        <!--app:layout_constraintStart_toStartOf="@+id/row_collection_image"-->
+        <!--app:layout_constraintTop_toTopOf="@+id/row_collection_image" />-->
 
         <TextView
             android:id="@+id/row_collection_title_txt"

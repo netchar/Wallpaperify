@@ -18,6 +18,8 @@ package com.netchar.wallpaperify.ui.collections
 
 import android.graphics.drawable.Drawable
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -26,8 +28,6 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.netchar.common.extensions.fitWidth
 import com.netchar.common.extensions.getThemeAttrColor
-import com.netchar.common.extensions.toGone
-import com.netchar.common.extensions.toVisible
 import com.netchar.common.poweradapter.item.IRecyclerItem
 import com.netchar.common.poweradapter.item.ItemRenderer
 import com.netchar.common.utils.ShimmerFactory
@@ -39,7 +39,7 @@ import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.ui.App
 import kotlinx.android.synthetic.main.row_collection.view.*
 
-class CollectionRenderer(private val glide: RequestManager, val onClickListener: (CollectionPOJO) -> Unit) : ItemRenderer() {
+class CollectionRenderer(private val glide: RequestManager, val onClickListener: (CollectionPOJO, ImageView, TextView, TextView, TextView) -> Unit) : ItemRenderer() {
 
     companion object {
         val fetchedColors = hashMapOf<String, Int>()
@@ -62,14 +62,17 @@ class CollectionRenderer(private val glide: RequestManager, val onClickListener:
         row_collection_content_container.setBackgroundColor(color)
         row_collection_published_txt.text = date
         row_collection_photo_count_txt.text = context.getString(R.string.collection_item_photo_count_postfix, data.totalPhotos)
+        row_collection_photo_count_txt.transitionName = "totalCount${data.id}"
         row_collection_author_txt.text = context.getString(R.string.collection_item_author_prefix, data.user.name)
+        row_collection_author_txt.transitionName = "author${data.id}"
         row_collection_title_txt.text = data.title
-        row_collection_gradient_overlay.toGone()
-
+        row_collection_title_txt.transitionName = "title${data.id}"
+//        row_collection_gradient_overlay.toGone()
+        row_collection_image.transitionName = "image${data.id}"
         setupImage(this, photo)
 
         itemView.setOnClickListener {
-            onClickListener(data)
+            onClickListener(data, row_collection_image, row_collection_author_txt, row_collection_photo_count_txt, row_collection_title_txt)
         }
     }
 
@@ -81,25 +84,25 @@ class CollectionRenderer(private val glide: RequestManager, val onClickListener:
             background = shimmer
 
             glide.load(coverPhoto.urls.regular)
-                    .fitCenter()
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .listener(object : RequestListener<Drawable> {
-                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                            return releaseShimmer()
-                        }
+                .fitCenter()
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .listener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                        return releaseShimmer()
+                    }
 
-                        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                            itemView.row_collection_gradient_overlay.toVisible()
-                            return releaseShimmer()
-                        }
+                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+//                        itemView.row_collection_gradient_overlay.toVisible()
+                        return releaseShimmer()
+                    }
 
-                        private fun releaseShimmer(): Boolean {
-                            shimmer.stopShimmer()
-                            background = null
-                            return false
-                        }
-                    })
-                    .into(this)
+                    private fun releaseShimmer(): Boolean {
+                        shimmer.stopShimmer()
+                        background = null
+                        return false
+                    }
+                })
+                .into(this)
         }
     }
 

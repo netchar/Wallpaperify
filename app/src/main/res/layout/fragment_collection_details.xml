@@ -1,12 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/collection_details_coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.constraintlayout.motion.widget.MotionLayout
+        android:id="@+id/collection_details_motion_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        app:layoutDescription="@xml/collection_details_motion_scene">
 
-</FrameLayout>
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="2dp"
+            android:gravity="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/collection_details_txt_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:gravity="center"
+                android:textAppearance="@style/TextAppearance.AppTheme.Headline6"
+                android:textColor="?colorOnSurface"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Flowers Contained" />
+        </androidx.appcompat.widget.Toolbar>
+
+        <ImageView
+            android:id="@+id/collection_details_img_cover_photo"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="?colorSurface"
+            android:scaleType="centerCrop"
+            android:src="@drawable/bg_header" />
+
+
+        <TextView
+            android:id="@+id/collection_details_txt_description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:gravity="center"
+            android:lineSpacingExtra="2sp"
+            android:padding="16dp"
+            android:textAppearance="@style/TextAppearance.AppTheme.Body1"
+            android:textColor="?colorOnSurface"
+            android:textSize="13sp"
+            tools:layout_editor_absoluteY="56dp"
+            tools:text="The showing of two or more pictures blended or composed into one photo. Not caused by alcoholic beverages or vision" />
+
+        <ImageView
+            android:id="@+id/collection_details_img_author"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/collection_details_txt_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center|center_horizontal"
+            android:padding="2dp"
+            android:textAppearance="@style/TextAppearance.AppTheme.Subtitle2"
+            android:textColor="?colorOnSurface"
+            android:textSize="12sp"
+            tools:text="by Sandy Harrmony" />
+
+        <com.netchar.common.views.CompoundDrawableTextView
+            android:id="@+id/collection_details_txt_photos_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="4dp"
+            android:gravity="center_vertical"
+            android:minHeight="24dp"
+            android:textAppearance="@style/TextAppearance.AppTheme.Subtitle2"
+            android:textColor="?colorOnSurface"
+            android:textSize="10sp"
+            app:compoundDrawableHeight="16dp"
+            app:compoundDrawableWidth="16dp"
+            app:drawableLeftCompat="@drawable/ic_collections_bookmark"
+            app:drawableTint="?colorOnSurface"
+            tools:text="12 photos" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/collection_details_recycler"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/collection_details_img_cover_photo"
+            tools:listitem="@layout/row_photo" />
+
+        <Space
+            android:id="@+id/collection_details_space_image"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:elevation="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/collection_details_img_author" />
+
+
+    </androidx.constraintlayout.motion.widget.MotionLayout>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

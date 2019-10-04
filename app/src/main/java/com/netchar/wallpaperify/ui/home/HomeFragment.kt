@@ -24,7 +24,6 @@ import android.view.View
 import com.google.android.material.appbar.AppBarLayout
 import com.netchar.common.base.BaseFragment
 import com.netchar.common.extensions.*
-import com.netchar.common.utils.ThemeUtils
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.ui.collections.CollectionsFragment
 import com.netchar.wallpaperify.ui.photos.PhotosFragment
@@ -39,11 +38,6 @@ class HomeFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        if (ThemeUtils.isDayThemeEnabled(baseContext)) {
-            activity.setLightStatusBar(true)
-        }
-
         activity.setTransparentStatusBars(false)
         activity.setDisplayShowTitleEnabled(false)
         fragmentToolbar?.applyWindowInsets()

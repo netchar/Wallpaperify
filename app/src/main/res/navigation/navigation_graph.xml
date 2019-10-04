@@ -9,11 +9,7 @@
         android:id="@+id/collectionsFragment"
         android:name="com.netchar.wallpaperify.ui.collections.CollectionsFragment"
         android:label="@string/collections_fragment_title"
-        tools:layout="@layout/fragment_collections">
-        <action
-            android:id="@+id/action_collectionsFragment_to_collectionDetailsFragment"
-            app:destination="@id/collectionDetailsFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_collections" />
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.netchar.wallpaperify.ui.settings.SettingsFragment"
@@ -50,7 +46,32 @@
         android:id="@+id/collectionDetailsFragment"
         android:name="com.netchar.wallpaperify.ui.collectiondetails.CollectionDetailsFragment"
         android:label="@string/collection_details_fragment_title"
-        tools:layout="@layout/fragment_collection_details"/>
+        tools:layout="@layout/fragment_collection_details">
+        <argument
+            android:name="collectionId"
+            app:argType="integer" />
+        <argument
+            android:name="coverPhotoUrl"
+            app:argType="string" />
+        <argument
+            android:name="authorPhotoUrl"
+            app:argType="string" />
+        <argument
+            android:name="authorName"
+            app:argType="string" />
+        <argument
+            android:name="totalPhotos"
+            app:argType="integer" />
+        <argument
+            android:name="collectionTitle"
+            app:argType="string" />
+        <argument
+            android:name="collectionDescription"
+            app:argType="string" />
+        <argument
+            android:name="transitionModel"
+            app:argType="com.netchar.wallpaperify.ui.collections.CollectionDetailsTransitionModel" />
+    </fragment>
     <fragment
         android:id="@+id/photosFragment"
         android:name="com.netchar.wallpaperify.ui.photos.PhotosFragment"
@@ -68,7 +89,15 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.netchar.wallpaperify.ui.home.HomeFragment"
-        android:label="@string/home_fragment_title" />
+        android:label="@string/home_fragment_title">
+        <action
+            android:id="@+id/action_homeFragment_to_collectionDetailsFragment"
+            app:destination="@id/collectionDetailsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
     <action
         android:id="@+id/action_global_photoDetailsFragment"
         app:destination="@id/photoDetailsFragment"

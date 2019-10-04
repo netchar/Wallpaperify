@@ -17,9 +17,11 @@
 package com.netchar.remote.api
 
 import com.netchar.remote.dto.Collection
+import com.netchar.remote.dto.Photo
 import kotlinx.coroutines.Deferred
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 
@@ -35,4 +37,11 @@ interface CollectionsApi {
             @Query("page") page: Int,
             @Query("per_page") per_page: Int
     ): Deferred<Response<List<Collection>>>
+
+    @GET("/collections/{id}/photos")
+    fun getCollectionPhotosAsync(
+            @Path("id") id: Int,
+            @Query("page") page: Int,
+            @Query("per_page") per_page: Int
+    ): Deferred<Response<List<Photo>>>
 }

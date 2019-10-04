@@ -19,8 +19,10 @@ package com.netchar.repository.collection
 import com.netchar.remote.apirequest.ApiRequest
 import com.netchar.repository.IBoundResource
 import com.netchar.repository.pojo.CollectionPOJO
+import com.netchar.repository.pojo.PhotoPOJO
 import kotlinx.coroutines.CoroutineScope
 
 interface ICollectionRepository {
     fun getCollections(request: ApiRequest.Collections, scope: CoroutineScope): IBoundResource<List<CollectionPOJO>>
+    fun getCollectionPhotos(request: ApiRequest.Collection, scope: CoroutineScope): IBoundResource<List<PhotoPOJO>>
 }
