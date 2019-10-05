@@ -31,6 +31,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.transition.TransitionManager
 import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -112,6 +113,7 @@ class PhotoDetailsFragment : BaseFragment() {
 
         GlideApp.with(this@PhotoDetailsFragment)
             .load(safeArguments.photoUrl)
+            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                     shimmer.stopShimmer()

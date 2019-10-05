@@ -80,6 +80,7 @@ class CollectionDetailsFragment : BaseFragment() {
                     .into(collection_details_img_author)
 
                 collection_details_recycler.setHasFixedSize(true)
+                collection_details_recycler.onLoadMore = ::onLoadMoreItems
                 collection_details_recycler.adapter = RecyclerAdapter(dataSource)
 
                 collection_details_txt_author.text = getString(R.string.collection_item_author_prefix, authorName)

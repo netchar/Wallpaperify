@@ -93,7 +93,7 @@
             app:drawableTint="?colorOnSurface"
             tools:text="12 photos" />
 
-        <androidx.recyclerview.widget.RecyclerView
+        <com.netchar.common.views.EndlessRecyclerView
             android:id="@+id/collection_details_recycler"
             android:layout_width="0dp"
             android:layout_height="0dp"
