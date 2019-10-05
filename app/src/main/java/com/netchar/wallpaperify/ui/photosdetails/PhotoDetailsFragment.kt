@@ -27,7 +27,6 @@ import androidx.core.text.underline
 import androidx.core.view.ViewCompat
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.transition.TransitionManager
 import com.bumptech.glide.load.DataSource
@@ -159,44 +158,48 @@ class PhotoDetailsFragment : BaseFragment() {
     }
 
     private fun observe() {
-        viewModel.photo.observe(viewLifecycleOwner, Observer { photo ->
+        viewModel.photo.observe { photo ->
             updateUiByPhotoDetails(photo)
-        })
+        }
 
-        viewModel.error.observe(viewLifecycleOwner, Observer { error ->
+        viewModel.photo.observe { photo ->
+            updateUiByPhotoDetails(photo)
+        }
+
+        viewModel.error.observe { error ->
             toast(getStringSafe(error.messageRes))
-        })
+        }
 
-        viewModel.loading.observe(viewLifecycleOwner, Observer { loading ->
+        viewModel.loading.observe { loading ->
             if (!loading) {
                 stopShimmer()
             }
-        })
+        }
 
-        viewModel.downloadDialog.observe(viewLifecycleOwner, Observer { dialogState ->
+        viewModel.downloadDialog.observe { dialogState ->
             if (dialogState.show) {
                 downloadDialog.show(childFragmentManager, DownloadDialogFragment::class.java.simpleName)
             } else {
                 downloadDialog.isDownloadFinished = !dialogState.isCanceled
                 downloadDialog.dismiss()
             }
-        })
+        }
 
-        viewModel.downloadProgress.observe(viewLifecycleOwner, Observer { progress ->
+        viewModel.downloadProgress.observe { progress ->
             updateProgress(progress)
-        })
+        }
 
-        viewModel.toast.observe(viewLifecycleOwner, Observer { message ->
+        viewModel.toast.observe { message ->
             message.messageRes?.let { toast(it) }
-        })
+        }
 
-        viewModel.overrideDialog.observe(viewLifecycleOwner, Observer { dialogState ->
+        viewModel.overrideDialog.observe { dialogState ->
             if (dialogState.show) {
                 overrideDialog.show()
             } else {
                 overrideDialog.dismiss()
             }
-        })
+        }
     }
 
     private fun updateProgress(progress: Float) {

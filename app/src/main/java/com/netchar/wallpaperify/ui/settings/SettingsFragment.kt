@@ -69,7 +69,6 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         val toolbar = view.findViewById<Toolbar>(R.id.toolbar).also { it.applyWindowInsets() }
         viewModel = injectViewModel(viewModelFactory)
         navigationBinder.bind(this@SettingsFragment, toolbar)

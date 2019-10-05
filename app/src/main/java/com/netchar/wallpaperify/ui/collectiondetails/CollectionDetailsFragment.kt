@@ -7,7 +7,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import androidx.core.view.updatePadding
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -102,21 +101,19 @@ class CollectionDetailsFragment : BaseFragment() {
     }
 
     private fun observe() {
-        viewModel.photos.observe(viewLifecycleOwner, Observer { photos ->
-            photos?.let {
-                //todo: refactor asRecyclerItems
-                dataSource.setData(it.asRecyclerItems())
-            }
-        })
+        viewModel.photos.observe { photos ->
+            //todo: refactor asRecyclerItems
+            dataSource.setData(photos.asRecyclerItems())
+        }
 
-        viewModel.error.observe(viewLifecycleOwner, Observer {
+        viewModel.error.observe {
             dataSource.setState(EndlessRecyclerDataSource.State.ERROR)
             snack(getStringSafe(it.errorMessage.messageRes), Snackbar.LENGTH_LONG)
-        })
+        }
 
-        viewModel.toast.observe(viewLifecycleOwner, Observer {
+        viewModel.toast.observe {
             toast(getStringSafe(it.messageRes))
-        })
+        }
     }
 
     private fun onLoadMoreItems() {

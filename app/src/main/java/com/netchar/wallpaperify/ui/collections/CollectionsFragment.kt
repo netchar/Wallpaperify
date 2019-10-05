@@ -22,7 +22,6 @@ import android.os.Parcelable
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
@@ -73,26 +72,26 @@ class CollectionsFragment : BaseFragment() {
     }
 
     private fun observe() {
-        viewModel.collections.observe(viewLifecycleOwner, Observer { photos ->
-            photos?.let { dataSource.setData(it.asRecyclerItems()) }
-        })
+        viewModel.collections.observe { photos ->
+            dataSource.setData(photos.asRecyclerItems())
+        }
 
-        viewModel.refreshing.observe(viewLifecycleOwner, Observer {
+        viewModel.refreshing.observe {
             collections_swipe.postAction { isRefreshing = it }
-        })
+        }
 
-        viewModel.error.observe(viewLifecycleOwner, Observer {
+        viewModel.error.observe {
             dataSource.setState(EndlessRecyclerDataSource.State.ERROR)
             snack(getStringSafe(it.errorMessage.messageRes), Snackbar.LENGTH_LONG)
-        })
+        }
 
-        viewModel.toast.observe(viewLifecycleOwner, Observer {
+        viewModel.toast.observe {
             toast(getStringSafe(it.messageRes))
-        })
+        }
 
-        viewModel.errorPlaceholder.observe(viewLifecycleOwner, Observer {
+        viewModel.errorPlaceholder.observe {
             toggleError(it)
-        })
+        }
     }
 
     private fun toggleError(error: ErrorMessage) {
