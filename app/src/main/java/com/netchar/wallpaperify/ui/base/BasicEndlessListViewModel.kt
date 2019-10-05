@@ -25,13 +25,8 @@ import com.netchar.repository.pojo.Message
 import com.netchar.repository.pojo.Resource
 import com.netchar.wallpaperify.R
 
-/**
- * Created by Netchar on 08.05.2019.
- * e.glushankov@gmail.com
- */
-
 class BasicEndlessListViewModel<TModel> {
-    val paging = Paging(startPage = 1)
+    val paging = Paging()
     val items: MediatorLiveData<List<TModel>> = MediatorLiveData()
     val refreshing: SingleLiveData<Boolean> = SingleLiveData()
     val error: SingleLiveData<ErrorMessage> = SingleLiveData()
@@ -39,22 +34,22 @@ class BasicEndlessListViewModel<TModel> {
     val errorPlaceholder: SingleLiveData<ErrorMessage> = SingleLiveData()
 
     fun proceedFetching(response: Resource<List<TModel>>) {
-        if (needToHidePlaceholder) {
+        if (shouldHidePlaceholders()) {
             hidePlaceholderError()
         }
 
-        if (isFreshFetching) {
+        if (isInitialFetching()) {
             handleFreshFetch(response)
         } else {
             handleLoadMoreFetch(response)
         }
     }
 
-    private val needToHidePlaceholder get() = isNoItemsVisible && errorPlaceholder.value?.isVisible == true
+    private fun shouldHidePlaceholders() = isNoItemsVisible() && errorPlaceholder.value?.isVisible == true
 
-    private val isNoItemsVisible get() = items.value.isNullOrEmpty()
+    private fun isNoItemsVisible() = items.value.isNullOrEmpty()
 
-    private val isFreshFetching get() = paging.currentPage == paging.startPage
+    private fun isInitialFetching() = paging.currentPage == paging.startPage
 
     private fun handleFreshFetch(response: Resource<List<TModel>>) {
         when (response) {
@@ -90,7 +85,7 @@ class BasicEndlessListViewModel<TModel> {
     private fun riseError(response: Resource.Error) {
         val errorMessage = getErrorMessage(response)
 
-        if (isNoItemsVisible) {
+        if (isNoItemsVisible()) {
             errorPlaceholder.value = errorMessage
         } else {
             error.value = errorMessage
@@ -100,11 +95,7 @@ class BasicEndlessListViewModel<TModel> {
     private fun getErrorMessage(response: Resource.Error): ErrorMessage {
         return when (response.cause) {
             Cause.NO_INTERNET_CONNECTION -> ErrorMessage(true, Message(R.string.message_error_no_internet), R.drawable.ic_no_internet_connection)
-            Cause.NOT_AUTHENTICATED, Cause.UNEXPECTED -> ErrorMessage(
-                    true,
-                    Message(R.string.error_message_try_again_later),
-                    R.drawable.img_unexpected_error
-            )
+            Cause.NOT_AUTHENTICATED, Cause.UNEXPECTED -> ErrorMessage(true, Message(R.string.error_message_try_again_later), R.drawable.img_unexpected_error)
         }
     }
 }

@@ -29,8 +29,8 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.netchar.common.base.BaseFragment
 import com.netchar.common.extensions.*
-import com.netchar.common.poweradapter.adapter.EndlessRecyclerAdapter
 import com.netchar.common.poweradapter.adapter.EndlessRecyclerDataSource
+import com.netchar.common.poweradapter.adapter.RecyclerAdapter
 import com.netchar.repository.pojo.ErrorMessage
 import com.netchar.repository.pojo.PhotoPOJO
 import com.netchar.wallpaperify.R
@@ -41,7 +41,6 @@ import kotlinx.android.synthetic.main.fragment_photos.*
 import javax.inject.Inject
 
 class PhotosFragment : BaseFragment() {
-
     init {
         setHasOptionsMenu(true)
     }
@@ -58,21 +57,17 @@ class PhotosFragment : BaseFragment() {
         EndlessRecyclerDataSource(mutableListOf(photoRenderer), ::onLoadMoreItems)
     }
 
-    private val adapter: EndlessRecyclerAdapter by lazy {
-        EndlessRecyclerAdapter(dataSource)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = injectViewModel(viewModelFactory)
-
         setupViews()
         observe()
     }
 
     private fun setupViews() {
         latest_recycler.setHasFixedSize(true)
-        latest_recycler.adapter = adapter
+        latest_recycler.adapter = RecyclerAdapter(dataSource)
+        latest_recycler.onLoadMore = ::onLoadMoreItems
         latest_swipe.setOnRefreshListener {
             viewModel.refresh()
         }
@@ -117,7 +112,7 @@ class PhotosFragment : BaseFragment() {
         })
 
         viewModel.error.observe(viewLifecycleOwner, Observer {
-            dataSource.showRetryItem()
+            dataSource.setState(EndlessRecyclerDataSource.State.ERROR)
             snack(getStringSafe(it.errorMessage.messageRes), Snackbar.LENGTH_LONG)
         })
 
@@ -143,14 +138,7 @@ class PhotosFragment : BaseFragment() {
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        // removing listeners from EndlessRecyclerAdapter
-        latest_recycler.detachAdapter()
-    }
-
     private fun onItemClick(model: PhotoPOJO, imageView: ImageView) {
-
         val toolbar = activity!!.findViewById<Toolbar>(R.id.toolbar)
         val extras = FragmentNavigatorExtras(
                 toolbar to toolbar.transitionName

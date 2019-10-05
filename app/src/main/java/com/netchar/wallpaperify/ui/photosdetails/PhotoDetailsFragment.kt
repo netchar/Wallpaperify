@@ -90,7 +90,6 @@ class PhotoDetailsFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         viewModel = injectViewModel(viewModelFactory)
         activity.setTransparentStatusBars(true)
         activity.setDisplayShowTitleEnabled(false)

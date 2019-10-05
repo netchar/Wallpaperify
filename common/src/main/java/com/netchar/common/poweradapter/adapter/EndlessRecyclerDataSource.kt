@@ -28,56 +28,70 @@ import java.util.*
 
 class EndlessRecyclerDataSource(
         renderers: MutableList<ItemRenderer>,
-        private val onLoadMore: () -> Unit
+        private val onRetry: () -> Unit,
+        private val totalItems: Int = -1
 ) : RecyclerDataSource(renderers) {
-
-    private val loadingItem = LoadingItem()
-
-    init {
-        renderers.add(LoadingItemRenderer {
-            hideRetryItem()
-            onLoadMore()
-        })
+    companion object {
+        private val loadingItem = LoadingItem()
     }
 
-    fun showRetryItem() {
-        loadingItem.showRetry()
-        notifyItemChanged(loadingItem)
-    }
-
-    private fun hideRetryItem() {
-        loadingItem.hideRetry()
+    fun setState(state: State) {
+        loadingItem.mode = when (state) {
+            State.LOADING -> LoadingItemRenderer.MODE_LOADING
+            State.ERROR -> LoadingItemRenderer.MODE_RETRY
+        }
         notifyItemChanged(loadingItem)
     }
 
     override fun setData(newData: List<IRecyclerItem>) {
-        super.setData(newData.plus(loadingItem))
+        var items = newData
+        if (isEndlessList() || hasMoreItemsToLoad(newData)) {
+            items = newData.plus(loadingItem)
+        }
+
+        super.setData(items)
+    }
+
+    private fun isEndlessList(): Boolean = totalItems == -1
+
+    private fun hasMoreItemsToLoad(items: List<IRecyclerItem>): Boolean {
+        return items.count() < totalItems
     }
 
     override fun attach(adapter: RecyclerView.Adapter<RecyclerViewHolder>) {
-        if (adapter is EndlessRecyclerAdapter) {
-            adapter.loadMore = onLoadMore
-        }
+        val loadingItemRenderer = LoadingItemRenderer(onRetryClick = {
+            setState(State.LOADING)
+            onRetry()
+        })
+        addRenderer(loadingItemRenderer)
         super.attach(adapter)
     }
 
     private class LoadingItemRenderer(val onRetryClick: () -> Unit) : ItemRenderer() {
+        companion object {
+            const val MODE_LOADING = 1
+            const val MODE_RETRY = 2
+        }
+
         override val renderKey: String = LoadingItem::class.java.simpleName
 
         override fun layoutRes(): Int = R.layout.view_recycler_load_more_loading
 
         override fun bind(itemView: View, item: IRecyclerItem) {
             val loadingItem = item as LoadingItem
-            if (loadingItem.isRetryVisible) {
-                itemView.load_more_retry_group.toVisible()
-                itemView.load_more_item_loading.toGone()
-            } else {
-                itemView.load_more_retry_group.toGone()
-                itemView.load_more_item_loading.toVisible()
-            }
 
-            itemView.load_more_retry_group.setOnClickListener {
-                onRetryClick()
+            when (loadingItem.mode) {
+                MODE_LOADING -> {
+                    itemView.load_more_retry_group.toGone()
+                    itemView.load_more_item_loading.toVisible()
+                }
+                MODE_RETRY -> {
+                    itemView.load_more_retry_group.toVisible()
+                    itemView.load_more_item_loading.toGone()
+                    itemView.load_more_retry_group.setOnClickListener {
+                        onRetryClick()
+                    }
+                }
             }
         }
     }
@@ -89,17 +103,13 @@ class EndlessRecyclerDataSource(
 
         override fun getRenderKey(): String = LoadingItem::class.java.simpleName
 
-        var isRetryVisible: Boolean = false
-            private set
-
-        fun showRetry() {
-            isRetryVisible = true
-        }
-
-        fun hideRetry() {
-            isRetryVisible = false
-        }
+        var mode: Int = LoadingItemRenderer.MODE_LOADING
     }
 
     private fun notifyItemChanged(item: IRecyclerItem) = adapterReference.get()?.notifyItemChanged(data.indexOf(item))
+
+    enum class State {
+        LOADING,
+        ERROR
+    }
 }

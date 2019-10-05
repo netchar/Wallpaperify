@@ -29,7 +29,9 @@ import kotlinx.coroutines.channels.actor
 import java.lang.ref.WeakReference
 import kotlin.coroutines.CoroutineContext
 
-open class RecyclerDataSource(private val renderers: List<ItemRenderer>) : CoroutineScope {
+open class RecyclerDataSource(
+        private val renderers: MutableList<ItemRenderer>
+) : CoroutineScope {
     protected val data = mutableListOf<IRecyclerItem>()
     protected lateinit var adapterReference: WeakReference<RecyclerView.Adapter<RecyclerViewHolder>>
         private set
@@ -47,6 +49,10 @@ open class RecyclerDataSource(private val renderers: List<ItemRenderer>) : Corou
         for (list in channel) internalUpdate(list)
     }
 
+    fun addRenderer(newRenderer: ItemRenderer) {
+        renderers.add(newRenderer)
+    }
+
     @ObsoleteCoroutinesApi
     @MainThread
     open fun setData(newData: List<IRecyclerItem>) {
@@ -55,12 +61,18 @@ open class RecyclerDataSource(private val renderers: List<ItemRenderer>) : Corou
 
     @MainThread
     private suspend fun internalUpdate(newData: List<IRecyclerItem>) {
-        val result = withContext(Dispatchers.Default) {
-            DiffUtil.calculateDiff(diffCallback.apply { update(data, newData.toList()) })
-        }
+        val result = calculateDiffAsync(newData)
         seedData(newData)
-        adapterReference.get()?.let {
+        val adapter = adapterReference.get()
+        adapter?.let {
             result.dispatchUpdatesTo(it)
+        }
+    }
+
+    private suspend fun calculateDiffAsync(newData: List<IRecyclerItem>): DiffUtil.DiffResult {
+        return withContext(Dispatchers.Default) {
+            diffCallback.update(data, newData)
+            DiffUtil.calculateDiff(diffCallback)
         }
     }
 

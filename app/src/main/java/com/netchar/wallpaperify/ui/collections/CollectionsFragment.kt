@@ -28,8 +28,8 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.netchar.common.base.BaseFragment
 import com.netchar.common.extensions.*
-import com.netchar.common.poweradapter.adapter.EndlessRecyclerAdapter
 import com.netchar.common.poweradapter.adapter.EndlessRecyclerDataSource
+import com.netchar.common.poweradapter.adapter.RecyclerAdapter
 import com.netchar.repository.pojo.CollectionPOJO
 import com.netchar.repository.pojo.ErrorMessage
 import com.netchar.wallpaperify.R
@@ -54,21 +54,17 @@ class CollectionsFragment : BaseFragment() {
         EndlessRecyclerDataSource(mutableListOf(renderer), ::onLoadMoreItems)
     }
 
-    private val adapter: EndlessRecyclerAdapter by lazy {
-        EndlessRecyclerAdapter(dataSource)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = injectViewModel(viewModelFactory)
-
         setupViews()
         observe()
     }
 
     private fun setupViews() {
         collections_recycler.setHasFixedSize(true)
-        collections_recycler.adapter = adapter
+        collections_recycler.adapter = RecyclerAdapter(dataSource)
+        collections_recycler.onLoadMore = ::onLoadMoreItems
         collections_swipe.setOnRefreshListener { viewModel.refresh() }
     }
 
@@ -78,9 +74,7 @@ class CollectionsFragment : BaseFragment() {
 
     private fun observe() {
         viewModel.collections.observe(viewLifecycleOwner, Observer { photos ->
-            photos?.let {
-                dataSource.setData(it.asRecyclerItems())
-            }
+            photos?.let { dataSource.setData(it.asRecyclerItems()) }
         })
 
         viewModel.refreshing.observe(viewLifecycleOwner, Observer {
@@ -88,7 +82,7 @@ class CollectionsFragment : BaseFragment() {
         })
 
         viewModel.error.observe(viewLifecycleOwner, Observer {
-            dataSource.showRetryItem()
+            dataSource.setState(EndlessRecyclerDataSource.State.ERROR)
             snack(getStringSafe(it.errorMessage.messageRes), Snackbar.LENGTH_LONG)
         })
 
@@ -112,11 +106,6 @@ class CollectionsFragment : BaseFragment() {
                 imageResource = error.errorImageRes
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        collections_recycler.adapter = null
     }
 
     private fun onItemClick(model: CollectionPOJO, imageView: ImageView, authorNameView: TextView, photosCountView: TextView, titleView: TextView) {

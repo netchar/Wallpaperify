@@ -46,7 +46,6 @@
             android:scaleType="centerCrop"
             android:src="@drawable/bg_header" />
 
-
         <TextView
             android:id="@+id/collection_details_txt_description"
             android:layout_width="0dp"

@@ -14,8 +14,8 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.material.snackbar.Snackbar
 import com.netchar.common.base.BaseFragment
 import com.netchar.common.extensions.*
-import com.netchar.common.poweradapter.adapter.EndlessRecyclerAdapter
 import com.netchar.common.poweradapter.adapter.EndlessRecyclerDataSource
+import com.netchar.common.poweradapter.adapter.RecyclerAdapter
 import com.netchar.repository.pojo.PhotoPOJO
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.ViewModelFactory
@@ -34,30 +34,18 @@ class CollectionDetailsFragment : BaseFragment() {
 
     override val layoutResId: Int = R.layout.fragment_collection_details
 
-    private val dataSource: EndlessRecyclerDataSource by lazy {
-        val photoRenderer = PhotosRenderer(GlideApp.with(this), ::onItemClick)
-        EndlessRecyclerDataSource(mutableListOf(photoRenderer), ::onLoadMoreItems)
-    }
-
-    private val adapter: EndlessRecyclerAdapter by lazy {
-        EndlessRecyclerAdapter(dataSource)
-    }
-
-    init {
-        setHasOptionsMenu(true)
-    }
+    private lateinit var dataSource: EndlessRecyclerDataSource
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
         sharedElementEnterTransition = inflateTransition(android.R.transition.move)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         viewModel = injectViewModel(viewModelFactory)
         activity.setDisplayShowTitleEnabled(false)
-
         applyWindowsInsets()
         setupViews()
         observe()
@@ -68,21 +56,13 @@ class CollectionDetailsFragment : BaseFragment() {
         windowInsets.consumeSystemWindowInsets()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        // removing listeners from EndlessRecyclerAdapter
-        collection_details_recycler.detachAdapter()
-    }
-
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_collection_details, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_item_share -> {
-                toast("share")
-            }
+            R.id.menu_item_share -> toast("share")
         }
         return super.onOptionsItemSelected(item)
     }
@@ -91,6 +71,8 @@ class CollectionDetailsFragment : BaseFragment() {
         arguments?.let { bundle ->
             val safeArguments = CollectionDetailsFragmentArgs.fromBundle(bundle)
             with(safeArguments) {
+                dataSource = getEndlessSource(totalPhotos)
+
                 GlideApp.with(this@CollectionDetailsFragment)
                     .load(authorPhotoUrl)
                     .transform(CircleCrop())
@@ -98,18 +80,24 @@ class CollectionDetailsFragment : BaseFragment() {
                     .into(collection_details_img_author)
 
                 collection_details_recycler.setHasFixedSize(true)
-                collection_details_recycler.adapter = adapter
+                collection_details_recycler.adapter = RecyclerAdapter(dataSource)
+
                 collection_details_txt_author.text = getString(R.string.collection_item_author_prefix, authorName)
                 collection_details_txt_photos_count.text = getString(R.string.collection_item_photo_count_postfix, totalPhotos)
                 collection_details_txt_title.text = collectionTitle
-                collection_details_txt_title.goneIfEmpty()
                 collection_details_txt_description.text = collectionDescription
-                collection_details_txt_description.goneIfEmpty()
 
+                collection_details_txt_title.goneIfEmpty()
+                collection_details_txt_description.goneIfEmpty()
 
                 viewModel.setCollectionId(collectionId)
             }
         }
+    }
+
+    private fun getEndlessSource(totalCount: Int): EndlessRecyclerDataSource {
+        val photoRenderer = PhotosRenderer(GlideApp.with(this), ::onItemClick)
+        return EndlessRecyclerDataSource(mutableListOf(photoRenderer), ::onLoadMoreItems, totalCount)
     }
 
     private fun observe() {
@@ -121,7 +109,7 @@ class CollectionDetailsFragment : BaseFragment() {
         })
 
         viewModel.error.observe(viewLifecycleOwner, Observer {
-            dataSource.showRetryItem()
+            dataSource.setState(EndlessRecyclerDataSource.State.ERROR)
             snack(getStringSafe(it.errorMessage.messageRes), Snackbar.LENGTH_LONG)
         })
 

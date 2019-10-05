@@ -17,9 +17,8 @@ import javax.inject.Inject
 
 class CollectionDetailsViewModel @Inject constructor(
         coroutineDispatchers: CoroutineDispatchers,
-        val repository: ICollectionRepository
+        private val repository: ICollectionRepository
 ) : BaseViewModel(coroutineDispatchers) {
-
     private val request = MediatorLiveData<ApiRequest.Collection>()
     private val listViewModel = BasicEndlessListViewModel<PhotoPOJO>()
     private val collectionId: MutableLiveData<Int> = MutableLiveData()
@@ -42,7 +41,6 @@ class CollectionDetailsViewModel @Inject constructor(
         requestPhotos(listViewModel.paging.fromStart())
     }
 
-    //todo: check if all photos loaded
     fun loadMore() {
         requestPhotos(listViewModel.paging.nextPage())
     }
