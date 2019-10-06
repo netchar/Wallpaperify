@@ -11,7 +11,7 @@ Simple unofficial app to browse awsome phostos created by most generous communit
 # Developed By
 
 Eugene Glushankov
- * [instagram.com/brandon.c.lam](https://www.instagram.com/e.glushankov/)
+ * [instagram](https://www.instagram.com/e.glushankov/)
  
 # License  
 	Copyright © 2019 Eugene Glushankov
