@@ -6,7 +6,7 @@ Simple unofficial app to browse awsome phostos created by most generous communit
 
 # Screenshots
 
-<img src="https://github.com/netchar/Wallpaperify/blob/master/Info/home_photos.png"> <img src="https://github.com/netchar/Wallpaperify/blob/master/Info/photo_details.png"> <img src="https://github.com/netchar/Wallpaperify/blob/master/Info/home_collections.png">
+<img src="https://github.com/netchar/Wallpaperify/blob/master/Info/home_photos.png" width="200">  <img src="https://github.com/netchar/Wallpaperify/blob/master/Info/photo_details.png" width="200">  <img src="https://github.com/netchar/Wallpaperify/blob/master/Info/home_collections.png" width="200">  <img src="https://github.com/netchar/Wallpaperify/blob/master/Info/collection_details.png" width="200">
 
 # Developed By
 
