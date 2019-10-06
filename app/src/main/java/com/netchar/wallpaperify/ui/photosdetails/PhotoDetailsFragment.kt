@@ -27,10 +27,10 @@ import androidx.core.text.underline
 import androidx.core.view.ViewCompat
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.transition.TransitionManager
 import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -38,6 +38,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.livinglifetechway.quickpermissions_kotlin.runWithPermissions
 import com.netchar.common.base.BaseFragment
+import com.netchar.common.connectUnsplashUtmParameters
 import com.netchar.common.extensions.*
 import com.netchar.common.utils.ShimmerFactory
 import com.netchar.common.utils.share
@@ -90,7 +91,6 @@ class PhotoDetailsFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         viewModel = injectViewModel(viewModelFactory)
         activity.setTransparentStatusBars(true)
         activity.setDisplayShowTitleEnabled(false)
@@ -113,6 +113,7 @@ class PhotoDetailsFragment : BaseFragment() {
 
         GlideApp.with(this@PhotoDetailsFragment)
             .load(safeArguments.photoUrl)
+            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                     shimmer.stopShimmer()
@@ -158,44 +159,48 @@ class PhotoDetailsFragment : BaseFragment() {
     }
 
     private fun observe() {
-        viewModel.photo.observe(viewLifecycleOwner, Observer { photo ->
+        viewModel.photo.observe { photo ->
             updateUiByPhotoDetails(photo)
-        })
+        }
 
-        viewModel.error.observe(viewLifecycleOwner, Observer { error ->
+        viewModel.photo.observe { photo ->
+            updateUiByPhotoDetails(photo)
+        }
+
+        viewModel.error.observe { error ->
             toast(getStringSafe(error.messageRes))
-        })
+        }
 
-        viewModel.loading.observe(viewLifecycleOwner, Observer { loading ->
+        viewModel.loading.observe { loading ->
             if (!loading) {
                 stopShimmer()
             }
-        })
+        }
 
-        viewModel.downloadDialog.observe(viewLifecycleOwner, Observer { dialogState ->
+        viewModel.downloadDialog.observe { dialogState ->
             if (dialogState.show) {
                 downloadDialog.show(childFragmentManager, DownloadDialogFragment::class.java.simpleName)
             } else {
                 downloadDialog.isDownloadFinished = !dialogState.isCanceled
                 downloadDialog.dismiss()
             }
-        })
+        }
 
-        viewModel.downloadProgress.observe(viewLifecycleOwner, Observer { progress ->
+        viewModel.downloadProgress.observe { progress ->
             updateProgress(progress)
-        })
+        }
 
-        viewModel.toast.observe(viewLifecycleOwner, Observer { message ->
+        viewModel.toast.observe { message ->
             message.messageRes?.let { toast(it) }
-        })
+        }
 
-        viewModel.overrideDialog.observe(viewLifecycleOwner, Observer { dialogState ->
+        viewModel.overrideDialog.observe { dialogState ->
             if (dialogState.show) {
                 overrideDialog.show()
             } else {
                 overrideDialog.dismiss()
             }
-        })
+        }
     }
 
     private fun updateProgress(progress: Float) {
@@ -216,11 +221,11 @@ class PhotoDetailsFragment : BaseFragment() {
         val photoByText = buildSpannedString {
             append("${getString(R.string.photo_details_author_prefix)} ")
             underline { append(photo.user.name) }.withClickableSpan(photo.user.name) {
-                context?.openWebPage(photo.user.links.profileLink)
+                context?.openWebPage(photo.user.links.html.connectUnsplashUtmParameters())
             }
         }
 
-        photo_details_author_img.setOnClickListener { context?.openWebPage(photo.user.links.profileLink) }
+        photo_details_author_img.setOnClickListener { context?.openWebPage(photo.user.links.html.connectUnsplashUtmParameters()) }
         photo_details_tv_photo_by.text = photoByText
         photo_details_tv_photo_by.movementMethod = LinkMovementMethod.getInstance()
         photo_details_tv_description.text = photo.description

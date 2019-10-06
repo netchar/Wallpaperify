@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
  * e.glushankov@gmail.com
  */
 
-open class RecyclerAdapter(private val dataSource: RecyclerDataSource) : RecyclerView.Adapter<RecyclerViewHolder>() {
+class RecyclerAdapter(private val dataSource: RecyclerDataSource) : RecyclerView.Adapter<RecyclerViewHolder>() {
 
     init {
         init()

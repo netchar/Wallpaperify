@@ -40,7 +40,6 @@ import com.netchar.wallpaperify.ui.App
 import kotlinx.android.synthetic.main.row_collection.view.*
 
 class CollectionRenderer(private val glide: RequestManager, val onClickListener: (CollectionPOJO, ImageView, TextView, TextView, TextView) -> Unit) : ItemRenderer() {
-
     companion object {
         val fetchedColors = hashMapOf<String, Int>()
     }
@@ -67,7 +66,6 @@ class CollectionRenderer(private val glide: RequestManager, val onClickListener:
         row_collection_author_txt.transitionName = "author${data.id}"
         row_collection_title_txt.text = data.title
         row_collection_title_txt.transitionName = "title${data.id}"
-//        row_collection_gradient_overlay.toGone()
         row_collection_image.transitionName = "image${data.id}"
         setupImage(this, photo)
 
@@ -92,7 +90,6 @@ class CollectionRenderer(private val glide: RequestManager, val onClickListener:
                     }
 
                     override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-//                        itemView.row_collection_gradient_overlay.toVisible()
                         return releaseShimmer()
                     }
 

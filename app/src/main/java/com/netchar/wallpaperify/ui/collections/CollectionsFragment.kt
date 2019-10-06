@@ -22,14 +22,14 @@ import android.os.Parcelable
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.netchar.common.base.BaseFragment
+import com.netchar.common.connectUnsplashUtmParameters
 import com.netchar.common.extensions.*
-import com.netchar.common.poweradapter.adapter.EndlessRecyclerAdapter
 import com.netchar.common.poweradapter.adapter.EndlessRecyclerDataSource
+import com.netchar.common.poweradapter.adapter.RecyclerAdapter
 import com.netchar.repository.pojo.CollectionPOJO
 import com.netchar.repository.pojo.ErrorMessage
 import com.netchar.wallpaperify.R
@@ -54,21 +54,17 @@ class CollectionsFragment : BaseFragment() {
         EndlessRecyclerDataSource(mutableListOf(renderer), ::onLoadMoreItems)
     }
 
-    private val adapter: EndlessRecyclerAdapter by lazy {
-        EndlessRecyclerAdapter(dataSource)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = injectViewModel(viewModelFactory)
-
         setupViews()
         observe()
     }
 
     private fun setupViews() {
         collections_recycler.setHasFixedSize(true)
-        collections_recycler.adapter = adapter
+        collections_recycler.adapter = RecyclerAdapter(dataSource)
+        collections_recycler.onLoadMore = ::onLoadMoreItems
         collections_swipe.setOnRefreshListener { viewModel.refresh() }
     }
 
@@ -77,28 +73,26 @@ class CollectionsFragment : BaseFragment() {
     }
 
     private fun observe() {
-        viewModel.collections.observe(viewLifecycleOwner, Observer { photos ->
-            photos?.let {
-                dataSource.setData(it.asRecyclerItems())
-            }
-        })
+        viewModel.collections.observe { photos ->
+            dataSource.setData(photos.asRecyclerItems())
+        }
 
-        viewModel.refreshing.observe(viewLifecycleOwner, Observer {
+        viewModel.refreshing.observe {
             collections_swipe.postAction { isRefreshing = it }
-        })
+        }
 
-        viewModel.error.observe(viewLifecycleOwner, Observer {
-            dataSource.showRetryItem()
+        viewModel.error.observe {
+            dataSource.applyState(EndlessRecyclerDataSource.State.ERROR)
             snack(getStringSafe(it.errorMessage.messageRes), Snackbar.LENGTH_LONG)
-        })
+        }
 
-        viewModel.toast.observe(viewLifecycleOwner, Observer {
+        viewModel.toast.observe {
             toast(getStringSafe(it.messageRes))
-        })
+        }
 
-        viewModel.errorPlaceholder.observe(viewLifecycleOwner, Observer {
+        viewModel.errorPlaceholder.observe {
             toggleError(it)
-        })
+        }
     }
 
     private fun toggleError(error: ErrorMessage) {
@@ -114,11 +108,6 @@ class CollectionsFragment : BaseFragment() {
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        collections_recycler.adapter = null
-    }
-
     private fun onItemClick(model: CollectionPOJO, imageView: ImageView, authorNameView: TextView, photosCountView: TextView, titleView: TextView) {
         val action = HomeFragmentDirections.actionHomeFragmentToCollectionDetailsFragment(
                 model.id,
@@ -128,7 +117,9 @@ class CollectionsFragment : BaseFragment() {
                 model.totalPhotos,
                 model.title,
                 model.description,
-                CollectionDetailsTransitionModel(imageView.transitionName, authorNameView.transitionName, photosCountView.transitionName)
+                CollectionDetailsTransitionModel(imageView.transitionName, authorNameView.transitionName, photosCountView.transitionName),
+                model.links.html.connectUnsplashUtmParameters(),
+                model.user.links.html.connectUnsplashUtmParameters()
         )
 
         val extras = FragmentNavigatorExtras(

@@ -45,7 +45,6 @@
     <fragment
         android:id="@+id/collectionDetailsFragment"
         android:name="com.netchar.wallpaperify.ui.collectiondetails.CollectionDetailsFragment"
-        android:label="@string/collection_details_fragment_title"
         tools:layout="@layout/fragment_collection_details">
         <argument
             android:name="collectionId"
@@ -71,6 +70,12 @@
         <argument
             android:name="transitionModel"
             app:argType="com.netchar.wallpaperify.ui.collections.CollectionDetailsTransitionModel" />
+        <argument
+            android:name="shareLink"
+            app:argType="string" />
+        <argument
+            android:name="authorLink"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/photosFragment"

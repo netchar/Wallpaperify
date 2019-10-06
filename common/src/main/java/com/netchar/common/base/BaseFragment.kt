@@ -28,6 +28,8 @@ import androidx.annotation.CheckResult
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import com.netchar.common.R
 import com.netchar.common.utils.Injector
 import com.netchar.common.utils.navigation.IToolbarNavigationBinder
@@ -117,5 +119,7 @@ abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
     protected open fun onEnterAnimationComplete() {
 
     }
+
+    protected inline fun <T> LiveData<T>.observe(crossinline function: (T) -> Unit) = this.observe(viewLifecycleOwner, Observer { it?.let(function) })
 }
 

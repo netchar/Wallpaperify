@@ -16,7 +16,7 @@
 
 package com.netchar.remote.apirequest
 
-data class Paging(val startPage: Int = 1) {
+data class Paging(val startPage: Int = 0) {
 
     private var page: Int = startPage
 
