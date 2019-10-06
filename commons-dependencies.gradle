@@ -18,8 +18,8 @@ ext {
     versions = [:]
     versions.build = [
             sdk       : [
-                    compile: 28,
-                    target : 28,
+                    compile: 29,
+                    target : 29,
                     min    : 23
             ],
             buildTools: "28.0.3"

@@ -36,7 +36,7 @@ import com.netchar.common.R
  */
 fun Spannable.withClickableSpan(clickablePart: String, onClickListener: () -> Unit): Spannable {
     val clickableSpan = object : ClickableSpan() {
-        override fun onClick(widget: View?) = onClickListener.invoke()
+        override fun onClick(widget: View) = onClickListener.invoke()
     }
     val clickablePartStart = indexOf(clickablePart)
     setSpan(

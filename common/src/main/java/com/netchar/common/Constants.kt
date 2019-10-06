@@ -17,4 +17,5 @@
 package com.netchar.common
 
 const val UNSPLASH_URL = "https://unsplash.com/"
-const val UNSPLASH_UTM_PARAMETERS = "?utm_source=wallpaperify&utm_medium=referral"
+const val UNSPLASH_UTM_PARAMETERS = "?utm_source=wallpaperify&utm_medium=referral&utm_campaign=api-credit"
+fun String.connectUnsplashUtmParameters() = this + UNSPLASH_UTM_PARAMETERS

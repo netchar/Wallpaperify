@@ -35,7 +35,7 @@ class EndlessRecyclerDataSource(
         private val loadingItem = LoadingItem()
     }
 
-    fun setState(state: State) {
+    fun applyState(state: State) {
         loadingItem.mode = when (state) {
             State.LOADING -> LoadingItemRenderer.MODE_LOADING
             State.ERROR -> LoadingItemRenderer.MODE_RETRY
@@ -60,7 +60,7 @@ class EndlessRecyclerDataSource(
 
     override fun attach(adapter: RecyclerView.Adapter<RecyclerViewHolder>) {
         val loadingItemRenderer = LoadingItemRenderer(onRetryClick = {
-            setState(State.LOADING)
+            applyState(State.LOADING)
             onRetry()
         })
         addRenderer(loadingItemRenderer)

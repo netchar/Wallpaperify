@@ -109,7 +109,7 @@ class PhotosFragment : BaseFragment() {
         }
 
         viewModel.error.observe {
-            dataSource.setState(EndlessRecyclerDataSource.State.ERROR)
+            dataSource.applyState(EndlessRecyclerDataSource.State.ERROR)
             snack(getStringSafe(it.errorMessage.messageRes), Snackbar.LENGTH_LONG)
         }
 

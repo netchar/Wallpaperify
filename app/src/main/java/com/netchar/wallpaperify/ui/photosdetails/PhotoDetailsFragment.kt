@@ -38,6 +38,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.livinglifetechway.quickpermissions_kotlin.runWithPermissions
 import com.netchar.common.base.BaseFragment
+import com.netchar.common.connectUnsplashUtmParameters
 import com.netchar.common.extensions.*
 import com.netchar.common.utils.ShimmerFactory
 import com.netchar.common.utils.share
@@ -220,11 +221,11 @@ class PhotoDetailsFragment : BaseFragment() {
         val photoByText = buildSpannedString {
             append("${getString(R.string.photo_details_author_prefix)} ")
             underline { append(photo.user.name) }.withClickableSpan(photo.user.name) {
-                context?.openWebPage(photo.user.links.profileLink)
+                context?.openWebPage(photo.user.links.html.connectUnsplashUtmParameters())
             }
         }
 
-        photo_details_author_img.setOnClickListener { context?.openWebPage(photo.user.links.profileLink) }
+        photo_details_author_img.setOnClickListener { context?.openWebPage(photo.user.links.html.connectUnsplashUtmParameters()) }
         photo_details_tv_photo_by.text = photoByText
         photo_details_tv_photo_by.movementMethod = LinkMovementMethod.getInstance()
         photo_details_tv_description.text = photo.description

@@ -26,6 +26,7 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.netchar.common.base.BaseFragment
+import com.netchar.common.connectUnsplashUtmParameters
 import com.netchar.common.extensions.*
 import com.netchar.common.poweradapter.adapter.EndlessRecyclerDataSource
 import com.netchar.common.poweradapter.adapter.RecyclerAdapter
@@ -81,7 +82,7 @@ class CollectionsFragment : BaseFragment() {
         }
 
         viewModel.error.observe {
-            dataSource.setState(EndlessRecyclerDataSource.State.ERROR)
+            dataSource.applyState(EndlessRecyclerDataSource.State.ERROR)
             snack(getStringSafe(it.errorMessage.messageRes), Snackbar.LENGTH_LONG)
         }
 
@@ -116,7 +117,9 @@ class CollectionsFragment : BaseFragment() {
                 model.totalPhotos,
                 model.title,
                 model.description,
-                CollectionDetailsTransitionModel(imageView.transitionName, authorNameView.transitionName, photosCountView.transitionName)
+                CollectionDetailsTransitionModel(imageView.transitionName, authorNameView.transitionName, photosCountView.transitionName),
+                model.links.html.connectUnsplashUtmParameters(),
+                model.user.links.html.connectUnsplashUtmParameters()
         )
 
         val extras = FragmentNavigatorExtras(
