@@ -4,6 +4,13 @@
 
 Simple unofficial app to browse awsome phostos created by most generous community of photographers.
 
+# Screenshots
+
+<img src="https://github.com/netchar/Wallpaperify/blob/master/Info/home_photos.png" width="250"> 
+<img src="https://github.com/netchar/Wallpaperify/blob/master/Info/photo_details.png" width="250"> 
+<img src="https://github.com/netchar/Wallpaperify/blob/master/Info/collection_details.png" width="250"> 
+<img src="https://github.com/netchar/Wallpaperify/blob/master/Info/home_collections.png" width="250"> 
+
 # Developed By
 
 Eugene Glushankov
