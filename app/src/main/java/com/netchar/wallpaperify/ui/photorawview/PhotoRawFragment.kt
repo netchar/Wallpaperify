@@ -26,6 +26,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.netchar.common.base.BaseFragment
+import com.netchar.common.extensions.setLightStatusBar
 import com.netchar.common.extensions.toast
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.modules.GlideApp
@@ -36,8 +37,8 @@ class PhotoRawFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity.setLightStatusBar(false)
         applyPhotoWindowsInsets()
-
         arguments?.let {
             val safeArgs = PhotoRawFragmentArgs.fromBundle(it)
 

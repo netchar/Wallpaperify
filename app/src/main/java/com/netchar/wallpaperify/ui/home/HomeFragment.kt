@@ -38,8 +38,8 @@ class HomeFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity.setTransparentStatusBars(false)
-        activity.setDisplayShowTitleEnabled(false)
+        activity.setTransparentNavigationBar(false)
+        activity.showToolbarTitle(false)
         fragmentToolbar?.applyWindowInsets()
 
         listenToolbarScrollToAlpha(view)

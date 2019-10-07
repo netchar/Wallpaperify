@@ -56,7 +56,7 @@ class CollectionDetailsFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = injectViewModel(viewModelFactory)
-        activity.setDisplayShowTitleEnabled(false)
+        activity.showToolbarTitle(false)
         registerAppbarScrollListener()
         applyWindowsInsets()
         setupViews()

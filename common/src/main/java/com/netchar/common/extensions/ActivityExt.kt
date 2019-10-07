@@ -22,12 +22,12 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 
 
-fun Activity?.setDisplayShowTitleEnabled(enabled: Boolean) {
+fun Activity?.showToolbarTitle(enabled: Boolean) {
     val appCompatActivity = this as AppCompatActivity
     appCompatActivity.supportActionBar?.setDisplayShowTitleEnabled(enabled)
 }
 
-fun Activity?.setTransparentStatusBars(transparent: Boolean) {
+fun Activity?.setTransparentNavigationBar(transparent: Boolean) {
     this?.let {
         it.window.navigationBarColor = if (transparent) Color.TRANSPARENT else it.getThemeAttrColor(android.R.attr.navigationBarColor)
     }
@@ -44,6 +44,14 @@ fun Activity?.setLightStatusBar(enable: Boolean) {
             if (systemUiVisibility.isFlagSet(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)) {
                 it.window.decorView.systemUiVisibility = systemUiVisibility xor View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             }
+        }
+    }
+}
+
+fun Activity?.restoreStatusBarTheme() {
+    this?.let {
+        getThemeAttributeValue(android.R.attr.windowLightStatusBar) {
+            setLightStatusBar(getBoolean(0, false))
         }
     }
 }

@@ -77,6 +77,11 @@ class PhotoDetailsFragment : BaseFragment() {
         setHasOptionsMenu(true)
     }
 
+    override fun onStart() {
+        super.onStart()
+        activity.setLightStatusBar(false)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Should play enter animation only on view creating and return ready view on Pop()
         var view: ViewGroup? = viewGroup
@@ -92,8 +97,8 @@ class PhotoDetailsFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = injectViewModel(viewModelFactory)
-        activity.setTransparentStatusBars(true)
-        activity.setDisplayShowTitleEnabled(false)
+        activity.setTransparentNavigationBar(true)
+        activity.showToolbarTitle(false)
         applyWindowsInsets(view)
         observe()
     }
@@ -103,9 +108,6 @@ class PhotoDetailsFragment : BaseFragment() {
 
         val shimmer = ShimmerFactory.getShimmer(autoStart = true)
         contentView.background = shimmer
-        photo_details_iv_photo.setOnClickListener {
-            navigateToOriginalPhoto()
-        }
 
         if (safeArguments.photoDescription.isEmpty()) {
             photo_details_shimmer_description.toGone()
@@ -265,6 +267,7 @@ class PhotoDetailsFragment : BaseFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+        activity.restoreStatusBarTheme()
         viewGroup?.removeAllViews()
         viewGroup = null
     }

@@ -4,7 +4,7 @@
 
     <!--Top level DayNight theme to be used in AndroidManifest.xml-->
     <style name="AppTheme.DayNight" parent="AppTheme.Common">
-        <item name="android:windowLightStatusBar">true</item>
+        <!--        <item name="android:windowLightStatusBar">true</item>-->
     </style>
 
 </resources>
