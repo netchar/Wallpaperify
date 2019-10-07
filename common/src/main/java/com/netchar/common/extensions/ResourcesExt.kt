@@ -17,6 +17,7 @@
 package com.netchar.common.extensions
 
 import android.content.Context
+import android.content.res.TypedArray
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 
@@ -25,6 +26,15 @@ fun Context.getThemeAttrColor(@AttrRes colorAttr: Int): Int {
     val array = obtainStyledAttributes(null, intArrayOf(colorAttr))
     return try {
         array.getColor(0, 0)
+    } finally {
+        array.recycle()
+    }
+}
+
+fun <T> Context.getThemeAttributeValue(@AttrRes attrResId: Int, function: TypedArray.() -> T): T {
+    val array = obtainStyledAttributes(null, intArrayOf(attrResId))
+    return try {
+        function(array)
     } finally {
         array.recycle()
     }
