@@ -18,9 +18,9 @@ suspend fun <T : Any> Deferred<Response<T>>.awaitSafe(): HttpResult<T> {
                 body.isValidBody() -> HttpResult.Success(body!!)
                 response.noContent() -> HttpResult.Empty
                 else -> {
-                    response.code()
-                    val code = response.code()
-                    HttpResult.Exception(IllegalStateException("Body is empty with $code status code."))
+                    val exception = IllegalStateException("Body is empty with ${response.code()} status code.")
+                    Timber.e(exception)
+                    HttpResult.Exception(exception)
                 }
             }
         } else {
