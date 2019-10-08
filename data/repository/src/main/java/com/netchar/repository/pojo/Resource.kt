@@ -21,7 +21,7 @@ sealed class Resource<out TValue> {
             }
 
             fun parse(throwable: Throwable): Error {
-                return Error(Cause.UNEXPECTED, throwable.localizedMessage)
+                return Error(Cause.UNEXPECTED, throwable.localizedMessage ?: "Unexpected error")
             }
         }
     }
