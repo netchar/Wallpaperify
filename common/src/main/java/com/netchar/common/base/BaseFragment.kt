@@ -33,15 +33,16 @@ import androidx.lifecycle.Observer
 import com.netchar.common.R
 import com.netchar.common.utils.Injector
 import com.netchar.common.utils.navigation.IToolbarNavigationBinder
+import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.support.HasSupportFragmentInjector
+import dagger.android.HasAndroidInjector
 import javax.inject.Inject
 
 
-abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
+abstract class BaseFragment : Fragment(), HasAndroidInjector {
 
     @Inject
-    lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
+    lateinit var childFragmentInjector: DispatchingAndroidInjector<Any>
 
     @Inject
     lateinit var navigationBinder: IToolbarNavigationBinder
@@ -59,7 +60,9 @@ abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
         baseContext = context
     }
 
-    override fun supportFragmentInjector() = childFragmentInjector
+    override fun androidInjector(): AndroidInjector<Any> {
+        return childFragmentInjector
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(layoutResId, container, false)
