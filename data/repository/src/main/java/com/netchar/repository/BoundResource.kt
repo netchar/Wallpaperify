@@ -100,7 +100,7 @@ abstract class BoundResource<TResourceData : Any, TNetworkDto : Any>(private val
                 if (apiResponse.exception is NoNetworkException) {
                     Resource.Error(Cause.NO_INTERNET_CONNECTION)
                 } else {
-                    Resource.Error(Cause.UNEXPECTED, message = apiResponse.exception.localizedMessage)
+                    Resource.Error(Cause.UNEXPECTED, message = apiResponse.exception.localizedMessage ?: "")
                 }
             }
         }

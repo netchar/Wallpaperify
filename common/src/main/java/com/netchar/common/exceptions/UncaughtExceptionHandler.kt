@@ -29,7 +29,7 @@ class UncaughtExceptionHandler private constructor(
         val context: Context
 ) : Thread.UncaughtExceptionHandler {
     private val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm", ConfigurationCompat.getLocales(context.resources.configuration)[0])
-    private val previousHandler: Thread.UncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
+    private val previousHandler: Thread.UncaughtExceptionHandler? = Thread.getDefaultUncaughtExceptionHandler()
 
     override fun uncaughtException(thread: Thread, exception: Throwable) {
         val errorReport = StringBuilder()
@@ -56,7 +56,7 @@ class UncaughtExceptionHandler private constructor(
             appendln("Version Code: " + context.getVersionCode())
         }.also { Timber.e(it.toString()) }
 
-        previousHandler.uncaughtException(thread, exception)
+        previousHandler?.uncaughtException(thread, exception)
     }
 
     private fun getFullStack(exception: Throwable?, builder: StringBuilder) {

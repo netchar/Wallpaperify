@@ -33,7 +33,9 @@ sealed class HttpResult<out T> {
 
             fun <T> parse(response: Response<T>): Error {
                 val statusCode = HttpStatusCode.getByCode(response.code())
-                return Error(statusCode, response.errorBody().toUnsplashError(), statusCode.description)
+                val unsplashError = response.errorBody().toUnsplashError()
+                Timber.e("Status code: $statusCode. ${unsplashError?.errors?.joinToString { it } ?: statusCode.description}")
+                return Error(statusCode, unsplashError, statusCode.description)
             }
 
             private fun ResponseBody?.toUnsplashError(): UnsplashError? = this?.let {

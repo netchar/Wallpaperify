@@ -21,7 +21,6 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -35,15 +34,16 @@ import com.netchar.common.utils.getVersionName
 import com.netchar.common.utils.navigation.IToolbarNavigationBinder
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.ViewModelFactory
+import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.support.HasSupportFragmentInjector
+import dagger.android.HasAndroidInjector
 import timber.log.Timber
 import javax.inject.Inject
 
-class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector, SharedPreferences.OnSharedPreferenceChangeListener {
+class SettingsFragment : PreferenceFragmentCompat(), HasAndroidInjector, SharedPreferences.OnSharedPreferenceChangeListener {
 
     @Inject
-    lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
+    lateinit var childFragmentInjector: DispatchingAndroidInjector<Any>
 
     @Inject
     lateinit var navigationBinder: IToolbarNavigationBinder
@@ -51,7 +51,9 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    override fun supportFragmentInjector() = childFragmentInjector
+    override fun androidInjector(): AndroidInjector<Any> {
+        return childFragmentInjector
+    }
 
     private lateinit var activityContext: Context
 

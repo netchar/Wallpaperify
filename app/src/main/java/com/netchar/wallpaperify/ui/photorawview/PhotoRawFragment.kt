@@ -48,7 +48,7 @@ class PhotoRawFragment : BaseFragment() {
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .listener(object : RequestListener<Drawable> {
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                        toast(getString(R.string.message_error_failed_to_load_image))
+                        toast(getString(R.string.error_message_failed_to_load_image))
                         return false
                     }
 

@@ -103,7 +103,7 @@ class PhotoDetailsViewModel @Inject constructor(
     fun downloadImage(forceOverride: Boolean = false) {
         val photo = _photo.value
         if (photo == null) {
-            _error.value = Message(R.string.message_error_photo_details_not_loaded)
+            _error.value = Message(R.string.error_message_photo_details_not_loaded)
         } else {
             val request = DownloadRequest(
                     url = photo.urls.raw,
@@ -125,7 +125,7 @@ class PhotoDetailsViewModel @Inject constructor(
     fun downloadWallpaper() {
         val photo = _photo.value
         if (photo == null) {
-            _error.value = Message(R.string.message_error_photo_details_not_loaded)
+            _error.value = Message(R.string.error_message_photo_details_not_loaded)
         } else {
             val request = DownloadRequest(
                     url = photo.urls.raw,
@@ -184,9 +184,9 @@ class PhotoDetailsViewModel @Inject constructor(
                 _downloadDialog.value = DialogState.hide()
 
                 when (progress.cause) {
-                    Progress.ErrorCause.UNKNOWN -> _error.value = Message(R.string.message_error_unknown)
-                    Progress.ErrorCause.INSUFFICIENT_SPACE -> _error.value = Message(R.string.message_error_download_not_enough_space)
-                    else -> _error.value = Message(R.string.message_error_download_failed)
+                    Progress.ErrorCause.UNKNOWN -> _error.value = Message(R.string.error_message_unknown)
+                    Progress.ErrorCause.INSUFFICIENT_SPACE -> _error.value = Message(R.string.error_message_download_not_enough_space)
+                    else -> _error.value = Message(R.string.error_message_download_failed)
                 }
             }
             is Progress.FileExist -> {
@@ -211,7 +211,7 @@ class PhotoDetailsViewModel @Inject constructor(
     private fun getErrorMessage(response: Resource.Error): Message {
         return when (response.cause) {
             Cause.NO_INTERNET_CONNECTION -> Message(R.string.message_error_no_internet)
-            Cause.NOT_AUTHENTICATED, Cause.UNEXPECTED -> Message(R.string.error_message_try_again_later)
+            Cause.NOT_AUTHENTICATED, Cause.UNEXPECTED -> Message(R.string.error_message_unexpected_server_response)
         }
     }
 

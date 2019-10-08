@@ -24,6 +24,7 @@ import com.netchar.common.extensions.toVisible
 import com.netchar.common.poweradapter.item.IRecyclerItem
 import com.netchar.common.poweradapter.item.ItemRenderer
 import kotlinx.android.synthetic.main.view_recycler_load_more_loading.view.*
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import java.util.*
 
 class EndlessRecyclerDataSource(
@@ -43,6 +44,7 @@ class EndlessRecyclerDataSource(
         notifyItemChanged(loadingItem)
     }
 
+    @ObsoleteCoroutinesApi
     override fun setData(newData: List<IRecyclerItem>) {
         var items = newData
         if (isEndlessList() || hasMoreItemsToLoad(newData)) {

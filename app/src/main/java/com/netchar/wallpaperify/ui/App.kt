@@ -16,7 +16,6 @@
 
 package com.netchar.wallpaperify.ui
 
-import android.app.Activity
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import com.jakewharton.threetenabp.AndroidThreeTen
@@ -30,11 +29,11 @@ import com.netchar.wallpaperify.di.DaggerAppComponent
 import com.netchar.wallpaperify.infrastructure.BuildPreferences
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasActivityInjector
+import dagger.android.HasAndroidInjector
 import timber.log.Timber
 import javax.inject.Inject
 
-class App : Application(), HasActivityInjector {
+class App : Application(), HasAndroidInjector {
 
     init {
         instance = this
@@ -46,7 +45,7 @@ class App : Application(), HasActivityInjector {
     }
 
     @Inject
-    lateinit var activityInjector: DispatchingAndroidInjector<Activity>
+    lateinit var activityInjector: DispatchingAndroidInjector<Any>
 
     @Inject
     lateinit var preferences: IPreferenceRepository
@@ -75,5 +74,7 @@ class App : Application(), HasActivityInjector {
         AppCompatDelegate.setDefaultNightMode(preferences.themeMode)
     }
 
-    override fun activityInjector(): AndroidInjector<Activity> = activityInjector
+    override fun androidInjector(): AndroidInjector<Any> {
+        return activityInjector
+    }
 }
