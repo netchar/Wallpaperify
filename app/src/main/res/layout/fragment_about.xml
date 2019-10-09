@@ -1,8 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <include layout="@layout/view_appbar_toolbar_default" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/about_constraint_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.netchar.common.views.CompoundDrawableTextView
+                android:id="@+id/compoundDrawableTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:drawablePadding="8dp"
+                android:fontFamily="@font/cantora_one"
+                android:gravity="center_vertical"
+                android:text="@string/application_name"
+                android:textAppearance="@style/TextAppearance.AppTheme.Brand"
+                android:textSize="36sp"
+                app:compoundDrawableHeight="36dp"
+                app:compoundDrawableWidth="36dp"
+                app:drawableEndVector="@drawable/ic_logo_leaf"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/about_txt_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textAppearance="@style/TextAppearance.AppTheme.Caption"
+                app:layout_constraintEnd_toEndOf="@+id/compoundDrawableTextView"
+                app:layout_constraintHorizontal_bias="0.497"
+                app:layout_constraintStart_toStartOf="@+id/compoundDrawableTextView"
+                app:layout_constraintTop_toBottomOf="@+id/compoundDrawableTextView"
+                tools:text="Version: 1.0.0" />
+
+            <TextView
+                android:id="@+id/about_txt_app_info"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:autoLink="web"
+                android:lineSpacingExtra="2sp"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppTheme.Body1"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/about_txt_version"
+                tools:text="Wallpaperify is an unofficial app powered by unsplash.com. \nBrowse over 1 million free high-resolution images brought to you by the most generous community of photographers." />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

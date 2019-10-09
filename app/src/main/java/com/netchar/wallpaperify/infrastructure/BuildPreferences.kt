@@ -16,10 +16,13 @@
 
 package com.netchar.wallpaperify.infrastructure
 
+import android.content.Context
+import android.content.pm.PackageInfo
+import androidx.core.content.pm.PackageInfoCompat
 import com.netchar.common.utils.IBuildPreferences
 import com.netchar.wallpaperify.BuildConfig
 
-class BuildPreferences : IBuildPreferences {
+class BuildPreferences(val context: Context) : IBuildPreferences {
 
     override fun getApiAccessKey() = if (BuildConfig.DEBUG) {
         BuildConfig.DEBUG_API_ACCESS_KEY
@@ -31,5 +34,29 @@ class BuildPreferences : IBuildPreferences {
         BuildConfig.DEBUG_API_SECRET_KEY
     } else {
         BuildConfig.RELEASE_API_SECRET_KEY
+    }
+
+    override fun getVersionCode(): Long {
+        return try {
+            val info = getPackageInfo(context) ?: return -1
+            PackageInfoCompat.getLongVersionCode(info)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            -1
+        }
+    }
+
+    override fun getVersionName(): String {
+        return try {
+            val info = getPackageInfo(context) ?: return ""
+            info.versionName
+        } catch (e: Exception) {
+            ""
+        }
+    }
+
+    private fun getPackageInfo(context: Context): PackageInfo? {
+        val manager = context.packageManager
+        return manager.getPackageInfo(context.packageName, 0)
     }
 }
