@@ -24,9 +24,9 @@ import androidx.core.content.ContextCompat
 import com.netchar.common.R
 import timber.log.Timber
 
-class WallpaperApplierService(val context: Context) {
+internal class WallpaperApplierService(val context: Context) : IWallpaperApplierService {
 
-    fun setWallpaper(uri: Uri) {
+    override fun setWallpaper(uri: Uri) {
         try {
             Timber.d("Set wallpaper via WallpaperManager. Uri: $uri")
             val wallpaperManager = WallpaperManager.getInstance(context)

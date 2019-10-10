@@ -50,10 +50,12 @@ class App : Application(), HasAndroidInjector {
     @Inject
     lateinit var preferences: IPreferenceRepository
 
+    private val prefs = BuildPreferences(this)
+
     val component: AppComponent by lazy {
         DaggerAppComponent.builder()
                 .context(this)
-                .buildPrefs(BuildPreferences())
+            .buildPrefs(prefs)
                 .build()
     }
 
@@ -66,7 +68,7 @@ class App : Application(), HasAndroidInjector {
             Timber.plant(ReleaseTree())
         }
 
-        Thread.setDefaultUncaughtExceptionHandler(UncaughtExceptionHandler.inContext(this))
+        Thread.setDefaultUncaughtExceptionHandler(UncaughtExceptionHandler.inContext(this, prefs))
 
         component.inject(this)
         AndroidThreeTen.init(this)

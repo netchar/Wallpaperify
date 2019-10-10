@@ -3,5 +3,6 @@
     <string name="load_more_label_retry">Retry</string>
     <string name="title_chooser_set_wallpaper_as">Set as:</string>
     <string name="application_name">Wallpaperify</string>
+    <string name="label_version">Version: %1$s</string>
 
 </resources>

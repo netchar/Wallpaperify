@@ -126,7 +126,7 @@ class CollectionDetailsFragment : BaseFragment() {
         val photoByText = getAuthorClickableName()
         collection_details_txt_author.text = photoByText
         collection_details_txt_author.movementMethod = LinkMovementMethod.getInstance()
-        collection_details_img_author.setOnClickListener { context?.openWebPage(safeArguments.authorLink) }
+        collection_details_img_author.setOnClickListener { viewModel.openPhotoAuthorPage(safeArguments.authorLink) }
 
         viewModel.setCollectionId(safeArguments.collectionId)
     }
@@ -135,7 +135,7 @@ class CollectionDetailsFragment : BaseFragment() {
         return buildSpannedString {
             append("${getString(R.string.photo_details_author_prefix)} ")
             underline { append(safeArguments.authorName) }.withClickableSpan(safeArguments.authorName) {
-                context?.openWebPage(safeArguments.authorLink)
+                viewModel.openPhotoAuthorPage(safeArguments.authorLink)
             }
         }
     }

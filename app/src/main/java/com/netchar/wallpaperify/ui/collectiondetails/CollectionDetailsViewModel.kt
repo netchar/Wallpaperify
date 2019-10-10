@@ -5,6 +5,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.netchar.common.base.BaseViewModel
+import com.netchar.common.services.IExternalAppService
 import com.netchar.common.utils.CoroutineDispatchers
 import com.netchar.remote.apirequest.ApiRequest
 import com.netchar.repository.collection.ICollectionRepository
@@ -17,7 +18,8 @@ import javax.inject.Inject
 
 class CollectionDetailsViewModel @Inject constructor(
         coroutineDispatchers: CoroutineDispatchers,
-        private val repository: ICollectionRepository
+        private val repository: ICollectionRepository,
+        private val externalAppService: IExternalAppService
 ) : BaseViewModel(coroutineDispatchers) {
     private val request = MediatorLiveData<ApiRequest.Collection>()
     private val listViewModel = BasicEndlessListViewModel<PhotoPOJO>()
@@ -60,5 +62,9 @@ class CollectionDetailsViewModel @Inject constructor(
         collectionId.value?.let { id ->
             request.value = ApiRequest.Collection(id, page)
         }
+    }
+
+    fun openPhotoAuthorPage(authorLink: String) {
+        externalAppService.openWebPage(authorLink)
     }
 }
