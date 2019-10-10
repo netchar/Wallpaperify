@@ -16,16 +16,12 @@
 
 package com.netchar.common.extensions
 
-import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.text.Spannable
 import android.text.style.ClickableSpan
 import android.view.View
-import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.net.toUri
 import androidx.drawerlayout.widget.DrawerLayout
-import com.netchar.common.R
 
 /**
  * Helps to set clickable part in text.
@@ -48,37 +44,9 @@ fun Spannable.withClickableSpan(clickablePart: String, onClickListener: () -> Un
     return this
 }
 
+
 fun String.toWebUri(): Uri {
     return (if (startsWith("http://") || startsWith("https://")) this else "https://$this").toUri()
-}
-
-fun Context.openWebPage(url: String): Boolean {
-    // Format the URI properly.
-    val uri = url.toWebUri()
-
-    // Try using Chrome Custom Tabs.
-    try {
-        val intent = CustomTabsIntent.Builder()
-                .setToolbarColor(getColorCompat(R.color.color_surface))
-                .setShowTitle(true)
-                .build()
-        intent.launchUrl(this, uri)
-        return true
-    } catch (ignored: Exception) {
-    }
-
-    // Fall back to launching a default web browser intent.
-    try {
-        val intent = Intent(Intent.ACTION_VIEW, uri)
-        if (intent.resolveActivity(packageManager) != null) {
-            startActivity(intent)
-            return true
-        }
-    } catch (ignored: Exception) {
-    }
-
-    // We were unable to show the web page.
-    return false
 }
 
 inline fun consume(f: () -> Unit): Boolean {

@@ -21,6 +21,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.netchar.common.base.BaseViewModel
+import com.netchar.common.services.IExternalAppService
 import com.netchar.common.services.IWallpaperApplierService
 import com.netchar.common.utils.CoroutineDispatchers
 import com.netchar.common.utils.SingleLiveData
@@ -51,7 +52,8 @@ data class DialogState(val show: Boolean, val closeReason: Int = 0) {
 class PhotoDetailsViewModel @Inject constructor(
         coroutineDispatchers: CoroutineDispatchers,
         private val wallpaperService: IWallpaperApplierService,
-        private val repo: IPhotosRepository
+        private val repo: IPhotosRepository,
+        private val externalAppService: IExternalAppService
 ) : BaseViewModel(coroutineDispatchers) {
 
     private val _photoId = MutableLiveData<String>()
@@ -218,5 +220,9 @@ class PhotoDetailsViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         repo.unregisterDownloadObservers()
+    }
+
+    fun openAuthorProfile(url: String) {
+        externalAppService.openWebPage(url)
     }
 }

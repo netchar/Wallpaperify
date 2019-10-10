@@ -16,10 +16,8 @@
 
 package com.netchar.common.services
 
-import java.net.URL
-
 interface IExternalLibraryProvider {
-    data class Library(val name: String, val description: String, val link: URL)
+    data class Library(val name: String, val description: String, val link: String)
 
     fun getLibraries(): List<Library>
 }

@@ -21,6 +21,7 @@ import com.netchar.common.DEVELOPER_LINKEDIN_URL
 import com.netchar.common.base.BaseViewModel
 import com.netchar.common.services.IExternalAppService
 import com.netchar.common.services.IExternalAppService.ExternalApp
+import com.netchar.common.services.IExternalLibraryProvider
 import com.netchar.common.utils.CoroutineDispatchers
 import com.netchar.common.utils.IBuildPreferences
 import javax.inject.Inject
@@ -28,7 +29,8 @@ import javax.inject.Inject
 class AboutViewModel @Inject constructor(
         coroutineDispatchers: CoroutineDispatchers,
         private val buildPreferences: IBuildPreferences,
-        private val appService: IExternalAppService
+        private val appService: IExternalAppService,
+        private val externalLibraryProvider: IExternalLibraryProvider
 ) : BaseViewModel(coroutineDispatchers) {
 
     fun getVersionName() = buildPreferences.getVersionName()
@@ -37,11 +39,15 @@ class AboutViewModel @Inject constructor(
         appService.sendEmail("Hi, Eugene", "")
     }
 
-    fun redirectToInstagramAcc() {
-        appService.openWith(ExternalApp.INSTAGRAM, DEVELOPER_INSTAGRAM_URL)
+    fun openDeveloperInstagramAccount() {
+        appService.openUrlInExternalApp(ExternalApp.INSTAGRAM, DEVELOPER_INSTAGRAM_URL)
     }
 
-    fun redirectToLinkedInAcc() {
-        appService.openWith(ExternalApp.LINKED_IN, DEVELOPER_LINKEDIN_URL)
+    fun openDeveloperLinkedInAccount() {
+        appService.openUrlInExternalApp(ExternalApp.LINKED_IN, DEVELOPER_LINKEDIN_URL)
     }
+
+    fun getLibraries() = externalLibraryProvider.getLibraries()
+
+    fun openExternalLicenceFor(library: IExternalLibraryProvider.Library) = appService.openWebPage(library.link)
 }

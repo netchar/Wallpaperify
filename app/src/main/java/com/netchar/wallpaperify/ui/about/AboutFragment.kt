@@ -16,10 +16,14 @@
 
 package com.netchar.wallpaperify.ui.about
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.text.util.Linkify
 import android.view.View
+import android.webkit.WebView
 import androidx.core.text.toSpannable
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -27,12 +31,12 @@ import com.netchar.common.UNSPLASH_URL
 import com.netchar.common.base.BaseFragment
 import com.netchar.common.extensions.applyWindowInsets
 import com.netchar.common.extensions.injectViewModel
-import com.netchar.common.extensions.toast
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_about.*
 import java.util.regex.Pattern
 import javax.inject.Inject
+
 
 class AboutFragment : BaseFragment() {
 
@@ -57,15 +61,44 @@ class AboutFragment : BaseFragment() {
         about_txt_app_info.text = spannableAppInfoText.apply { Linkify.addLinks(this, Pattern.compile("unsplash.com"), UNSPLASH_URL) }
 
         Glide.with(this)
-                .load(R.drawable.img_developer)
-                .transform(CircleCrop())
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .into(about_img_author_image)
+            .load(R.drawable.img_developer)
+            .transform(CircleCrop())
+            .transition(DrawableTransitionOptions.withCrossFade())
+            .into(about_img_author_image)
 
-        about_txt_privacy_policy.setOnClickListener { toast("privacy") }
-        about_txt_external_libraries_licences.setOnClickListener { toast("licences") }
-        about_ctxt_instagram.setOnClickListener { viewModel.redirectToInstagramAcc() }
-        about_txt_linkedin.setOnClickListener { viewModel.redirectToLinkedInAcc() }
+        about_txt_privacy_policy.setOnClickListener { licenceDialog.show() }
+        about_txt_external_libraries_licences.setOnClickListener { librariesLicenseDialog.show() }
+        about_ctxt_instagram.setOnClickListener { viewModel.openDeveloperInstagramAccount() }
+        about_txt_linkedin.setOnClickListener { viewModel.openDeveloperLinkedInAccount() }
         about_txt_gmail_address.setOnClickListener { viewModel.sendEmail() }
+    }
+
+    private val librariesLicenseDialog: AlertDialog by lazy {
+        fun createDialogView(): View? {
+            val context = this.context ?: return null
+            return RecyclerView(context).apply {
+                layoutManager = LinearLayoutManager(context)
+                setHasFixedSize(true)
+                adapter = LicenceAdapter { viewModel.openExternalLicenceFor(it) }.also { it.submitList(viewModel.getLibraries()) }
+            }
+        }
+
+        AlertDialog.Builder(activity).apply {
+            setCancelable(false)
+            setTitle("Libraries")
+            setView(createDialogView())
+            setPositiveButton(getString(R.string.label_ok)) { dialog, _ -> dialog.dismiss() }
+        }.create()
+    }
+
+    private val licenceDialog: AlertDialog by lazy {
+        fun createView(): View {
+            return WebView(activity).apply { loadUrl("file:///android_asset/privacy_policy.html") }
+        }
+
+        AlertDialog.Builder(activity).apply {
+            setView(createView())
+            setPositiveButton(getString(R.string.label_ok)) { dialog, _ -> dialog.dismiss() }
+        }.create()
     }
 }

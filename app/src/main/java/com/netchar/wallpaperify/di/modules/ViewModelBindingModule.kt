@@ -63,8 +63,6 @@ abstract class ViewModelBindingModule {
     @ViewModelKey(AboutViewModel::class)
     abstract fun bindAboutViewModel(viewModel: AboutViewModel): ViewModel
 
-
-
     @Binds
     abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory
 }

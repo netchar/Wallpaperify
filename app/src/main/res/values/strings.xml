@@ -52,6 +52,7 @@
     <string name="label_cancel">Cancel</string>
     <string name="label_override">Override</string>
     <string name="label_apply">Apply</string>
+    <string name="label_ok">OK</string>
 
     <string name="message_canceled">Canceled</string>
     <string name="download_dialog_progress_info_initial_state">Calculating…</string>
@@ -83,7 +84,7 @@
     <string name="preference_option_title_build_version">Build Version</string>
     <string name="preference_option_title_dark_theme">Theme</string>
     <string name="preference_option_theme_dialog_title">Choose theme</string>
-    <string name="fragment_about_item_external_libraries_license">External Libraries License</string>
+    <string name="fragment_about_item_external_libraries_license">External Library Licenses</string>
     <string name="fragment_about_item_privacy_policy">Privacy Policy</string>
     <string name="fragment_about_title_author">Author</string>
     <string name="fragment_about_title_contacts">Contacts</string>

@@ -7,7 +7,7 @@
         <item name="android:focusable">true</item>
         <item name="android:foreground">?attr/selectableItemBackground</item>
         <item name="android:padding">@dimen/padding_content_default</item>
-        <item name="android:textAppearance">@style/TextAppearance.AppTheme.Subtitle1</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppTheme.Body2</item>
     </style>
 
 

@@ -16,6 +16,8 @@
 
 package com.netchar.common.services
 
+import android.net.Uri
+
 interface IExternalAppService {
     enum class ExternalApp(val appName: String, val packageName: String) {
         INSTAGRAM("Instagram", "com.instagram.android"),
@@ -23,6 +25,11 @@ interface IExternalAppService {
     }
 
     fun sendEmail(subject: String, message: String)
-    fun openWith(app: ExternalApp, link: String)
-    fun openWith(packageName: String, link: String)
+
+    fun openUrlInExternalApp(app: ExternalApp, link: String)
+
+    fun openUrlInExternalApp(packageName: String, link: String)
+
+    fun openWebPage(url: String): Boolean
+    fun openWebPage(url: Uri): Boolean
 }

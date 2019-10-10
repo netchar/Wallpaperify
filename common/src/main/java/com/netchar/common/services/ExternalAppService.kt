@@ -20,8 +20,12 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
+import androidx.browser.customtabs.CustomTabsIntent
 import com.netchar.common.DEVELOPER_GMAIL
-import com.netchar.common.extensions.openWebPage
+import com.netchar.common.R
+import com.netchar.common.extensions.getColorCompat
+import com.netchar.common.extensions.toWebUri
+import timber.log.Timber
 import javax.inject.Inject
 
 internal class ExternalAppService @Inject constructor(val context: Context) : IExternalAppService {
@@ -32,7 +36,6 @@ internal class ExternalAppService @Inject constructor(val context: Context) : IE
             putExtra(Intent.EXTRA_SUBJECT, subject)
             putExtra(Intent.EXTRA_TEXT, message)
         }
-
         val packageManager = context.packageManager
         val resolvingActivities = packageManager.queryIntentActivities(emailIntent, 0)
         val isIntentSafe: Boolean = resolvingActivities.isNotEmpty()
@@ -50,19 +53,69 @@ internal class ExternalAppService @Inject constructor(val context: Context) : IE
         }
     }
 
-    override fun openWith(app: IExternalAppService.ExternalApp, link: String) {
-        openWith(app.packageName, link)
+    override fun openUrlInExternalApp(app: IExternalAppService.ExternalApp, link: String) {
+        openUrlInExternalApp(app.packageName, link)
     }
 
-    override fun openWith(packageName: String, link: String) {
+    override fun openUrlInExternalApp(packageName: String, link: String) {
         val packageManager = context.packageManager
         val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
 
         if (launchIntent == null) {
-            context.openWebPage(link)
+            openWebPage(link)
         } else {
             launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(launchIntent)
         }
+    }
+
+    override fun openWebPage(url: String): Boolean {
+        // Format the URI properly.
+        val uri = url.toWebUri()
+        return openWebPage(uri)
+    }
+
+    override fun openWebPage(url: Uri): Boolean {
+        // Try using Chrome Custom Tabs.
+        if (tryOpenInChromeTabs(url)) {
+            return true
+        }
+
+        // Fall back to launching a default web browser intent.
+        if (tryOpenInSystemBrowser(url)) {
+            return true
+        }
+
+        // We were unable to show the web page.
+        return false
+    }
+
+    private fun tryOpenInChromeTabs(uri: Uri): Boolean {
+        try {
+            val intent = CustomTabsIntent.Builder()
+                .setToolbarColor(context.getColorCompat(R.color.color_surface))
+                .setShowTitle(true)
+                .build()
+            intent.launchUrl(context, uri)
+            return true
+        } catch (ex: Exception) {
+            Timber.e(ex)
+        }
+        return false
+    }
+
+    private fun tryOpenInSystemBrowser(uri: Uri): Boolean {
+        try {
+            val webViewIntent = Intent(Intent.ACTION_VIEW, uri)
+            val packageManager = context.packageManager
+
+            if (webViewIntent.resolveActivity(packageManager) != null) {
+                context.startActivity(webViewIntent)
+                return true
+            }
+        } catch (ex: Exception) {
+            Timber.e(ex)
+        }
+        return false
     }
 }
