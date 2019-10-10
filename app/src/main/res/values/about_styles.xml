@@ -28,9 +28,11 @@
     <style name="ContactTextViewStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">@dimen/margin_vertical_default</item>
+        <item name="android:minWidth">250dp</item>
+        <item name="android:layout_marginTop">@dimen/margin_vertical_small</item>
         <item name="android:drawablePadding">@dimen/padding_content_small</item>
-        <item name="android:gravity">center</item>
+        <item name="android:gravity">center|left</item>
+        <item name="android:padding">@dimen/padding_content_small</item>
         <item name="android:foreground">?attr/selectableItemBackground</item>
         <item name="android:textAppearance">@style/TextAppearance.AppTheme.Body2</item>
     </style>
