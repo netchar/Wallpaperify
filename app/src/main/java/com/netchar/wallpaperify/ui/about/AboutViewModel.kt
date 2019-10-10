@@ -30,13 +30,13 @@ class AboutViewModel @Inject constructor(
         coroutineDispatchers: CoroutineDispatchers,
         private val buildPreferences: IBuildPreferences,
         private val appService: IExternalAppService,
-        private val externalLibraryProvider: IExternalLibraryProvider
+        private val provider: IExternalLibraryProvider
 ) : BaseViewModel(coroutineDispatchers) {
 
     fun getVersionName() = buildPreferences.getVersionName()
 
     fun sendEmail() {
-        appService.sendEmail("Hi, Eugene", "")
+        appService.openEmail("Hi, Eugene", "")
     }
 
     fun openDeveloperInstagramAccount() {
@@ -47,7 +47,7 @@ class AboutViewModel @Inject constructor(
         appService.openUrlInExternalApp(ExternalApp.LINKED_IN, DEVELOPER_LINKEDIN_URL)
     }
 
-    fun getLibraries() = externalLibraryProvider.getLibraries()
+    fun getLibraries() = provider.getLibraries()
 
     fun openExternalLicenceFor(library: IExternalLibraryProvider.Library) = appService.openWebPage(library.link)
 }

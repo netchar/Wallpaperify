@@ -24,7 +24,7 @@ interface IExternalAppService {
         LINKED_IN("LinkedIn", "com.linkedin.android")
     }
 
-    fun sendEmail(subject: String, message: String)
+    fun openEmail(subject: String, message: String)
 
     fun openUrlInExternalApp(app: ExternalApp, link: String)
 

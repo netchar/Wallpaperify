@@ -25,11 +25,15 @@ import com.netchar.common.DEVELOPER_GMAIL
 import com.netchar.common.R
 import com.netchar.common.extensions.getColorCompat
 import com.netchar.common.extensions.toWebUri
+import com.netchar.common.services.IExternalAppService.ExternalApp
 import timber.log.Timber
 import javax.inject.Inject
 
-internal class ExternalAppService @Inject constructor(val context: Context) : IExternalAppService {
-    override fun sendEmail(subject: String, message: String) {
+internal class ExternalAppService @Inject constructor(
+        val context: Context
+) : IExternalAppService {
+
+    override fun openEmail(subject: String, message: String) {
         val uri = Uri.parse("mailto:")
         val emailIntent = Intent(Intent.ACTION_SENDTO, uri).apply {
             putExtra(Intent.EXTRA_EMAIL, arrayOf(DEVELOPER_GMAIL)) // recipients
@@ -53,7 +57,7 @@ internal class ExternalAppService @Inject constructor(val context: Context) : IE
         }
     }
 
-    override fun openUrlInExternalApp(app: IExternalAppService.ExternalApp, link: String) {
+    override fun openUrlInExternalApp(app: ExternalApp, link: String) {
         openUrlInExternalApp(app.packageName, link)
     }
 
