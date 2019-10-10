@@ -27,7 +27,10 @@ import com.netchar.common.DEVELOPER_INSTAGRAM_URL
 import com.netchar.common.DEVELOPER_LINKEDIN_URL
 import com.netchar.common.UNSPLASH_URL
 import com.netchar.common.base.BaseFragment
-import com.netchar.common.extensions.*
+import com.netchar.common.extensions.applyWindowInsets
+import com.netchar.common.extensions.injectViewModel
+import com.netchar.common.extensions.openWebPage
+import com.netchar.common.extensions.toast
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_about.*
@@ -67,6 +70,6 @@ class AboutFragment : BaseFragment() {
 
         about_ctxt_instagram.setOnClickListener { baseContext.openWebPage(DEVELOPER_INSTAGRAM_URL) }
         about_txt_linkedin.setOnClickListener { baseContext.openWebPage(DEVELOPER_LINKEDIN_URL) }
-        about_txt_gmail_address.setOnClickListener { createEmailIntent("Wallpaperify", "").also { baseContext.startActivity(it) } }
+        about_txt_gmail_address.setOnClickListener { viewModel.sendEmail() }
     }
 }

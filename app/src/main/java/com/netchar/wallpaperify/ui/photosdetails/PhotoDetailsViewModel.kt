@@ -21,7 +21,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.netchar.common.base.BaseViewModel
-import com.netchar.common.services.WallpaperApplierService
+import com.netchar.common.services.IWallpaperApplierService
 import com.netchar.common.utils.CoroutineDispatchers
 import com.netchar.common.utils.SingleLiveData
 import com.netchar.remote.enums.Cause
@@ -50,7 +50,7 @@ data class DialogState(val show: Boolean, val closeReason: Int = 0) {
 
 class PhotoDetailsViewModel @Inject constructor(
         coroutineDispatchers: CoroutineDispatchers,
-        private val wallpaperService: WallpaperApplierService,
+        private val wallpaperService: IWallpaperApplierService,
         private val repo: IPhotosRepository
 ) : BaseViewModel(coroutineDispatchers) {
 

@@ -17,9 +17,7 @@
 package com.netchar.common.di
 
 import android.content.Context
-import com.netchar.common.services.IPhotoCacheService
-import com.netchar.common.services.PhotoCacheService
-import com.netchar.common.services.WallpaperApplierService
+import com.netchar.common.services.*
 import com.netchar.common.utils.CoroutineDispatchers
 import com.netchar.common.utils.navigation.IToolbarNavigationBinder
 import com.netchar.common.utils.navigation.ToolbarNavigationBinder
@@ -38,7 +36,7 @@ object CommonModule {
     @JvmStatic
     @Provides
     @Singleton
-    fun providesWallpaperApplierService(context: Context): WallpaperApplierService = WallpaperApplierService(context)
+    fun providesWallpaperApplierService(context: Context): IWallpaperApplierService = WallpaperApplierService(context)
 
     @JvmStatic
     @Provides
@@ -49,4 +47,12 @@ object CommonModule {
     @Provides
     @Singleton
     fun providesPhotoCacheService(context: Context, coroutineDispatchers: CoroutineDispatchers): IPhotoCacheService = PhotoCacheService(context, coroutineDispatchers)
+
+    @JvmStatic
+    @Provides
+    fun providesCommunicationService(context: Context): ICommunicationService = CommunicationService(context)
+
+    @JvmStatic
+    @Provides
+    fun providesExternalLibrariesService(): IExternalLibraryProvider = ExternalLibraryProvider()
 }
