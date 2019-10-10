@@ -50,7 +50,7 @@ object CommonModule {
 
     @JvmStatic
     @Provides
-    fun providesCommunicationService(context: Context): ICommunicationService = CommunicationService(context)
+    fun providesCommunicationService(context: Context): IExternalAppService = ExternalAppService(context)
 
     @JvmStatic
     @Provides

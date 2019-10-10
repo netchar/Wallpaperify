@@ -16,6 +16,13 @@
 
 package com.netchar.common.services
 
-interface ICommunicationService {
+interface IExternalAppService {
+    enum class ExternalApp(val appName: String, val packageName: String) {
+        INSTAGRAM("Instagram", "com.instagram.android"),
+        LINKED_IN("LinkedIn", "com.linkedin.android")
+    }
+
     fun sendEmail(subject: String, message: String)
+    fun openWith(app: ExternalApp, link: String)
+    fun openWith(packageName: String, link: String)
 }

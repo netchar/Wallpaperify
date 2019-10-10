@@ -21,10 +21,10 @@ import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
 import com.netchar.common.DEVELOPER_GMAIL
+import com.netchar.common.extensions.openWebPage
 import javax.inject.Inject
 
-internal class CommunicationService @Inject constructor(val context: Context) : ICommunicationService {
-
+internal class ExternalAppService @Inject constructor(val context: Context) : IExternalAppService {
     override fun sendEmail(subject: String, message: String) {
         val uri = Uri.parse("mailto:")
         val emailIntent = Intent(Intent.ACTION_SENDTO, uri).apply {
@@ -47,6 +47,22 @@ internal class CommunicationService @Inject constructor(val context: Context) : 
             context.startActivity(intent)
         } else {
             Toast.makeText(context, "Unable to find appropriate app for send an email.", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    override fun openWith(app: IExternalAppService.ExternalApp, link: String) {
+        openWith(app.packageName, link)
+    }
+
+    override fun openWith(packageName: String, link: String) {
+        val packageManager = context.packageManager
+        val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
+
+        if (launchIntent == null) {
+            context.openWebPage(link)
+        } else {
+            launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            context.startActivity(launchIntent)
         }
     }
 }

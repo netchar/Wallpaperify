@@ -16,8 +16,11 @@
 
 package com.netchar.wallpaperify.ui.about
 
+import com.netchar.common.DEVELOPER_INSTAGRAM_URL
+import com.netchar.common.DEVELOPER_LINKEDIN_URL
 import com.netchar.common.base.BaseViewModel
-import com.netchar.common.services.ICommunicationService
+import com.netchar.common.services.IExternalAppService
+import com.netchar.common.services.IExternalAppService.ExternalApp
 import com.netchar.common.utils.CoroutineDispatchers
 import com.netchar.common.utils.IBuildPreferences
 import javax.inject.Inject
@@ -25,20 +28,20 @@ import javax.inject.Inject
 class AboutViewModel @Inject constructor(
         coroutineDispatchers: CoroutineDispatchers,
         private val buildPreferences: IBuildPreferences,
-        private val communicationService: ICommunicationService
+        private val appService: IExternalAppService
 ) : BaseViewModel(coroutineDispatchers) {
 
     fun getVersionName() = buildPreferences.getVersionName()
 
     fun sendEmail() {
-        communicationService.sendEmail("Hi, Eugene", "")
+        appService.sendEmail("Hi, Eugene", "")
     }
 
     fun redirectToInstagramAcc() {
-
+        appService.openWith(ExternalApp.INSTAGRAM, DEVELOPER_INSTAGRAM_URL)
     }
 
     fun redirectToLinkedInAcc() {
-
+        appService.openWith(ExternalApp.LINKED_IN, DEVELOPER_LINKEDIN_URL)
     }
 }

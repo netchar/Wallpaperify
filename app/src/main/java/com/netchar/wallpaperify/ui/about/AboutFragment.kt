@@ -23,13 +23,10 @@ import androidx.core.text.toSpannable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.netchar.common.DEVELOPER_INSTAGRAM_URL
-import com.netchar.common.DEVELOPER_LINKEDIN_URL
 import com.netchar.common.UNSPLASH_URL
 import com.netchar.common.base.BaseFragment
 import com.netchar.common.extensions.applyWindowInsets
 import com.netchar.common.extensions.injectViewModel
-import com.netchar.common.extensions.openWebPage
 import com.netchar.common.extensions.toast
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.ViewModelFactory
@@ -67,9 +64,8 @@ class AboutFragment : BaseFragment() {
 
         about_txt_privacy_policy.setOnClickListener { toast("privacy") }
         about_txt_external_libraries_licences.setOnClickListener { toast("licences") }
-
-        about_ctxt_instagram.setOnClickListener { baseContext.openWebPage(DEVELOPER_INSTAGRAM_URL) }
-        about_txt_linkedin.setOnClickListener { baseContext.openWebPage(DEVELOPER_LINKEDIN_URL) }
+        about_ctxt_instagram.setOnClickListener { viewModel.redirectToInstagramAcc() }
+        about_txt_linkedin.setOnClickListener { viewModel.redirectToLinkedInAcc() }
         about_txt_gmail_address.setOnClickListener { viewModel.sendEmail() }
     }
 }
