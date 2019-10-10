@@ -25,6 +25,7 @@ import android.view.View
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.net.toUri
 import androidx.drawerlayout.widget.DrawerLayout
+import com.netchar.common.DEVELOPER_GMAIL
 import com.netchar.common.R
 
 /**
@@ -52,8 +53,6 @@ fun String.toWebUri(): Uri {
     return (if (startsWith("http://") || startsWith("https://")) this else "https://$this").toUri()
 }
 
-
-//todo: implement custom tabs
 fun Context.openWebPage(url: String): Boolean {
     // Format the URI properly.
     val uri = url.toWebUri()
@@ -61,7 +60,7 @@ fun Context.openWebPage(url: String): Boolean {
     // Try using Chrome Custom Tabs.
     try {
         val intent = CustomTabsIntent.Builder()
-            .setToolbarColor(getColorCompat(R.color.color_surface))
+                .setToolbarColor(getColorCompat(R.color.color_surface))
                 .setShowTitle(true)
                 .build()
         intent.launchUrl(this, uri)
@@ -81,6 +80,17 @@ fun Context.openWebPage(url: String): Boolean {
 
     // We were unable to show the web page.
     return false
+}
+
+fun createEmailIntent(subject: String, message: String) : Intent {
+    return Intent(Intent.ACTION_SEND).apply {
+        // The intent does not have a URI, so declare the "text/plain" MIME type
+        type = "text/plain"
+        putExtra(Intent.EXTRA_EMAIL, arrayOf(DEVELOPER_GMAIL)) // recipients
+        putExtra(Intent.EXTRA_SUBJECT, subject)
+        putExtra(Intent.EXTRA_TEXT, message)
+        putExtra(Intent.EXTRA_STREAM, Uri.parse("content://path/to/email/attachment"))
+    }
 }
 
 inline fun consume(f: () -> Unit): Boolean {
