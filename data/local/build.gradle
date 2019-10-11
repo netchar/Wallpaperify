@@ -21,6 +21,8 @@ dependencies {
     implementation project(project_modules.test)
     implementation project(project_modules.common)
 
+    implementation deps.androidx.preferences
+
     // Kotlin
     implementation deps.kotlin.stdlib
     implementation deps.kotlin.coroutines.core

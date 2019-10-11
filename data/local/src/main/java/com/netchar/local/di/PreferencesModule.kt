@@ -18,7 +18,7 @@ package com.netchar.local.di
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import com.netchar.common.di.AppPrefs
 import com.netchar.common.di.AuthPrefs
 import dagger.Module
