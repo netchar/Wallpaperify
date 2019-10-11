@@ -61,7 +61,7 @@ class MainActivity : BaseActivity(), IDrawerActivity {
         drawer_navigation_view.setupWithNavController(navigationController)
         enableDrawContentUnderStatusBars()
 
-        drawer_layout.setOnApplyWindowInsetsListener { v, insets ->
+        drawer_layout.setOnApplyWindowInsetsListener { _, insets ->
             drawer_navigation_view.updatePadding(top = insets.systemWindowInsetTop)
             insets
         }
