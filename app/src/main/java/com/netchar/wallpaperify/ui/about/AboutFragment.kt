@@ -16,11 +16,11 @@
 
 package com.netchar.wallpaperify.ui.about
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.text.util.Linkify
 import android.view.View
 import android.webkit.WebView
+import androidx.appcompat.app.AlertDialog
 import androidx.core.text.toSpannable
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -83,7 +83,7 @@ class AboutFragment : BaseFragment() {
             }
         }
 
-        AlertDialog.Builder(activity).apply {
+        AlertDialog.Builder(baseContext).apply {
             setCancelable(false)
             setTitle("Libraries")
             setView(createDialogView())
@@ -96,7 +96,7 @@ class AboutFragment : BaseFragment() {
             return WebView(activity).apply { loadUrl("file:///android_asset/privacy_policy.html") }
         }
 
-        AlertDialog.Builder(activity).apply {
+        AlertDialog.Builder(baseContext).apply {
             setView(createView())
             setPositiveButton(getString(R.string.label_ok)) { dialog, _ -> dialog.dismiss() }
         }.create()

@@ -16,12 +16,12 @@
 
 package com.netchar.wallpaperify.ui.photosdetails
 
-import android.app.AlertDialog
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.*
 import android.view.animation.Animation
+import androidx.appcompat.app.AlertDialog
 import androidx.core.text.buildSpannedString
 import androidx.core.text.underline
 import androidx.core.view.ViewCompat
@@ -321,7 +321,7 @@ class PhotoDetailsFragment : BaseFragment() {
     }
 
     private val overrideDialog: AlertDialog by lazy {
-        AlertDialog.Builder(activity).apply {
+        AlertDialog.Builder(baseContext).apply {
             setTitle(getString(R.string.message_dialog_error_title_photo_exists))
             setMessage(getString(R.string.message_dialog_photo_already_exists))
             setPositiveButton(getString(R.string.label_override)) { _, _ ->
