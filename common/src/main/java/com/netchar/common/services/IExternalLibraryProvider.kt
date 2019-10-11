@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 
-package com.netchar.common
+package com.netchar.common.services
 
-const val UNSPLASH_URL = "https://unsplash.com/"
-const val UNSPLASH_UTM_PARAMETERS = "?utm_source=wallpaperify&utm_medium=referral&utm_campaign=api-credit"
+interface IExternalLibraryProvider {
+    data class Library(val name: String, val description: String, val link: String)
 
-const val DEVELOPER_INSTAGRAM_URL = "https://www.instagram.com/e.glushankov/"
-const val DEVELOPER_LINKEDIN_URL = "https://www.linkedin.com/in/glushankov"
-const val DEVELOPER_GMAIL = "e.glushankov@gmail.com"
-
-fun String.connectUnsplashUtmParameters() = this + UNSPLASH_UTM_PARAMETERS
+    fun getLibraries(): List<Library>
+}

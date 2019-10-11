@@ -1,8 +1,194 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/about_coordinator"
     android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
     android:layout_height="match_parent">
 
-    <include layout="@layout/view_appbar_toolbar_default" />
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/about_appbar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:fitsSystemWindows="true">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:fitsSystemWindows="true"
+            android:minHeight="?attr/actionBarSize" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/about_constraint_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="100dp">
+
+            <com.netchar.common.views.CompoundDrawableTextView
+                android:id="@+id/compoundDrawableTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/margin_vertical_default"
+                android:drawablePadding="@dimen/padding_content_small"
+                android:fontFamily="@font/cantora_one"
+                android:gravity="center_vertical"
+                android:text="@string/application_name"
+                android:textAppearance="@style/TextAppearance.AppTheme.Brand"
+                android:textSize="36sp"
+                app:compoundDrawableHeight="36dp"
+                app:compoundDrawableWidth="36dp"
+                app:drawableEndVector="@drawable/ic_logo_leaf"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/about_txt_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textAppearance="@style/TextAppearance.AppTheme.Caption"
+                app:layout_constraintEnd_toEndOf="@+id/compoundDrawableTextView"
+                app:layout_constraintHorizontal_bias="0.497"
+                app:layout_constraintStart_toStartOf="@+id/compoundDrawableTextView"
+                app:layout_constraintTop_toBottomOf="@+id/compoundDrawableTextView"
+                tools:text="Version: 1.0.0" />
+
+            <TextView
+                android:id="@+id/about_txt_app_info"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:autoLink="web"
+                android:fontFamily="sans-serif"
+                android:lineSpacingExtra="2sp"
+                android:paddingLeft="@dimen/padding_content_default"
+                android:paddingRight="@dimen/padding_content_default"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppTheme.Subtitle2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/about_txt_version"
+                tools:text="Powered by unsplash.com. \n\nBrowse over 1 million free high-resolution images brought to you by the most generous community of photographers." />
+
+            <LinearLayout
+                android:id="@+id/about_linear_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_vertical_extra_large"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/about_txt_app_info">
+
+                <View style="@style/SeparatorStyle" />
+
+                <TextView
+                    android:id="@+id/about_txt_privacy_policy"
+                    style="@style/LicenseTextViewStyle"
+                    android:text="@string/fragment_about_item_privacy_policy" />
+
+                <View style="@style/SeparatorStyle" />
+
+                <TextView
+                    android:id="@+id/about_txt_external_libraries_licences"
+                    style="@style/LicenseTextViewStyle"
+                    android:text="@string/fragment_about_item_external_libraries_license" />
+
+                <View style="@style/SeparatorStyle" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/about_headline_author"
+                style="@style/TitleStyle"
+                android:text="@string/fragment_about_title_author"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/about_linear_container" />
+
+            <ImageView
+                android:id="@+id/about_img_author_image"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="@dimen/margin_vertical_default"
+                android:layout_marginTop="@dimen/margin_vertical_default"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/about_headline_author"
+                tools:srcCompat="@tools:sample/avatars" />
+
+            <TextView
+                android:id="@+id/about_txt_author_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_horizontal_default"
+                android:text="@string/developer_name"
+                android:textAppearance="@style/TextAppearance.AppTheme.Subtitle1"
+                app:layout_constraintBottom_toTopOf="@+id/about_txt_author_address"
+                app:layout_constraintStart_toEndOf="@+id/about_img_author_image"
+                app:layout_constraintTop_toTopOf="@+id/about_img_author_image"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <TextView
+                android:id="@+id/about_txt_author_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_vertical_extra_small"
+                android:text="@string/developer_location_address"
+                android:textAppearance="@style/TextAppearance.AppTheme.Caption"
+                app:layout_constraintBottom_toBottomOf="@+id/about_img_author_image"
+                app:layout_constraintStart_toStartOf="@+id/about_txt_author_name"
+                app:layout_constraintTop_toBottomOf="@+id/about_txt_author_name"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <TextView
+                android:id="@+id/about_headline_author_address"
+                style="@style/TitleStyle"
+                android:text="@string/fragment_about_title_contacts"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/about_img_author_image" />
+
+            <com.netchar.common.views.CompoundDrawableTextView
+                android:id="@+id/about_ctxt_instagram"
+                style="@style/ContactTextViewStyle"
+                android:text="@string/developer_instagram_address"
+                app:compoundDrawableHeight="32dp"
+                app:compoundDrawableWidth="32dp"
+                app:drawableStartVector="@drawable/ic_instagram"
+                app:layout_constraintStart_toStartOf="@+id/about_img_author_image"
+                app:layout_constraintTop_toBottomOf="@+id/about_headline_author_address" />
+
+            <com.netchar.common.views.CompoundDrawableTextView
+                android:id="@+id/about_txt_linkedin"
+                style="@style/ContactTextViewStyle"
+                android:text="@string/developer_linkedin_address"
+                app:compoundDrawableHeight="32dp"
+                app:compoundDrawableWidth="32dp"
+                app:drawableStartVector="@drawable/ic_linkedin"
+                app:layout_constraintStart_toStartOf="@+id/about_ctxt_instagram"
+                app:layout_constraintTop_toBottomOf="@+id/about_ctxt_instagram" />
+
+            <com.netchar.common.views.CompoundDrawableTextView
+                android:id="@+id/about_txt_gmail_address"
+                style="@style/ContactTextViewStyle"
+                android:text="@string/developer_gmail_address"
+                app:compoundDrawableHeight="32dp"
+                app:compoundDrawableWidth="32dp"
+                app:drawableStartVector="@drawable/ic_gmail"
+                app:layout_constraintStart_toStartOf="@+id/about_ctxt_instagram"
+                app:layout_constraintTop_toBottomOf="@+id/about_txt_linkedin" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

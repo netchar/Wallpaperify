@@ -14,13 +14,22 @@
  * limitations under the License.
  */
 
-package com.netchar.common
+package com.netchar.common.services
 
-const val UNSPLASH_URL = "https://unsplash.com/"
-const val UNSPLASH_UTM_PARAMETERS = "?utm_source=wallpaperify&utm_medium=referral&utm_campaign=api-credit"
+import android.net.Uri
 
-const val DEVELOPER_INSTAGRAM_URL = "https://www.instagram.com/e.glushankov/"
-const val DEVELOPER_LINKEDIN_URL = "https://www.linkedin.com/in/glushankov"
-const val DEVELOPER_GMAIL = "e.glushankov@gmail.com"
+interface IExternalAppService {
+    enum class ExternalApp(val appName: String, val packageName: String) {
+        INSTAGRAM("Instagram", "com.instagram.android"),
+        LINKED_IN("LinkedIn", "com.linkedin.android")
+    }
 
-fun String.connectUnsplashUtmParameters() = this + UNSPLASH_UTM_PARAMETERS
+    fun openEmail(subject: String, message: String)
+
+    fun openUrlInExternalApp(app: ExternalApp, link: String)
+
+    fun openUrlInExternalApp(packageName: String, link: String)
+
+    fun openWebPage(url: String): Boolean
+    fun openWebPage(url: Uri): Boolean
+}

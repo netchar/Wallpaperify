@@ -27,7 +27,7 @@ import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
 
-class PhotoCacheService @Inject constructor(
+internal class PhotoCacheService @Inject constructor(
         private val context: Context,
         private val coroutineDispatchers: CoroutineDispatchers
 ) : IPhotoCacheService {

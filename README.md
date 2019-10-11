@@ -2,7 +2,7 @@
 
 **Wallpaperify** is powered by [Unsplash.com](https://unsplash.com/)
 
-Simple unofficial app to browse awesome phostos created by the most generous community of photographers.
+Simple unofficial app to browse awesome photos created by the most generous community of photographers.
 
 # Screenshots
 

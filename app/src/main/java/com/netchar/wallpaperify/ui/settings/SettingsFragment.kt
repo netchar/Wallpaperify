@@ -28,9 +28,9 @@ import com.netchar.common.extensions.applyWindowInsets
 import com.netchar.common.extensions.getStringSafe
 import com.netchar.common.extensions.injectViewModel
 import com.netchar.common.extensions.toast
+import com.netchar.common.utils.IBuildPreferences
 import com.netchar.common.utils.Injector
 import com.netchar.common.utils.ThemeUtils
-import com.netchar.common.utils.getVersionName
 import com.netchar.common.utils.navigation.IToolbarNavigationBinder
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.ViewModelFactory
@@ -47,6 +47,9 @@ class SettingsFragment : PreferenceFragmentCompat(), HasAndroidInjector, SharedP
 
     @Inject
     lateinit var navigationBinder: IToolbarNavigationBinder
+
+    @Inject
+    lateinit var buildPreferences: IBuildPreferences
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -96,7 +99,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasAndroidInjector, SharedP
 
     private fun setPreferencesSummary() {
         val buildPreference = findPreference<Preference>(getString(R.string.preference_option_key_build))
-        buildPreference?.summary = "${activityContext.getVersionName()}"
+        buildPreference?.summary = "${buildPreferences.getVersionName()}"
     }
 
     override fun onStart() {

@@ -17,9 +17,7 @@
 package com.netchar.common.utils
 
 import android.app.Activity
-import android.content.Context
 import androidx.core.app.ShareCompat
-import androidx.core.content.pm.PackageInfoCompat
 
 
 /**
@@ -48,26 +46,5 @@ fun Activity.share(url: String, chooserTitle: String) {
     } else {
         // unable to find resolve activity to share url
         // todo: firebase analytics
-    }
-}
-
-fun Context.getVersionCode(): Long {
-    return try {
-        val manager = packageManager
-        val info = manager.getPackageInfo(packageName, 0)
-        PackageInfoCompat.getLongVersionCode(info)
-    } catch (e: Exception) {
-        e.printStackTrace()
-        -1
-    }
-}
-
-fun Context.getVersionName(): String? {
-    return try {
-        val manager = packageManager
-        val info = manager.getPackageInfo(packageName, 0)
-        info.versionName
-    } catch (e: Exception) {
-        null
     }
 }

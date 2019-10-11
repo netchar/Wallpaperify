@@ -1,5 +1,5 @@
 <resources>
-
+<!--    todo: change naming rules -->
     <!--App-->
     <string name="app_name">Wallpaperify</string>
     <string name="main_toast_confirm_back">Press \'back\' again to exit.</string>
@@ -43,6 +43,8 @@
     <string name="photo_details_floating_label_title_wallpaper">Set As Wallpaper</string>
     <string name="photo_details_floating_label_title_download">Download</string>
 
+    <string name="fragment_about_app_info_text">Powered by unsplash.com.\n\nBrowse over 1 million free high-resolution images brought to you by the most generous community of photographers.</string>
+
     <string name="photo_details_dialog_progress_status">%1$s%% completed</string>
     <string name="error_download_unable_to_start_downloading">Unable to download photo. Try again later.</string>
     <string name="title_downloading">Downloading…</string>
@@ -50,6 +52,7 @@
     <string name="label_cancel">Cancel</string>
     <string name="label_override">Override</string>
     <string name="label_apply">Apply</string>
+    <string name="label_ok">OK</string>
 
     <string name="message_canceled">Canceled</string>
     <string name="download_dialog_progress_info_initial_state">Calculating…</string>
@@ -81,6 +84,15 @@
     <string name="preference_option_title_build_version">Build Version</string>
     <string name="preference_option_title_dark_theme">Theme</string>
     <string name="preference_option_theme_dialog_title">Choose theme</string>
+    <string name="fragment_about_item_external_libraries_license">External Library Licenses</string>
+    <string name="fragment_about_item_privacy_policy">Privacy Policy</string>
+    <string name="fragment_about_title_author">Author</string>
+    <string name="fragment_about_title_contacts">Contacts</string>
+    <string name="developer_instagram_address">e.glushankov</string>
+    <string name="developer_linkedin_address">glushankov</string>
+    <string name="developer_gmail_address">e.glushankov@gmail.com</string>
+    <string name="developer_location_address">Minsk, Belarus</string>
+    <string name="developer_name">Eugene Glushankov</string>
 
     <string-array name="ThemeOptions">
         <item>Light</item>
