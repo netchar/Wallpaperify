@@ -254,6 +254,7 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
         return result.coerceIn(0..100).toFloat()
     }
 
+    //todo: change for Andorid Q. https://stackoverflow.com/questions/56468539/getexternalstoragepublicdirectory-deprecated-in-android-q
     private fun createFilePath(request: DownloadRequest): String {
         return "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)}${File.separator}$DOWNLOAD_MANGER_FILE_SUB_DIR${File.separator}${request.fullFileName}"
     }

@@ -30,6 +30,8 @@ import com.netchar.repository.preferences.IPreferenceRepository
 import com.netchar.repository.preferences.PreferenceRepository
 import com.netchar.repository.services.DownloadService
 import com.netchar.repository.services.IDownloadService
+import com.netchar.repository.usecase.IPhotoUseCase
+import com.netchar.repository.usecase.PhotoUseCase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -57,4 +59,8 @@ object RepositoryModule {
     @Singleton
     fun providePreferenceRepo(@AppPrefs prefs: SharedPreferences, context: Context): IPreferenceRepository = PreferenceRepository(prefs, context)
 
+    @JvmStatic
+    @Provides
+    @Singleton
+    fun providePhotoUseCase(repo: IPhotosRepository): IPhotoUseCase = PhotoUseCase(repo)
 }

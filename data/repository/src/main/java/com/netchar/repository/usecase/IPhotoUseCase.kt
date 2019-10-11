@@ -14,25 +14,22 @@
  * limitations under the License.
  */
 
-package com.netchar.repository.photos
+package com.netchar.repository.usecase
 
 import androidx.lifecycle.LiveData
 import com.netchar.remote.apirequest.ApiRequest
 import com.netchar.repository.IBoundResource
 import com.netchar.repository.pojo.PhotoPOJO
 import com.netchar.repository.pojo.Progress
-import com.netchar.repository.pojo.Resource
 import com.netchar.repository.services.DownloadRequest
 import kotlinx.coroutines.CoroutineScope
 
-interface IPhotosRepository {
+interface IPhotoUseCase {
     fun getPhotos(request: ApiRequest.Photos, scope: CoroutineScope): IBoundResource<List<PhotoPOJO>>
 
     fun getPhoto(id: String, scope: CoroutineScope): IBoundResource<PhotoPOJO>
 
-    suspend fun trackPhotoDownloadAsync(photoId: String): Resource<String>
-
-    fun download(request: DownloadRequest): LiveData<Progress>
+    suspend fun downloadAsync(photoId: String, request: DownloadRequest): LiveData<Progress>
 
     fun cancelDownload()
 

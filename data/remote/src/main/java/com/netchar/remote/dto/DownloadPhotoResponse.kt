@@ -14,13 +14,8 @@
  * limitations under the License.
  */
 
-package com.netchar.repository
+package com.netchar.remote.dto
 
-import androidx.lifecycle.LiveData
-import com.netchar.repository.pojo.Resource
-
-interface IBoundResource<TResourceData : Any> {
-    fun cancelJob()
-    fun getLiveData(): LiveData<Resource<TResourceData>>
-    suspend fun getAsync(): Resource<TResourceData>
-}
+data class DownloadPhotoResponse(
+        val url: String = ""
+)
