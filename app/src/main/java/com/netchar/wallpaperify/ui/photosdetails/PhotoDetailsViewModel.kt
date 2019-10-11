@@ -56,7 +56,6 @@ class PhotoDetailsViewModel @Inject constructor(
         private val externalAppService: IExternalAppService,
         private val useCase: IPhotoUseCase
 ) : BaseViewModel(coroutineDispatchers) {
-
     private val _photoId = MutableLiveData<String>()
     private val _photo = MediatorLiveData<PhotoPOJO>()
     private val _loading = MutableLiveData<Boolean>()
@@ -71,7 +70,7 @@ class PhotoDetailsViewModel @Inject constructor(
     }
 
     init {
-        _photo.addSource(repoLiveData) { response ->
+        _photo.observe(repoLiveData) { response ->
             proceedResponse(response)
         }
     }
@@ -207,7 +206,7 @@ class PhotoDetailsViewModel @Inject constructor(
     private fun download(photo: PhotoPOJO, request: DownloadRequest) {
         launch {
             val responseLiveData = useCase.downloadAsync(photo.id, request)
-            _downloadDialog.oneShotObserve(responseLiveData) { progress -> proceedProgress(progress, request.requestType) }
+            _downloadDialog.observe(responseLiveData) { progress -> proceedProgress(progress, request.requestType) }
         }
     }
 

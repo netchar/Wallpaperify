@@ -42,8 +42,7 @@ open class BaseViewModel(val dispatchers: CoroutineDispatchers) : ViewModel(), C
         coroutineContext.cancel()
     }
 
-    protected fun <TMediator, TResponse> MediatorLiveData<TMediator>.oneShotObserve(liveData: LiveData<TResponse>, observeFunction: (value: TResponse) -> Unit) {
+    protected fun <TMediator, TResponse> MediatorLiveData<TMediator>.observe(liveData: LiveData<TResponse>, observeFunction: (value: TResponse) -> Unit) {
         this.addSource(liveData, observeFunction)
-        this.removeSource(liveData)
     }
 }

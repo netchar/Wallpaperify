@@ -35,6 +35,7 @@ import com.netchar.repository.pojo.Progress
 import timber.log.Timber
 import java.io.File
 import java.io.IOException
+import java.util.concurrent.Executors
 import javax.inject.Inject
 
 
@@ -89,6 +90,10 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
                 notificationMode = DownloadManager.Request.VISIBILITY_VISIBLE
         )
         downloads[currentDownloadId] = request
+
+        isDownloading = true
+        Executors.newCachedThreadPool().execute(updater)
+
         return progress
     }
 
@@ -111,6 +116,10 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
                 notificationMode = DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED
         )
         downloads[currentDownloadId] = request
+
+        isDownloading = true
+        Executors.newCachedThreadPool().execute(updater)
+
         return progress
     }
 
@@ -128,10 +137,19 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
 
         val enqueueId = downloadManager.enqueue(request)
 
-        unregisterDownloadObservers()
-        registerDownloadObservers(enqueueId)
+//        isDownloading = true
+//        Executors.newCachedThreadPool().execute(updater)
+//        updateProgressStatus()
+//        unregisterDownloadObservers()
+//        registerDownloadObservers(enqueueId)
 
         return enqueueId
+    }
+
+    private val updater = Runnable {
+        while (isDownloading) {
+            updateProgressStatus()
+        }
     }
 
     private fun deleteSafe(file: File) {
@@ -173,6 +191,9 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
         }
     }
 
+    @Volatile
+    private var isDownloading = false
+
     fun updateProgressStatus() = synchronized(this) {
         val cursor = downloadManager.getCursor(currentDownloadId)
 
@@ -187,7 +208,8 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
 
             when (newStatus) {
                 DownloadManager.STATUS_SUCCESSFUL -> {
-                    unregisterDownloadObservers()
+//                    unregisterDownloadObservers()
+                    isDownloading = false
 
                     val photoRequest = downloads[currentDownloadId]
 
@@ -206,7 +228,8 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
                     }
                 }
                 DownloadManager.STATUS_FAILED -> {
-                    unregisterDownloadObservers()
+                    isDownloading = false
+//                    unregisterDownloadObservers()
                     val errorCause = when (getInt(DownloadManager.COLUMN_REASON)) {
                         DownloadManager.ERROR_CANNOT_RESUME -> Progress.ErrorCause.CANNOT_RESUME
                         DownloadManager.ERROR_DEVICE_NOT_FOUND -> Progress.ErrorCause.DEVICE_NOT_FOUND
@@ -222,7 +245,8 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
                     newProgressStatus = Progress.Error(errorCause)
                 }
                 DownloadManager.STATUS_PAUSED -> {
-                    unregisterDownloadObservers()
+                    isDownloading = false
+//                    unregisterDownloadObservers()
                     newProgressStatus = Progress.Error(Progress.ErrorCause.UNEXPECTED_PAUSE)
                 }
                 DownloadManager.STATUS_RUNNING -> {
@@ -230,6 +254,7 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
                     newProgressStatus = Progress.Downloading(progress)
                 }
                 else -> {
+                    isDownloading = false
                     newProgressStatus = Progress.Unknown(newStatus.toString())
                 }
             }
