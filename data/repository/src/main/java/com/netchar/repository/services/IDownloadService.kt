@@ -25,5 +25,4 @@ interface IDownloadService {
 
     fun cancel()
 
-    fun unregisterDownloadObservers()
 }

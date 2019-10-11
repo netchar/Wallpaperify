@@ -17,11 +17,13 @@
 package com.netchar.common.extensions
 
 import android.content.Context
+import android.net.Uri
 import androidx.core.content.FileProvider
 import java.io.File
 
 
-fun File.toFileProviderUri(context: Context) = FileProvider.getUriForFile(context, "com.netchar.wallpaperify.fileprovider", this)
 fun File.notExist() = !this.exists()
 fun File.directorySize() = walkTopDown().filter { it.isFile }.sumByLong { it.length() }
 fun Long.asMb() = this / 1024 / 1024
+
+fun Context.getUriForFile(file: File): Uri = FileProvider.getUriForFile(this, "com.netchar.wallpaperify.fileprovider", file)

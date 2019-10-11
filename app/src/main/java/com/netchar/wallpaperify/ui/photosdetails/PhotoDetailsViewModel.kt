@@ -206,7 +206,9 @@ class PhotoDetailsViewModel @Inject constructor(
     private fun download(photo: PhotoPOJO, request: DownloadRequest) {
         launch {
             val responseLiveData = useCase.downloadAsync(photo.id, request)
-            _downloadDialog.observe(responseLiveData) { progress -> proceedProgress(progress, request.requestType) }
+            _downloadDialog.observe(responseLiveData) { progress ->
+                proceedProgress(progress, request.requestType)
+            }
         }
     }
 
@@ -215,10 +217,5 @@ class PhotoDetailsViewModel @Inject constructor(
             Cause.NO_INTERNET_CONNECTION -> Message(R.string.message_error_no_internet)
             Cause.NOT_AUTHENTICATED, Cause.UNEXPECTED -> Message(R.string.error_message_unexpected_server_response)
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        useCase.unregisterDownloadObservers()
     }
 }

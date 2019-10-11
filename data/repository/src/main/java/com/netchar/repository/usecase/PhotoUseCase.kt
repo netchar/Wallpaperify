@@ -52,8 +52,4 @@ internal class PhotoUseCase @Inject constructor(
     override fun cancelDownload() {
         repository.cancelDownload()
     }
-
-    override fun unregisterDownloadObservers() {
-        repository.unregisterDownloadObservers()
-    }
 }

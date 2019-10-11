@@ -32,6 +32,4 @@ interface IPhotoUseCase {
     suspend fun downloadAsync(photoId: String, request: DownloadRequest): LiveData<Progress>
 
     fun cancelDownload()
-
-    fun unregisterDownloadObservers()
 }

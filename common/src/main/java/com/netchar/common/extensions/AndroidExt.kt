@@ -52,7 +52,7 @@ fun Fragment.setSupportActionBar(toolbar: Toolbar) = (activity as AppCompatActiv
 
 fun Fragment.getStringSafe(@StringRes res: Int?): String = res?.let { getString(it) } ?: ""
 
-fun <T> Cursor.using(body: Cursor.() -> T): T {
+inline fun <T> Cursor.using(body: Cursor.() -> T): T {
     return use { this.body() }
 }
 

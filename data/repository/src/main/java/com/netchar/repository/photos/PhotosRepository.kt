@@ -84,12 +84,6 @@ class PhotosRepository @Inject constructor(
     override fun cancelDownload() {
         downloadService.cancel()
     }
-
-    override fun unregisterDownloadObservers() {
-        downloadService.unregisterDownloadObservers()
-    }
-
-
 }
 
 

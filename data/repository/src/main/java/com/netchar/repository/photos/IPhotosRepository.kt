@@ -35,6 +35,4 @@ interface IPhotosRepository {
     fun download(request: DownloadRequest): LiveData<Progress>
 
     fun cancelDownload()
-
-    fun unregisterDownloadObservers()
 }
