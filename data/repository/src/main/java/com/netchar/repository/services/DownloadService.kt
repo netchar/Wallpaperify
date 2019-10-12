@@ -37,12 +37,16 @@ import kotlin.coroutines.CoroutineContext
 
 
 class DownloadService @Inject constructor(private val context: Context) : IDownloadService, CoroutineScope {
-    private val downloads = hashMapOf<DownloadRequest, DownloadResponse>()
+    private val downloads = hashMapOf<DownloadRequest, Downloading>()
     private lateinit var downloadManager: DownloadManager
     private lateinit var progress: MutableLiveData<Progress>
     private lateinit var currentRequest: DownloadRequest
+    private val supervisorJob = SupervisorJob()
 
-    override val coroutineContext: CoroutineContext get() = SupervisorJob() + Dispatchers.IO
+    override val coroutineContext: CoroutineContext
+        get() {
+            return supervisorJob + Dispatchers.IO
+        }
 
     @Throws(IllegalStateException::class)
     override fun download(request: DownloadRequest): LiveData<Progress> {
@@ -59,10 +63,10 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
             }
         } catch (ex: IllegalArgumentException) {
             Timber.e(ex)
-            progress.value = Progress.Error(Progress.ErrorCause.UNKNOWN)
+            progress.postValue(Progress.Error(Progress.ErrorCause.UNKNOWN))
         } catch (ex: IllegalStateException) {
             Timber.e(ex)
-            progress.value = Progress.Error(Progress.ErrorCause.UNKNOWN)
+            progress.postValue(Progress.Error(Progress.ErrorCause.UNKNOWN))
         }
 
         return progress
@@ -90,8 +94,8 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
         return progress
     }
 
-    private fun registerDownloading(request: DownloadRequest, progress: MutableLiveData<Progress>, currentDownloadId: Long): DownloadResponse {
-        val response = DownloadResponse(currentDownloadId, ProgressDispatcher(request, downloadManager, context) {
+    private fun registerDownloading(request: DownloadRequest, progress: MutableLiveData<Progress>, currentDownloadId: Long): Downloading {
+        val response = Downloading(currentDownloadId, ProgressUpdateDispatcher(request, downloadManager, context) {
             progress.postValue(it)
         })
         downloads[request] = response
@@ -154,11 +158,11 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
             coroutineContext.cancelChildren()
             downloadManager.remove(it.downloadId)
             downloads.remove(currentRequest)
-            progress.value = Progress.Canceled
+            progress.postValue(Progress.Canceled)
         }
     }
 
-    private data class DownloadResponse(val downloadId: Long, val progressDispatcher: ProgressDispatcher)
+    private data class Downloading(val downloadId: Long, val progressDispatcher: ProgressUpdateDispatcher)
 
     companion object {
         const val DOWNLOAD_MANGER_FILE_SUB_DIR = "Wallpaperify"

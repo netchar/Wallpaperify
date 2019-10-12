@@ -10,15 +10,19 @@ import com.netchar.common.extensions.getInt
 import com.netchar.common.extensions.getUriForFile
 import com.netchar.repository.pojo.Progress
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-class ProgressDispatcher(
+class ProgressUpdateDispatcher(
         private val request: DownloadRequest,
         private val downloadManager: DownloadManager,
         private val context: Context,
         private val onProgressUpdate: (progress: Progress) -> Unit
 ) {
+    companion object {
+        private const val DELAY_BETWEEN_PROGRESS_UPDATE_MS = 10L
+    }
 
     fun dispatch(downloadId: Long, scope: CoroutineScope) {
         scope.launch {
@@ -26,6 +30,7 @@ class ProgressDispatcher(
             do {
                 currentProgress = getProgress(downloadId)
                 onProgressUpdate(currentProgress)
+                delay(DELAY_BETWEEN_PROGRESS_UPDATE_MS)
             } while (isActive && (currentProgress is Progress.Downloading || currentProgress is Progress.Pending))
         }
     }
