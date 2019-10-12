@@ -20,7 +20,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import com.netchar.common.UNSPLASH_URL
 import com.netchar.common.base.BaseViewModel
+import com.netchar.common.connectUnsplashUtmParameters
 import com.netchar.common.services.IExternalAppService
 import com.netchar.common.services.IWallpaperApplierService
 import com.netchar.common.utils.CoroutineDispatchers
@@ -47,6 +49,7 @@ data class DialogState(val show: Boolean, val closeReason: Int = 0) {
     }
 
     val isShown get() = show
+    val isHidden get() = !show
     val isCanceled get() = closeReason == CLOSE_REASON_CANCELED
 }
 
@@ -141,6 +144,10 @@ class PhotoDetailsViewModel @Inject constructor(
         externalAppService.openWebPage(url)
     }
 
+    fun openUnsplash() {
+        externalAppService.openWebPage(UNSPLASH_URL.connectUnsplashUtmParameters())
+    }
+
     private fun proceedResponse(response: Resource<PhotoPOJO>) {
         when (response) {
             is Resource.Success -> {
@@ -170,11 +177,7 @@ class PhotoDetailsViewModel @Inject constructor(
                 }
             }
             is Progress.Downloading -> {
-                val currentValue = _downloadDialog.value
-                if (currentValue == null || !currentValue.isShown || currentValue.isCanceled) {
-                    _downloadDialog.value = DialogState.show()
-                }
-
+                showDialogIfHidden()
                 _downloadProgress.value = progress.progressSoFar
             }
             is Progress.Error -> {
@@ -200,6 +203,13 @@ class PhotoDetailsViewModel @Inject constructor(
                 _downloadDialog.value = DialogState.cancel()
                 _toast.value = Message(R.string.message_canceled)
             }
+        }
+    }
+
+    private fun showDialogIfHidden() {
+        val currentValue = _downloadDialog.value
+        if (currentValue == null || currentValue.isHidden || currentValue.isCanceled) {
+            _downloadDialog.value = DialogState.show()
         }
     }
 

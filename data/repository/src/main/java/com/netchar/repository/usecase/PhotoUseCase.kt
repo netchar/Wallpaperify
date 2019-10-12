@@ -23,6 +23,8 @@ import com.netchar.repository.IBoundResource
 import com.netchar.repository.photos.IPhotosRepository
 import com.netchar.repository.pojo.PhotoPOJO
 import com.netchar.repository.pojo.Progress
+import com.netchar.repository.pojo.Progress.Error
+import com.netchar.repository.pojo.Progress.ErrorCause
 import com.netchar.repository.pojo.Resource
 import com.netchar.repository.services.DownloadRequest
 import kotlinx.coroutines.CoroutineScope
@@ -44,8 +46,8 @@ internal class PhotoUseCase @Inject constructor(
             is Resource.Success -> {
                 repository.download(request)
             }
-            is Resource.Error -> MutableLiveData<Progress>(Progress.Error(Progress.ErrorCause.UNKNOWN, response.message))
-            else -> MutableLiveData<Progress>(Progress.Error(Progress.ErrorCause.UNKNOWN))
+            is Resource.Error -> MutableLiveData<Progress>(Error(ErrorCause.UNKNOWN, response.message))
+            else -> MutableLiveData<Progress>(Error(ErrorCause.UNKNOWN))
         }
     }
 

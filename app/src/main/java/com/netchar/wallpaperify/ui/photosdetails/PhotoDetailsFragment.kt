@@ -22,6 +22,7 @@ import android.text.method.LinkMovementMethod
 import android.view.*
 import android.view.animation.Animation
 import androidx.appcompat.app.AlertDialog
+import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
 import androidx.core.text.underline
 import androidx.core.view.ViewCompat
@@ -224,6 +225,12 @@ class PhotoDetailsFragment : BaseFragment() {
             append("${getString(R.string.photo_details_author_prefix)} ")
             underline { append(photo.user.name) }.withClickableSpan(photo.user.name) {
                 viewModel.openAuthorProfile(photo.user.links.html.connectUnsplashUtmParameters())
+            }
+            append(" ${getString(R.string.photo_details_author_middle_part)} ")
+            bold {
+                underline { append(getString(R.string.label_unsplash)) }.withClickableSpan(getString(R.string.label_unsplash)) {
+                    viewModel.openUnsplash()
+                }
             }
         }
 
