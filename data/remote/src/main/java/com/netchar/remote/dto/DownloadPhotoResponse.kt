@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-package com.netchar.repository.services
+package com.netchar.remote.dto
 
-import android.database.ContentObserver
-
-class DownloadChangeObserver(private val handler: DownloadProgressHandler) : ContentObserver(handler) {
-    override fun onChange(selfChange: Boolean) {
-        handler.sendEmptyMessage(DownloadService.DOWNLOAD_MANAGER_MESSAGE_ID)
-    }
-}
+data class DownloadPhotoResponse(
+        val url: String = ""
+)

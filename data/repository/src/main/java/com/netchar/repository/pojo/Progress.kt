@@ -39,4 +39,5 @@ sealed class Progress {
     data class Unknown(val status: String) : Progress()
     data class FileExist(val fileUri: Uri) : Progress()
     object Canceled : Progress()
+    object Pending : Progress()
 }

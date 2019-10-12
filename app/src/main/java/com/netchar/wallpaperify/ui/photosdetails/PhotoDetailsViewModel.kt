@@ -20,19 +20,22 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import com.netchar.common.UNSPLASH_URL
 import com.netchar.common.base.BaseViewModel
+import com.netchar.common.connectUnsplashUtmParameters
 import com.netchar.common.services.IExternalAppService
 import com.netchar.common.services.IWallpaperApplierService
 import com.netchar.common.utils.CoroutineDispatchers
 import com.netchar.common.utils.SingleLiveData
 import com.netchar.remote.enums.Cause
-import com.netchar.repository.photos.IPhotosRepository
 import com.netchar.repository.pojo.Message
 import com.netchar.repository.pojo.PhotoPOJO
 import com.netchar.repository.pojo.Progress
 import com.netchar.repository.pojo.Resource
 import com.netchar.repository.services.DownloadRequest
+import com.netchar.repository.usecase.IPhotoUseCase
 import com.netchar.wallpaperify.R
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class DialogState(val show: Boolean, val closeReason: Int = 0) {
@@ -46,41 +49,32 @@ data class DialogState(val show: Boolean, val closeReason: Int = 0) {
     }
 
     val isShown get() = show
+    val isHidden get() = !show
     val isCanceled get() = closeReason == CLOSE_REASON_CANCELED
 }
 
 class PhotoDetailsViewModel @Inject constructor(
         coroutineDispatchers: CoroutineDispatchers,
         private val wallpaperService: IWallpaperApplierService,
-        private val repo: IPhotosRepository,
-        private val externalAppService: IExternalAppService
+        private val externalAppService: IExternalAppService,
+        private val useCase: IPhotoUseCase
 ) : BaseViewModel(coroutineDispatchers) {
-
     private val _photoId = MutableLiveData<String>()
     private val _photo = MediatorLiveData<PhotoPOJO>()
     private val _loading = MutableLiveData<Boolean>()
     private val _error = SingleLiveData<Message>()
     private val _downloadDialog = MediatorLiveData<DialogState>()
     private val _downloadProgress = MutableLiveData<Float>()
-    private val _downloadRequest = MutableLiveData<DownloadRequest>()
     private val _toast = SingleLiveData<Message>()
     private val _overrideDialog = SingleLiveData<DialogState>()
 
-    private val repoLiveData = Transformations.switchMap(_photoId) { id ->
-        repo.getPhoto(id, this).getLiveData()
-    }
-
-    private val downloadProgressLiveData = Transformations.switchMap(_downloadRequest) { request ->
-        repo.download(request)
+    private val repoLiveData: LiveData<Resource<PhotoPOJO>> = Transformations.switchMap(_photoId) { id ->
+        useCase.getPhoto(id, this).getLiveData()
     }
 
     init {
-        _photo.addSource(repoLiveData) { response ->
+        _photo.observe(repoLiveData) { response ->
             proceedResponse(response)
-        }
-
-        _downloadDialog.addSource(downloadProgressLiveData) { progress ->
-            proceedProgress(progress)
         }
     }
 
@@ -107,6 +101,7 @@ class PhotoDetailsViewModel @Inject constructor(
         if (photo == null) {
             _error.value = Message(R.string.error_message_photo_details_not_loaded)
         } else {
+            // todo: possibility to change file quality to download
             val request = DownloadRequest(
                     url = photo.urls.raw,
                     fileName = photo.id,
@@ -115,7 +110,8 @@ class PhotoDetailsViewModel @Inject constructor(
                     requestType = DownloadRequest.REQUEST_DOWNLOAD,
                     forceOverride = forceOverride
             )
-            _downloadRequest.value = request
+
+            download(photo, request)
         }
     }
 
@@ -136,12 +132,20 @@ class PhotoDetailsViewModel @Inject constructor(
                     fileExtension = "jpg",
                     requestType = DownloadRequest.REQUEST_WALLPAPER
             )
-            _downloadRequest.value = request
+            download(photo, request)
         }
     }
 
     fun cancelDownloading() {
-        repo.cancelDownload()
+        useCase.cancelDownload()
+    }
+
+    fun openAuthorProfile(url: String) {
+        externalAppService.openWebPage(url)
+    }
+
+    fun openUnsplash() {
+        externalAppService.openWebPage(UNSPLASH_URL.connectUnsplashUtmParameters())
     }
 
     private fun proceedResponse(response: Resource<PhotoPOJO>) {
@@ -158,28 +162,22 @@ class PhotoDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun proceedProgress(progress: Progress) {
+    private fun proceedProgress(progress: Progress, request: Int) {
         when (progress) {
             is Progress.Success -> {
-                _downloadRequest.value?.let {
-                    when (it.requestType) {
-                        DownloadRequest.REQUEST_DOWNLOAD -> {
-                            _downloadDialog.value = DialogState.hide()
-                            _toast.value = Message(R.string.message_download_success)
-                        }
-                        DownloadRequest.REQUEST_WALLPAPER -> {
-                            _downloadDialog.value = DialogState.hide()
-                            wallpaperService.setWallpaper(progress.fileUri)
-                        }
+                when (request) {
+                    DownloadRequest.REQUEST_DOWNLOAD -> {
+                        _downloadDialog.value = DialogState.hide()
+                        _toast.value = Message(R.string.message_download_success)
+                    }
+                    DownloadRequest.REQUEST_WALLPAPER -> {
+                        _downloadDialog.value = DialogState.hide()
+                        wallpaperService.setWallpaper(progress.fileUri)
                     }
                 }
             }
             is Progress.Downloading -> {
-                val currentValue = _downloadDialog.value
-                if (currentValue == null || !currentValue.isShown || currentValue.isCanceled) {
-                    _downloadDialog.value = DialogState.show()
-                }
-
+                showDialogIfHidden()
                 _downloadProgress.value = progress.progressSoFar
             }
             is Progress.Error -> {
@@ -192,14 +190,12 @@ class PhotoDetailsViewModel @Inject constructor(
                 }
             }
             is Progress.FileExist -> {
-                _downloadRequest.value?.let {
-                    when (it.requestType) {
-                        DownloadRequest.REQUEST_DOWNLOAD -> {
-                            _overrideDialog.value = DialogState.show()
-                        }
-                        DownloadRequest.REQUEST_WALLPAPER -> {
-                            wallpaperService.setWallpaper(progress.fileUri)
-                        }
+                when (request) {
+                    DownloadRequest.REQUEST_DOWNLOAD -> {
+                        _overrideDialog.value = DialogState.show()
+                    }
+                    DownloadRequest.REQUEST_WALLPAPER -> {
+                        wallpaperService.setWallpaper(progress.fileUri)
                     }
                 }
             }
@@ -210,19 +206,26 @@ class PhotoDetailsViewModel @Inject constructor(
         }
     }
 
+    private fun showDialogIfHidden() {
+        val currentValue = _downloadDialog.value
+        if (currentValue == null || currentValue.isHidden || currentValue.isCanceled) {
+            _downloadDialog.value = DialogState.show()
+        }
+    }
+
+    private fun download(photo: PhotoPOJO, request: DownloadRequest) {
+        launch {
+            val responseLiveData = useCase.downloadAsync(photo.id, request)
+            _downloadDialog.observe(responseLiveData) { progress ->
+                proceedProgress(progress, request.requestType)
+            }
+        }
+    }
+
     private fun getErrorMessage(response: Resource.Error): Message {
         return when (response.cause) {
             Cause.NO_INTERNET_CONNECTION -> Message(R.string.message_error_no_internet)
             Cause.NOT_AUTHENTICATED, Cause.UNEXPECTED -> Message(R.string.error_message_unexpected_server_response)
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        repo.unregisterDownloadObservers()
-    }
-
-    fun openAuthorProfile(url: String) {
-        externalAppService.openWebPage(url)
     }
 }

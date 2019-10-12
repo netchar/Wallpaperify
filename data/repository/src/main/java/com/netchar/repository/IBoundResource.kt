@@ -22,4 +22,5 @@ import com.netchar.repository.pojo.Resource
 interface IBoundResource<TResourceData : Any> {
     fun cancelJob()
     fun getLiveData(): LiveData<Resource<TResourceData>>
+    suspend fun getAsync(): Resource<TResourceData>
 }

@@ -16,6 +16,7 @@
 
 package com.netchar.remote.api
 
+import com.netchar.remote.dto.DownloadPhotoResponse
 import com.netchar.remote.dto.Photo
 import kotlinx.coroutines.Deferred
 import retrofit2.Response
@@ -33,5 +34,8 @@ interface PhotosApi {
     ): Deferred<Response<List<Photo>>>
 
     @GET("photos/{id}")
-    fun getPhotoAsync(@Path("id") id: String) : Deferred<Response<Photo>>
+    fun getPhotoAsync(@Path("id") id: String): Deferred<Response<Photo>>
+
+    @GET("photos/{id}/download")
+    fun trackPhotoDownload(@Path("id") id: String): Deferred<Response<DownloadPhotoResponse>>
 }

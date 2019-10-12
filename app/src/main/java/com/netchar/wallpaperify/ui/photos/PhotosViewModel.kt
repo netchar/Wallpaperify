@@ -23,17 +23,17 @@ import androidx.lifecycle.Transformations
 import com.netchar.common.base.BaseViewModel
 import com.netchar.common.utils.CoroutineDispatchers
 import com.netchar.remote.apirequest.ApiRequest
-import com.netchar.repository.photos.IPhotosRepository
 import com.netchar.repository.pojo.ErrorMessage
 import com.netchar.repository.pojo.Message
 import com.netchar.repository.pojo.PhotoPOJO
 import com.netchar.repository.pojo.Resource
+import com.netchar.repository.usecase.IPhotoUseCase
 import com.netchar.wallpaperify.ui.base.BasicEndlessListViewModel
 import javax.inject.Inject
 
 
 class PhotosViewModel @Inject constructor(
-        private val repository: IPhotosRepository,
+        private val useCase: IPhotoUseCase,
         dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers) {
 
@@ -46,7 +46,7 @@ class PhotosViewModel @Inject constructor(
     private val _ordering = MutableLiveData<ApiRequest.Order>()
 
     private val repositoryLiveData: LiveData<Resource<List<PhotoPOJO>>> = Transformations.switchMap(request) { request ->
-        repository.getPhotos(request, this).getLiveData()
+        useCase.getPhotos(request, this).getLiveData()
     }
 
     init {

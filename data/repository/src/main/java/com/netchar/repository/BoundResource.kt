@@ -46,6 +46,10 @@ abstract class BoundResource<TResourceData : Any, TNetworkDto : Any>(private val
         return this
     }
 
+    override suspend fun getAsync(): Resource<TResourceData> {
+        return tryGetResponse()
+    }
+
     private suspend fun tryGetResponse(): Resource<TResourceData> {
         return try {
             val databaseData = fetchFromDatabaseAsync()

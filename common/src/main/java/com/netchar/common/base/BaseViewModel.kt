@@ -16,6 +16,8 @@
 
 package com.netchar.common.base
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import com.netchar.common.utils.CoroutineDispatchers
 import kotlinx.coroutines.CoroutineScope
@@ -38,5 +40,9 @@ open class BaseViewModel(val dispatchers: CoroutineDispatchers) : ViewModel(), C
     override fun onCleared() {
         super.onCleared()
         coroutineContext.cancel()
+    }
+
+    protected fun <TMediator, TResponse> MediatorLiveData<TMediator>.observe(liveData: LiveData<TResponse>, observeFunction: (value: TResponse) -> Unit) {
+        this.addSource(liveData, observeFunction)
     }
 }
