@@ -39,7 +39,9 @@ ext {
             core              : "1.1.0",
             browser           : "1.0.0",
             work              : "2.2.0",
-            preferences       : "1.1.0-alpha05"
+            preferences       : "1.1.0-alpha05",
+            analytics         : "17.2.0",
+            crashlytics       : "2.10.1"
     ]
 
     versions.test = [
@@ -101,7 +103,11 @@ ext {
             core              : "androidx.core:core-ktx:$versions.androidx.core",
             browser           : "androidx.browser:browser:$versions.androidx.browser",
             work              : "androidx.work:work-runtime-ktx:$versions.androidx.work",
-            preferences       : "androidx.preference:preference-ktx:$versions.androidx.preferences"
+            preferences       : "androidx.preference:preference-ktx:$versions.androidx.preferences",
+            firebase          : [
+                    "analytics"  : "com.google.firebase:firebase-analytics:$versions.androidx.analytics",
+                    "crashlytics": "com.crashlytics.sdk.android:crashlytics:$versions.androidx.crashlytics"
+            ]
     ]
 
     deps.timber = "com.jakewharton.timber:timber:$versions.timber"

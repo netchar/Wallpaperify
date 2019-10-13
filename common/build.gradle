@@ -38,6 +38,8 @@ dependencies {
     implementation deps.androidx.core
     implementation deps.androidx.browser
     implementation deps.androidx.preferences
+    implementation deps.androidx.firebase.analytics
+    implementation deps.androidx.firebase.crashlytics
 
     implementation deps.shimmer
 

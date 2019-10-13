@@ -41,7 +41,6 @@ class PhotoRawFragment : BaseFragment() {
         applyPhotoWindowsInsets()
         arguments?.let {
             val safeArgs = PhotoRawFragmentArgs.fromBundle(it)
-
             photo_raw_progress.show()
             GlideApp.with(this)
                 .load(safeArgs.photoUrl)

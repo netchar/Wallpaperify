@@ -17,11 +17,14 @@
 package com.netchar.wallpaperify.ui.photosdetails
 
 import androidx.lifecycle.Observer
+import com.netchar.common.services.IExternalAppService
+import com.netchar.common.services.IWallpaperApplierService
 import com.netchar.common.utils.CoroutineDispatchers
 import com.netchar.repository.photos.IPhotosRepository
 import com.netchar.repository.pojo.ErrorMessage
 import com.netchar.repository.pojo.Message
 import com.netchar.repository.pojo.PhotoPOJO
+import com.netchar.repository.usecase.IPhotoUseCase
 import com.netchar.wallpaperify.ui.InstantTaskExecutorExtension
 import io.mockk.every
 import io.mockk.mockk
@@ -38,6 +41,9 @@ class PhotoDetailsViewModelTest {
     private lateinit var errorObserver: Observer<ErrorMessage>
     private lateinit var toastObserver: Observer<Message>
     private lateinit var repo: IPhotosRepository
+    private lateinit var useCase: IPhotoUseCase
+    private lateinit var wallpaperService: IWallpaperApplierService
+    private lateinit var externalAppService: IExternalAppService
     private lateinit var viewModel: PhotoDetailsViewModel
 
     private val dispatchersMock = CoroutineDispatchers(
@@ -53,7 +59,10 @@ class PhotoDetailsViewModelTest {
         errorObserver = mockk(relaxed = true)
         toastObserver = mockk(relaxed = true)
         repo = mockk(relaxed = true)
-        viewModel = PhotoDetailsViewModel(dispatchersMock, repo)
+        useCase = mockk(relaxed = true)
+        wallpaperService = mockk(relaxed = true)
+        externalAppService = mockk(relaxed = true)
+        viewModel = PhotoDetailsViewModel(dispatchersMock, wallpaperService, externalAppService, useCase)
     }
 
     @Test

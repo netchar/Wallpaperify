@@ -18,7 +18,7 @@ internal class RecyclerDataSourceTest {
         every { getRenderKey() } returns "r2"
     }
 
-    private val renderers: List<com.netchar.common.poweradapter.item.ItemRenderer> = listOf(
+    private val renderers: MutableList<com.netchar.common.poweradapter.item.ItemRenderer> = mutableListOf(
         mockk {
             every { renderKey } returns "r1"
             every { layoutRes() } returns 1

@@ -19,13 +19,27 @@ apply from: '../commons-android.gradle'
 apply plugin: 'androidx.navigation.safeargs'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-
-def secretProperties = new Properties()
-secretProperties.load(project.rootProject.file('secret.properties').newDataInputStream())
+apply plugin: 'io.fabric'
 
 def appId = "com.netchar.wallpaperify"
+def secretProperties = new Properties()
+def secretPropertiesStream = project.rootProject.file('secret.properties').newDataInputStream()
+
+try {
+    secretProperties.load(secretPropertiesStream)
+} finally {
+    secretPropertiesStream.close()
+}
 
 android {
+    signingConfigs {
+        release {
+            storeFile file(secretProperties['KEYSTORE_FILE_NAME'])
+            storePassword secretProperties['KEYSTORE_PASSWORD']
+            keyAlias = secretProperties['KEYSTORE_KEY_ALIAS']
+            keyPassword secretProperties['KEYSTORE_KEY_PASSWORD']
+        }
+    }
     defaultConfig {
         applicationId appId
 
@@ -55,6 +69,7 @@ android {
             applicationIdSuffix '.release'
             versionNameSuffix '-release'
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 
@@ -105,6 +120,8 @@ dependencies {
     implementation deps.androidx.card
     implementation deps.androidx.core
     implementation deps.androidx.preferences
+    implementation deps.androidx.firebase.analytics
+    implementation deps.androidx.firebase.crashlytics
 
     implementation deps.shimmer
 
@@ -155,3 +172,5 @@ dependencies {
     androidTestImplementation deps.test.espresso
     testImplementation deps.test.mockwebserver
 }
+
+apply plugin: 'com.google.gms.google-services'

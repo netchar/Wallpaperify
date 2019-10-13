@@ -19,25 +19,26 @@ package com.netchar.common.exceptions
 import android.content.Context
 import android.os.Build
 import androidx.core.os.ConfigurationCompat
-import com.netchar.common.utils.IBuildPreferences
+import com.crashlytics.android.Crashlytics
+import com.netchar.common.utils.IBuildConfig
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
 class UncaughtExceptionHandler private constructor(
         context: Context,
-        private val buildPreferences: IBuildPreferences
+        private val buildConfig: IBuildConfig
 ) : Thread.UncaughtExceptionHandler {
     private val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm", ConfigurationCompat.getLocales(context.resources.configuration)[0])
     private val previousHandler: Thread.UncaughtExceptionHandler? = Thread.getDefaultUncaughtExceptionHandler()
+    private val runtime by lazy { Runtime.getRuntime() }
 
     override fun uncaughtException(thread: Thread, exception: Throwable) {
-        val errorReport = StringBuilder()
         val dumpDate = Date(System.currentTimeMillis())
 
-        getFullStack(exception, errorReport)
+        buildString {
+            getFullStack(exception, this)
 
-        with(errorReport) {
             appendln()
             appendln("************ Timestamp  ${formatter.format(dumpDate)} ************")
             appendln()
@@ -52,9 +53,21 @@ class UncaughtExceptionHandler private constructor(
             appendln("SDK: " + Build.VERSION.SDK_INT)
             appendln("Release: " + Build.VERSION.RELEASE)
             appendln("Incremental: " + Build.VERSION.INCREMENTAL)
-            appendln("Version Name: " + buildPreferences.getVersionName())
-            appendln("Version Code: " + buildPreferences.getVersionCode())
-        }.also { Timber.e(it.toString()) }
+            appendln("Version Name: " + buildConfig.getVersionName())
+            appendln("Version Code: " + buildConfig.getVersionCode())
+
+            // Calculate the memory heap
+            val maxMemory = runtime.maxMemory()
+            val freeMemory = runtime.freeMemory()
+            val usedMemory = runtime.totalMemory() - freeMemory
+            val availableMemory = maxMemory - usedMemory
+
+            //Set values to Crashlytics
+            Crashlytics.setLong("used_memory", usedMemory)
+            Crashlytics.setLong("available_memory", availableMemory)
+
+            Timber.e(this.toString())
+        }
 
         previousHandler?.uncaughtException(thread, exception)
     }
@@ -78,8 +91,8 @@ class UncaughtExceptionHandler private constructor(
     }
 
     companion object {
-        fun inContext(context: Context, buildPreferences: IBuildPreferences): UncaughtExceptionHandler {
-            return UncaughtExceptionHandler(context, buildPreferences)
+        fun inContext(context: Context, buildConfig: IBuildConfig): UncaughtExceptionHandler {
+            return UncaughtExceptionHandler(context, buildConfig)
         }
     }
 }

@@ -18,6 +18,7 @@ package com.netchar.wallpaperify.ui
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
+import com.crashlytics.android.Crashlytics
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.netchar.common.exceptions.UncaughtExceptionHandler
 import com.netchar.common.utils.DebugTree
@@ -30,6 +31,7 @@ import com.netchar.wallpaperify.infrastructure.BuildPreferences
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
+import io.fabric.sdk.android.Fabric
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -67,6 +69,9 @@ class App : Application(), HasAndroidInjector {
         } else {
             Timber.plant(ReleaseTree())
         }
+
+
+        Fabric.with(this, Crashlytics())
 
         Thread.setDefaultUncaughtExceptionHandler(UncaughtExceptionHandler.inContext(this, prefs))
 

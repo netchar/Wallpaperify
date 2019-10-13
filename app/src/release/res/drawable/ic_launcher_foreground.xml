@@ -6,7 +6,7 @@
     android:viewportHeight="1378.5">
   <group android:translateX="413.55"
       android:translateY="413.55">
-  
+
       <path
           android:fillColor="#275527"
           android:pathData="M413.7,0 C413.7,0,368.3,44,319.3,61.8 C-44.1,193.2,109.2,449.3,114.2,450.1

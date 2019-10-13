@@ -5,9 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
+import androidx.core.content.FileProvider
 import com.netchar.common.extensions.getCursor
 import com.netchar.common.extensions.getInt
-import com.netchar.common.extensions.getUriForFile
+import com.netchar.common.utils.IBuildConfig
 import com.netchar.repository.pojo.Progress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -18,6 +19,7 @@ class ProgressUpdateDispatcher(
         private val request: DownloadRequest,
         private val downloadManager: DownloadManager,
         private val context: Context,
+        private val buildConfig: IBuildConfig,
         private val onProgressUpdate: (progress: Progress) -> Unit
 ) {
     companion object {
@@ -40,7 +42,7 @@ class ProgressUpdateDispatcher(
         cursor.use {
             return when (val columnStatus = it.getInt(DownloadManager.COLUMN_STATUS)) {
                 DownloadManager.STATUS_SUCCESSFUL -> {
-                    val uri = context.getUriForFile(request.toFile())
+                    val uri = FileProvider.getUriForFile(context, "${buildConfig.getApplicationId()}.fileprovider", request.toFile())
 
                     if (request.requestType == DownloadRequest.REQUEST_WALLPAPER) {
                         forceScanForNewFiles(uri)
