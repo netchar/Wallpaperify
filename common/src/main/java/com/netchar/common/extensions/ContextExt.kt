@@ -21,6 +21,6 @@ import androidx.core.view.updatePadding
 
 fun Toolbar.applyWindowInsets() = setOnApplyWindowInsetsListener { toolbar, windowInsets ->
     toolbar.updatePadding(top = windowInsets.systemWindowInsetTop, bottom = 0)
-    // consuming insets will stop propagating them to other children
+    // windowInsets.consumeSystemWindowInsets() - will stop propagating them to other children
     windowInsets
 }

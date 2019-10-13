@@ -67,11 +67,9 @@ class App : Application(), HasAndroidInjector {
         if (BuildConfig.DEBUG) {
             Timber.plant(DebugTree())
         } else {
+            Fabric.with(this, Crashlytics())
             Timber.plant(ReleaseTree())
         }
-
-
-        Fabric.with(this, Crashlytics())
 
         Thread.setDefaultUncaughtExceptionHandler(UncaughtExceptionHandler.inContext(this, prefs))
 

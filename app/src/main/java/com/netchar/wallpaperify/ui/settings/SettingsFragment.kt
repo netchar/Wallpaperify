@@ -83,7 +83,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasAndroidInjector, SharedP
     private fun observe() {
         viewModel.cacheSize.observe(viewLifecycleOwner, Observer { cacheSizeMb ->
             val cachePreference = findPreference<Preference>(getString(R.string.preference_option_key_cache))
-            cachePreference?.summary = "Size: $cacheSizeMb MB"
+            cachePreference?.summary = getString(R.string.preference_option_summary_cache, cacheSizeMb)
         })
 
         viewModel.toast.observe(viewLifecycleOwner, Observer { message ->
@@ -99,7 +99,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasAndroidInjector, SharedP
 
     private fun setPreferencesSummary() {
         val buildPreference = findPreference<Preference>(getString(R.string.preference_option_key_build))
-        buildPreference?.summary = "${buildConfig.getVersionName()}"
+        buildPreference?.summary = buildConfig.getVersionName()
     }
 
     override fun onStart() {

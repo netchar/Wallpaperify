@@ -29,7 +29,7 @@ class PreferenceRepository @Inject constructor(
 ) : IPreferenceRepository {
 
     override val themeMode: Int
-        get () {
+        get() {
             val key = context.getString(R.string.preference_option_key_theme)
             val preferenceValue = defaultPreferences.getString(key, "")
 
@@ -38,5 +38,17 @@ class PreferenceRepository @Inject constructor(
             } else {
                 preferenceValue.toInt()
             }
+        }
+
+    override val downloadQuality: String
+        get() {
+            val key = context.getString(R.string.preference_option_key_download_quality)
+            return defaultPreferences.getString(key,  context.getString(R.string.preference_download_quality_raw)).toString()
+        }
+
+    override val wallpaperQuality: String
+        get() {
+            val key = context.getString(R.string.preference_option_key_wallpaper_quality)
+            return defaultPreferences.getString(key,  context.getString(R.string.preference_download_quality_raw)).toString()
         }
 }

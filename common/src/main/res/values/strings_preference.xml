@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="preference_option_key_theme">preference_key_theme</string>
+    <string name="preference_option_key_cache">preference_key_cache</string>
+    <string name="preference_option_key_build">preference_key_build</string>
+    <string name="preference_option_key_download_quality">preference_key_download_quality</string>
+    <string name="preference_option_key_wallpaper_quality">preference_key_wallpaper_quality</string>
+
+    <string name="preference_option_title_cache">Clear cache</string>
+    <string name="preference_option_title_download_quality">Download</string>
+    <string name="preference_option_title_wallpaper_quality">Wallpaper</string>
+    <string name="preference_option_title_build_version">Version</string>
+    <string name="preference_option_title_dark_theme">Theme</string>
+
+    <string name="preference_option_summary_cache">Currently %1$d MB cached</string>
+
+    <string name="preference_option_dialog_title_download">Download quality</string>
+    <string name="preference_option_dialog_title_wallpaper">Wallpaper quality</string>
+    <string name="preference_option_dialog_title_theme">Choose theme</string>
+
+    <string name="preference_message_cache_cleared">Cache is cleared</string>
+
+    <string-array name="ThemeOptions">
+        <item>Light</item>
+        <item>Dark</item>
+        <item>Auto</item>
+    </string-array>
+
+    <string-array name="ThemeValues">
+        <item>1</item>
+        <item>2</item>
+        <item>-1</item>
+    </string-array>
+
+    <string-array name="Quality">
+        <item>@string/preference_download_quality_raw</item>
+        <item>@string/preference_download_quality_full</item>
+        <item>@string/preference_download_quality_regular</item>
+        <item>@string/preference_download_quality_small</item>
+    </string-array>
+
+    <string name="preference_download_quality_raw">raw</string>
+    <string name="preference_download_quality_full">full</string>
+    <string name="preference_download_quality_regular">regular</string>
+    <string name="preference_download_quality_small">small</string>
+
+</resources>

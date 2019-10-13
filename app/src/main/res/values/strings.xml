@@ -46,17 +46,15 @@
     <string name="fragment_about_app_info_text">Powered by unsplash.com.\n\nBrowse over 1 million free high-resolution images brought to you by the most generous community of photographers.</string>
 
     <string name="photo_details_dialog_progress_status">%1$s%% completed</string>
-    <string name="error_download_unable_to_start_downloading">Unable to download photo. Try again later.</string>
     <string name="title_downloading">Downloading…</string>
 
     <string name="label_cancel">Cancel</string>
     <string name="label_override">Override</string>
     <string name="label_apply">Apply</string>
     <string name="label_ok">OK</string>
+    <string name="label_unsplash">Unsplash</string>
 
-    <string name="message_canceled">Canceled</string>
-    <string name="download_dialog_progress_info_initial_state">Calculating…</string>
-
+    <string name="error_message_photo_download_unable_to_start_downloading">Unable to download photo. Try again later.</string>
     <string name="error_message_unknown">Unknown error. Try again later.</string>
     <string name="error_message_download_failed">Failed to download image. Try again later.</string>
     <string name="error_message_try_again_later">Something goes wrong. Try again later.</string>
@@ -65,8 +63,10 @@
     <string name="error_message_photo_details_not_loaded">Unable to download since photo details were not loaded. Try again later.</string>
     <string name="error_message_photo_details_unable_to_open_original">Unable to open original photo since details were not loaded. Try again later.</string>
     <string name="error_message_unexpected_server_response">We have an unexpected issue with server response. Try again later.</string>
+    <string name="error_message_dialog_title_photo_exists">Photo already exists.</string>
 
-    <string name="message_dialog_error_title_photo_exists">Photo already exists.</string>
+    <string name="message_download_dialog_progress_info_initial_state">Calculating…</string>
+    <string name="message_canceled">Canceled</string>
     <string name="message_download_success">Download successful</string>
     <string name="message_dialog_photo_already_exists">This photo already downloaded. Would you like to override existing one?</string>
 
@@ -78,32 +78,16 @@
     <string name="photos_filter_sort_option_label_popular">Popular</string>
     <string name="photo_details_author_prefix">by</string>
     <string name="photo_details_author_middle_part">on</string>
-    <string name="label_unsplash">Unsplash</string>
 
-    <string name="preference_option_title_clear_cache">Clear Cache</string>
-    <string name="preference_option_title_build_version">Build Version</string>
-    <string name="preference_option_title_dark_theme">Theme</string>
-    <string name="preference_option_theme_dialog_title">Choose theme</string>
     <string name="fragment_about_item_external_libraries_license">External Library Licenses</string>
     <string name="fragment_about_item_privacy_policy">Privacy Policy</string>
     <string name="fragment_about_title_author">Author</string>
     <string name="fragment_about_title_contacts">Contacts</string>
-    <string name="developer_instagram_address">e.glushankov</string>
-    <string name="developer_linkedin_address">glushankov</string>
-    <string name="developer_gmail_address">e.glushankov@gmail.com</string>
+
+
+    <string name="developer_instagram_address">Follow on Instagram</string>
+    <string name="developer_linkedin_address">Connect on LinkedIn</string>
+    <string name="developer_gmail_address">Send Email</string>
     <string name="developer_location_address">Minsk, Belarus</string>
     <string name="developer_name">Eugene Glushankov</string>
-
-    <string-array name="ThemeOptions">
-        <item>Light</item>
-        <item>Dark</item>
-        <item>Auto</item>
-    </string-array>
-
-    <string-array name="ThemeValues">
-        <item>1</item>
-        <item>2</item>
-        <item>-1</item>
-    </string-array>
-
 </resources>
