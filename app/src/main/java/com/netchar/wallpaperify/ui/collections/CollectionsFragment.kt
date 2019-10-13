@@ -16,9 +16,7 @@
 
 package com.netchar.wallpaperify.ui.collections
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -36,7 +34,6 @@ import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.di.ViewModelFactory
 import com.netchar.wallpaperify.di.modules.GlideApp
 import com.netchar.wallpaperify.ui.home.HomeFragmentDirections
-import kotlinx.android.parcel.Parcelize
 import kotlinx.android.synthetic.main.fragment_collections.*
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import javax.inject.Inject
@@ -137,10 +134,3 @@ class CollectionsFragment : BaseFragment() {
 
 fun List<CollectionPOJO>.asRecyclerItems() = map { CollectionRecyclerItem(it) }
 
-@SuppressLint("ParcelCreator")
-@Parcelize
-data class CollectionDetailsTransitionModel(
-        val authorNameViewTransitionName: String,
-        val totalCountViewTransitionName: String,
-        val titleViewTransitionName: String
-) : Parcelable
