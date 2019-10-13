@@ -1,6 +1,7 @@
 package com.netchar.common.utils
 
 import android.util.Log
+import com.crashlytics.android.Crashlytics
 import timber.log.Timber
 
 
@@ -16,9 +17,14 @@ class DebugTree : Timber.DebugTree() {
 }
 
 class ReleaseTree : Timber.Tree() {
-    override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
-        if (priority == Log.ERROR || priority == Log.WARN){
-            //todo: Firebase crashlytics
+    override fun log(priority: Int, tag: String?, message: String, throwable: Throwable?) {
+
+        if (priority == Log.ERROR || priority == Log.WARN) {
+            Crashlytics.log(priority, tag, message)
+
+            if (throwable != null) {
+                Crashlytics.logException(throwable)
+            }
         }
     }
 }

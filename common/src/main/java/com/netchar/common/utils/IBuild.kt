@@ -1,6 +1,6 @@
 package com.netchar.common.utils
 
-interface IBuildPreferences {
+interface IBuild {
     fun getApiAccessKey(): String
 
     fun getApiSecretKey(): String
@@ -8,4 +8,5 @@ interface IBuildPreferences {
     fun getVersionCode(): Long
 
     fun getVersionName(): String
+    fun getApplicationId(): String
 }

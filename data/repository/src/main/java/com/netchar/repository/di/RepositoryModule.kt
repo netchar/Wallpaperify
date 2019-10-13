@@ -20,6 +20,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.netchar.common.di.AppPrefs
 import com.netchar.common.utils.CoroutineDispatchers
+import com.netchar.common.utils.IBuild
 import com.netchar.remote.api.CollectionsApi
 import com.netchar.remote.api.PhotosApi
 import com.netchar.repository.collection.CollectionRepository
@@ -52,7 +53,7 @@ object RepositoryModule {
     @JvmStatic
     @Provides
     @Singleton
-    fun provideDownloadService(context: Context): IDownloadService = DownloadService(context)
+    fun provideDownloadService(context: Context, build: IBuild): IDownloadService = DownloadService(context, build)
 
     @JvmStatic
     @Provides

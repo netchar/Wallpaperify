@@ -19,6 +19,7 @@ apply from: '../commons-android.gradle'
 apply plugin: 'androidx.navigation.safeargs'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'io.fabric'
 
 def secretProperties = new Properties()
 secretProperties.load(project.rootProject.file('secret.properties').newDataInputStream())
@@ -26,6 +27,14 @@ secretProperties.load(project.rootProject.file('secret.properties').newDataInput
 def appId = "com.netchar.wallpaperify"
 
 android {
+    signingConfigs {
+        release {
+            storeFile file(secretProperties['KEYSTORE_FILE_NAME'])
+            storePassword secretProperties['KEYSTORE_PASSWORD']
+            keyAlias = secretProperties['KEYSTORE_KEY_ALIAS']
+            keyPassword secretProperties['KEYSTORE_KEY_PASSWORD']
+        }
+    }
     defaultConfig {
         applicationId appId
 
@@ -55,6 +64,7 @@ android {
             applicationIdSuffix '.release'
             versionNameSuffix '-release'
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 
@@ -148,6 +158,9 @@ dependencies {
     implementation deps.transitionseverywhere
     implementation deps.quickpermissions
     implementation deps.photoview
+
+    implementation 'com.google.firebase:firebase-analytics:17.2.0'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 }
 
 dependencies {
@@ -155,3 +168,5 @@ dependencies {
     androidTestImplementation deps.test.espresso
     testImplementation deps.test.mockwebserver
 }
+
+apply plugin: 'com.google.gms.google-services'

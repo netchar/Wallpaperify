@@ -2,7 +2,7 @@ package com.netchar.wallpaperify.di
 
 import android.content.Context
 import com.netchar.common.di.CommonModule
-import com.netchar.common.utils.IBuildPreferences
+import com.netchar.common.utils.IBuild
 import com.netchar.local.di.DaoModule
 import com.netchar.local.di.PreferencesModule
 import com.netchar.remote.di.ApiModule
@@ -42,7 +42,7 @@ interface AppComponent : AndroidInjector<App> {
         fun context(context: Context): Builder
 
         @BindsInstance
-        fun buildPrefs(prefs: IBuildPreferences): Builder
+        fun buildPrefs(prefs: IBuild): Builder
 
         fun build(): AppComponent
     }

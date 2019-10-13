@@ -1,13 +1,14 @@
 package netchar.com.auth
 
-import com.netchar.common.utils.IBuildPreferences
+import com.netchar.common.utils.IBuild
 import okhttp3.Interceptor
 import okhttp3.Response
 import javax.inject.Inject
 
 class AuthInterceptor @Inject constructor(
         private val authService: IOAuthService,
-        private val buildPrefs: IBuildPreferences)
+        private val buildPrefs: IBuild
+)
     : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {

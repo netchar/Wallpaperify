@@ -19,11 +19,12 @@ package com.netchar.repository.services
 import android.app.DownloadManager
 import android.content.Context
 import android.os.Environment
+import androidx.core.content.FileProvider
 import androidx.core.content.getSystemService
 import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.netchar.common.extensions.getUriForFile
+import com.netchar.common.utils.IBuild
 import com.netchar.repository.pojo.Progress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,7 +37,10 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 
-class DownloadService @Inject constructor(private val context: Context) : IDownloadService, CoroutineScope {
+class DownloadService @Inject constructor(
+        private val context: Context,
+        private val build: IBuild
+) : IDownloadService, CoroutineScope {
     private val downloads = hashMapOf<DownloadRequest, Downloading>()
     private lateinit var downloadManager: DownloadManager
     private lateinit var progress: MutableLiveData<Progress>
@@ -77,7 +81,8 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
         val progress = MutableLiveData<Progress>()
 
         if (file.exists()) {
-            return progress.apply { value = Progress.FileExist(context.getUriForFile(file)) }
+            val uri = FileProvider.getUriForFile(context, "${build.getApplicationId()}.fileprovider", file)
+            return progress.apply { value = Progress.FileExist(uri) }
         }
 
         val currentDownloadId = downloadImpl(
@@ -95,7 +100,7 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
     }
 
     private fun registerDownloading(request: DownloadRequest, progress: MutableLiveData<Progress>, currentDownloadId: Long): Downloading {
-        val response = Downloading(currentDownloadId, ProgressUpdateDispatcher(request, downloadManager, context) {
+        val response = Downloading(currentDownloadId, ProgressUpdateDispatcher(request, downloadManager, context, build) {
             progress.postValue(it)
         })
         downloads[request] = response
@@ -109,7 +114,8 @@ class DownloadService @Inject constructor(private val context: Context) : IDownl
             if (request.forceOverride) {
                 deleteSafe(file)
             } else {
-                return progress.apply { value = Progress.FileExist(context.getUriForFile(file)) }
+                val uri = FileProvider.getUriForFile(context, "${build.getApplicationId()}.fileprovider", file)
+                return progress.apply { value = Progress.FileExist(uri) }
             }
         }
 

@@ -19,10 +19,10 @@ package com.netchar.wallpaperify.infrastructure
 import android.content.Context
 import android.content.pm.PackageInfo
 import androidx.core.content.pm.PackageInfoCompat
-import com.netchar.common.utils.IBuildPreferences
+import com.netchar.common.utils.IBuild
 import com.netchar.wallpaperify.BuildConfig
 
-class BuildPreferences(val context: Context) : IBuildPreferences {
+class BuildPreferences(val context: Context) : IBuild {
 
     override fun getApiAccessKey() = if (BuildConfig.DEBUG) {
         BuildConfig.DEBUG_API_ACCESS_KEY
@@ -53,6 +53,10 @@ class BuildPreferences(val context: Context) : IBuildPreferences {
         } catch (e: Exception) {
             ""
         }
+    }
+
+    override fun getApplicationId(): String {
+        return BuildConfig.APPLICATION_ID
     }
 
     private fun getPackageInfo(context: Context): PackageInfo? {
