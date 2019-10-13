@@ -28,6 +28,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.text.buildSpannedString
 import androidx.core.text.underline
 import androidx.core.view.updateLayoutParams
+import androidx.core.view.updateMargins
 import androidx.core.view.updatePadding
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
@@ -112,7 +113,7 @@ class CollectionDetailsFragment : BaseFragment() {
     private fun applyWindowsInsets() = collection_details_coordinator.setOnApplyWindowInsetsListener { _, windowInsets ->
         fragmentToolbar?.updatePadding(top = windowInsets.systemWindowInsetTop, bottom = 0)
         space_header.updateLayoutParams<ConstraintLayout.LayoutParams> {
-            this.height = toolbar.measuredHeight
+            updateMargins(top = windowInsets.systemWindowInsetTop)
         }
         windowInsets.consumeSystemWindowInsets()
     }
