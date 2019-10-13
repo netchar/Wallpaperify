@@ -83,9 +83,11 @@
     <string name="fragment_about_item_privacy_policy">Privacy Policy</string>
     <string name="fragment_about_title_author">Author</string>
     <string name="fragment_about_title_contacts">Contacts</string>
-    <string name="developer_instagram_address">e.glushankov</string>
-    <string name="developer_linkedin_address">glushankov</string>
-    <string name="developer_gmail_address">e.glushankov@gmail.com</string>
+
+
+    <string name="developer_instagram_address">Follow on Instagram</string>
+    <string name="developer_linkedin_address">Connect on LinkedIn</string>
+    <string name="developer_gmail_address">Send Email</string>
     <string name="developer_location_address">Minsk, Belarus</string>
     <string name="developer_name">Eugene Glushankov</string>
 </resources>

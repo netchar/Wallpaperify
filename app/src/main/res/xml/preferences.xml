@@ -3,18 +3,43 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory
-        android:title="Appearance">
+    <PreferenceCategory android:title="Appearance">
 
         <ListPreference
-            android:icon="@drawable/ic_invert_colors"
             android:defaultValue="1"
-            android:dialogTitle="@string/preference_option_theme_dialog_title"
+            android:dialogTitle="@string/preference_option_dialog_title_theme"
             android:entries="@array/ThemeOptions"
             android:entryValues="@array/ThemeValues"
+            android:icon="@drawable/ic_invert_colors"
             android:key="@string/preference_option_key_theme"
-            app:useSimpleSummaryProvider="true"
-            android:title="@string/preference_option_title_dark_theme"/>
+            android:title="@string/preference_option_title_dark_theme"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="quality"
+        android:title="Quality">
+
+        <ListPreference
+            android:defaultValue="@string/preference_download_quality_raw"
+            android:dialogTitle="@string/preference_option_dialog_title_wallpaper"
+            android:entries="@array/Quality"
+            android:icon="@drawable/ic_resolution"
+            android:key="@string/preference_option_key_wallpaper_quality"
+            android:title="@string/preference_option_title_wallpaper_quality"
+            app:entryValues="@array/Quality"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            android:defaultValue="@string/preference_download_quality_raw"
+            android:dialogTitle="@string/preference_option_dialog_title_download"
+            android:entries="@array/Quality"
+            android:icon="@drawable/ic_cloud_download"
+            android:key="@string/preference_option_key_download_quality"
+            android:title="@string/preference_option_title_download_quality"
+            app:entryValues="@array/Quality"
+            app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
 
@@ -22,18 +47,10 @@
         android:key="other"
         android:title="Other">
 
-        <ListPreference
-            android:dialogTitle="Download Quality"
-            android:entries="@array/DownloadQuality"
-            android:defaultValue="raw"
-            android:key="@string/preference_option_key_download_quality"
-            android:icon="@drawable/ic_cloud_download"
-            android:title="@string/preference_option_title_download_quality" />
-
         <Preference
-            android:key="@string/preference_option_key_cache"
             android:icon="@drawable/ic_broom"
-            android:title="@string/preference_option_title_clear_cache" />
+            android:key="@string/preference_option_key_cache"
+            android:title="@string/preference_option_title_cache" />
 
         <Preference
             android:key="@string/preference_option_key_build"

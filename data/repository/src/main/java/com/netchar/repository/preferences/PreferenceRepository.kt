@@ -45,4 +45,10 @@ class PreferenceRepository @Inject constructor(
             val key = context.getString(R.string.preference_option_key_download_quality)
             return defaultPreferences.getString(key,  context.getString(R.string.preference_download_quality_raw)).toString()
         }
+
+    override val wallpaperQuality: String
+        get() {
+            val key = context.getString(R.string.preference_option_key_wallpaper_quality)
+            return defaultPreferences.getString(key,  context.getString(R.string.preference_download_quality_raw)).toString()
+        }
 }

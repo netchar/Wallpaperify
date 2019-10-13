@@ -105,11 +105,10 @@ class PhotoDetailsViewModel @Inject constructor(
         if (photo == null) {
             _error.value = Message(R.string.error_message_photo_details_not_loaded)
         } else {
-            val quality = appPreferences.downloadQuality
             val request = DownloadRequest(
                     url = photo.urls.raw,
                     fileName = photo.id,
-                    fileQuality = quality,
+                    fileQuality = appPreferences.downloadQuality,
                     fileExtension = "jpg",
                     requestType = DownloadRequest.REQUEST_DOWNLOAD,
                     forceOverride = forceOverride
@@ -129,11 +128,10 @@ class PhotoDetailsViewModel @Inject constructor(
         if (photo == null) {
             _error.value = Message(R.string.error_message_photo_details_not_loaded)
         } else {
-            val quality = appPreferences.downloadQuality
             val request = DownloadRequest(
                     url = photo.urls.raw,
                     fileName = photo.id,
-                    fileQuality = quality,
+                    fileQuality = appPreferences.wallpaperQuality,
                     fileExtension = "jpg",
                     requestType = DownloadRequest.REQUEST_WALLPAPER
             )
