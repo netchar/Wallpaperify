@@ -16,6 +16,7 @@
 
 package com.netchar.wallpaperify.ui.photosdetails
 
+import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -23,6 +24,7 @@ import androidx.lifecycle.Transformations
 import com.netchar.common.UNSPLASH_URL
 import com.netchar.common.base.BaseViewModel
 import com.netchar.common.connectUnsplashUtmParameters
+import com.netchar.common.di.AppPrefs
 import com.netchar.common.services.IExternalAppService
 import com.netchar.common.services.IWallpaperApplierService
 import com.netchar.common.utils.CoroutineDispatchers
@@ -32,6 +34,7 @@ import com.netchar.repository.pojo.Message
 import com.netchar.repository.pojo.PhotoPOJO
 import com.netchar.repository.pojo.Progress
 import com.netchar.repository.pojo.Resource
+import com.netchar.repository.preferences.IPreferenceRepository
 import com.netchar.repository.services.DownloadRequest
 import com.netchar.repository.usecase.IPhotoUseCase
 import com.netchar.wallpaperify.R
@@ -57,7 +60,8 @@ class PhotoDetailsViewModel @Inject constructor(
         coroutineDispatchers: CoroutineDispatchers,
         private val wallpaperService: IWallpaperApplierService,
         private val externalAppService: IExternalAppService,
-        private val useCase: IPhotoUseCase
+        private val useCase: IPhotoUseCase,
+        private val appPreferences: IPreferenceRepository
 ) : BaseViewModel(coroutineDispatchers) {
     private val _photoId = MutableLiveData<String>()
     private val _photo = MediatorLiveData<PhotoPOJO>()
@@ -101,11 +105,11 @@ class PhotoDetailsViewModel @Inject constructor(
         if (photo == null) {
             _error.value = Message(R.string.error_message_photo_details_not_loaded)
         } else {
-            // todo: possibility to change file quality to download
+            val quality = appPreferences.downloadQuality
             val request = DownloadRequest(
                     url = photo.urls.raw,
                     fileName = photo.id,
-                    fileQuality = "raw",
+                    fileQuality = quality,
                     fileExtension = "jpg",
                     requestType = DownloadRequest.REQUEST_DOWNLOAD,
                     forceOverride = forceOverride
@@ -125,10 +129,11 @@ class PhotoDetailsViewModel @Inject constructor(
         if (photo == null) {
             _error.value = Message(R.string.error_message_photo_details_not_loaded)
         } else {
+            val quality = appPreferences.downloadQuality
             val request = DownloadRequest(
                     url = photo.urls.raw,
                     fileName = photo.id,
-                    fileQuality = "raw",
+                    fileQuality = quality,
                     fileExtension = "jpg",
                     requestType = DownloadRequest.REQUEST_WALLPAPER
             )

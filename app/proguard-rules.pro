@@ -62,6 +62,8 @@
 -keep class android.arch.** { *; }
 -dontwarn android.arch.**
 
+-keep class com.netchar.wallpaperify.ui.collections.CollectionDetailsTransitionModel { *; }
+
 -keep class * implements android.os.Parcelable {
    public static final android.os.Parcelable$Creator *;
 }

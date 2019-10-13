@@ -329,7 +329,7 @@ class PhotoDetailsFragment : BaseFragment() {
 
     private val overrideDialog: AlertDialog by lazy {
         AlertDialog.Builder(baseContext).apply {
-            setTitle(getString(R.string.message_dialog_error_title_photo_exists))
+            setTitle(getString(R.string.error_message_dialog_title_photo_exists))
             setMessage(getString(R.string.message_dialog_photo_already_exists))
             setPositiveButton(getString(R.string.label_override)) { _, _ ->
                 viewModel.overrideDownloadedPhoto()

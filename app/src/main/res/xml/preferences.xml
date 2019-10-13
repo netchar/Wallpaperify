@@ -22,9 +22,17 @@
         android:key="other"
         android:title="Other">
 
+        <ListPreference
+            android:dialogTitle="Download Quality"
+            android:entries="@array/DownloadQuality"
+            android:defaultValue="raw"
+            android:key="@string/preference_option_key_download_quality"
+            android:icon="@drawable/ic_cloud_download"
+            android:title="@string/preference_option_title_download_quality" />
+
         <Preference
             android:key="@string/preference_option_key_cache"
-            android:icon="@drawable/ic_cache"
+            android:icon="@drawable/ic_broom"
             android:title="@string/preference_option_title_clear_cache" />
 
         <Preference

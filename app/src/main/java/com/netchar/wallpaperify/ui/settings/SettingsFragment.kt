@@ -99,7 +99,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasAndroidInjector, SharedP
 
     private fun setPreferencesSummary() {
         val buildPreference = findPreference<Preference>(getString(R.string.preference_option_key_build))
-        buildPreference?.summary = "${buildConfig.getVersionName()}"
+        buildPreference?.summary = buildConfig.getVersionName()
     }
 
     override fun onStart() {

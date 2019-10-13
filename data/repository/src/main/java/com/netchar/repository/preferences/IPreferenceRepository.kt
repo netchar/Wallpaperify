@@ -18,4 +18,5 @@ package com.netchar.repository.preferences
 
 interface IPreferenceRepository {
     val themeMode: Int
+    val downloadQuality: String
 }
