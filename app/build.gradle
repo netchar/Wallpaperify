@@ -34,16 +34,10 @@ try {
 android {
     signingConfigs {
         release {
-            if (project.rootProject.hasProperty('secret.properties')) {
-                storeFile file(secretProperties['KEYSTORE_FILE_NAME'])
-                storePassword secretProperties['KEYSTORE_PASSWORD']
-                keyAlias = secretProperties['KEYSTORE_KEY_ALIAS']
-                keyPassword secretProperties['KEYSTORE_KEY_PASSWORD']
-            } else {
-                println "======================================================="
-                println "[ERROR] - Unable to find secret.properties file in project directory"
-                println "======================================================="
-            }
+            storeFile file(secretProperties['KEYSTORE_FILE_NAME'])
+            storePassword secretProperties['KEYSTORE_PASSWORD']
+            keyAlias = secretProperties['KEYSTORE_KEY_ALIAS']
+            keyPassword secretProperties['KEYSTORE_KEY_PASSWORD']
         }
     }
     defaultConfig {
@@ -56,17 +50,11 @@ android {
         renderscriptSupportModeEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        if (project.rootProject.hasProperty('secret.properties')) {
-            buildConfigField("String", "RELEASE_API_ACCESS_KEY", secretProperties['RELEASE_API_ACCESS_KEY'])
-            buildConfigField("String", "RELEASE_API_SECRET_KEY", secretProperties['RELEASE_API_SECRET_KEY'])
-            buildConfigField("String", "DEBUG_API_ACCESS_KEY", secretProperties['DEBUG_API_ACCESS_KEY'])
-            buildConfigField("String", "DEBUG_API_SECRET_KEY", secretProperties['DEBUG_API_SECRET_KEY'])
-            buildConfigField("String", "GOOGLE_PLAY_LICENSE_KEY", secretProperties['GOOGLE_PLAY_LICENSE_KEY'])
-        } else {
-            println "======================================================="
-            println "[ERROR] - Unable to find secret.properties file in project directory"
-            println "======================================================="
-        }
+        buildConfigField("String", "RELEASE_API_ACCESS_KEY", secretProperties['RELEASE_API_ACCESS_KEY'])
+        buildConfigField("String", "RELEASE_API_SECRET_KEY", secretProperties['RELEASE_API_SECRET_KEY'])
+        buildConfigField("String", "DEBUG_API_ACCESS_KEY", secretProperties['DEBUG_API_ACCESS_KEY'])
+        buildConfigField("String", "DEBUG_API_SECRET_KEY", secretProperties['DEBUG_API_SECRET_KEY'])
+        buildConfigField("String", "GOOGLE_PLAY_LICENSE_KEY", secretProperties['GOOGLE_PLAY_LICENSE_KEY'])
     }
 
     buildTypes {
@@ -132,6 +120,8 @@ dependencies {
     implementation deps.androidx.card
     implementation deps.androidx.core
     implementation deps.androidx.preferences
+    implementation deps.androidx.firebase.analytics
+    implementation deps.androidx.firebase.crashlytics
 
     implementation deps.shimmer
 
@@ -175,9 +165,6 @@ dependencies {
     implementation deps.transitionseverywhere
     implementation deps.quickpermissions
     implementation deps.photoview
-
-    implementation 'com.google.firebase:firebase-analytics:17.2.0'
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 }
 
 dependencies {
