@@ -19,12 +19,11 @@ package com.netchar.repository.services
 import android.app.DownloadManager
 import android.content.Context
 import android.os.Environment
-import androidx.core.content.FileProvider
 import androidx.core.content.getSystemService
 import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.netchar.common.utils.IBuild
+import com.netchar.common.utils.IBuildConfig
 import com.netchar.repository.pojo.Progress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -39,7 +38,7 @@ import kotlin.coroutines.CoroutineContext
 
 class DownloadService @Inject constructor(
         private val context: Context,
-        private val build: IBuild
+        private val buildConfig: IBuildConfig
 ) : IDownloadService, CoroutineScope {
     private val downloads = hashMapOf<DownloadRequest, Downloading>()
     private lateinit var downloadManager: DownloadManager
@@ -48,9 +47,7 @@ class DownloadService @Inject constructor(
     private val supervisorJob = SupervisorJob()
 
     override val coroutineContext: CoroutineContext
-        get() {
-            return supervisorJob + Dispatchers.IO
-        }
+        get() = supervisorJob + Dispatchers.IO
 
     @Throws(IllegalStateException::class)
     override fun download(request: DownloadRequest): LiveData<Progress> {
@@ -81,8 +78,7 @@ class DownloadService @Inject constructor(
         val progress = MutableLiveData<Progress>()
 
         if (file.exists()) {
-            val uri = FileProvider.getUriForFile(context, "${build.getApplicationId()}.fileprovider", file)
-            return progress.apply { value = Progress.FileExist(uri) }
+            return progress.apply { value = getFileExistsLiveDataValue(file) }
         }
 
         val currentDownloadId = downloadImpl(
@@ -100,7 +96,7 @@ class DownloadService @Inject constructor(
     }
 
     private fun registerDownloading(request: DownloadRequest, progress: MutableLiveData<Progress>, currentDownloadId: Long): Downloading {
-        val response = Downloading(currentDownloadId, ProgressUpdateDispatcher(request, downloadManager, context, build) {
+        val response = Downloading(currentDownloadId, ProgressUpdateDispatcher(request, downloadManager, context, buildConfig) {
             progress.postValue(it)
         })
         downloads[request] = response
@@ -114,8 +110,7 @@ class DownloadService @Inject constructor(
             if (request.forceOverride) {
                 deleteSafe(file)
             } else {
-                val uri = FileProvider.getUriForFile(context, "${build.getApplicationId()}.fileprovider", file)
-                return progress.apply { value = Progress.FileExist(uri) }
+                return progress.apply { value = getFileExistsLiveDataValue(file) }
             }
         }
 
@@ -131,6 +126,11 @@ class DownloadService @Inject constructor(
         response.progressDispatcher.dispatch(currentDownloadId, this)
 
         return progress
+    }
+
+    private fun getFileExistsLiveDataValue(file: File): Progress.FileExist {
+        val uri = buildConfig.getFileProviderUri(file)
+        return Progress.FileExist(uri)
     }
 
     private fun downloadImpl(downloadManager: DownloadManager, title: String, url: String, fileName: String, notificationMode: Int): Long {

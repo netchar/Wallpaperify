@@ -23,17 +23,17 @@ import com.netchar.common.services.IExternalAppService
 import com.netchar.common.services.IExternalAppService.ExternalApp
 import com.netchar.common.services.IExternalLibraryProvider
 import com.netchar.common.utils.CoroutineDispatchers
-import com.netchar.common.utils.IBuild
+import com.netchar.common.utils.IBuildConfig
 import javax.inject.Inject
 
 class AboutViewModel @Inject constructor(
         coroutineDispatchers: CoroutineDispatchers,
-        private val build: IBuild,
+        private val buildConfig: IBuildConfig,
         private val appService: IExternalAppService,
         private val provider: IExternalLibraryProvider
 ) : BaseViewModel(coroutineDispatchers) {
 
-    fun getVersionName() = build.getVersionName()
+    fun getVersionName() = buildConfig.getVersionName()
 
     fun sendEmail() {
         appService.openEmail("Hi, Eugene", "")

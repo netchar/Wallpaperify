@@ -22,6 +22,3 @@ import java.io.File
 fun File.notExist() = !this.exists()
 fun File.directorySize() = walkTopDown().filter { it.isFile }.sumByLong { it.length() }
 fun Long.asMb() = this / 1024 / 1024
-
-//todo: remove
-//fun Context.getUriForFile(file: File): Uri = FileProvider.getUriForFile(this, "com.netchar.wallpaperify.fileprovider", file)

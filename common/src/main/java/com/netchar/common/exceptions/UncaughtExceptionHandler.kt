@@ -20,14 +20,14 @@ import android.content.Context
 import android.os.Build
 import androidx.core.os.ConfigurationCompat
 import com.crashlytics.android.Crashlytics
-import com.netchar.common.utils.IBuild
+import com.netchar.common.utils.IBuildConfig
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
 class UncaughtExceptionHandler private constructor(
         context: Context,
-        private val build: IBuild
+        private val buildConfig: IBuildConfig
 ) : Thread.UncaughtExceptionHandler {
     private val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm", ConfigurationCompat.getLocales(context.resources.configuration)[0])
     private val previousHandler: Thread.UncaughtExceptionHandler? = Thread.getDefaultUncaughtExceptionHandler()
@@ -53,8 +53,8 @@ class UncaughtExceptionHandler private constructor(
             appendln("SDK: " + Build.VERSION.SDK_INT)
             appendln("Release: " + Build.VERSION.RELEASE)
             appendln("Incremental: " + Build.VERSION.INCREMENTAL)
-            appendln("Version Name: " + build.getVersionName())
-            appendln("Version Code: " + build.getVersionCode())
+            appendln("Version Name: " + buildConfig.getVersionName())
+            appendln("Version Code: " + buildConfig.getVersionCode())
 
             // Calculate the memory heap
             val maxMemory = runtime.maxMemory()
@@ -91,8 +91,8 @@ class UncaughtExceptionHandler private constructor(
     }
 
     companion object {
-        fun inContext(context: Context, build: IBuild): UncaughtExceptionHandler {
-            return UncaughtExceptionHandler(context, build)
+        fun inContext(context: Context, buildConfig: IBuildConfig): UncaughtExceptionHandler {
+            return UncaughtExceptionHandler(context, buildConfig)
         }
     }
 }

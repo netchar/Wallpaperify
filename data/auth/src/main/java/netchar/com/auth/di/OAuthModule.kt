@@ -3,7 +3,7 @@ package netchar.com.auth.di
 import android.content.SharedPreferences
 import com.netchar.common.di.AuthPrefs
 import com.netchar.common.di.OAuthInterceptor
-import com.netchar.common.utils.IBuild
+import com.netchar.common.utils.IBuildConfig
 import dagger.Module
 import dagger.Provides
 import netchar.com.auth.AuthInterceptor
@@ -24,5 +24,5 @@ object OAuthModule {
     @Provides
     @Singleton
     @OAuthInterceptor
-    fun provideOAuthInterceptor(oAuthRepository: IOAuthService, build: IBuild): Interceptor = AuthInterceptor(oAuthRepository, build)
+    fun provideOAuthInterceptor(oAuthRepository: IOAuthService, buildConfig: IBuildConfig): Interceptor = AuthInterceptor(oAuthRepository, buildConfig)
 }
