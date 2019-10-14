@@ -33,6 +33,13 @@
     </string-array>
 
     <string-array name="Quality">
+        <item>Original</item>
+        <item>Full</item>
+        <item>Regular</item>
+        <item>Small</item>
+    </string-array>
+
+    <string-array name="QualityValues">
         <item>@string/preference_download_quality_raw</item>
         <item>@string/preference_download_quality_full</item>
         <item>@string/preference_download_quality_regular</item>
