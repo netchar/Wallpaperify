@@ -16,8 +16,8 @@
 
 package com.netchar.wallpaperify.ui.about
 
-import com.netchar.common.DEVELOPER_INSTAGRAM_URL
-import com.netchar.common.DEVELOPER_LINKEDIN_URL
+import com.netchar.common.URL_DEVELOPER_INSTAGRAM
+import com.netchar.common.URL_DEVELOPER_LINKEDIN
 import com.netchar.common.base.BaseViewModel
 import com.netchar.common.services.IExternalAppService
 import com.netchar.common.services.IExternalAppService.ExternalApp
@@ -40,11 +40,11 @@ class AboutViewModel @Inject constructor(
     }
 
     fun openDeveloperInstagramAccount() {
-        appService.openUrlInExternalApp(ExternalApp.INSTAGRAM, DEVELOPER_INSTAGRAM_URL)
+        appService.openUrlInExternalApp(ExternalApp.INSTAGRAM, URL_DEVELOPER_INSTAGRAM)
     }
 
     fun openDeveloperLinkedInAccount() {
-        appService.openUrlInExternalApp(ExternalApp.LINKED_IN, DEVELOPER_LINKEDIN_URL)
+        appService.openUrlInExternalApp(ExternalApp.LINKED_IN, URL_DEVELOPER_LINKEDIN)
     }
 
     fun getLibraries() = provider.getLibraries()

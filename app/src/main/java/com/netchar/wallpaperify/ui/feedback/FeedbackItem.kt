@@ -14,22 +14,28 @@
  * limitations under the License.
  */
 
-package com.netchar.common.services
+package com.netchar.wallpaperify.ui.feedback
 
-import android.net.Uri
+import com.netchar.common.poweradapter.item.IRecyclerItem
 
-interface IExternalAppService {
-    enum class ExternalApp(val appName: String, val packageName: String) {
-        INSTAGRAM("Instagram", "com.instagram.android"),
-        LINKED_IN("LinkedIn", "com.linkedin.android")
+data class FeedbackItem(
+        val id: Int,
+        val titleRes: Int,
+        val descriptionRes: Int,
+        val imageRes: Int
+) : IRecyclerItem {
+    companion object {
+        const val GET_IN_TOUCH = 0
+        const val REPORT_BUG = 1
+        const val ROADMAP = 2
+        const val RENDER_KEY = "row"
     }
 
-    fun openEmail(subject: String, message: String = "")
+    override fun getId(): Long {
+        return titleRes.hashCode().toLong()
+    }
 
-    fun openUrlInExternalApp(app: ExternalApp, link: String)
-
-    fun openUrlInExternalApp(packageName: String, link: String)
-
-    fun openWebPage(url: String): Boolean
-    fun openWebPage(url: Uri): Boolean
+    override fun getRenderKey(): String {
+        return RENDER_KEY
+    }
 }

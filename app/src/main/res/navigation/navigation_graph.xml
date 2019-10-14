@@ -126,4 +126,8 @@
         app:exitAnim="@anim/nav_default_exit_anim"
         app:popEnterAnim="@anim/nav_default_pop_enter_anim"
         app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    <fragment
+        android:id="@+id/feedbackFragment"
+        android:name="com.netchar.wallpaperify.ui.feedback.FeedbackFragment"
+        android:label="@string/fragment_title_feedback" />
 </navigation>

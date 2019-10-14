@@ -49,11 +49,9 @@ import com.netchar.wallpaperify.ui.home.HomeFragmentDirections
 import com.netchar.wallpaperify.ui.photos.PhotosRenderer
 import com.netchar.wallpaperify.ui.photos.asRecyclerItems
 import kotlinx.android.synthetic.main.fragment_collection_details.*
-import kotlinx.coroutines.ObsoleteCoroutinesApi
 import javax.inject.Inject
 import kotlin.math.abs
 
-@ObsoleteCoroutinesApi
 class CollectionDetailsFragment : BaseFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory

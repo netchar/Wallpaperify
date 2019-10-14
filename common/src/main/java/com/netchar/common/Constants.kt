@@ -16,11 +16,13 @@
 
 package com.netchar.common
 
-const val UNSPLASH_URL = "https://unsplash.com/"
 const val UNSPLASH_UTM_PARAMETERS = "?utm_source=wallpaperify&utm_medium=referral&utm_campaign=api-credit"
-
-const val DEVELOPER_INSTAGRAM_URL = "https://www.instagram.com/e.glushankov/"
-const val DEVELOPER_LINKEDIN_URL = "https://www.linkedin.com/in/glushankov"
 const val DEVELOPER_GMAIL = "e.glushankov@gmail.com"
+
+const val URL_UNSPLASH = "https://unsplash.com/"
+const val URL_DEVELOPER_INSTAGRAM = "https://www.instagram.com/e.glushankov/"
+const val URL_DEVELOPER_LINKEDIN = "https://www.linkedin.com/in/glushankov"
+const val URL_BUG_TRACKING = "https://github.com/netchar/Wallpaperify/issues"
+const val URL_ROADMAP = "https://github.com/netchar/Wallpaperify/projects/1"
 
 fun String.connectUnsplashUtmParameters() = this + UNSPLASH_UTM_PARAMETERS
