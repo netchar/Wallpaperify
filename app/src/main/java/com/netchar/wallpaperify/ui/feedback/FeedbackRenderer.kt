@@ -22,7 +22,7 @@ import com.netchar.common.poweradapter.item.ItemRenderer
 import com.netchar.wallpaperify.R
 import kotlinx.android.synthetic.main.row_two_lines.view.*
 
-class FeedbackRenderer(val onClick: (id: Int) -> Unit) : ItemRenderer() {
+class FeedbackRenderer(private val onClick: (id: Int) -> Unit) : ItemRenderer() {
     override val renderKey: String = FeedbackItem.RENDER_KEY
 
     override fun layoutRes(): Int {

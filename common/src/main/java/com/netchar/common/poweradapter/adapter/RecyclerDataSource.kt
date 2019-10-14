@@ -83,7 +83,7 @@ open class RecyclerDataSource(
 
     @LayoutRes
     fun getLayoutResFor(position: Int): Int {
-        val renderKey = data[position].getRenderKey()
+        val renderKey = getItem(position).getRenderKey()
         val renderer = renderers.find { it.renderKey == renderKey } ?: throw IllegalArgumentException("Unable to find renderer for model.rendererKey: $renderKey")
         return renderer.layoutRes()
     }
