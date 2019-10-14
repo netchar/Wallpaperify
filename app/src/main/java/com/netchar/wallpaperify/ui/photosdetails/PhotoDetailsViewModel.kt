@@ -32,7 +32,7 @@ import com.netchar.repository.pojo.Message
 import com.netchar.repository.pojo.PhotoPOJO
 import com.netchar.repository.pojo.Progress
 import com.netchar.repository.pojo.Resource
-import com.netchar.repository.preferences.IPreferenceRepository
+import com.netchar.repository.preferences.IPreferences
 import com.netchar.repository.services.DownloadRequest
 import com.netchar.repository.usecase.IPhotoUseCase
 import com.netchar.wallpaperify.R
@@ -59,7 +59,7 @@ class PhotoDetailsViewModel @Inject constructor(
         private val wallpaperService: IWallpaperApplierService,
         private val externalAppService: IExternalAppService,
         private val useCase: IPhotoUseCase,
-        private val appPreferences: IPreferenceRepository
+        private val appPreferences: IPreferences
 ) : BaseViewModel(coroutineDispatchers) {
     private val _photoId = MutableLiveData<String>()
     private val _photo = MediatorLiveData<PhotoPOJO>()

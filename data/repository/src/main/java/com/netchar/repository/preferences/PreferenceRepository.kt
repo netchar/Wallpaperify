@@ -26,7 +26,7 @@ import javax.inject.Inject
 class PreferenceRepository @Inject constructor(
         @AppPrefs private val defaultPreferences: SharedPreferences,
         private val context: Context
-) : IPreferenceRepository {
+) : IPreferences {
 
     override val themeMode: Int
         get() {
@@ -42,7 +42,7 @@ class PreferenceRepository @Inject constructor(
         get() = defaultPreferences.getString(context.getString(R.string.preference_option_key_download_quality), context.getString(R.string.preference_download_quality_raw)).toString()
 
     override val wallpaperQuality: String
-        get() = defaultPreferences.getString(context.getString(R.string.preference_option_key_wallpaper_quality), context.getString(R.string.preference_download_quality_raw)).toString()
+        get() = defaultPreferences.getString(context.getString(R.string.preference_option_key_wallpaper_quality), context.getString(R.string.preference_download_quality_full)).toString()
 
     override val thumbnailQuality: String
         get() = defaultPreferences.getString(context.getString(R.string.preference_option_key_thumbnail_quality), context.getString(R.string.preference_download_quality_regular)).toString()

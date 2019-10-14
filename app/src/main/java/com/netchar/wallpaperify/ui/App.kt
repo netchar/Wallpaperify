@@ -23,7 +23,7 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 import com.netchar.common.exceptions.UncaughtExceptionHandler
 import com.netchar.common.utils.DebugTree
 import com.netchar.common.utils.ReleaseTree
-import com.netchar.repository.preferences.IPreferenceRepository
+import com.netchar.repository.preferences.IPreferences
 import com.netchar.wallpaperify.BuildConfig
 import com.netchar.wallpaperify.di.AppComponent
 import com.netchar.wallpaperify.di.DaggerAppComponent
@@ -50,7 +50,7 @@ class App : Application(), HasAndroidInjector {
     lateinit var activityInjector: DispatchingAndroidInjector<Any>
 
     @Inject
-    lateinit var preferences: IPreferenceRepository
+    lateinit var preferences: IPreferences
 
     private val prefs = BuildPreferences(this)
 

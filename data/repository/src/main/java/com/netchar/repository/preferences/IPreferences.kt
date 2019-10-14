@@ -16,7 +16,7 @@
 
 package com.netchar.repository.preferences
 
-interface IPreferenceRepository {
+interface IPreferences {
     val themeMode: Int
     val downloadQuality: String
     val wallpaperQuality: String

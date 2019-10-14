@@ -29,7 +29,7 @@ import com.netchar.repository.pojo.ErrorMessage
 import com.netchar.repository.pojo.Message
 import com.netchar.repository.pojo.PhotoPOJO
 import com.netchar.repository.pojo.Resource
-import com.netchar.repository.preferences.IPreferenceRepository
+import com.netchar.repository.preferences.IPreferences
 import com.netchar.wallpaperify.ui.base.BasicEndlessListViewModel
 import javax.inject.Inject
 
@@ -37,7 +37,7 @@ class CollectionDetailsViewModel @Inject constructor(
         coroutineDispatchers: CoroutineDispatchers,
         private val repository: ICollectionRepository,
         private val externalAppService: IExternalAppService,
-        val preferences: IPreferenceRepository
+        val preferences: IPreferences
 ) : BaseViewModel(coroutineDispatchers) {
     private val request = MediatorLiveData<ApiRequest.Collection>()
     private val listViewModel = BasicEndlessListViewModel<PhotoPOJO>()

@@ -32,14 +32,14 @@ import com.netchar.common.poweradapter.item.ItemRenderer
 import com.netchar.common.utils.ShimmerFactory
 import com.netchar.common.utils.parseColor
 import com.netchar.repository.pojo.PhotoPOJO
-import com.netchar.repository.preferences.IPreferenceRepository
+import com.netchar.repository.preferences.IPreferences
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.ui.App
 import kotlinx.android.synthetic.main.row_photo.view.*
 
 class PhotosRenderer(
         private val glide: RequestManager,
-        private val preferences: IPreferenceRepository,
+        private val preferences: IPreferences,
         private val listener: (PhotoPOJO, ImageView) -> Unit
 ) : ItemRenderer() {
 

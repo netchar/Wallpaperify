@@ -27,7 +27,7 @@ import com.netchar.repository.collection.CollectionRepository
 import com.netchar.repository.collection.ICollectionRepository
 import com.netchar.repository.photos.IPhotosRepository
 import com.netchar.repository.photos.PhotosRepository
-import com.netchar.repository.preferences.IPreferenceRepository
+import com.netchar.repository.preferences.IPreferences
 import com.netchar.repository.preferences.PreferenceRepository
 import com.netchar.repository.services.DownloadService
 import com.netchar.repository.services.IDownloadService
@@ -58,7 +58,7 @@ object RepositoryModule {
     @JvmStatic
     @Provides
     @Singleton
-    fun providePreferenceRepo(@AppPrefs prefs: SharedPreferences, context: Context): IPreferenceRepository = PreferenceRepository(prefs, context)
+    fun providePreferenceRepo(@AppPrefs prefs: SharedPreferences, context: Context): IPreferences = PreferenceRepository(prefs, context)
 
     @JvmStatic
     @Provides
