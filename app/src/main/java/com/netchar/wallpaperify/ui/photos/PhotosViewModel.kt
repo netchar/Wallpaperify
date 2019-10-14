@@ -27,6 +27,7 @@ import com.netchar.repository.pojo.ErrorMessage
 import com.netchar.repository.pojo.Message
 import com.netchar.repository.pojo.PhotoPOJO
 import com.netchar.repository.pojo.Resource
+import com.netchar.repository.preferences.IPreferenceRepository
 import com.netchar.repository.usecase.IPhotoUseCase
 import com.netchar.wallpaperify.ui.base.BasicEndlessListViewModel
 import javax.inject.Inject
@@ -34,6 +35,7 @@ import javax.inject.Inject
 
 class PhotosViewModel @Inject constructor(
         private val useCase: IPhotoUseCase,
+        val preferences: IPreferenceRepository,
         dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers) {
 

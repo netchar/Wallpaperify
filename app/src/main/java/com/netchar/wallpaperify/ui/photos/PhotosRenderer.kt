@@ -32,11 +32,16 @@ import com.netchar.common.poweradapter.item.ItemRenderer
 import com.netchar.common.utils.ShimmerFactory
 import com.netchar.common.utils.parseColor
 import com.netchar.repository.pojo.PhotoPOJO
+import com.netchar.repository.preferences.IPreferenceRepository
 import com.netchar.wallpaperify.R
 import com.netchar.wallpaperify.ui.App
 import kotlinx.android.synthetic.main.row_photo.view.*
 
-class PhotosRenderer(private val glide: RequestManager, val listener: (PhotoPOJO, ImageView) -> Unit) : ItemRenderer() {
+class PhotosRenderer(
+        private val glide: RequestManager,
+        private val preferences: IPreferenceRepository,
+        private val listener: (PhotoPOJO, ImageView) -> Unit
+) : ItemRenderer() {
 
     companion object {
         val fetchedColors = hashMapOf<String, Int>()
@@ -70,7 +75,15 @@ class PhotosRenderer(private val glide: RequestManager, val listener: (PhotoPOJO
             fitWidth(photo.width, photo.height)
             background = shimmer
 
-            glide.load(photo.urls.regular)
+            val url = when (preferences.thumbnailQuality) {
+                resources.getString(R.string.preference_download_quality_raw) -> photo.urls.raw
+                resources.getString(R.string.preference_download_quality_full) ->photo.urls.full
+                resources.getString(R.string.preference_download_quality_regular) ->photo.urls.regular
+                resources.getString(R.string.preference_download_quality_small) ->photo.urls.small
+                else -> photo.urls.regular
+            }
+
+            glide.load(url)
                     .fitCenter()
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .listener(object : RequestListener<Drawable> {

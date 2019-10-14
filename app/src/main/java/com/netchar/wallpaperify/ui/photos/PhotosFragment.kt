@@ -52,7 +52,7 @@ class PhotosFragment : BaseFragment() {
     override val layoutResId: Int = R.layout.fragment_photos
 
     private val dataSource: EndlessRecyclerDataSource by lazy {
-        val photoRenderer = PhotosRenderer(GlideApp.with(this), ::onItemClick)
+        val photoRenderer = PhotosRenderer(GlideApp.with(this), viewModel.preferences, ::onItemClick)
         EndlessRecyclerDataSource(mutableListOf(photoRenderer), ::onLoadMoreItems)
     }
 

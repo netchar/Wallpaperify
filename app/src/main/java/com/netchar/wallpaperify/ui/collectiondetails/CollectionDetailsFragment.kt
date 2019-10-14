@@ -120,10 +120,10 @@ class CollectionDetailsFragment : BaseFragment() {
         dataSource = getEndlessSource(safeArguments.totalPhotos)
 
         GlideApp.with(this@CollectionDetailsFragment)
-            .load(safeArguments.authorPhotoUrl)
-            .transform(CircleCrop())
-            .transition(DrawableTransitionOptions.withCrossFade())
-            .into(collection_details_img_author)
+                .load(safeArguments.authorPhotoUrl)
+                .transform(CircleCrop())
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(collection_details_img_author)
 
         collection_details_recycler.setHasFixedSize(true)
         collection_details_recycler.onLoadMore = ::onLoadMoreItems
@@ -158,7 +158,7 @@ class CollectionDetailsFragment : BaseFragment() {
     }
 
     private fun getEndlessSource(totalCount: Int): EndlessRecyclerDataSource {
-        val photoRenderer = PhotosRenderer(GlideApp.with(this), ::onItemClick)
+        val photoRenderer = PhotosRenderer(GlideApp.with(this), viewModel.preferences, ::onItemClick)
         return EndlessRecyclerDataSource(mutableListOf(photoRenderer), ::onLoadMoreItems, totalCount)
     }
 

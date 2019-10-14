@@ -20,4 +20,5 @@ interface IPreferenceRepository {
     val themeMode: Int
     val downloadQuality: String
     val wallpaperQuality: String
+    val thumbnailQuality: String
 }
