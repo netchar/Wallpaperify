@@ -5,10 +5,12 @@
     <string name="preference_option_key_build">preference_key_build</string>
     <string name="preference_option_key_download_quality">preference_key_download_quality</string>
     <string name="preference_option_key_wallpaper_quality">preference_key_wallpaper_quality</string>
+    <string name="preference_option_key_thumbnail_quality">preference_key_thumbnail_quality</string>
 
     <string name="preference_option_title_cache">Clear cache</string>
     <string name="preference_option_title_download_quality">Download</string>
     <string name="preference_option_title_wallpaper_quality">Wallpaper</string>
+    <string name="preference_option_title_thumbnail_quality">Thumbnail</string>
     <string name="preference_option_title_build_version">Version</string>
     <string name="preference_option_title_dark_theme">Theme</string>
 
@@ -16,6 +18,7 @@
 
     <string name="preference_option_dialog_title_download">Download quality</string>
     <string name="preference_option_dialog_title_wallpaper">Wallpaper quality</string>
+    <string name="preference_option_dialog_title_thumbnail">Thumbnail quality</string>
     <string name="preference_option_dialog_title_theme">Choose theme</string>
 
     <string name="preference_message_cache_cleared">Cache is cleared</string>
@@ -33,6 +36,13 @@
     </string-array>
 
     <string-array name="Quality">
+        <item>Original</item>
+        <item>Full</item>
+        <item>Regular</item>
+        <item>Small</item>
+    </string-array>
+
+    <string-array name="QualityValues">
         <item>@string/preference_download_quality_raw</item>
         <item>@string/preference_download_quality_full</item>
         <item>@string/preference_download_quality_regular</item>

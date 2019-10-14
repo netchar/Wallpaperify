@@ -16,15 +16,13 @@
 
 package com.netchar.wallpaperify.ui.photosdetails
 
-import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import com.netchar.common.UNSPLASH_URL
+import com.netchar.common.URL_UNSPLASH
 import com.netchar.common.base.BaseViewModel
 import com.netchar.common.connectUnsplashUtmParameters
-import com.netchar.common.di.AppPrefs
 import com.netchar.common.services.IExternalAppService
 import com.netchar.common.services.IWallpaperApplierService
 import com.netchar.common.utils.CoroutineDispatchers
@@ -34,7 +32,7 @@ import com.netchar.repository.pojo.Message
 import com.netchar.repository.pojo.PhotoPOJO
 import com.netchar.repository.pojo.Progress
 import com.netchar.repository.pojo.Resource
-import com.netchar.repository.preferences.IPreferenceRepository
+import com.netchar.repository.preferences.IPreferences
 import com.netchar.repository.services.DownloadRequest
 import com.netchar.repository.usecase.IPhotoUseCase
 import com.netchar.wallpaperify.R
@@ -61,7 +59,7 @@ class PhotoDetailsViewModel @Inject constructor(
         private val wallpaperService: IWallpaperApplierService,
         private val externalAppService: IExternalAppService,
         private val useCase: IPhotoUseCase,
-        private val appPreferences: IPreferenceRepository
+        private val appPreferences: IPreferences
 ) : BaseViewModel(coroutineDispatchers) {
     private val _photoId = MutableLiveData<String>()
     private val _photo = MediatorLiveData<PhotoPOJO>()
@@ -148,7 +146,7 @@ class PhotoDetailsViewModel @Inject constructor(
     }
 
     fun openUnsplash() {
-        externalAppService.openWebPage(UNSPLASH_URL.connectUnsplashUtmParameters())
+        externalAppService.openWebPage(URL_UNSPLASH.connectUnsplashUtmParameters())
     }
 
     private fun proceedResponse(response: Resource<PhotoPOJO>) {

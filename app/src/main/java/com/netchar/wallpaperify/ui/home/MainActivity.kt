@@ -125,7 +125,7 @@ class MainActivity : BaseActivity(), IDrawerActivity {
         if (backPressElapsed in 0..BACK_DOUBLE_TAP_TIMEOUT) {
             runAction()
         } else {
-            Toast.makeText(this, getString(R.string.main_toast_confirm_back), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.message_confirm_back), Toast.LENGTH_SHORT).show()
             lastPressedTime = System.currentTimeMillis()
         }
     }

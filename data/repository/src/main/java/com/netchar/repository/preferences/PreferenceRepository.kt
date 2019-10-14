@@ -26,13 +26,11 @@ import javax.inject.Inject
 class PreferenceRepository @Inject constructor(
         @AppPrefs private val defaultPreferences: SharedPreferences,
         private val context: Context
-) : IPreferenceRepository {
+) : IPreferences {
 
     override val themeMode: Int
         get() {
-            val key = context.getString(R.string.preference_option_key_theme)
-            val preferenceValue = defaultPreferences.getString(key, "")
-
+            val preferenceValue = defaultPreferences.getString(context.getString(R.string.preference_option_key_theme), "")
             return if (preferenceValue.isNullOrEmpty()) {
                 AppCompatDelegate.MODE_NIGHT_NO
             } else {
@@ -41,14 +39,11 @@ class PreferenceRepository @Inject constructor(
         }
 
     override val downloadQuality: String
-        get() {
-            val key = context.getString(R.string.preference_option_key_download_quality)
-            return defaultPreferences.getString(key,  context.getString(R.string.preference_download_quality_raw)).toString()
-        }
+        get() = defaultPreferences.getString(context.getString(R.string.preference_option_key_download_quality), context.getString(R.string.preference_download_quality_raw)).toString()
 
     override val wallpaperQuality: String
-        get() {
-            val key = context.getString(R.string.preference_option_key_wallpaper_quality)
-            return defaultPreferences.getString(key,  context.getString(R.string.preference_download_quality_raw)).toString()
-        }
+        get() = defaultPreferences.getString(context.getString(R.string.preference_option_key_wallpaper_quality), context.getString(R.string.preference_download_quality_full)).toString()
+
+    override val thumbnailQuality: String
+        get() = defaultPreferences.getString(context.getString(R.string.preference_option_key_thumbnail_quality), context.getString(R.string.preference_download_quality_regular)).toString()
 }

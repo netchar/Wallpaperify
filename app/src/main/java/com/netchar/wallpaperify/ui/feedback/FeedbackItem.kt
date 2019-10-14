@@ -14,10 +14,28 @@
  * limitations under the License.
  */
 
-package com.netchar.repository.preferences
+package com.netchar.wallpaperify.ui.feedback
 
-interface IPreferenceRepository {
-    val themeMode: Int
-    val downloadQuality: String
-    val wallpaperQuality: String
+import com.netchar.common.poweradapter.item.IRecyclerItem
+
+data class FeedbackItem(
+        val id: Int,
+        val titleRes: Int,
+        val descriptionRes: Int,
+        val imageRes: Int
+) : IRecyclerItem {
+    companion object {
+        const val GET_IN_TOUCH = 0
+        const val REPORT_BUG = 1
+        const val ROADMAP = 2
+        const val RENDER_KEY = "row"
+    }
+
+    override fun getId(): Long {
+        return titleRes.hashCode().toLong()
+    }
+
+    override fun getRenderKey(): String {
+        return RENDER_KEY
+    }
 }

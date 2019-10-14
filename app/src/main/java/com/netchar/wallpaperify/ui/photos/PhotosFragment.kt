@@ -37,10 +37,8 @@ import com.netchar.wallpaperify.di.ViewModelFactory
 import com.netchar.wallpaperify.di.modules.GlideApp
 import com.netchar.wallpaperify.ui.home.HomeFragmentDirections
 import kotlinx.android.synthetic.main.fragment_photos.*
-import kotlinx.coroutines.ObsoleteCoroutinesApi
 import javax.inject.Inject
 
-@ObsoleteCoroutinesApi
 class PhotosFragment : BaseFragment() {
     init {
         setHasOptionsMenu(true)
@@ -54,7 +52,7 @@ class PhotosFragment : BaseFragment() {
     override val layoutResId: Int = R.layout.fragment_photos
 
     private val dataSource: EndlessRecyclerDataSource by lazy {
-        val photoRenderer = PhotosRenderer(GlideApp.with(this), ::onItemClick)
+        val photoRenderer = PhotosRenderer(GlideApp.with(this), viewModel.preferences, ::onItemClick)
         EndlessRecyclerDataSource(mutableListOf(photoRenderer), ::onLoadMoreItems)
     }
 

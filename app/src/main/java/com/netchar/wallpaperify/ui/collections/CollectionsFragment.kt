@@ -35,10 +35,8 @@ import com.netchar.wallpaperify.di.ViewModelFactory
 import com.netchar.wallpaperify.di.modules.GlideApp
 import com.netchar.wallpaperify.ui.home.HomeFragmentDirections
 import kotlinx.android.synthetic.main.fragment_collections.*
-import kotlinx.coroutines.ObsoleteCoroutinesApi
 import javax.inject.Inject
 
-@ObsoleteCoroutinesApi
 class CollectionsFragment : BaseFragment() {
 
     @Inject

@@ -14,22 +14,11 @@
  * limitations under the License.
  */
 
-package com.netchar.common.services
+package com.netchar.repository.preferences
 
-import android.net.Uri
-
-interface IExternalAppService {
-    enum class ExternalApp(val appName: String, val packageName: String) {
-        INSTAGRAM("Instagram", "com.instagram.android"),
-        LINKED_IN("LinkedIn", "com.linkedin.android")
-    }
-
-    fun openEmail(subject: String, message: String = "")
-
-    fun openUrlInExternalApp(app: ExternalApp, link: String)
-
-    fun openUrlInExternalApp(packageName: String, link: String)
-
-    fun openWebPage(url: String): Boolean
-    fun openWebPage(url: Uri): Boolean
+interface IPreferences {
+    val themeMode: Int
+    val downloadQuality: String
+    val wallpaperQuality: String
+    val thumbnailQuality: String
 }

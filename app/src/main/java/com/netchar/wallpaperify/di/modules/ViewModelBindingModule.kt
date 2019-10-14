@@ -23,6 +23,7 @@ import com.netchar.wallpaperify.di.ViewModelFactory
 import com.netchar.wallpaperify.ui.about.AboutViewModel
 import com.netchar.wallpaperify.ui.collectiondetails.CollectionDetailsViewModel
 import com.netchar.wallpaperify.ui.collections.CollectionsViewModel
+import com.netchar.wallpaperify.ui.feedback.FeedbackViewModel
 import com.netchar.wallpaperify.ui.photos.PhotosViewModel
 import com.netchar.wallpaperify.ui.photosdetails.PhotoDetailsViewModel
 import com.netchar.wallpaperify.ui.settings.SettingsViewModel
@@ -62,6 +63,11 @@ abstract class ViewModelBindingModule {
     @IntoMap
     @ViewModelKey(AboutViewModel::class)
     abstract fun bindAboutViewModel(viewModel: AboutViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FeedbackViewModel::class)
+    abstract fun bindFeedbackViewModel(viewModel: FeedbackViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory

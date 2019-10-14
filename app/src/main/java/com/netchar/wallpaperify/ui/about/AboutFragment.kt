@@ -27,7 +27,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.netchar.common.UNSPLASH_URL
+import com.netchar.common.URL_UNSPLASH
 import com.netchar.common.base.BaseFragment
 import com.netchar.common.extensions.applyWindowInsets
 import com.netchar.common.extensions.injectViewModel
@@ -58,7 +58,7 @@ class AboutFragment : BaseFragment() {
         val spannableAppInfoText = getString(R.string.fragment_about_app_info_text).toSpannable()
 
         about_txt_version.text = getString(R.string.label_version, viewModel.getVersionName())
-        about_txt_app_info.text = spannableAppInfoText.apply { Linkify.addLinks(this, Pattern.compile("unsplash.com"), UNSPLASH_URL) }
+        about_txt_app_info.text = spannableAppInfoText.apply { Linkify.addLinks(this, Pattern.compile("unsplash.com"), URL_UNSPLASH) }
 
         Glide.with(this)
             .load(R.drawable.img_developer)

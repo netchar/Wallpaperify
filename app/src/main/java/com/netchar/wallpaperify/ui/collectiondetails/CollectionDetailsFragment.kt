@@ -49,11 +49,9 @@ import com.netchar.wallpaperify.ui.home.HomeFragmentDirections
 import com.netchar.wallpaperify.ui.photos.PhotosRenderer
 import com.netchar.wallpaperify.ui.photos.asRecyclerItems
 import kotlinx.android.synthetic.main.fragment_collection_details.*
-import kotlinx.coroutines.ObsoleteCoroutinesApi
 import javax.inject.Inject
 import kotlin.math.abs
 
-@ObsoleteCoroutinesApi
 class CollectionDetailsFragment : BaseFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -122,10 +120,10 @@ class CollectionDetailsFragment : BaseFragment() {
         dataSource = getEndlessSource(safeArguments.totalPhotos)
 
         GlideApp.with(this@CollectionDetailsFragment)
-            .load(safeArguments.authorPhotoUrl)
-            .transform(CircleCrop())
-            .transition(DrawableTransitionOptions.withCrossFade())
-            .into(collection_details_img_author)
+                .load(safeArguments.authorPhotoUrl)
+                .transform(CircleCrop())
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(collection_details_img_author)
 
         collection_details_recycler.setHasFixedSize(true)
         collection_details_recycler.onLoadMore = ::onLoadMoreItems
@@ -160,7 +158,7 @@ class CollectionDetailsFragment : BaseFragment() {
     }
 
     private fun getEndlessSource(totalCount: Int): EndlessRecyclerDataSource {
-        val photoRenderer = PhotosRenderer(GlideApp.with(this), ::onItemClick)
+        val photoRenderer = PhotosRenderer(GlideApp.with(this), viewModel.preferences, ::onItemClick)
         return EndlessRecyclerDataSource(mutableListOf(photoRenderer), ::onLoadMoreItems, totalCount)
     }
 

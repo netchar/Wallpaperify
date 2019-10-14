@@ -55,6 +55,7 @@ android {
         buildConfigField("String", "DEBUG_API_ACCESS_KEY", secretProperties['DEBUG_API_ACCESS_KEY'])
         buildConfigField("String", "DEBUG_API_SECRET_KEY", secretProperties['DEBUG_API_SECRET_KEY'])
         buildConfigField("String", "GOOGLE_PLAY_LICENSE_KEY", secretProperties['GOOGLE_PLAY_LICENSE_KEY'])
+        proguardFiles 'proguard-rules.pro'
     }
 
     buildTypes {
