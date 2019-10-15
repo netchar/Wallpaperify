@@ -69,6 +69,10 @@ fun Snackbar.action(action: String, color: Int? = null, listener: (View) -> Unit
     color?.let { setActionTextColor(color) }
 }
 
+fun Context.toast(message: String, length: Int = Toast.LENGTH_LONG) {
+    Toast.makeText(this, message, length).show()
+}
+
 fun Fragment.toast(message: String, length: Int = Toast.LENGTH_LONG) {
     Toast.makeText(this.context, message, length).show()
 }

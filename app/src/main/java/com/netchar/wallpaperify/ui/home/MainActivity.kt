@@ -17,6 +17,7 @@
 package com.netchar.wallpaperify.ui.home
 
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
@@ -32,6 +33,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.netchar.common.base.BaseActivity
 import com.netchar.common.base.BaseFragment
 import com.netchar.common.base.IDrawerActivity
+import com.netchar.common.extensions.closeSoftKeyboard
 import com.netchar.wallpaperify.R
 import kotlinx.android.synthetic.main.activity_main.*
 

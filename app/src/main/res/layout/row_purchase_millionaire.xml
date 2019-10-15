@@ -7,43 +7,49 @@
 <!--    android:foreground="?attr/selectableItemBackground"-->
 <!--    app:cardBackgroundColor="?colorSurface">-->
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingStart="@dimen/padding_content_default"
+    android:paddingTop="@dimen/padding_content_extra_small"
+    android:paddingEnd="@dimen/padding_content_default"
+    android:paddingBottom="@dimen/padding_content_extra_small">
+
+    <TextView
+        android:id="@+id/purchase_millionaire_title"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="@dimen/padding_content_small">
+        android:layout_marginStart="2dp"
+        android:textAppearance="@style/TextAppearance.AppTheme.Subtitle1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Title" />
 
-        <TextView
-            android:id="@+id/purchase_millionaire_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppTheme.Subtitle1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Title" />
+    <EditText
+        android:id="@+id/purchase_millionaire_et_amount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_vertical_extra_small"
+        android:layout_marginEnd="@dimen/margin_horizontal_extra_large"
+        android:ems="10"
+        android:inputType="numberDecimal"
+        android:textAppearance="@style/TextAppearance.AppTheme.Subtitle2"
+        app:layout_constraintEnd_toStartOf="@+id/purchase_millionaire_btn_apply"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/purchase_millionaire_title" />
 
-        <EditText
-            android:id="@+id/purchase_millionaire_et_amount"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_vertical_extra_small"
-            android:layout_marginEnd="@dimen/margin_horizontal_extra_large"
-            android:ems="10"
-            android:inputType="numberDecimal"
-            app:layout_constraintEnd_toStartOf="@+id/purchase_millionaire_btn_apply"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/purchase_millionaire_title" />
-
-        <Button
-            android:id="@+id/purchase_millionaire_btn_apply"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Button"
-            app:layout_constraintBottom_toBottomOf="@+id/purchase_millionaire_et_amount"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/purchase_millionaire_et_amount" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <Button
+        android:id="@+id/purchase_millionaire_btn_apply"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button"
+        app:layout_constraintBottom_toBottomOf="@+id/purchase_millionaire_et_amount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/purchase_millionaire_et_amount" />
+</androidx.constraintlayout.widget.ConstraintLayout>
 
 <!--</com.google.android.material.card.MaterialCardView>-->

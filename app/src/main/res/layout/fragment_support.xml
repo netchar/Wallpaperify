@@ -29,6 +29,15 @@
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+        <RelativeLayout
+            android:id="@+id/focus_trick"
+            android:layout_width="1dp"
+            android:layout_height="1dp"
+            android:focusable="true"
+            android:clickable="true"
+            android:focusableInTouchMode="true">
+        </RelativeLayout>
+
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="170dp"
             android:layout_height="170dp"
@@ -36,34 +45,40 @@
             android:layout_marginBottom="@dimen/margin_vertical_default"
             app:srcCompat="@drawable/image_gift" />
 
-<!--        <TextView-->
-<!--            android:id="@+id/support_txt_info"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="@string/support_development_info"-->
-<!--            android:textAlignment="center"-->
-<!--            android:textAppearance="@style/TextAppearance.AppTheme.Body2" />-->
+        <TextView
+            android:id="@+id/support_txt_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/padding_content_default"
+            android:paddingTop="@dimen/padding_content_extra_small"
+            android:paddingEnd="@dimen/padding_content_default"
+            android:paddingBottom="@dimen/padding_content_extra_small"
+            android:text="@string/support_development_info"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppTheme.Body2" />
 
-        <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
+        <!--        <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--            xmlns:app="http://schemas.android.com/apk/res-auto"-->
+        <!--            xmlns:tools="http://schemas.android.com/tools"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="match_parent"-->
+        <!--            android:layout_margin="8dp"-->
+        <!--            android:clipToPadding="false"-->
+        <!--            android:foreground="?attr/selectableItemBackground"-->
+        <!--            android:paddingBottom="60dp"-->
+        <!--            app:cardBackgroundColor="?colorSurface"-->
+        <!--            app:cardElevation="2dp">-->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/support_development_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="8dp"
             android:clipToPadding="false"
-            android:foreground="?attr/selectableItemBackground"
-            android:paddingBottom="60dp"
-            app:cardBackgroundColor="?colorSurface"
-            app:cardElevation="2dp">
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/support_development_recycler"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:overScrollMode="never"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:itemCount="2"
-                tools:listitem="@layout/row_purchase" />
-        </com.google.android.material.card.MaterialCardView>
+            android:overScrollMode="never"
+            android:paddingBottom="100dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:itemCount="5"
+            tools:listitem="@layout/row_purchase" />
+        <!--        </com.google.android.material.card.MaterialCardView>-->
 
 
         <TextView

@@ -23,7 +23,7 @@ data class SimpleDonationEntry(
         val id: Int,
         @StringRes val titleRes: Int,
         @StringRes val descriptionRes: Int,
-        @StringRes var amountRes: Int
+        val amount: Float
 ) : IRecyclerItem {
     companion object {
         const val WIFI = 0

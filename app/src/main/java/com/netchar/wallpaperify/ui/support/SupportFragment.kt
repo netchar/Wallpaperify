@@ -17,10 +17,13 @@
 package com.netchar.wallpaperify.ui.support
 
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
+import androidx.core.view.forEach
 import com.netchar.common.base.BaseFragment
-import com.netchar.common.extensions.applyWindowInsets
-import com.netchar.common.extensions.injectViewModel
+import com.netchar.common.extensions.*
 import com.netchar.common.poweradapter.adapter.RecyclerAdapter
 import com.netchar.common.poweradapter.adapter.RecyclerDataSource
 import com.netchar.common.poweradapter.item.IRecyclerItem
@@ -44,7 +47,7 @@ class SimpleDonateRenderer(private val onClick: (id: Int) -> Unit) : ItemRendere
         with(itemView) {
             purchase_txt_title.text = resources.getString(model.titleRes)
             purchase_txt_description.text = resources.getString(model.descriptionRes)
-            purchase_txt_amount.text = resources.getString(model.amountRes)
+            purchase_txt_amount.text = resources.getString(R.string.donation_item_amount, model.amount)
             setOnClickListener { onClick.invoke(model.id) }
         }
     }
@@ -65,13 +68,18 @@ class MillionaireRenderer(private val onClick: (amount: Float) -> Unit) : ItemRe
             purchase_millionaire_btn_apply.text = resources.getString(model.buttonName)
             purchase_millionaire_btn_apply.setOnClickListener {
                 if (purchase_millionaire_et_amount.text.isNotEmpty()) {
-                    val amount = purchase_millionaire_et_amount.text.toString().toFloat()
-                    onClick.invoke(amount)
+                    try {
+                        val amount = purchase_millionaire_et_amount.text.toString().toFloat()
+                        onClick.invoke(amount)
+                    } catch (e: NumberFormatException) {
+                        context.toast("Unable to parse your million dollars")
+                    }
                 }
             }
         }
     }
 }
+
 
 class SupportFragment : BaseFragment() {
 
@@ -91,15 +99,25 @@ class SupportFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         viewModel = injectViewModel(factory)
         toolbar.applyWindowInsets()
 
+        focus_trick.performClick()
         support_development_recycler.setHasFixedSize(true)
         support_development_recycler.adapter = RecyclerAdapter(source)
+        support_development_recycler.addVerticalDivider()
 
         viewModel.items.observe { entries ->
             source.submit(entries)
         }
+
+//        (view as ViewGroup).forEach { v ->
+//            v.setOnClickListener {
+//                focus_trick.performClick()
+//                v.closeSoftKeyboard()
+//            }
+//        }
     }
 
     private fun onMillionaireDonate(amount: Float) {
@@ -108,6 +126,13 @@ class SupportFragment : BaseFragment() {
 
     private fun onSimpleDonate(id: Int) {
 
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+//        (view as ViewGroup).forEach {
+//            it.setOnClickListener(null)
+//        }
     }
 
 }

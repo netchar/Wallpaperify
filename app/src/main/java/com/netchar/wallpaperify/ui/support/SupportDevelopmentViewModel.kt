@@ -34,11 +34,11 @@ class SupportDevelopmentViewModel @Inject constructor() : ViewModel() {
 
     private fun initialize() {
         val elements = listOf(
-                SimpleDonationEntry(SimpleDonationEntry.WIFI, R.string.donation_item_title_wifi, R.string.donation_item_description_wifi, R.string.donation_item_amount_wifi),
-                SimpleDonationEntry(SimpleDonationEntry.CAR, R.string.donation_item_title_car, R.string.donation_item_description_car, R.string.donation_item_amount_car),
-                SimpleDonationEntry(SimpleDonationEntry.CATS, R.string.donation_item_title_cats, R.string.donation_item_description_cats, R.string.donation_item_amount_cats),
-                SimpleDonationEntry(SimpleDonationEntry.SOME_FOOD, R.string.donation_item_title_food, R.string.donation_item_description_food, R.string.donation_item_amount_food),
-                SimpleDonationEntry(SimpleDonationEntry.DRESSES_FOR_MY_WIFE, R.string.donation_item_tile_wife_dresses, R.string.donation_item_description_wife_dresses, R.string.donation_item_amount_wife_dresses),
+                SimpleDonationEntry(SimpleDonationEntry.WIFI, R.string.donation_item_title_wifi, R.string.donation_item_description_wifi, 1.12f),
+                SimpleDonationEntry(SimpleDonationEntry.CAR, R.string.donation_item_title_car, R.string.donation_item_description_car, 2.01f),
+                SimpleDonationEntry(SimpleDonationEntry.CATS, R.string.donation_item_title_cats, R.string.donation_item_description_cats, 4.99f),
+                SimpleDonationEntry(SimpleDonationEntry.SOME_FOOD, R.string.donation_item_title_food, R.string.donation_item_description_food, 9.98f),
+                SimpleDonationEntry(SimpleDonationEntry.DRESSES_FOR_MY_WIFE, R.string.donation_item_tile_wife_dresses, R.string.donation_item_description_wife_dresses, 19.89f),
                 MillionaireDonationEntry(R.string.donation_item_millionaire_title, R.string.donation_item_millionaire_placeholder, R.string.donation_item_millionaire_button_name)
         )
 
