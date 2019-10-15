@@ -56,6 +56,8 @@ class FloatingActionMenuButton @JvmOverloads constructor(
     private var optionFabColorIconRes: Int = android.R.color.black
     private var optionFabTextSize = 14f
     private var optionFabTextColorRes: Int = android.R.color.black
+    private var optionFabDescriptionSize = 9f
+    private var optionFabDescriptionColorRes: Int = android.R.color.black
     private var optionFabTextBackground = 0
 
     private var optionFabContainers = LinkedList<View>()
@@ -87,6 +89,9 @@ class FloatingActionMenuButton @JvmOverloads constructor(
             optionFabTextSize = getDimensionPixelSize(R.styleable.FloatingActionMenuButton_option_fab_text_size, context.dip(optionFabTextSize)).toFloat()
             optionFabTextColorRes = getResourceId(R.styleable.FloatingActionMenuButton_option_fab_text_color, optionFabTextColorRes)
             optionFabTextBackground = getResourceId(R.styleable.FloatingActionMenuButton_option_fab_text_background, optionFabTextBackground)
+
+            optionFabDescriptionSize = getDimensionPixelSize(R.styleable.FloatingActionMenuButton_option_fab_text_size, context.dip(optionFabDescriptionSize)).toFloat()
+            optionFabDescriptionColorRes = getResourceId(R.styleable.FloatingActionMenuButton_option_fab_text_color, optionFabDescriptionColorRes)
         }
 
         init()
@@ -160,10 +165,11 @@ class FloatingActionMenuButton @JvmOverloads constructor(
     var isMenuOpen = false
         private set
 
-    fun addFabOption(optionIcon: Int, optionTitle: String?, optionAction: () -> Unit): FloatingActionMenuButton {
+    fun addFabOption(optionIcon: Int, optionTitle: String?, optionDescription: String? = null, optionAction: () -> Unit): FloatingActionMenuButton {
         val optionFabContainer = inflater.inflate(R.layout.view_fab_menu_item, this, false)
         val optionFab = optionFabContainer.fab_menu_option
         val optionFabTitle = optionFabContainer.fab_menu_title
+        val optionFabDescription = optionFabContainer.fab_menu_description
 
         optionFabContainers.add(optionFabContainer)
         optionFabActions.add(optionAction)
@@ -184,6 +190,11 @@ class FloatingActionMenuButton @JvmOverloads constructor(
         optionFabTitle.setTextColor(ContextCompat.getColor(context, optionFabTextColorRes))
         optionFabTitle.text = optionTitle
         optionFabTitle.goneIfEmpty()
+
+        optionFabDescription.setTextSize(TypedValue.COMPLEX_UNIT_PX, optionFabDescriptionSize)
+        optionFabDescription.setTextColor(ContextCompat.getColor(context, optionFabDescriptionColorRes))
+        optionFabDescription.text = optionDescription
+        optionFabDescription.goneIfEmpty()
 
         optionFabContainer.tag = optionPosition
         optionFabContainer.setOnClickListener { view ->

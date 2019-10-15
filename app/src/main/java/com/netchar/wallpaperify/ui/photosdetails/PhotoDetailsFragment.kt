@@ -51,6 +51,7 @@ import kotlinx.android.synthetic.main.fragment_photo_details.*
 import kotlinx.android.synthetic.main.fragment_photo_details.view.*
 import kotlinx.android.synthetic.main.view_photo_details_shimmer.view.*
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
 
@@ -60,7 +61,9 @@ class PhotoDetailsFragment : BaseFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private lateinit var viewModel: PhotoDetailsViewModel
+    private val viewModel: PhotoDetailsViewModel by lazy {
+        injectViewModel<PhotoDetailsViewModel>(viewModelFactory)
+    }
 
     override val layoutResId: Int = R.layout.fragment_photo_details
 
@@ -97,7 +100,6 @@ class PhotoDetailsFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = injectViewModel(viewModelFactory)
         activity.setTransparentNavigationBar(true)
         activity.showToolbarTitle(false)
         applyWindowsInsets(view)
@@ -115,22 +117,22 @@ class PhotoDetailsFragment : BaseFragment() {
         }
 
         GlideApp.with(this@PhotoDetailsFragment)
-            .load(safeArguments.photoUrl)
-            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            .listener(object : RequestListener<Drawable> {
-                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                    shimmer.stopShimmer()
-                    contentView.background = null
-                    return false
-                }
+                .load(safeArguments.photoUrl)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .listener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                        shimmer.stopShimmer()
+                        contentView.background = null
+                        return false
+                    }
 
-                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                    shimmer.stopShimmer()
-                    contentView.background = null
-                    return false
-                }
-            })
-            .into(photo_details_iv_photo)
+                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                        shimmer.stopShimmer()
+                        contentView.background = null
+                        return false
+                    }
+                })
+                .into(photo_details_iv_photo)
     }
 
     private fun initFabMenu(viewContainer: View) = with(viewContainer) {
@@ -138,17 +140,26 @@ class PhotoDetailsFragment : BaseFragment() {
         val translationY = (photo_details_fab.measuredHeight / 2f) + dip(5)
         photo_details_fab.translationY = translationY
         photo_details_fab.setupWithOverlay(fab_overlay)
-        photo_details_fab.addFabOption(R.drawable.ic_aspect_ratio, getString(R.string.photo_details_floating_label_title_raw)) {
-            navigateToOriginalPhoto()
-        }
-        photo_details_fab.addFabOption(R.drawable.ic_wallpaper, getString(R.string.photo_details_floating_label_title_wallpaper)) {
+
+        photo_details_fab.addFabOption(R.drawable.ic_wallpaper, getString(R.string.photo_details_floating_label_title_wallpaper), "Quality: ${getQualityName(viewModel.getWallpaperQualityValue())}") {
             runWithPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE) {
                 viewModel.downloadWallpaper()
             }
         }
-        photo_details_fab.addFabOption(R.drawable.ic_file_download, getString(R.string.photo_details_floating_label_title_download)) {
+        photo_details_fab.addFabOption(R.drawable.ic_file_download, getString(R.string.photo_details_floating_label_title_download), "Quality: ${getQualityName(viewModel.getDownloadQualityValue())}") {
             runWithPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE) {
                 viewModel.downloadImage()
+            }
+        }
+        photo_details_fab.addFabOption(R.drawable.ic_aspect_ratio, getString(R.string.photo_details_floating_label_title_raw)) {
+            navigateToOriginalPhoto()
+        }
+    }
+
+    private fun getQualityName(qualityValue: String): String {
+        return with(resources) {
+            getStringArray(R.array.QualityValues).indexOf(qualityValue).let { index ->
+                getStringArray(R.array.Quality)[index].toLowerCase(Locale.getDefault())
             }
         }
     }
@@ -214,11 +225,11 @@ class PhotoDetailsFragment : BaseFragment() {
 
     private fun updateUiByPhotoDetails(photo: PhotoPOJO) {
         GlideApp.with(this)
-            .load(photo.user.profileImage.small)
-            .transform(CircleCrop())
-            .transition(DrawableTransitionOptions.withCrossFade())
-            .error(R.drawable.ic_person)
-            .into(photo_details_author_img)
+                .load(photo.user.profileImage.small)
+                .transform(CircleCrop())
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .error(R.drawable.ic_person)
+                .into(photo_details_author_img)
 
 
         val photoByText = buildSpannedString {

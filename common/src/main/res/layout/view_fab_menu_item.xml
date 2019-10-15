@@ -11,7 +11,7 @@
     android:focusable="true"
     android:gravity="center_vertical|end"
     android:orientation="horizontal"
-    android:padding="2dp"
+    android:padding="4dp"
     android:visibility="gone"
     tools:visibility="visible">
 
@@ -24,17 +24,36 @@
         android:duplicateParentState="true"
         app:cardElevation="2dp">
 
-        <TextView
-            android:id="@+id/fab_menu_title"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
             android:clickable="false"
             android:duplicateParentState="true"
-            android:focusable="false"
             android:foreground="?selectableItemBackground"
-            android:padding="6dp"
-            android:textAppearance="@style/TextAppearance.AppTheme.Body2" />
+            android:gravity="end"
+            android:orientation="vertical"
+            android:padding="6dp">
+            <TextView
+                android:id="@+id/fab_menu_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:clickable="false"
+                android:duplicateParentState="true"
+                android:focusable="false"
+                android:textAppearance="@style/TextAppearance.AppTheme.Body2"
+                tools:text="Title" />
+
+            <TextView
+                android:id="@+id/fab_menu_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:duplicateParentState="true"
+                android:textAppearance="@style/TextAppearance.AppTheme.Caption"
+                tools:text="Description" />
+
+        </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
 

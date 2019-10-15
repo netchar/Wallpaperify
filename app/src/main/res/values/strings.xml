@@ -42,7 +42,7 @@
     <string name="photo_details_menu_share">Share photo</string>
     <string name="photo_details_floating_label_title_raw">Original Photo</string>
     <string name="photo_details_floating_label_title_wallpaper">Set As Wallpaper</string>
-    <string name="photo_details_floating_label_title_download">Download</string>
+    <string name="photo_details_floating_label_title_download">Download Image</string>
 
     <string name="fragment_about_app_info_text">Powered by unsplash.com.\n\nBrowse over 1 million free high-resolution images brought to you by the most generous community of photographers.</string>
 

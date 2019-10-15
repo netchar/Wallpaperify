@@ -229,4 +229,8 @@ class PhotoDetailsViewModel @Inject constructor(
             Cause.NOT_AUTHENTICATED, Cause.UNEXPECTED -> Message(R.string.error_message_unexpected_server_response)
         }
     }
+
+    fun getDownloadQualityValue() = appPreferences.downloadQuality
+
+    fun getWallpaperQualityValue() = appPreferences.wallpaperQuality
 }

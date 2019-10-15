@@ -36,5 +36,8 @@
         <attr name="option_fab_text_size" format="dimension" />
         <attr name="option_fab_text_color" format="integer" />
         <attr name="option_fab_text_background" format="reference" />
+
+        <attr name="option_fab_description_size" format="dimension" />
+        <attr name="option_fab_description_color" format="integer" />
     </declare-styleable>
 </resources>
