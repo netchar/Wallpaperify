@@ -27,6 +27,7 @@ import com.netchar.wallpaperify.ui.feedback.FeedbackViewModel
 import com.netchar.wallpaperify.ui.photos.PhotosViewModel
 import com.netchar.wallpaperify.ui.photosdetails.PhotoDetailsViewModel
 import com.netchar.wallpaperify.ui.settings.SettingsViewModel
+import com.netchar.wallpaperify.ui.support.SupportDevelopmentViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -68,6 +69,11 @@ abstract class ViewModelBindingModule {
     @IntoMap
     @ViewModelKey(FeedbackViewModel::class)
     abstract fun bindFeedbackViewModel(viewModel: FeedbackViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SupportDevelopmentViewModel::class)
+    abstract fun bindSupportDevelopmentViewModel(viewModel: SupportDevelopmentViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory

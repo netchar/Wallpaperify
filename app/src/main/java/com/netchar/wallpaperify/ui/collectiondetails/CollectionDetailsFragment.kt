@@ -164,7 +164,7 @@ class CollectionDetailsFragment : BaseFragment() {
 
     private fun observe() {
         viewModel.photos.observe { photos ->
-            dataSource.setData(photos.asRecyclerItems())
+            dataSource.submit(photos.asRecyclerItems())
         }
 
         viewModel.error.observe {

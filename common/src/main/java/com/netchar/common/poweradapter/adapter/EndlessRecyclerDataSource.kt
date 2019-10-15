@@ -45,13 +45,13 @@ class EndlessRecyclerDataSource(
     }
 
     @ObsoleteCoroutinesApi
-    override fun setData(newData: List<IRecyclerItem>) {
+    override fun submit(newData: List<IRecyclerItem>) {
         var items = newData
         if (isEndlessList() || hasMoreItemsToLoad(newData)) {
             items = newData.plus(loadingItem)
         }
 
-        super.setData(items)
+        super.submit(items)
     }
 
     private fun isEndlessList(): Boolean = totalItems == -1

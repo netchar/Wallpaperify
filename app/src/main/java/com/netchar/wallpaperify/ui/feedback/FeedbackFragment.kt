@@ -46,7 +46,7 @@ class FeedbackFragment : BaseFragment() {
         feedback_recycler.adapter = RecyclerAdapter(dataSource)
 
         viewModel.items.observe { items ->
-            dataSource.setData(items)
+            dataSource.submit(items)
         }
     }
 

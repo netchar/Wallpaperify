@@ -56,7 +56,7 @@ open class RecyclerDataSource(
     }
 
     @MainThread
-    open fun setData(newData: List<IRecyclerItem>) {
+    open fun submit(newData: List<IRecyclerItem>) {
         updateActor.offer(newData)
     }
 

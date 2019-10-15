@@ -26,6 +26,7 @@ import android.widget.*
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.netchar.common.base.callbacs.IOnDropdownSelectedListener
@@ -137,3 +138,6 @@ fun View.getScreenshot(): Bitmap? {
     BitmapDrawable(resources, b)
     return b
 }
+
+fun RecyclerView.addVerticalDivider() =
+        addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))

@@ -17,21 +17,20 @@
     <item android:title="@string/navigation_drawer_title_communicate">
         <menu>
             <group android:checkableBehavior="single">
-<!--                <item-->
-<!--                    android:id="@+id/navigation_drawer_item_share"-->
-<!--                    android:checkable="false"-->
-<!--                    android:icon="@drawable/ic_drawer_item_share"-->
-<!--                    android:title="@string/navigation_drawer_item_share" />-->
+                <!--                <item-->
+                <!--                    android:id="@+id/navigation_drawer_item_share"-->
+                <!--                    android:checkable="false"-->
+                <!--                    android:icon="@drawable/ic_drawer_item_share"-->
+                <!--                    android:title="@string/navigation_drawer_item_share" />-->
                 <item
                     android:id="@+id/feedbackFragment"
                     android:checkable="false"
                     android:icon="@drawable/ic_feedback"
                     android:title="@string/navigation_drawer_item_feedback" />
-                <!--                todo: Support page-->
-                <!--                <item-->
-                <!--                    android:id="@+id/supportFragment"-->
-                <!--                    android:icon="@drawable/ic_drawer_item_support_development"-->
-                <!--                    android:title="@string/navigation_drawer_item_support" />-->
+                <item
+                    android:id="@+id/supportFragment"
+                    android:icon="@drawable/ic_drawer_item_support_development"
+                    android:title="@string/navigation_drawer_item_support" />
                 <item
                     android:id="@+id/aboutFragment"
                     android:icon="@drawable/ic_drawer_item_about"

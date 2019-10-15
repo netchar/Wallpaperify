@@ -72,7 +72,7 @@ class CollectionsFragment : BaseFragment() {
 
     private fun observe() {
         viewModel.collections.observe { photos ->
-            dataSource.setData(photos.asRecyclerItems())
+            dataSource.submit(photos.asRecyclerItems())
         }
 
         viewModel.refreshing.observe {

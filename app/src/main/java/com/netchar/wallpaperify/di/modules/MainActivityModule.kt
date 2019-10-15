@@ -25,6 +25,7 @@ import com.netchar.wallpaperify.ui.photorawview.PhotoRawFragment
 import com.netchar.wallpaperify.ui.photos.PhotosFragment
 import com.netchar.wallpaperify.ui.photosdetails.PhotoDetailsFragment
 import com.netchar.wallpaperify.ui.settings.SettingsFragment
+import com.netchar.wallpaperify.ui.support.SupportFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -57,4 +58,7 @@ abstract class MainActivityModule {
 
     @ContributesAndroidInjector
     abstract fun contributeFeedbackFragment(): FeedbackFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeSupportDevelopmenFragment() : SupportFragment
 }
