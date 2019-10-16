@@ -54,6 +54,8 @@
     <string name="label_apply">Apply</string>
     <string name="label_ok">OK</string>
     <string name="label_unsplash">Unsplash</string>
+    <string name="label_close">Close</string>
+
 
     <string name="error_message_photo_download_unable_to_start_downloading">Unable to download photo. Try again later.</string>
     <string name="error_message_unknown">Unknown error. Try again later.</string>
@@ -71,6 +73,7 @@
     <string name="message_canceled">Canceled</string>
     <string name="message_download_success">Download successful</string>
     <string name="message_dialog_photo_already_exists">This photo already downloaded. Would you like to override existing one?</string>
+    <string name="message_dialog_donation_success">Thank you very much for the donation! \nYou rock! :)</string>
 
     <string name="fragment_title_photo_raw">Original Photo</string>
     <string name="photos_menu_option_filter">Filter</string>

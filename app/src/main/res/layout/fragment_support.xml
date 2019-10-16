@@ -57,17 +57,6 @@
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppTheme.Body2" />
 
-        <!--        <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"-->
-        <!--            xmlns:app="http://schemas.android.com/apk/res-auto"-->
-        <!--            xmlns:tools="http://schemas.android.com/tools"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="match_parent"-->
-        <!--            android:layout_margin="8dp"-->
-        <!--            android:clipToPadding="false"-->
-        <!--            android:foreground="?attr/selectableItemBackground"-->
-        <!--            android:paddingBottom="60dp"-->
-        <!--            app:cardBackgroundColor="?colorSurface"-->
-        <!--            app:cardElevation="2dp">-->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/support_development_recycler"
             android:layout_width="match_parent"
@@ -78,17 +67,6 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:itemCount="5"
             tools:listitem="@layout/row_purchase" />
-        <!--        </com.google.android.material.card.MaterialCardView>-->
-
-
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:text="@string/support_development_security_text"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppTheme.Caption" />
 
     </LinearLayout>
 
