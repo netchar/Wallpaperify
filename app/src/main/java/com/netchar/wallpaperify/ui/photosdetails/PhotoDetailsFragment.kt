@@ -177,10 +177,6 @@ class PhotoDetailsFragment : BaseFragment() {
             updateUiByPhotoDetails(photo)
         }
 
-        viewModel.photo.observe { photo ->
-            updateUiByPhotoDetails(photo)
-        }
-
         viewModel.error.observe { error ->
             toast(getStringSafe(error.messageRes))
         }
