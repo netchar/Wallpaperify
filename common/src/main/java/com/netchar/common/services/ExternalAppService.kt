@@ -49,7 +49,7 @@ internal class ExternalAppService @Inject constructor(
             } else {
                 emailIntent
             }
-
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(intent)
         } else {
             Toast.makeText(context, "Unable to find appropriate app for send an email.", Toast.LENGTH_LONG).show()
@@ -113,6 +113,7 @@ internal class ExternalAppService @Inject constructor(
             val packageManager = context.packageManager
 
             if (webViewIntent.resolveActivity(packageManager) != null) {
+                webViewIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 context.startActivity(webViewIntent)
                 return true
             }
