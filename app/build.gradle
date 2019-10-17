@@ -71,6 +71,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
+
+        applicationVariants.all { variant ->
+            variant.outputs.all {
+                def flavor = variant.name
+                def versionName = variant.versionName
+                outputFileName = "wallpaperify_${flavor}_${versionName}.apk"
+            }
+        }
     }
 
     compileOptions {

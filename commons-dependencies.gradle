@@ -22,7 +22,7 @@ ext {
                     target : 29,
                     min    : 23
             ],
-            buildTools: "28.0.3"
+            buildTools: "29.0.2"
     ]
 
     versions.androidx = [

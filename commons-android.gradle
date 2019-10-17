@@ -12,6 +12,7 @@ android {
         minSdkVersion versions.build.sdk.min
         versionCode extractVersionCode(appVersionName)
         versionName appVersionName
+        targetSdkVersion versions.build.sdk.target
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
