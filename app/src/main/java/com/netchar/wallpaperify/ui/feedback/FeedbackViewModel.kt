@@ -19,7 +19,7 @@ package com.netchar.wallpaperify.ui.feedback
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.netchar.common.MAIL_ADRESS_DEVELOPER_ACCOUNT
+import com.netchar.common.MAIL_ADDRESS_DEVELOPER_ACCOUNT
 import com.netchar.common.URL_BUG_TRACKING
 import com.netchar.common.URL_ROADMAP
 import com.netchar.common.services.IExternalAppService
@@ -38,7 +38,7 @@ class FeedbackViewModel @Inject constructor(
     val items: LiveData<List<FeedbackItem>> get() = _items
 
     fun sendEmail() {
-        externalApp.composeEmail(MAIL_ADRESS_DEVELOPER_ACCOUNT, "Wallpaperify Feedback")
+        externalApp.composeEmail(MAIL_ADDRESS_DEVELOPER_ACCOUNT, "Wallpaperify Feedback")
     }
 
     fun openBugTrackingPage() {
