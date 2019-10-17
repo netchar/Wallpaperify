@@ -1,8 +1,6 @@
 # Wallpaperify
 
-**Wallpaperify** is powered by [Unsplash.com](https://unsplash.com/)
-
-Simple unofficial app to browse awesome photos created by the most generous community of photographers.
+Simple app to browse awesome photos created by the most generous community of photographers.
 
 # Screenshots
 
