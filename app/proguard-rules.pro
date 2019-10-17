@@ -66,4 +66,19 @@
    public static final android.os.Parcelable$Creator *;
 }
 
--keep class com.netchar.wallpaperify.ui.collections.CollectionDetailsTransitionModel { *; }
+-keep class com.android.vending.billing.**
+
+-assumenosideeffects class org.solovyev.android.checkout.Billing {
+    public static void debug(...);
+    public static void warning(...);
+    public static void error(...);
+}
+
+-assumenosideeffects class org.solovyev.android.checkout.Check {
+    static *;
+}
+
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}

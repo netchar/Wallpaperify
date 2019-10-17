@@ -17,8 +17,8 @@
 package com.netchar.common
 
 const val UNSPLASH_UTM_PARAMETERS = "?utm_source=wallpaperify&utm_medium=referral&utm_campaign=api-credit"
-const val DEVELOPER_GMAIL = "e.glushankov@gmail.com"
-
+const val MAIL_ADRESS_AUTHOR = "e.glushankov@gmail.com"
+const val MAIL_ADRESS_DEVELOPER_ACCOUNT = "dev.glushankov@gmail.com"
 const val URL_UNSPLASH = "https://unsplash.com/"
 const val URL_DEVELOPER_INSTAGRAM = "https://www.instagram.com/e.glushankov/"
 const val URL_DEVELOPER_LINKEDIN = "https://www.linkedin.com/in/glushankov"

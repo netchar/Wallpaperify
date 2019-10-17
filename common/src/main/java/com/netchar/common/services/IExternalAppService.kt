@@ -24,12 +24,13 @@ interface IExternalAppService {
         LINKED_IN("LinkedIn", "com.linkedin.android")
     }
 
-    fun openEmail(subject: String, message: String = "")
-
     fun openUrlInExternalApp(app: ExternalApp, link: String)
 
     fun openUrlInExternalApp(packageName: String, link: String)
 
     fun openWebPage(url: String): Boolean
+
     fun openWebPage(url: Uri): Boolean
+
+    fun composeEmail(to: String, subject: String, message: String = "")
 }

@@ -21,7 +21,6 @@ import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
-import com.netchar.common.DEVELOPER_GMAIL
 import com.netchar.common.R
 import com.netchar.common.extensions.getColorCompat
 import com.netchar.common.extensions.toWebUri
@@ -33,10 +32,10 @@ internal class ExternalAppService @Inject constructor(
         val context: Context
 ) : IExternalAppService {
 
-    override fun openEmail(subject: String, message: String) {
+    override fun composeEmail(to: String, subject: String, message: String) {
         val uri = Uri.parse("mailto:")
         val emailIntent = Intent(Intent.ACTION_SENDTO, uri).apply {
-            putExtra(Intent.EXTRA_EMAIL, arrayOf(DEVELOPER_GMAIL)) // recipients
+            putExtra(Intent.EXTRA_EMAIL, arrayOf(to)) // recipients
             putExtra(Intent.EXTRA_SUBJECT, subject)
             putExtra(Intent.EXTRA_TEXT, message)
         }

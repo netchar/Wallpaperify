@@ -16,6 +16,7 @@
 
 package com.netchar.wallpaperify.ui.about
 
+import com.netchar.common.MAIL_ADRESS_AUTHOR
 import com.netchar.common.URL_DEVELOPER_INSTAGRAM
 import com.netchar.common.URL_DEVELOPER_LINKEDIN
 import com.netchar.common.base.BaseViewModel
@@ -36,7 +37,7 @@ class AboutViewModel @Inject constructor(
     fun getVersionName() = buildConfig.getVersionName()
 
     fun sendEmail() {
-        appService.openEmail("Hi, Eugene", "")
+        appService.composeEmail(MAIL_ADRESS_AUTHOR, "[Wallpaperify] Hi, Eugene!")
     }
 
     fun openDeveloperInstagramAccount() {
