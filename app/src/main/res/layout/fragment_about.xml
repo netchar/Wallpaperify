@@ -161,8 +161,8 @@
                 android:id="@+id/about_ctxt_instagram"
                 style="@style/ContactTextViewStyle"
                 android:text="@string/developer_instagram_address"
-                app:compoundDrawableHeight="32dp"
-                app:compoundDrawableWidth="32dp"
+                app:compoundDrawableHeight="24dp"
+                app:compoundDrawableWidth="24dp"
                 app:drawableStartVector="@drawable/ic_instagram"
                 app:layout_constraintStart_toStartOf="@+id/about_img_author_image"
                 app:layout_constraintTop_toBottomOf="@+id/about_headline_author_address" />
@@ -171,8 +171,8 @@
                 android:id="@+id/about_txt_linkedin"
                 style="@style/ContactTextViewStyle"
                 android:text="@string/developer_linkedin_address"
-                app:compoundDrawableHeight="32dp"
-                app:compoundDrawableWidth="32dp"
+                app:compoundDrawableHeight="24dp"
+                app:compoundDrawableWidth="24dp"
                 app:drawableStartVector="@drawable/ic_linkedin"
                 app:layout_constraintStart_toStartOf="@+id/about_ctxt_instagram"
                 app:layout_constraintTop_toBottomOf="@+id/about_ctxt_instagram" />
@@ -181,8 +181,8 @@
                 android:id="@+id/about_txt_gmail_address"
                 style="@style/ContactTextViewStyle"
                 android:text="@string/developer_gmail_address"
-                app:compoundDrawableHeight="32dp"
-                app:compoundDrawableWidth="32dp"
+                app:compoundDrawableHeight="24dp"
+                app:compoundDrawableWidth="24dp"
                 app:drawableStartVector="@drawable/ic_gmail"
                 app:layout_constraintStart_toStartOf="@+id/about_ctxt_instagram"
                 app:layout_constraintTop_toBottomOf="@+id/about_txt_linkedin" />

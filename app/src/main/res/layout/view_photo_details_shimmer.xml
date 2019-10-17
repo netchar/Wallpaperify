@@ -63,7 +63,7 @@
         android:layout_width="18dp"
         android:layout_height="18dp"
         android:layout_marginEnd="8dp"
-        android:src="@drawable/ic_file_download"
+        android:src="@drawable/ic_download"
         android:tint="#30f3f3f3"
         android:tintMode="src_in"
         app:layout_constraintBottom_toBottomOf="@+id/photo_details_shimmer_total_downloads_txt"

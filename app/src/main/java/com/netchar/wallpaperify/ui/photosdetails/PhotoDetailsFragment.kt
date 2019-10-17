@@ -146,7 +146,7 @@ class PhotoDetailsFragment : BaseFragment() {
                 viewModel.downloadWallpaper()
             }
         }
-        photo_details_fab.addFabOption(R.drawable.ic_file_download, getString(R.string.photo_details_floating_label_title_download), "Quality: ${getQualityName(viewModel.getDownloadQualityValue())}") {
+        photo_details_fab.addFabOption(R.drawable.ic_download, getString(R.string.photo_details_floating_label_title_download), "Quality: ${getQualityName(viewModel.getDownloadQualityValue())}") {
             runWithPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE) {
                 viewModel.downloadImage()
             }

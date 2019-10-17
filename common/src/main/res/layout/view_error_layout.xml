@@ -18,8 +18,8 @@
 
         <ImageView
             android:id="@+id/error_view_image"
-            android:layout_width="76dp"
-            android:layout_height="76dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             app:layout_constraintVertical_chainStyle="packed"
             app:srcCompat="@drawable/img_unexpected_error"
             tools:srcCompat="@drawable/ic_no_internet_connection" />

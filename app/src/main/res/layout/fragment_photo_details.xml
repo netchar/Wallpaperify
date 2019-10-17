@@ -143,7 +143,7 @@
                 android:textColor="#fff"
                 app:compoundDrawableHeight="18dp"
                 app:compoundDrawableWidth="18dp"
-                app:drawableStartVector="@drawable/ic_file_download"
+                app:drawableStartVector="@drawable/ic_download"
                 app:drawableTint="@android:color/white"
                 app:layout_constraintBottom_toBottomOf="@+id/photo_details_tv_likes"
                 app:layout_constraintEnd_toEndOf="parent"

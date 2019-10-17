@@ -30,7 +30,7 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/photo_details_menu_item_download"
-        android:icon="@drawable/ic_file_download"
+        android:icon="@drawable/ic_download"
         android:title="Download"
         app:showAsAction="always" />
 </menu>

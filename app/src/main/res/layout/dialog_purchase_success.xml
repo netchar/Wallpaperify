@@ -6,13 +6,15 @@
     android:orientation="vertical">
 
 
-    <TextView
+    <com.netchar.common.views.CompoundDrawableTextView
         android:id="@+id/dialog_purchase_txt_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawableTop="@drawable/image_party"
         android:gravity="center"
         android:padding="@dimen/padding_content_default"
+        app:compoundDrawableHeight="250dp"
+        app:compoundDrawableWidth="250dp"
+        app:drawableTopVector="@drawable/image_party"
         android:text="Thank you very much! It will defenitely help me to move forward with a happy filling :)"
         android:textAppearance="@style/TextAppearance.AppTheme.Body1"
         app:layout_constraintBottom_toBottomOf="parent"
