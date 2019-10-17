@@ -34,10 +34,10 @@ try {
 android {
     signingConfigs {
         release {
-//            storeFile file(secretProperties['KEYSTORE_FILE_NAME'])
-//            storePassword secretProperties['KEYSTORE_PASSWORD']
-//            keyAlias = secretProperties['KEYSTORE_KEY_ALIAS']
-//            keyPassword secretProperties['KEYSTORE_KEY_PASSWORD']
+            storeFile file(secretProperties['KEYSTORE_FILE_NAME'])
+            storePassword secretProperties['KEYSTORE_PASSWORD']
+            keyAlias = secretProperties['KEYSTORE_KEY_ALIAS']
+            keyPassword secretProperties['KEYSTORE_KEY_PASSWORD']
         }
     }
     defaultConfig {
@@ -166,7 +166,7 @@ dependencies {
     implementation deps.quickpermissions
     implementation deps.photoview
 
-    implementation 'org.solovyev.android:checkout:1.2.2'
+//    implementation 'org.solovyev.android:checkout:1.2.2'
 }
 
 dependencies {
