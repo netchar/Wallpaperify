@@ -165,6 +165,8 @@ dependencies {
     implementation deps.transitionseverywhere
     implementation deps.quickpermissions
     implementation deps.photoview
+
+    implementation 'org.solovyev.android:checkout:1.2.2'
 }
 
 dependencies {
