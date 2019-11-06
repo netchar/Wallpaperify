@@ -23,7 +23,8 @@ import com.netchar.common.poweradapter.item.IRecyclerItem
 import com.netchar.wallpaperify.R
 import javax.inject.Inject
 
-class SupportDevelopmentViewModel @Inject constructor() : ViewModel() {
+class SupportDevelopmentViewModel @Inject constructor(
+) : ViewModel() {
     private val _items = MutableLiveData<List<IRecyclerItem>>()
 
     init {
@@ -44,5 +45,4 @@ class SupportDevelopmentViewModel @Inject constructor() : ViewModel() {
 
         _items.value = elements
     }
-
 }
