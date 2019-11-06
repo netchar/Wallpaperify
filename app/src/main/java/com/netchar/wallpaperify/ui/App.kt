@@ -57,7 +57,7 @@ class App : Application(), HasAndroidInjector {
     val component: AppComponent by lazy {
         DaggerAppComponent.builder()
                 .context(this)
-            .buildPrefs(prefs)
+                .buildPrefs(prefs)
                 .build()
     }
 

@@ -14,27 +14,24 @@
  * limitations under the License.
  */
 
-package com.netchar.common.utils
+package com.netchar.common.di
 
-import android.net.Uri
-import java.io.File
+import android.content.Context
+import com.netchar.common.utils.IBuildConfig
+import dagger.Module
+import dagger.Provides
+import org.solovyev.android.checkout.Billing
+import javax.inject.Singleton
 
-interface IBuildConfig {
-    fun getApiAccessKey(): String
+@Module
+object BillingModule {
 
-    fun getApiSecretKey(): String
-
-    fun getVersionCode(): Long
-
-    fun getVersionName(): String
-
-    fun getApplicationId(): String
-
-    fun getFileProviderUri(file: File): Uri
-
-    fun getCryptKey(): String
-
-    fun getCryptIv(): String
-
-    fun getApplicationLicenceKey(): String
+    @Provides
+    @Singleton
+    @JvmStatic
+    fun providesBilling(context: Context, buildConfig: IBuildConfig): Billing = Billing(context, object : Billing.DefaultConfiguration() {
+        override fun getPublicKey(): String {
+            return buildConfig.getApplicationLicenceKey()
+        }
+    })
 }

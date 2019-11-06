@@ -104,24 +104,18 @@
     <string name="item_description_feedback_get_in_touch">Share your opinion, make a suggestion or contact me if you have any questions</string>
     <string name="item_description_feedback_report_bug">Fill free to open a bug</string>
     <string name="item_description_feedback_roadmap">See what I\'ve planned to add in future releases</string>
+
     <string name="donation_item_title_wifi">Wi-Fi</string>
     <string name="donation_item_description_wifi">Helps me to work day and night, the best thing to escape home duties</string>
-    <string name="donation_item_amount_wifi">1.12 $</string>
     <string name="donation_item_title_car">Car</string>
     <string name="donation_item_description_car">Just to switch the computers to keep doing the same thing</string>
-
-    <string name="donation_item_amount_car">2.01 $</string>
     <string name="donation_item_amount">%1$.2f $</string>
-
     <string name="donation_item_title_cats">Cats</string>
     <string name="donation_item_description_cats">Actually they are the developers</string>
-    <string name="donation_item_amount_cats">4.99 $</string>
     <string name="donation_item_title_food">Some food</string>
     <string name="donation_item_description_food">Just keeps me alive to manage all that stuff</string>
-    <string name="donation_item_amount_food">9.98 $</string>
     <string name="donation_item_tile_wife_dresses">Dresses for my wife</string>
     <string name="donation_item_description_wife_dresses">Otherwise she switches off the Wi-Fi, oops… home duties</string>
-    <string name="donation_item_amount_wife_dresses">19.89 $</string>
     <string name="donation_item_millionaire_title">Just in case you are a millionaire</string>
     <string name="donation_item_millionaire_placeholder">1 000 000 $</string>
     <string name="donation_item_millionaire_button_name">Donate</string>

@@ -26,7 +26,6 @@ import com.netchar.wallpaperify.BuildConfig
 import java.io.File
 
 class BuildPreferences(val context: Context) : IBuildConfig {
-
     override fun getApiAccessKey() = if (BuildConfig.DEBUG) {
         BuildConfig.DEBUG_API_ACCESS_KEY
     } else {
@@ -69,5 +68,17 @@ class BuildPreferences(val context: Context) : IBuildConfig {
     private fun getPackageInfo(context: Context): PackageInfo? {
         val manager = context.packageManager
         return manager.getPackageInfo(context.packageName, 0)
+    }
+
+    override fun getCryptKey(): String {
+        return BuildConfig.CRYPT_KEY
+    }
+
+    override fun getCryptIv(): String {
+        return BuildConfig.CRYPT_IV
+    }
+
+    override fun getApplicationLicenceKey(): String {
+        return BuildConfig.GOOGLE_PLAY_LICENSE_KEY
     }
 }

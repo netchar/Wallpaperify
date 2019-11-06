@@ -19,6 +19,8 @@ package com.netchar.common.di
 import android.content.Context
 import com.netchar.common.services.*
 import com.netchar.common.utils.CoroutineDispatchers
+import com.netchar.common.utils.CryptUtils
+import com.netchar.common.utils.IBuildConfig
 import com.netchar.common.utils.navigation.IToolbarNavigationBinder
 import com.netchar.common.utils.navigation.ToolbarNavigationBinder
 import dagger.Module
@@ -27,7 +29,6 @@ import javax.inject.Singleton
 
 @Module
 object CommonModule {
-
     @JvmStatic
     @Provides
     @Singleton
@@ -55,4 +56,8 @@ object CommonModule {
     @JvmStatic
     @Provides
     fun providesExternalLibrariesService(): IExternalLibraryProvider = ExternalLibraryProvider()
+
+    @JvmStatic
+    @Provides
+    fun provideCryptUtils(config: IBuildConfig) : CryptUtils = CryptUtils(config)
 }

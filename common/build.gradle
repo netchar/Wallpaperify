@@ -59,6 +59,8 @@ dependencies {
 
     // ThreeTen
     implementation deps.threetenabp
+
+    implementation 'org.solovyev.android:checkout:1.2.2'
 }
 
 dependencies {

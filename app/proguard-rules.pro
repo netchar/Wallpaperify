@@ -82,3 +82,20 @@
     public static **[] values();
     public static ** valueOf(java.lang.String);
 }
+
+-keep class com.android.vending.billing.**
+
+-assumenosideeffects class org.solovyev.android.checkout.Billing {
+    public static void debug(...);
+    public static void warning(...);
+    public static void error(...);
+}
+
+-assumenosideeffects class org.solovyev.android.checkout.Check {
+    static *;
+}
+
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}

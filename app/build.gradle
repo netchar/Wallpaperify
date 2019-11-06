@@ -55,6 +55,8 @@ android {
         buildConfigField("String", "DEBUG_API_ACCESS_KEY", secretProperties['DEBUG_API_ACCESS_KEY'])
         buildConfigField("String", "DEBUG_API_SECRET_KEY", secretProperties['DEBUG_API_SECRET_KEY'])
         buildConfigField("String", "GOOGLE_PLAY_LICENSE_KEY", secretProperties['GOOGLE_PLAY_LICENSE_KEY'])
+        buildConfigField("String", "CRYPT_KEY", secretProperties['CRYPT_KEY'])
+        buildConfigField("String", "CRYPT_IV", secretProperties['CRYPT_IV'])
         proguardFiles 'proguard-rules.pro'
     }
 
@@ -174,7 +176,7 @@ dependencies {
     implementation deps.quickpermissions
     implementation deps.photoview
 
-//    implementation 'org.solovyev.android:checkout:1.2.2'
+    implementation 'org.solovyev.android:checkout:1.2.2'
 }
 
 dependencies {
